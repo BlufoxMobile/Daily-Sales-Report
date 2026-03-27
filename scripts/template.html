@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>
+    // Auto-reload: detect new version every 60 seconds and reload automatically
+    (function() {
+      var lastMod = null;
+      function checkUpdate() {
+        fetch(location.href + '?_=' + Date.now(), {cache: 'no-store'})
+          .then(function(r) {
+            var mod = r.headers.get('last-modified');
+            if (!lastMod) { lastMod = mod; }
+            else if (mod && mod !== lastMod) { location.reload(true); }
+          }).catch(function(){});
+      }
+      // Check every 60 seconds starting after 2 minutes
+      setTimeout(function() {
+        checkUpdate();
+        setInterval(checkUpdate, 60000);
+      }, 120000);
+    })();
+  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cook County Cooks â Daily Sales Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#02060e; --card:#081525; --blue:#2979ff; --blue2:#6aadff;
+  --orange:#ff6200; --orange2:#ff9544;
+  --white:#eef4ff; --dim:#4a6480;
+  --green:#00e87a; --amber:#ffc400; --red:#ff3333;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:var(--bg);font-family:'Barlow Condensed',sans-serif;color:var(--white);overflow:hidden;}
+
+/* ââ FRAME ââ */
+html,body{margin:0;padding:0;width:100vw;height:100vh;overflow:hidden;background:var(--bg);}
+#wrap{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+  overflow:hidden;
+}
+#slide{
+  /* Fixed 16:9 canvas â JS scales it to fill viewport */
+  width:1280px;height:720px;
+  flex-shrink:0;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transform-origin:top left;
+  /* Will be positioned/scaled by JS */
+  position:absolute;
+  top:0;left:0;
+}
+#slide::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(41,121,255,.025)1px,transparent 1px),
+    linear-gradient(90deg,rgba(41,121,255,.025)1px,transparent 1px);
+  background-size:60px 60px;}
+#slide::after{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 700px 400px at -5% 50%,rgba(41,121,255,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 500px 500px at 105% 50%,rgba(255,98,0,.05) 0%,transparent 60%);}
+
+/* ââ HEADER ââ */
+header{position:relative;z-index:10;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  height:72px;padding:0 24px;
+  background:linear-gradient(90deg,#020a18 0%,#061628 50%,#020a18 100%);
+  border-bottom:3px solid var(--orange);
+  box-shadow:0 3px 40px rgba(255,98,0,.2);}
+.hdr-l{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.hdr-logo{width:52px;height:52px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--orange);
+  box-shadow:0 0 20px rgba(255,98,0,.6),0 0 50px rgba(255,98,0,.15);}
+.hdr-brand{display:flex;flex-direction:column;}
+.hdr-name{font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:700;
+  letter-spacing:3px;color:var(--white);text-transform:uppercase;line-height:1;}
+.hdr-name em{color:var(--orange);font-style:normal;}
+.hdr-tag{font-size:.6rem;letter-spacing:4px;color:var(--blue2);text-transform:uppercase;margin-top:2px;}
+.hdr-c{flex:1;text-align:center;padding:0 12px;}
+.daily-lbl{font-size:.55rem;letter-spacing:5px;color:var(--dim);text-transform:uppercase;font-family:'Oswald',sans-serif;margin-bottom:1px;}
+.screen-ttl{font-family:'Oswald',sans-serif;font-weight:700;font-size:2rem;letter-spacing:3px;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--blue2) 0%,#fff 40%,var(--orange2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.hdr-r{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.live{display:flex;align-items:center;gap:5px;background:rgba(0,232,122,.1);
+  border:1px solid rgba(0,232,122,.35);border-radius:20px;padding:3px 12px;
+  font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:3px;color:var(--green);}
+.ldot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:lp 1s infinite;}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.15}}
+.clk{font-size:.65rem;color:var(--dim);letter-spacing:1px;}
+
+/* ââ NAV ââ */
+.nav{position:relative;z-index:10;flex-shrink:0;display:flex;align-items:center;gap:10px;
+  height:26px;padding:0 24px;background:rgba(2,6,14,.9);
+  border-bottom:1px solid rgba(41,121,255,.1);}
+.sc-ctr{font-family:'Oswald',sans-serif;font-size:.68rem;letter-spacing:2px;color:var(--dim);flex-shrink:0;}
+.sc-ctr b{color:var(--orange);}
+.prog{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.prog-f{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--orange));box-shadow:0 0 8px var(--orange);}
+.nav-btns{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.dots{display:flex;gap:4px;align-items:center;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.14);cursor:pointer;transition:all .25s;}
+.dot.on{background:var(--orange);box-shadow:0 0 7px var(--orange);transform:scale(1.5);}
+.menu-btn{display:flex;align-items:center;gap:4px;cursor:pointer;
+  background:rgba(41,121,255,.12);border:1px solid rgba(41,121,255,.3);
+  border-radius:5px;padding:2px 9px;
+  font-family:'Oswald',sans-serif;font-size:.6rem;letter-spacing:2px;color:var(--blue2);transition:all .2s;}
+.menu-btn:hover{background:rgba(41,121,255,.22);border-color:var(--blue2);}
+
+/* ââ CONTENT ââ */
+.content{flex:1;position:relative;z-index:5;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
+   OVERVIEW CARDS  4 Ã 3 = 12 per page
+ââââââââââââââââââââââââââââââââââââââââââââââ */
+.ov-grid{display:grid;grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(3,1fr);gap:5px;flex:1;padding:6px 12px 8px;}
+.sc{background:var(--card);border-radius:8px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;padding:8px 10px 7px 16px;
+  border:1px solid rgba(41,121,255,.13);animation:ci .4s ease-out both;}
+@keyframes ci{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.sc:nth-child(1){animation-delay:.02s}.sc:nth-child(2){animation-delay:.05s}
+.sc:nth-child(3){animation-delay:.08s}.sc:nth-child(4){animation-delay:.11s}
+.sc:nth-child(5){animation-delay:.14s}.sc:nth-child(6){animation-delay:.17s}
+.sc:nth-child(7){animation-delay:.20s}.sc:nth-child(8){animation-delay:.23s}
+.sc:nth-child(9){animation-delay:.26s}.sc:nth-child(10){animation-delay:.29s}
+.sc:nth-child(11){animation-delay:.32s}.sc:nth-child(12){animation-delay:.35s}
+.sc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:8px 0 0 8px;}
+.c1::before{background:linear-gradient(180deg,#ffd700,#ff8800);}
+.c2::before{background:linear-gradient(180deg,var(--green),#00a854);}
+.c3::before{background:linear-gradient(180deg,var(--orange),var(--orange2));}
+.c4::before{background:linear-gradient(180deg,var(--blue),var(--blue2));}
+.c5::before{background:linear-gradient(180deg,var(--red),#ff7070);}
+.sc-rank{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;line-height:1;margin-bottom:1px;}
+.sc-name{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.2rem;line-height:1.05;
+  color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px;}
+.sc-gp{font-family:'Oswald',sans-serif;font-weight:700;font-size:1.5rem;color:var(--orange2);
+  line-height:1;margin-bottom:4px;text-shadow:0 0 20px rgba(255,98,0,.35);}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto;}
+.chip{display:flex;flex-direction:column;align-items:center;padding:4px 7px;border-radius:5px;flex:1;min-width:42px;}
+.chip-l{font-size:.48rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.5;font-weight:600;margin-bottom:1px;}
+.chip-v{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:600;line-height:1;}
+.cg{background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25);}
+.ca{background:rgba(255,196,0,.1);border:1px solid rgba(255,196,0,.25);}
+.cr{background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.25);}
+.cb{background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.25);}
+.cg .chip-v{color:var(--green);}.ca .chip-v{color:var(--amber);}
+.cr .chip-v{color:var(--red);}.cb .chip-v{color:var(--blue2);}
+
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
+   ALL-23 RANKER  â single scrollable table
+   Used for all metric screens
+ââââââââââââââââââââââââââââââââââââââââââââââ */
+/* Category banner */
+.cat-banner{
+  display:flex;align-items:center;
+  background:linear-gradient(90deg,rgba(255,98,0,.14) 0%,rgba(41,121,255,.07) 60%,rgba(255,98,0,.04) 100%);
+  border-bottom:2px solid rgba(255,98,0,.3);
+  border-top:4px solid var(--orange);
+  padding:8px 18px;flex-shrink:0;gap:16px;
+}
+.cat-main{display:flex;flex-direction:column;justify-content:center;flex-shrink:0;}
+.cat-name{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;
+  color:var(--white);letter-spacing:3px;line-height:1;text-transform:uppercase;
+  text-shadow:0 0 20px rgba(255,98,0,.3);}
+.cat-desc{font-size:.7rem;color:var(--blue2);margin-top:3px;letter-spacing:.5px;}
+.cat-pts{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex-shrink:0;background:rgba(255,98,0,.15);border:2px solid rgba(255,98,0,.4);
+  border-radius:7px;padding:6px 14px;min-width:74px;}
+.cat-pts-num{font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:700;color:var(--orange);line-height:1;}
+.cat-pts-lbl{font-size:.55rem;color:var(--orange2);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
+.cat-stats{display:flex;gap:20px;align-items:center;margin-left:auto;}
+.cstat{display:flex;flex-direction:column;align-items:flex-end;}
+.cstat-l{font-size:.52rem;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+.cstat-v{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;line-height:1;}
+
+/* Two-column ranker grid â all 23 stores visible */
+.ranker-grid{display:grid;grid-template-columns:1fr 1fr;
+  gap:3px;padding:5px 12px 6px;flex:1;align-content:start;}
+.rrow{display:flex;align-items:stretch;background:var(--card);
+  border:1px solid rgba(41,121,255,.1);border-radius:6px;overflow:hidden;
+  height:44px;animation:ri .35s ease-out both;}
+@keyframes ri{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:translateX(0)}}
+.rrow:nth-child(1){animation-delay:.02s}.rrow:nth-child(2){animation-delay:.04s}
+.rrow:nth-child(3){animation-delay:.06s}.rrow:nth-child(4){animation-delay:.08s}
+.rrow:nth-child(5){animation-delay:.10s}.rrow:nth-child(6){animation-delay:.12s}
+.rrow:nth-child(7){animation-delay:.14s}.rrow:nth-child(8){animation-delay:.16s}
+.rrow:nth-child(9){animation-delay:.18s}.rrow:nth-child(10){animation-delay:.20s}
+.rrow:nth-child(11){animation-delay:.22s}.rrow:nth-child(12){animation-delay:.24s}
+.rrow.t1{border-left:4px solid #ffd700;}.rrow.t2{border-left:4px solid var(--green);}
+.rrow.t3{border-left:4px solid var(--orange);}.rrow.t4{border-left:4px solid var(--blue);}
+.rrow.t5{border-left:4px solid var(--red);}
+.rr-pos{width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;
+  background:rgba(0,0,0,.3);border-right:1px solid rgba(255,255,255,.06);}
+.rr-store{flex:1;padding:0 12px;display:flex;flex-direction:column;justify-content:center;min-width:0;}
+.rr-sname{font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:600;
+  color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rr-main{flex-shrink:0;padding:0 16px;font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;
+  text-align:right;min-width:100px;display:flex;align-items:center;justify-content:flex-end;
+  border-left:1px solid rgba(255,255,255,.06);}
+.rr-b{flex-shrink:0;padding:0 10px;min-width:68px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  border-left:1px solid rgba(255,255,255,.06);font-family:'Oswald',sans-serif;font-size:.88rem;font-weight:700;}
+.rr-b span{font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.48);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:2px;}
+
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
+   DEVICE MIX SLIDE  â special layout
+ââââââââââââââââââââââââââââââââââââââââââââââ */
+/* All 23 in one table â 3 columns of data */
+.device-grid{display:grid;grid-template-columns:1fr 1fr;
+  gap:3px;padding:5px 12px 6px;flex:1;align-content:start;}
+.drow{display:flex;align-items:stretch;background:var(--card);
+  border:1px solid rgba(41,121,255,.1);border-radius:6px;overflow:hidden;height:50px;
+  height:44px;animation:ri .3s ease-out both;}
+.drow.t1{border-left:4px solid #ffd700;}.drow.t2{border-left:4px solid var(--green);}
+.drow.t3{border-left:4px solid var(--orange);}.drow.t4{border-left:4px solid var(--blue);}
+.drow.t5{border-left:4px solid var(--red);}
+.dr-pos{width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;
+  background:rgba(0,0,0,.3);border-right:1px solid rgba(255,255,255,.06);}
+.dr-store{flex:1;padding:0 12px;display:flex;align-items:center;min-width:0;}
+.dr-sname{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dr-stat{flex-shrink:0;min-width:68px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:0 10px;
+  border-left:1px solid rgba(255,255,255,.06);font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;}
+.dr-stat span{font-size:.5rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.45);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:1px;}
+
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
+   REP SLIDES  â side-by-side store columns
+ââââââââââââââââââââââââââââââââââââââââââââââ */
+.rep-slide{display:flex;flex-direction:row;flex:1;padding:5px 12px 7px;gap:6px;overflow:hidden;}
+.store-block{flex:1;background:var(--card);border:1px solid rgba(41,121,255,.18);
+  border-radius:8px;overflow:hidden;display:flex;flex-direction:column;
+  animation:ci .4s ease-out both;min-width:0;}
+.store-block:nth-child(1){animation-delay:.03s}
+.store-block:nth-child(2){animation-delay:.08s}
+.store-block:nth-child(3){animation-delay:.13s}
+.sb-head{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:9px 16px 8px;
+  background:linear-gradient(90deg,rgba(255,98,0,.2) 0%,rgba(41,121,255,.08) 100%);
+  border-bottom:2px solid rgba(255,98,0,.3);border-top:4px solid var(--orange);}
+.sb-store{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;
+  color:var(--white);letter-spacing:2px;text-transform:uppercase;line-height:1;
+  text-shadow:0 0 20px rgba(255,98,0,.4);}
+.sb-count{font-family:'Oswald',sans-serif;font-size:.68rem;letter-spacing:2px;
+  color:var(--orange2);text-transform:uppercase;flex-shrink:0;}
+.rep-cols{display:grid;flex-shrink:0;padding:4px 10px;
+  background:rgba(0,0,0,.32);border-bottom:1px solid rgba(255,255,255,.07);}
+.rep-cols span{font-family:'Oswald',sans-serif;font-size:.58rem;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--blue2);font-weight:600;}
+.rep-cols span.rc-c{text-align:center;}
+.rep-rows{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:2px;padding:3px 7px 5px;}
+.rep-row{display:grid;align-items:center;background:rgba(255,255,255,.03);border-radius:5px;
+  border-left:4px solid transparent;padding:0 5px;flex-shrink:0;animation:ri .3s ease-out both;}
+.rep-row:hover{background:rgba(255,98,0,.07);}
+.rep-row:nth-child(1){border-left-color:#ffd700;animation-delay:.04s;}
+.rep-row:nth-child(2){border-left-color:var(--green);animation-delay:.07s;}
+.rep-row:nth-child(3){border-left-color:var(--orange);animation-delay:.10s;}
+.rep-row:nth-child(4){border-left-color:var(--blue);animation-delay:.13s;}
+.rep-row:nth-child(5){border-left-color:var(--red);animation-delay:.16s;}
+.rep-row:nth-child(n+6){border-left-color:rgba(255,255,255,.1);animation-delay:.19s;}
+.rp-nat{font-family:'Oswald',sans-serif;font-weight:700;text-align:center;}
+.rp-name{font-family:'Oswald',sans-serif;font-weight:600;color:var(--white);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rp-gp{font-family:'Oswald',sans-serif;font-weight:700;color:var(--orange2);text-align:center;}
+.rp-gig,.rp-prem,.rp-acc{font-family:'Oswald',sans-serif;font-weight:600;text-align:center;}
+
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
+   SLIDE PICKER
+ââââââââââââââââââââââââââââââââââââââââââââââ */
+#picker-overlay{display:none;position:fixed;inset:0;z-index:9800;
+  background:rgba(0,0,0,.87);backdrop-filter:blur(12px);
+  align-items:center;justify-content:center;}
+#picker-overlay.on{display:flex;}
+#picker-box{background:linear-gradient(135deg,#060f20,#0d1e38);
+  border:2px solid var(--orange);border-radius:16px;
+  width:880px;max-width:95vw;max-height:88vh;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 0 100px rgba(255,98,0,.2);}
+.picker-head{display:flex;align-items:center;justify-content:space-between;
+  padding:16px 22px;border-bottom:1px solid rgba(255,98,0,.2);flex-shrink:0;}
+.picker-head h2{font-family:'Oswald',sans-serif;font-size:1.35rem;letter-spacing:3px;
+  color:var(--orange);text-transform:uppercase;}
+.picker-close{background:none;border:none;color:var(--dim);font-size:1.4rem;cursor:pointer;transition:color .2s;}
+.picker-close:hover{color:var(--orange);}
+.picker-body{overflow-y:auto;padding:14px 22px 18px;display:flex;flex-direction:column;gap:14px;}
+.picker-section{display:flex;flex-direction:column;gap:5px;}
+.picker-section-lbl{font-family:'Oswald',sans-serif;font-size:.6rem;letter-spacing:4px;
+  text-transform:uppercase;color:var(--blue2);padding-bottom:4px;
+  border-bottom:1px solid rgba(41,121,255,.15);margin-bottom:2px;}
+.picker-items{display:flex;flex-wrap:wrap;gap:5px;}
+.pitem{padding:8px 14px;border-radius:7px;cursor:pointer;
+  font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:1px;
+  text-transform:uppercase;color:var(--white);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);transition:all .2s;}
+.pitem:hover,.pitem.on{background:rgba(255,98,0,.15);border-color:var(--orange);color:var(--orange);}
+
+/* colour helpers */
+.vg{color:var(--green);}.va{color:var(--amber);}.vr{color:var(--red);}
+.vo{color:var(--orange2);}.vb{color:var(--blue2);}
+.bg-g{background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.22);}
+.bg-a{background:rgba(255,196,0,.1);border:1px solid rgba(255,196,0,.22);}
+.bg-r{background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.22);}
+.rg{color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.5);}
+.rn{color:var(--green);}.ro{color:var(--orange2);}.rb{color:var(--blue2);}.rrc{color:#ff6060;}
+
+/* ââ ADMIN ââ */
+#gbtn{position:fixed;bottom:16px;right:16px;z-index:9000;width:42px;height:42px;border-radius:50%;
+  background:rgba(2,6,14,.95);border:1.5px solid rgba(255,98,0,.4);color:var(--orange);
+  font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:transform .3s,box-shadow .3s;box-shadow:0 0 20px rgba(0,0,0,.8);}
+#gbtn:hover{transform:rotate(70deg) scale(1.1);box-shadow:0 0 24px rgba(255,98,0,.35);}
+#gmenu{position:fixed;bottom:64px;right:16px;z-index:9000;
+  background:linear-gradient(135deg,#061220,#0d1e38);
+  border:1.5px solid rgba(255,98,0,.35);border-radius:12px;padding:8px;min-width:192px;
+  display:none;flex-direction:column;gap:4px;box-shadow:0 8px 40px rgba(0,0,0,.8);}
+#gmenu.on{display:flex;}
+.gi{padding:9px 14px;border-radius:7px;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-size:.8rem;letter-spacing:1px;
+  color:var(--white);transition:background .2s;display:flex;align-items:center;gap:9px;}
+.gi:hover{background:rgba(255,98,0,.12);color:var(--orange);}
+.ov-modal{display:none;position:fixed;inset:0;z-index:9500;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;}
+.ov-modal.on{display:flex;}
+.modal{background:linear-gradient(135deg,#061220,#0d1e38);border:2px solid var(--orange);
+  border-radius:16px;padding:32px 36px;width:400px;max-width:95vw;text-align:center;
+  box-shadow:0 0 80px rgba(255,98,0,.2);}
+.modal h2{font-family:'Oswald',sans-serif;font-size:1.7rem;color:var(--orange);letter-spacing:4px;margin-bottom:6px;}
+.modal p{font-size:.75rem;color:var(--dim);margin-bottom:18px;}
+.fld{margin-bottom:11px;text-align:left;}
+.fld label{display:block;font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:2px;
+  color:var(--orange);margin-bottom:5px;text-transform:uppercase;}
+.fld input[type=password],.fld input[type=file]{width:100%;background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,98,0,.3);border-radius:8px;padding:9px 13px;
+  color:var(--white);font-size:.85rem;outline:none;transition:border-color .2s;}
+.fld input[type=password]:focus{border-color:var(--orange);}
+.mbtn{width:100%;padding:11px;border:none;border-radius:7px;cursor:pointer;
+  font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:3px;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));color:#000;
+  margin-top:5px;transition:transform .15s,box-shadow .15s;}
+.mbtn:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(255,98,0,.35);}
+.mbtn.sec{background:transparent;border:1.5px solid rgba(255,98,0,.25);color:var(--dim);font-size:.8rem;margin-top:4px;}
+.merr{color:var(--red);font-size:.7rem;margin-top:7px;display:none;}
+.mok{color:var(--green);font-size:.7rem;margin-top:7px;display:none;}
+#ldg{display:none;position:fixed;inset:0;z-index:9999;background:rgba(1,3,8,.97);
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+#ldg.on{display:flex;}
+.spin{width:48px;height:48px;border:3px solid rgba(255,98,0,.15);border-top-color:var(--orange);
+  border-radius:50%;animation:sp .9s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.stxt{font-family:'Oswald',sans-serif;font-size:.72rem;letter-spacing:4px;color:var(--dim);text-transform:uppercase;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:rgba(255,98,0,.25);border-radius:2px;}
+</style>
+</head>
+<body>
+<div id="ldg"><div class="spin"></div><div class="stxt">Loading Data...</div></div>
+<div id="wrap"><div id="slide">
+
+<header>
+  <div class="hdr-l">
+    <img class="hdr-logo" src="LOGO_SRC" alt="C3">
+    <div class="hdr-brand">
+      <div class="hdr-name">COOK COUNTY <em>COOKS</em></div>
+      <div class="hdr-tag" id="hdr-tag">Daily Sales Report &nbsp;|&nbsp; REPORT_DATE</div>
+    </div>
+  </div>
+  <div class="hdr-c">
+    <div class="daily-lbl">Daily Sales Report</div>
+    <div class="screen-ttl" id="sttl">STORE OVERVIEW</div>
+  </div>
+  <div class="hdr-r">
+    <div class="live"><div class="ldot"></div>LIVE</div>
+    <div class="clk" id="clk"></div>
+  </div>
+</header>
+
+<div class="nav">
+  <div class="sc-ctr">Slide <b id="scur">1</b> of <b id="stot">â</b></div>
+  <div class="prog"><div class="prog-f" id="pf"></div></div>
+  <div class="nav-btns">
+    <div class="menu-btn" onclick="openPicker()">â° SLIDES</div>
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+
+<div class="content" id="content"></div>
+</div></div>
+
+<!-- SLIDE PICKER -->
+<div id="picker-overlay">
+  <div id="picker-box">
+    <div class="picker-head">
+      <h2>ð Choose a Slide</h2>
+      <button class="picker-close" onclick="closePicker()">â</button>
+    </div>
+    <div class="picker-body" id="picker-body"></div>
+  </div>
+</div>
+
+<!-- GEAR -->
+<button id="gbtn" onclick="tg()" title="Admin">â</button>
+<div id="gmenu">
+  <div class="gi" onclick="om('up')">ð Upload Sales Report</div>
+  <div class="gi" onclick="om('pr')">ð¯ Upload Promo Image</div>
+  <div class="gi" onclick="openPicker();cg()">ð Slide Menu</div>
+  <div class="gi" onclick="tp()">â¸ Pause / Resume</div>
+  <div class="gi" onclick="cg()">â Close</div>
+</div>
+
+<div class="ov-modal" id="ov-up">
+  <div class="modal">
+    <h2>ð ADMIN</h2><p>Password required to upload a sales report.</p>
+    <div id="up-pw">
+      <div class="fld"><label>Password</label>
+        <input type="password" id="pw-in" placeholder="Enter passwordâ¦" onkeydown="if(event.key==='Enter')chkPW()">
+      </div>
+      <div class="merr" id="pw-err">Incorrect password.</div>
+      <button class="mbtn" onclick="chkPW()">Unlock</button>
+      <button class="mbtn sec" onclick="cm('up')">Cancel</button>
+    </div>
+    <div id="up-file" style="display:none">
+      <div class="fld"><label>Sales Report (.xlsx)</label><input type="file" id="file-in" accept=".xlsx"></div>
+      <div class="mok" id="up-ok">â Report loaded!</div>
+      <div class="merr" id="up-err">Error reading file.</div>
+      <button class="mbtn" onclick="loadXL()">Load Report</button>
+      <button class="mbtn sec" onclick="cm('up')">Close</button>
+    </div>
+  </div>
+</div>
+<div class="ov-modal" id="ov-pr">
+  <div class="modal">
+    <h2>ð¯ PROMO UPLOAD</h2><p>Upload today's promotions image.</p>
+    <div id="pr-pw">
+      <div class="fld"><label>Password</label>
+        <input type="password" id="pr-in" placeholder="Enter passwordâ¦" onkeydown="if(event.key==='Enter')chkPrPW()">
+      </div>
+      <div class="merr" id="pr-err">Incorrect password.</div>
+      <button class="mbtn" onclick="chkPrPW()">Unlock</button>
+      <button class="mbtn sec" onclick="cm('pr')">Cancel</button>
+    </div>
+    <div id="pr-file" style="display:none">
+      <div class="fld"><label>Promo Image (JPG/PNG)</label><input type="file" id="promo-in" accept="image/*"></div>
+      <div class="mok" id="pr-ok">â Promo loaded!</div>
+      <button class="mbtn" onclick="loadPr()">Load Image</button>
+      <button class="mbtn sec" onclick="cm('pr')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PW='Password123!', TICK=15000;
+
+/* ââ CATEGORY DEFINITIONS (all correct columns + weights) ââ */
+const CATS={
+  gp_trend:{name:'Gross Profit Trend',       abbr:'GP TREND',   pts:20, pct:'20%',
+    desc:'Fiscal GP trend dollar amount â foundation of your total score'},
+  mcr:     {name:'Mobile Close Rate',        abbr:'MCR',        pts:25, pct:'25%',
+    desc:'% of internet customers who also purchased mobile â highest weighted metric'},
+  fcr:     {name:'Fiscal Close Rate',        abbr:'FCR',        pts:null,pct:'â',
+    desc:'Overall rate of closing new accounts across all products'},
+  nt:      {name:'Non-Traditional Close Rate',abbr:'NON-TRAD CR',pts:10, pct:'10%',
+    desc:'Close rate on non-traditional products: tablets, watches, accessories'},
+  gig:     {name:'GIG Internet Attach',      abbr:'GIG ATTACH', pts:10, pct:'10%',
+    desc:'% of internet sales on GIG plans (â¥180 commission tier) â Target: 80%+'},
+  device:  {name:'Device Mix',               abbr:'DEVICE MIX', pts:null,pct:'â',
+    desc:'Total Mobile units + Tablet + Watches sold MTD per store'},
+  prem:    {name:'Premium Mix',              abbr:'PREMIUM MIX',pts:5,  pct:'5%',
+    desc:'% of mobile sales on Premium Unlimited plan â Target: 60%+'},
+  n2u:     {name:'New To Upgrades',          abbr:'NEW-TO-UPGR', pts:10, pct:'10%',
+    desc:'% of mobile sales that are new lines (not upgrades) â Target: 40%+'},
+  apd:     {name:'Accessory Per Device',     abbr:'ACC/DEVICE',  pts:10, pct:'10%',
+    desc:'Net accessory revenue divided by total devices sold â Target: $30+'},
+  nps:     {name:'Net Promoter Score',       abbr:'NPS',         pts:15, pct:'15%',
+    desc:'Customer satisfaction score â likelihood to recommend â Target: 82%+'},
+};
+
+/* ââ STORE DATA ââ */
+let SD=SD_PLACEHOLDER;
+
+/* ââ REP DATA ââ */
+let RD=RD_PLACEHOLDER;
+
+/* ââ REP GROUPS â labeled by store names ââ */
+const REP_GROUPS=[
+  {label:'Frankfort & Burbank',               stores:['Frankfort','Burbank']},
+  {label:'Evergreen Park & Tinley Park',       stores:['Evergreen Park','Tinley Park']},
+  {label:'Bourbonnais & Dekalb',               stores:['Bourbonnais','Dekalb']},
+  {label:'Hammond & Schererville',             stores:['Hammond','Schererville']},
+  {label:'Valparaiso & Michigan City',         stores:['Valparaiso','Michigan City']},
+  {label:'Elkhart & South Bend',               stores:['Elkhart','South Bend']},
+  {label:'Greeneville & Oak Ridge',            stores:['Greeneville','Oak Ridge']},
+  {label:'South Knoxville & Johnson City',     stores:['South Knoxville','Johnson City']},
+  {label:'South Skokie & Glenview',            stores:['South Skokie','Glenview']},
+  {label:'Cicero & Evanston',                  stores:['Cicero','Evanston']},
+  {label:'Kildeer, Round Lake Beach & Uptown', stores:['Kildeer','Round Lake Beach','Uptown']},
+];
+
+let promoImg=null, paused=false, cur=0, pi=null;
+let SCREENS=[];
+
+/* ââ HELPERS ââ */
+const f$=n=>'$'+Math.round(n).toLocaleString();
+const fp=n=>(n*100).toFixed(1)+'%';
+const vc=(v,g,w)=>v>=g?'vg':v>=w?'va':'vr';
+const cc=(v,g,w)=>v>=g?'cg':v>=w?'ca':'cr';
+const bm=(v,g,w)=>v>=g?'bg-g':v>=w?'bg-a':'bg-r';
+const tier=r=>r<=5?'c1':r<=20?'c2':r<=50?'c3':r<=90?'c4':'c5';
+const trow=r=>r<=5?'t1':r<=20?'t2':r<=50?'t3':r<=90?'t4':'t5';
+const rCol=r=>r<=5?'rg':r<=20?'rn':r<=50?'ro':r<=90?'rb':'rrc';
+
+/* ââ SCREEN LIST ââ */
+function mkScreens(){
+  const sorted=[...SD].sort((a,b)=>a.rank-b.rank);
+  const out=[];
+  // Overview pages: 12 per page
+  for(let i=0;i<sorted.length;i+=12){
+    const pg=Math.floor(i/12)+1, tot=Math.ceil(sorted.length/12);
+    out.push({id:'ov', title:'STORE OVERVIEW', sub:`Page ${pg} of ${tot}`, stores:sorted.slice(i,i+12)});
+  }
+  // Metric rankers â all 23 stores on one slide each
+  out.push({id:'rank', key:'gp_trend', title:'GP TREND RANKER',            cat:CATS.gp_trend,
+    fmt:f$, good:60000,warn:35000, s1:'mcr', s1l:'Mobile Close Rate', s1f:fp, s1g:.09,s1w:.065,
+    s2:'nps',s2l:'NPS Score', s2f:fp, s2g:.82,s2w:.72});
+  out.push({id:'rank', key:'mcr', title:'MOBILE CLOSE RATE RANKER',        cat:CATS.mcr,
+    fmt:fp, good:.09,warn:.065, s1:'mob', s1l:'Mobile Units', s1f:String, s1g:80,s1w:50,
+    s2:'fcr',s2l:'Fiscal Close Rate', s2f:fp, s2g:.11,s2w:.085});
+  out.push({id:'rank', key:'fcr', title:'FISCAL CLOSE RATE RANKER',        cat:CATS.fcr,
+    fmt:fp, good:.11,warn:.085, s1:'mcr', s1l:'Mobile Close Rate', s1f:fp, s1g:.09,s1w:.065,
+    s2:'nt', s2l:'Non-Trad CR', s2f:fp, s2g:.018,s2w:.012});
+  out.push({id:'rank', key:'nt',  title:'NON-TRAD CLOSE RATE RANKER',      cat:CATS.nt,
+    fmt:fp, good:.018,warn:.012, s1:'fcr',s1l:'Fiscal Close Rate', s1f:fp, s1g:.11,s1w:.085,
+    s2:'mcr',s2l:'Mobile Close Rate', s2f:fp, s2g:.09,s2w:.065});
+  out.push({id:'rank', key:'gig', title:'GIG INTERNET ATTACH RANKER',      cat:CATS.gig,
+    fmt:fp, good:.8,warn:.6, s1:'mob', s1l:'Mobile Units', s1f:String, s1g:80,s1w:50,
+    s2:'mcr',s2l:'Mobile Close Rate', s2f:fp, s2g:.09,s2w:.065});
+  out.push({id:'device', title:'DEVICE MIX'});
+  out.push({id:'rank', key:'prem',title:'PREMIUM MIX RANKER',              cat:CATS.prem,
+    fmt:fp, good:.6,warn:.45, s1:'mcr', s1l:'Mobile Close Rate', s1f:fp, s1g:.09,s1w:.065,
+    s2:'gig',s2l:'GIG Attach', s2f:fp, s2g:.8,s2w:.6});
+  out.push({id:'rank', key:'n2u', title:'NEW TO UPGRADES RANKER',          cat:CATS.n2u,
+    fmt:fp, good:.4,warn:.25, s1:'mob', s1l:'Mobile Units', s1f:String, s1g:80,s1w:50,
+    s2:'mcr',s2l:'Mobile Close Rate', s2f:fp, s2g:.09,s2w:.065});
+  out.push({id:'rank', key:'apd', title:'ACCESSORY PER DEVICE RANKER',     cat:CATS.apd,
+    fmt:v=>'$'+v.toFixed(2), good:30,warn:20, s1:'mob', s1l:'Mobile Units', s1f:String, s1g:80,s1w:50,
+    s2:'prem',s2l:'Premium Mix', s2f:fp, s2g:.6,s2w:.45});
+  out.push({id:'rank', key:'nps', title:'NET PROMOTER SCORE RANKER',       cat:CATS.nps,
+    fmt:fp, good:.82,warn:.72, s1:'mcr', s1l:'Mobile Close Rate', s1f:fp, s1g:.09,s1w:.065,
+    s2:'mob',s2l:'Mobile Units', s2f:String, s2g:80,s2w:50});
+  // Rep slides
+  REP_GROUPS.forEach((g,i)=>{
+    out.push({id:'rep', title:'REP RANKER', sub:g.label, stores:g.stores, storeLabel:g.label});
+  });
+  // Promo
+  out.push({id:'promo', title:'DAILY PROMOTIONS', sub:"Today's Active Offers"});
+  return out;
+}
+
+/* ââ BUILD: OVERVIEW ââ */
+function buildOV(stores){
+  const cards=stores.map(d=>`
+    <div class="sc ${tier(d.rank)}">
+      <div class="sc-rank ${rCol(d.rank)}">#${d.rank}</div>
+      <div class="sc-name">${d.s}</div>
+      <div class="sc-gp">${f$(d.gp_trend)}</div>
+      <div class="chips">
+        <div class="chip ${cc(d.mcr,.09,.065)}"><div class="chip-l">Mobile CR</div><div class="chip-v">${fp(d.mcr)}</div></div>
+        <div class="chip ${cc(d.nps,.82,.72)}"><div class="chip-l">NPS</div><div class="chip-v">${fp(d.nps)}</div></div>
+        <div class="chip ${cc(d.prem,.6,.45)}"><div class="chip-l">Premium</div><div class="chip-v">${fp(d.prem)}</div></div>
+        <div class="chip cb"><div class="chip-l">Mobile</div><div class="chip-v">${d.mob}</div></div>
+      </div>
+    </div>`).join('');
+  return`<div class="ov-grid">${cards}</div>`;
+}
+
+/* ââ BUILD: RANKER (all 23 in 2 columns) ââ */
+function buildRanker(sc){
+  const {key,fmt,good,warn,s1,s1l,s1f,s1g,s1w,s2,s2l,s2f,s2g,s2w,cat}=sc;
+  const ranked=[...SD].sort((a,b)=>b[key]-a[key]);
+  const avg=SD.reduce((s,x)=>s+x[key],0)/SD.length;
+  const top=ranked[0];
+  const ptsHTML=cat&&cat.pts
+    ?`<div class="cat-pts"><div class="cat-pts-num">${cat.pct}</div><div class="cat-pts-lbl">of Score</div></div>`
+    :`<div class="cat-pts" style="border-color:rgba(41,121,255,.4);background:rgba(41,121,255,.1)"><div class="cat-pts-num" style="color:var(--blue2)">â</div><div class="cat-pts-lbl" style="color:var(--blue2)">No Points</div></div>`;
+  const banner=`<div class="cat-banner">
+    <div class="cat-main">
+      <div class="cat-name">${cat?cat.name:sc.title}</div>
+      <div class="cat-desc">${cat?cat.desc:''}</div>
+    </div>
+    ${ptsHTML}
+    <div class="cat-stats">
+      <div class="cstat"><div class="cstat-l">Avg</div><div class="cstat-v ${vc(avg,good,warn)}">${fmt(avg)}</div></div>
+      <div class="cstat"><div class="cstat-l">ð¥ Best</div><div class="cstat-v vo">${top.s} <span style="font-size:.85rem;opacity:.7">${fmt(top[key])}</span></div></div>
+      <div class="cstat"><div class="cstat-l">Above Target</div><div class="cstat-v vb">${SD.filter(x=>x[key]>=good).length} / ${SD.length}</div></div>
+    </div>
+  </div>`;
+  const rows=ranked.map((d,i)=>{
+    const v1=d[s1],v2=d[s2];
+    const c1v=vc(v1,s1g,s1w),c1b=bm(v1,s1g,s1w);
+    const c2v=vc(v2,s2g,s2w),c2b=bm(v2,s2g,s2w);
+    return`<div class="rrow ${trow(d.rank)}">
+      <div class="rr-pos ${rCol(d.rank)}" style="flex-direction:column;gap:0"><span style="font-size:.42rem;letter-spacing:1px;color:rgba(255,255,255,.4);font-family:'Barlow Condensed',sans-serif;line-height:1">NATL</span><span>${d.rank}</span></div>
+      <div class="rr-store"><div class="rr-sname">${d.s}</div></div>
+      <div class="rr-main ${vc(d[key],good,warn)}">${fmt(d[key])}</div>
+      <div class="rr-b ${c1v} ${c1b}"><span>${s1l}</span>${s1f(v1)}</div>
+      <div class="rr-b ${c2v} ${c2b}"><span>${s2l}</span>${s2f(v2)}</div>
+    </div>`;
+  }).join('');
+  return banner+`<div class="ranker-grid">${rows}</div>`;
+}
+
+/* ââ BUILD: DEVICE MIX ââ */
+function buildDevice(){
+  const sorted=[...SD].sort((a,b)=>b.mob-a.mob);
+  const totMob=SD.reduce((s,x)=>s+x.mob,0);
+  const totTab=SD.reduce((s,x)=>s+x.tab,0);
+  const totWat=SD.reduce((s,x)=>s+x.watch,0);
+  const banner=`<div class="cat-banner">
+    <div class="cat-main">
+      <div class="cat-name">Device Mix</div>
+      <div class="cat-desc">Total Mobile, Tablet & Watch units sold MTD â all 23 stores</div>
+    </div>
+    <div class="cat-pts" style="border-color:rgba(41,121,255,.4);background:rgba(41,121,255,.1)">
+      <div class="cat-pts-num" style="color:var(--blue2)">${totMob}</div>
+      <div class="cat-pts-lbl" style="color:var(--blue2)">Total Mobile</div>
+    </div>
+    <div class="cat-stats">
+      <div class="cstat"><div class="cstat-l">Total Tablets</div><div class="cstat-v vb">${totTab}</div></div>
+      <div class="cstat"><div class="cstat-l">Total Watches</div><div class="cstat-v vb">${totWat}</div></div>
+      <div class="cstat"><div class="cstat-l">All Devices</div><div class="cstat-v vo">${totMob+totTab+totWat}</div></div>
+    </div>
+  </div>`;
+  const rows=sorted.map((d,i)=>`
+    <div class="drow ${trow(d.rank)}">
+      <div class="dr-pos ${rCol(d.rank)}" style="flex-direction:column;gap:0"><span style="font-size:.42rem;letter-spacing:1px;color:rgba(255,255,255,.4);font-family:'Barlow Condensed',sans-serif;line-height:1">NATL</span><span>${d.rank}</span></div>
+      <div class="dr-store"><div class="dr-sname">${d.s}</div></div>
+      <div class="dr-stat vb"><span>Mobile</span>${d.mob}</div>
+      <div class="dr-stat va"><span>Tablets</span>${d.tab}</div>
+      <div class="dr-stat vg"><span>Watches</span>${d.watch}</div>
+      <div class="dr-stat vo"><span>Total</span>${d.mob+d.tab+d.watch}</div>
+    </div>`).join('');
+  return banner+`<div class="device-grid">${rows}</div>`;
+}
+
+/* ââ BUILD: REP SLIDE ââ */
+function buildRep(sc){
+  const storeNames=sc.stores;
+  const n=storeNames.length;
+  // sizing: 2 stores = bigger, 3 = compressed
+  const rowH   = n<=2?'height:42px':'height:34px';
+  const posSize= n<=2?'1.2rem':'1rem';
+  const nameS  = n<=2?'1.05rem':'.92rem';
+  const valS   = n<=2?'1rem':'.88rem';
+  const hdS    = n<=2?'.62rem':'.55rem';
+  const colT   = n<=2?'42px 1fr 90px 70px 72px 80px':'38px 1fr 84px 64px 68px 76px';
+
+  const blocks=storeNames.map(st=>{
+    const reps=RD[st]||[];
+    const repRows=reps.map((r,i)=>{
+      const gigC=vc(r.gig,.8,.6);
+      const premC=vc(r.prem,.6,.45);
+      const accC=r.acc>=30?'vg':r.acc>=20?'va':'vr';
+      const posCol=i===0?'rg':i===1?'rn':i===2?'ro':i<=3?'rb':'rrc';
+      return`<div class="rep-row" style="grid-template-columns:${colT};${rowH}">
+        <div class="rp-nat ${posCol}" style="font-size:${posSize}">${r.natrank}</div>
+        <div class="rp-name" style="font-size:${nameS}">${r.name}</div>
+        <div class="rp-gp" style="font-size:${valS}">${f$(r.gp)}</div>
+        <div class="rp-gig ${gigC}" style="font-size:${valS}">${fp(r.gig)}</div>
+        <div class="rp-prem ${premC}" style="font-size:${valS}">${fp(r.prem)}</div>
+        <div class="rp-acc ${accC}" style="font-size:${valS}">$${r.acc.toFixed(2)}</div>
+      </div>`;
+    }).join('');
+    return`<div class="store-block">
+      <div class="sb-head">
+        <div class="sb-store">${st}</div>
+        <div class="sb-count">${reps.length} Reps | By GP</div>
+      </div>
+      <div class="rep-cols" style="grid-template-columns:${colT};padding:4px 10px;">
+        <span style="font-size:${hdS}">Natl #</span>
+        <span style="font-size:${hdS}">Rep Name</span>
+        <span class="rc-c" style="font-size:${hdS}">Gross Profit</span>
+        <span class="rc-c" style="font-size:${hdS}">GIG Attach</span>
+        <span class="rc-c" style="font-size:${hdS}">Premium Mix</span>
+        <span class="rc-c" style="font-size:${hdS}">Acc / Mobile</span>
+      </div>
+      <div class="rep-rows">${repRows}</div>
+    </div>`;
+  }).join('');
+  return`<div class="rep-slide">${blocks}</div>`;
+}
+
+/* ââ BUILD: PROMO ââ */
+function buildPromo(){
+  if(promoImg)return`<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:8px 12px 10px"><img src="${promoImg}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;"></div>`;
+  const mob=['TIPs Up to $1,100 off select Samsung w/ Premium Unl â New Line or Elite Upgrade','TIPs Up to $500 off select Samsung w/ Unlimited â New Line or Upgrade','TIPs Up to $830 off Apple/Google/Motorola w/ Premium Unl â New Line or Elite Upgrade','$500 off select Samsung w/ Premium Unl â New Line or Elite Upgrade','$200 off select Samsung w/ Unlimited â New Line or Upgrade','$400 off Apple/Samsung/Google/Motorola w/ Premium Unl â New Line or Elite Upgrade','1 free XM line 12 months â NEW Next Gen Internet customers','1 free XM line 12 months â Legacy internet NOT repackaging (new to XM)','1 free XM line 12 months â Legacy internet repackaging to Next Gen (new to XM)','50% off XMC 3 months â new watches & tablets','One-time Waived Activation Fee (mobile, smartwatches, tablets)','$200 Prepaid Mastercard when adding 2+ new lines','50% off iPhone 17e w/ TIPs & Unlimited','iPhone 17e "On Us" w/ TIPs & Premium Unlimited','$400 off iPhone 17e w/ Premium Unlimited'];
+  const mH=mob.map(t=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.7rem;line-height:1.4;color:var(--white)"><div style="width:7px;height:7px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:3px;"></div><span>${t}</span></div>`).join('')+`<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:.7rem;color:var(--white)"><div style="width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);flex-shrink:0;margin-top:3px;"></div><span>50% off Samsung Tab A11+ <span style="font-size:.5rem;background:var(--green);color:#000;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:4px;vertical-align:middle;">NEW</span></span></div>`;
+  return`<div style="flex:1;display:grid;grid-template-columns:1.1fr 1fr;gap:8px;padding:8px 12px 10px;">
+    <div style="background:var(--card);border:1px solid rgba(41,121,255,.15);border-radius:8px;padding:10px 14px;overflow:auto;">
+      <div style="font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid rgba(255,98,0,.2);">ð± Mobile Promotions</div>
+      ${mH}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;overflow:hidden">
+      <div style="background:var(--card);border:1px solid rgba(41,121,255,.15);border-radius:8px;padding:10px 14px;flex:0 0 auto;">
+        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(255,98,0,.2);">ðµ NOW Mobile</div>
+        <div style="font-size:.7rem;color:var(--dim);">No NOW Mobile promotions currently</div>
+      </div>
+      <div style="background:var(--card);border:1px solid rgba(41,121,255,.15);border-radius:8px;padding:10px 14px;flex:0 0 auto;">
+        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(255,98,0,.2);">ð Xfinity Membership</div>
+        <div style="font-size:.7rem;color:var(--white);">$300 off select smartwatches for DIAMOND Xfinity Membership customers</div>
+      </div>
+      <div style="background:var(--card);border:1.5px solid rgba(255,98,0,.3);background:rgba(255,98,0,.04);border-radius:8px;padding:12px 14px;flex:1;">
+        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:8px;">ð¬ Daily Mindset</div>
+        <p style="font-size:.74rem;color:var(--orange2);line-height:1.65;font-style:italic">"Refuse to attach a negative meaning to the word 'no'. View it as feedback. 'No' tells you to change your approach, create more value or try again later."</p>
+        <p style="margin-top:10px;font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:2px;color:var(--orange);">PITCH MOBILE &amp; NPS TO EVERYONE!</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ââ RENDER ââ */
+function getHTML(sc){
+  if(sc.id==='ov')     return buildOV(sc.stores);
+  if(sc.id==='rank')   return buildRanker(sc);
+  if(sc.id==='device') return buildDevice();
+  if(sc.id==='rep')    return buildRep(sc);
+  if(sc.id==='promo')  return buildPromo();
+}
+
+function show(idx){
+  cur=idx;
+  const sc=SCREENS[idx];
+  document.getElementById('sttl').textContent=sc.title;
+  const tag=document.getElementById('hdr-tag');
+  if(sc.id==='rep'&&sc.storeLabel) tag.textContent=sc.storeLabel;
+  else tag.textContent='Daily Sales Report  |  23 Stores';
+  document.getElementById('scur').textContent=idx+1;
+  document.getElementById('content').innerHTML=getHTML(sc);
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===idx));
+  startProg();
+}
+function jump(i){clearInterval(pi);show(i);}
+function nxt(){if(!paused)show((cur+1)%SCREENS.length);}
+
+function startProg(){
+  clearInterval(pi);
+  const fill=document.getElementById('pf');
+  fill.style.width='0%';
+  const t0=Date.now();
+  pi=setInterval(()=>{
+    if(paused)return;
+    const p=Math.min(100,(Date.now()-t0)/TICK*100);
+    fill.style.width=p+'%';
+    if(p>=100){clearInterval(pi);nxt();}
+  },80);
+}
+
+function buildNav(){
+  document.getElementById('stot').textContent=SCREENS.length;
+  document.getElementById('dots').innerHTML=
+    SCREENS.map((_,i)=>`<div class="dot${i===0?' on':''}" onclick="jump(${i})"></div>`).join('');
+}
+
+/* ââ SLIDE PICKER ââ */
+function buildPicker(){
+  const secs=[
+    {lbl:'Store Overview',    filter:s=>s.id==='ov'},
+    {lbl:'Store Rankers',     filter:s=>s.id==='rank'||s.id==='device'},
+    {lbl:'Rep Rankings',      filter:s=>s.id==='rep'},
+    {lbl:'Promotions',        filter:s=>s.id==='promo'},
+  ];
+  return secs.map(sec=>{
+    const items=SCREENS.map((s,i)=>({s,i})).filter(x=>sec.filter(x.s));
+    if(!items.length)return'';
+    const btns=items.map(({s,i})=>`
+      <div class="pitem${i===cur?' on':''}" onclick="jump(${i});closePicker()">
+        ${s.title}${s.sub?' â '+s.sub:''}
+      </div>`).join('');
+    return`<div class="picker-section">
+      <div class="picker-section-lbl">${sec.lbl}</div>
+      <div class="picker-items">${btns}</div>
+    </div>`;
+  }).join('');
+}
+function openPicker(){
+  document.getElementById('picker-body').innerHTML=buildPicker();
+  document.getElementById('picker-overlay').classList.add('on');
+  paused=true;
+}
+function closePicker(){
+  document.getElementById('picker-overlay').classList.remove('on');
+  paused=false;startProg();
+}
+
+/* ââ SCALER ââ */
+function scale(){
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const r  = Math.min(vw / 1280, vh / 720);
+  const scaledW = 1280 * r;
+  const scaledH = 720  * r;
+  const offX = (vw - scaledW) / 2;
+  const offY = (vh - scaledH) / 2;
+  const slide = document.getElementById('slide');
+  slide.style.transform       = 'scale(' + r + ')';
+  slide.style.transformOrigin = 'top left';
+  slide.style.left            = offX + 'px';
+  slide.style.top             = offY + 'px';
+}
+window.addEventListener('resize', scale);
+window.addEventListener('orientationchange', function(){ setTimeout(scale, 150); });
+
+/* clock */
+function tick(){
+  const n=new Date(),D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const h=n.getHours(),m=String(n.getMinutes()).padStart(2,'0'),ap=h>=12?'PM':'AM';
+  document.getElementById('clk').textContent=
+    `${D[n.getDay()]} ${M[n.getMonth()]} ${n.getDate()} | ${h%12||12}:${m} ${ap}`;
+}
+tick();setInterval(tick,1000);
+
+/* admin */
+function tg(){document.getElementById('gmenu').classList.toggle('on');}
+function cg(){document.getElementById('gmenu').classList.remove('on');}
+function tp(){paused=!paused;cg();}
+function om(w){cg();document.getElementById('ov-'+w).classList.add('on');}
+function cm(w){document.getElementById('ov-'+w).classList.remove('on');}
+function chkPW(){
+  const v=document.getElementById('pw-in').value;
+  if(v===PW){document.getElementById('up-pw').style.display='none';document.getElementById('up-file').style.display='';}
+  else{document.getElementById('pw-err').style.display='';document.getElementById('pw-in').value='';}
+}
+function loadXL(){
+  const file=document.getElementById('file-in').files[0];if(!file)return;
+  document.getElementById('ldg').classList.add('on');
+  const rd=new FileReader();
+  rd.onload=function(e){
+    try{
+      if(typeof XLSX==='undefined')throw new Error('SheetJS not loaded');
+      const wb=XLSX.read(e.target.result,{type:'array'});
+      // stores
+      const raw=XLSX.utils.sheet_to_json(wb.Sheets['Store Rank'],{header:1,defval:null});
+      let hi=-1;
+      for(let i=0;i<raw.length;i++)if(raw[i]&&raw[i][0]==='Rank'&&raw[i][2]==='Store'){hi=i;break;}
+      if(hi<0)throw new Error('Store Rank header not found');
+      const ns=[];
+      for(let i=hi+1;i<raw.length;i++){
+        const r=raw[i];
+        if(!r||String(r[4]||'').trim()!=='Jeffrey Bilbrey')continue;
+        if(!r[2]||typeof r[2]!=='string')continue;
+        let dm='None';
+        const ds=String(r[5]||'');
+        if(ds.includes('Fear'))dm='Fear';
+        else if(ds.includes('Cabrales'))dm='Cabrales';
+        else if(ds.includes('Brooks'))dm='Brooks';
+        ns.push({rank:+r[0]||0,s:r[2],dm,
+          gp_trend:+r[12]||0, mcr:+r[21]||0, fcr:+r[23]||0, nt:+r[27]||0,
+          gig:+r[61]||0, mob:Math.round(+r[63]||0), tab:Math.round(+r[64]||0),
+          watch:Math.round(+r[65]||0), prem:+r[71]||0, n2u:+r[76]||0,
+          apd:+r[87]||0, nps:+r[90]||0, sc:+r[112]||0, gp:+r[7]||0});
+      }
+      if(ns.length>0)SD=ns;
+      // reps
+      if(wb.Sheets['Rep Rank']){
+        const rr=XLSX.utils.sheet_to_json(wb.Sheets['Rep Rank'],{header:1,defval:null});
+        let rhi=-1;
+        for(let i=0;i<rr.length;i++)if(rr[i]&&rr[i][0]==='Rank'&&rr[i][1]==='Employee'){rhi=i;break;}
+        if(rhi>=0){
+          const stSet=new Set(SD.map(x=>x.s));
+          const nrd={};
+          for(let i=rhi+1;i<rr.length;i++){
+            const r=rr[i];
+            if(!r||!stSet.has(r[3]))continue;
+            const st=String(r[3]);
+            if(!nrd[st])nrd[st]=[];
+            nrd[st].push({
+              natrank:+r[0]||0, name:String(r[1]||''), store:st,
+              gp:+r[6]||0, gig:+r[11]||0, prem:+r[20]||0, acc:+r[29]||0
+            });
+          }
+          Object.keys(nrd).forEach(st=>nrd[st].sort((a,b)=>b.gp-a.gp));
+          RD=nrd;
+        }
+      }
+      document.getElementById('ldg').classList.remove('on');
+      document.getElementById('up-ok').style.display='';
+      SCREENS=mkScreens();buildNav();show(0);
+    }catch(er){
+      document.getElementById('ldg').classList.remove('on');
+      document.getElementById('up-err').textContent='Error: '+er.message;
+      document.getElementById('up-err').style.display='';
+    }
+  };
+  rd.readAsArrayBuffer(file);
+}
+function chkPrPW(){
+  const v=document.getElementById('pr-in').value;
+  if(v===PW){document.getElementById('pr-pw').style.display='none';document.getElementById('pr-file').style.display='';}
+  else{document.getElementById('pr-err').style.display='';document.getElementById('pr-in').value='';}
+}
+function loadPr(){
+  const file=document.getElementById('promo-in').files[0];if(!file)return;
+  const rd=new FileReader();
+  rd.onload=e=>{promoImg=e.target.result;document.getElementById('pr-ok').style.display='';
+    if(SCREENS[cur]&&SCREENS[cur].id==='promo')show(cur);};
+  rd.readAsDataURL(file);
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#gbtn')&&!e.target.closest('#gmenu'))cg();
+  if(e.target.id==='picker-overlay')closePicker();
+  if(e.target.classList.contains('ov-modal')){['up','pr'].forEach(m=>cm(m));}
+});
+(function(){
+  // Scale immediately so there's no flash of unscaled content
+  scale();
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload=s.onerror=()=>{scale();SCREENS=mkScreens();buildNav();show(0);};
+  document.head.appendChild(s);
+  // Re-scale once fonts load
+  document.fonts && document.fonts.ready.then(scale);
+})();
+</script>
+</body>
+</html>
