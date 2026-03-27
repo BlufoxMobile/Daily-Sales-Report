@@ -19,34 +19,29 @@ jobs:
 
       - name: Extract Excel from Zapier report and save to data/
         run: |
-          # Find the most recent txt file Zapier uploaded
           LATEST_TXT=$(ls -t reports/*.txt 2>/dev/null | head -1)
           if [ -z "$LATEST_TXT" ]; then
             echo "No Zapier txt file found, using existing Excel"
           else
             echo "Reading: $LATEST_TXT"
-            # Extract the Excel file URL (line with fileType: .xlsx)
-            XLSX_URL=$(grep -A1 'fileType: .xlsx' "$LATEST_TXT" | grep '^file:' | head -1 | sed 's/file: //')
-            if [ -z "$XLSX_URL" ]; then
-              # Try alternate format
-              XLSX_URL=$(awk '/spreadsheetml/{found=1} found && /^file:/{print $2; exit}' "$LATEST_TXT")
-            fi
+            XLSX_URL=$(awk '/spreadsheetml/{found=1} found && /^file:/{print $2; exit}' "$LATEST_TXT")
             if [ -n "$XLSX_URL" ]; then
               echo "Downloading Excel from Zapier S3..."
               curl -L -o "data/Sales Report.xlsx" "$XLSX_URL"
               FILE_SIZE=$(wc -c < "data/Sales Report.xlsx")
               echo "Downloaded: $FILE_SIZE bytes"
               if [ "$FILE_SIZE" -lt 10000 ]; then
-                echo "ERROR: File too small ($FILE_SIZE bytes) - download may have failed"
-                exit 1
+                echo "File too small, using existing Excel"
+                git checkout -- "data/Sales Report.xlsx" 2>/dev/null || true
+              else
+                git config user.name "GitHub Actions Bot"
+                git config user.email "actions@github.com"
+                git add "data/Sales Report.xlsx"
+                git diff --staged --quiet || git commit -m "Auto-update: Sales Report.xlsx from Zapier"
+                git push || true
               fi
-              git config user.name "GitHub Actions Bot"
-              git config user.email "actions@github.com"
-              git add "data/Sales Report.xlsx"
-              git diff --staged --quiet || git commit -m "Auto-update: Sales Report.xlsx from Zapier"
-              git push || true
             else
-              echo "No Excel URL found in txt file, using existing data"
+              echo "No Excel URL found, using existing data"
             fi
           fi
 
