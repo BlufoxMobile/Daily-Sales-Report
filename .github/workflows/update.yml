@@ -27,36 +27,36 @@ jobs:
 
       - name: Extract files from Zapier uploads
         run: |
-          python3 -c "
-import base64, os
-os.makedirs('data', exist_ok=True)
-
-if os.path.exists('reports/sales-report.txt'):
-    with open('reports/sales-report.txt','r') as f:
-        content = f.read().strip()
-    try:
-        data = base64.b64decode(content)
-        with open('data/Sales Report.xlsx','wb') as out:
-            out.write(data)
-        print('Sales report decoded, size:', len(data))
-    except Exception as e:
-        print('Sales report decode failed:', e)
-else:
-    print('No sales report - using existing')
-
-if os.path.exists('reports/promo-card.txt'):
-    with open('reports/promo-card.txt','r') as f:
-        content = f.read().strip()
-    try:
-        data = base64.b64decode(content)
-        with open('data/promo-card.jpg','wb') as out:
-            out.write(data)
-        print('Promo card decoded, size:', len(data))
-    except Exception as e:
-        print('Promo card decode failed:', e)
-else:
-    print('No promo card - using existing')
-"
+          python3 <<'PYEOF'
+          import base64, os
+          os.makedirs('data', exist_ok=True)
+          
+          if os.path.exists('reports/sales-report.txt'):
+              with open('reports/sales-report.txt','r') as f:
+                  content = f.read().strip()
+              try:
+                  data = base64.b64decode(content)
+                  with open('data/Sales Report.xlsx','wb') as out:
+                      out.write(data)
+                  print('Sales report decoded, size:', len(data))
+              except Exception as e:
+                  print('Sales report decode failed:', e)
+          else:
+              print('No sales report - using existing')
+          
+          if os.path.exists('reports/promo-card.txt'):
+              with open('reports/promo-card.txt','r') as f:
+                  content = f.read().strip()
+              try:
+                  data = base64.b64decode(content)
+                  with open('data/promo-card.jpg','wb') as out:
+                      out.write(data)
+                  print('Promo card decoded, size:', len(data))
+              except Exception as e:
+                  print('Promo card decode failed:', e)
+          else:
+              print('No promo card - using existing')
+          PYEOF
 
       - name: Clean up processed uploads and commit data
         run: |
