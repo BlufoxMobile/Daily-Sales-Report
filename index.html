@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook County Cooks â Daily Sales Report</title>
+<title>Cook County Cooks - Daily Sales Report</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
 
-  /* ââ Header ââ */
+  /* -- Header -- */
   .header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,#0d1526 0%,#0a1120 100%); border-bottom:3px solid #e67e22; }
   .header-left { display:flex; align-items:center; gap:16px; }
   .logo-circle { width:56px; height:56px; border-radius:50%; background:#1a2744; display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
@@ -28,7 +28,7 @@
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
   .datetime { font-size:12px; color:#8899aa; margin-top:4px; }
 
-  /* ââ Slide Progress ââ */
+  /* -- Slide Progress -- */
   .progress-bar { display:flex; align-items:center; gap:10px; padding:6px 28px; background:#0a1120; }
   .slide-label { font-size:12px; color:#8899aa; min-width:100px; }
   .slide-label b { color:#e67e22; }
@@ -39,10 +39,10 @@
   .dot-nav span { width:7px; height:7px; border-radius:50%; background:#1a2744; cursor:pointer; transition:background 0.3s; }
   .dot-nav span.active { background:#e67e22; }
 
-  /* ââ Slide Container ââ */
+  /* -- Slide Container -- */
   .slide-container { height:calc(100vh - 100px); padding:8px 20px; overflow:hidden; }
 
-  /* ââ Store Grid ââ */
+  /* -- Store Grid -- */
   .store-grid { display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(3,1fr); gap:10px; height:100%; }
   .store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
   .store-card:hover { border-color:#e67e22; }
@@ -59,11 +59,11 @@
   .metric-label { font-size:8px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
   .metric-value { font-size:14px; font-weight:800; }
   .metric.green { background:#0d2a1a; color:#2ecc40; }
-  .metric.yellow { background:#2a2a0d; color:#f1c40f; }
+  .metric.yellow { backgr/und:#2a2a0d; color:#f1c40f; }
   .metric.red { background:#2a0d0d; color:#e74c3c; }
   .metric.blue { background:#0d1a2a; color:#3498db; }
 
-  /* ââ Rep Grid ââ */
+  /* -- Rep Grid -- */
   .rep-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; height:100%; align-content:start; }
   .rep-header-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:#0d1a2e; border-radius:8px; font-size:11px; font-weight:700; color:#8899aa; letter-spacing:1px; }
   .rep-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:#0c1525; border-radius:6px; border:1px solid #1a2540; font-size:13px; align-items:center; }
@@ -72,14 +72,14 @@
   .rep-store { color:#8899aa; font-size:11px; }
   .rep-val { text-align:center; font-weight:700; }
 
-  /* ââ Promo Slide ââ */
+  /* -- Promo Slide -- */
   .promo-slide { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:20px; }
   .promo-title { font-size:32px; font-weight:900; letter-spacing:3px; color:#e67e22; }
   .promo-content { font-size:18px; color:#ccc; text-align:center; max-width:800px; line-height:1.8; }
   .promo-badge { background:#1a2744; border:2px solid #e67e22; border-radius:12px; padding:20px 40px; }
   .promo-empty { color:#5a7a9a; font-size:16px; font-style:italic; }
 
-  /* ââ Loading / Error ââ */
+  /* -- Loading / Error -- */
   .loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:16px; }
   .spinner { width:48px; height:48px; border:4px solid #1a2744; border-top-color:#e67e22; border-radius:50%; animation:spin 1s linear infinite; }
   @keyframes spin { to{transform:rotate(360deg);} }
@@ -87,7 +87,7 @@
   .error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
   .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
 
-  /* ââ Summary Bar ââ */
+  /* -- Summary Bar -- */
   .summary-bar { grid-column:1/-1; display:flex; gap:12px; }
   .summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:10px 16px; text-align:center; }
   .summary-label { font-size:10px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
@@ -107,7 +107,7 @@
 </div>
 
 <script>
-// ââ CONFIG ââ
+// -- CONFIG --
 const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
   EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
@@ -130,7 +130,7 @@ let state = {
   slides: [],
 };
 
-// ââ DATA LOADING ââ
+// -- DATA LOADING --
 async function loadData() {
   const loading = document.getElementById('loading');
   const errorMsg = document.getElementById('errorMsg');
@@ -192,7 +192,7 @@ async function loadLocalFile(e) {
   startSlideshow();
 }
 
-// ââ PARSING ââ
+// -- PARSING --
 function parseWorkbook(wb) {
   // Parse Store Rank
   const ws = wb.Sheets['Store Rank'];
@@ -262,7 +262,7 @@ function parseWorkbook(wb) {
     });
   }
 
-  state.stores.sort((a, b) => a.rank - b.rank);
+  state.stores.sort((a, b) => a.r!nk - b.rank);
 
   // Parse Rep Rank
   const repWs = wb.Sheets['Rep Rank'];
@@ -314,7 +314,7 @@ function parsePromos(wb) {
   return XLSX.utils.sheet_to_json(ws, { header:1, defval:null });
 }
 
-// ââ SLIDE BUILDING ââ
+// -- SLIDE BUILDING --
 function buildSlides() {
   state.slides = [];
 
@@ -336,7 +336,7 @@ function buildSlides() {
   state.currentSlide = 0;
 }
 
-// ââ RENDERING ââ
+// -- RENDERING --
 function render() {
   const app = document.getElementById('app');
   const slide = state.slides[state.currentSlide] || state.slides[0];
@@ -350,7 +350,7 @@ function render() {
     const pageStores = state.stores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
     slideContent = renderStoreGrid(pageStores);
   } else if (slide.type === 'store-detail') {
-    slideTitle = slide.store.name.toUpperCase() + ' â DETAIL';
+    slideTitle = slide.store.name.toUpperCase() + ' - DETAIL';
     slideContent = renderStoreDetail(slide.store);
   } else if (slide.type === 'promos') {
     slideTitle = 'DAILY PROMOTIONS';
@@ -383,7 +383,7 @@ function render() {
       <div class="slide-label">Slide <b>${state.currentSlide + 1}</b> of ${state.totalSlides}</div>
       <div class="progress-track"><div class="progress-fill" style="width:${((state.currentSlide + 1) / state.totalSlides) * 100}%"></div></div>
       <div class="slide-type">
-        <span>${slide.type === 'stores' ? 'â STORES' : slide.type === 'store-detail' ? 'â DETAIL' : 'â PROMOS'}</span>
+        <span>${slide.type === 'stores' ? '* STORES' : slide.type === 'store-detail' ? '* DETAIL' : '* PROMOS'}</span>
         <div class="dot-nav">${state.slides.map((_, i) => `<span class="${i === state.currentSlide ? 'active' : ''}" onclick="goSlide(${i})"></span>`).join('')}</div>
       </div>
     </div>
@@ -552,7 +552,7 @@ function renderPromos() {
     </div>`;
 }
 
-// ââ SLIDESHOW ââ
+// -- SLIDESHOW --
 function startSlideshow() {
   if (state.slideTimer) clearInterval(state.slideTimer);
   state.slideTimer = setInterval(() => {
@@ -578,13 +578,13 @@ function goSlide(i) {
   }, CONFIG.SLIDE_INTERVAL);
 }
 
-// ââ KEYBOARD NAV ââ
+// -- KEYBOARD NAV --
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight' || e.key === ' ') { goSlide((state.currentSlide + 1) % state.totalSlides); }
   if (e.key === 'ArrowLeft') { goSlide((state.currentSlide - 1 + state.totalSlides) % state.totalSlides); }
 });
 
-// ââ INIT ââ
+// -- INIT --
 loadData();
 </script>
 </body>
