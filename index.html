@@ -59,7 +59,7 @@
   .metric-label { font-size:8px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
   .metric-value { font-size:14px; font-weight:800; }
   .metric.green { background:#0d2a1a; color:#2ecc40; }
-  .metric.yellow { backgr/und:#2a2a0d; color:#f1c40f; }
+  .metric.yellow { background:#2a2a0d; color:#f1c40f; }
   .metric.red { background:#2a0d0d; color:#e74c3c; }
   .metric.blue { background:#0d1a2a; color:#3498db; }
 
@@ -93,6 +93,47 @@
   .summary-label { font-size:10px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
   .summary-value { font-size:22px; font-weight:900; color:#e67e22; margin-top:2px; }
   .summary-sub { font-size:10px; color:#5a7a9a; margin-top:2px; }
+
+  /* -- Slide Dropdown -- */
+  .slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
+  .slide-select option { background:#0d1a2e; color:#fff; }
+  .slide-select:focus { border-color:#e67e22; }
+
+  /* -- Countdown bar -- */
+  .countdown-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.1s linear; }
+
+  /* -- Mobile responsive -- */
+  @media (max-width:900px) {
+    .header-center { display:none; }
+    .store-grid { grid-template-columns:repeat(2,1fr); grid-template-rows:auto; overflow-y:auto; }
+    .rep-header-row, .rep-row { grid-template-columns:40px 1fr 90px 70px 70px; font-size:11px; padding:6px 8px; }
+    .rep-header-row > *:nth-child(n+6), .rep-row > *:nth-child(n+6) { display:none; }
+  }
+  @media (max-width:600px) {
+    .header { padding:6px 10px; }
+    .logo-circle { width:38px; height:38px; }
+    .brand-title { font-size:15px; }
+    .brand-sub { font-size:9px; letter-spacing:1px; }
+    .live-badge { padding:4px 8px; font-size:10px; }
+    .datetime { font-size:10px; }
+    .slide-container { height:calc(100vh - 88px); padding:4px 8px; overflow-y:auto; }
+    .progress-bar { padding:4px 10px; gap:6px; }
+    .slide-label { font-size:10px; min-width:60px; }
+    .slide-select { max-width:130px; font-size:11px; padding:3px 6px; }
+    .store-grid { grid-template-columns:1fr 1fr; gap:6px; }
+    .store-card { padding:10px 10px; }
+    .store-gp { font-size:20px; }
+    .store-name { font-size:13px; }
+    .metric-value { font-size:12px; }
+    .metric-label { font-size:7px; }
+    .dot-nav { display:none; }
+    .rep-header-row, .rep-row { grid-template-columns:32px 1fr 70px 60px; font-size:10px; }
+    .rep-header-row > *:nth-child(n+5), .rep-row > *:nth-child(n+5) { display:none; }
+  }
+  @media (max-width:400px) {
+    .store-grid { grid-template-columns:1fr; }
+    .header-right .live-badge { display:none; }
+  }
 </style>
 </head>
 <body>
@@ -111,7 +152,7 @@
 const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
   EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
-  PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promotions.xlsx',
+  PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
   SLIDE_INTERVAL: 15000,     // 15 seconds per slide
   REFRESH_INTERVAL: 1800000, // 30 minutes data refresh
   STORE_CARDS_PER_PAGE: 12,
@@ -126,6 +167,8 @@ let state = {
   totalSlides: 0,
   slideTimer: null,
   refreshTimer: null,
+  countdownTimer: null,
+  countdownStart: null,
   lastRefresh: null,
   slides: [],
 };
@@ -145,15 +188,11 @@ async function loadData() {
     const wb = XLSX.read(buf, { type: 'array' });
     parseWorkbook(wb);
 
-    // Try loading promotions (optional)
+    // Try loading promo card image (optional)
     try {
-      const promoResp = await fetch(CONFIG.PROMO_URL + cacheBust);
-      if (promoResp.ok) {
-        const promoBuf = await promoResp.arrayBuffer();
-        const promoWb = XLSX.read(promoBuf, { type: 'array' });
-        state.promos = parsePromos(promoWb);
-      }
-    } catch(e) { /* promotions optional */ }
+      const promoResp = await fetch(CONFIG.PROMO_URL + cacheBust, { method: 'HEAD' });
+      state.promos = promoResp.ok ? CONFIG.PROMO_URL : null;
+    } catch(e) { state.promos = null; /* promo card optional */ }
 
     state.lastRefresh = new Date();
     buildSlides();
@@ -308,12 +347,6 @@ function parseWorkbook(wb) {
   }
 }
 
-function parsePromos(wb) {
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  if (!ws) return null;
-  return XLSX.utils.sheet_to_json(ws, { header:1, defval:null });
-}
-
 // -- SLIDE BUILDING --
 function buildSlides() {
   state.slides = [];
@@ -321,16 +354,17 @@ function buildSlides() {
   // Store overview pages
   const storePages = Math.ceil(state.stores.length / CONFIG.STORE_CARDS_PER_PAGE);
   for (let i = 0; i < storePages; i++) {
-    state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i });
+    const label = storePages > 1 ? 'Overview (Pg ' + (i+1) + ')' : 'Store Overview';
+    state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
   }
 
   // Individual store detail slides
   for (const store of state.stores) {
-    state.slides.push({ type: 'store-detail', store: store });
+    state.slides.push({ type: 'store-detail', store: store, label: '#' + store.rank + ' ' + store.name });
   }
 
   // Promotions slide
-  state.slides.push({ type: 'promos', title: 'DAILY PROMOTIONS' });
+  state.slides.push({ type: 'promos', title: 'DAILY PROMOTIONS', label: 'Promotions' });
 
   state.totalSlides = state.slides.length;
   state.currentSlide = 0;
@@ -380,10 +414,14 @@ function render() {
       </div>
     </div>
     <div class="progress-bar">
-      <div class="slide-label">Slide <b>${state.currentSlide + 1}</b> of ${state.totalSlides}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:${((state.currentSlide + 1) / state.totalSlides) * 100}%"></div></div>
+      <select class="slide-select" id="slideSelect" onchange="goSlide(parseInt(this.value))">
+        ${state.slides.map((s, i) => `<option value="${i}"${i === state.currentSlide ? ' selected' : ''}>${s.label || s.title || 'Slide ' + (i+1)}</option>`).join('')}
+      </select>
+      <div class="progress-track" title="Time until next slide">
+        <div class="countdown-fill" id="countdownBar" style="width:100%"></div>
+      </div>
       <div class="slide-type">
-        <span>${slide.type === 'stores' ? '* STORES' : slide.type === 'store-detail' ? '* DETAIL' : '* PROMOS'}</span>
+        <span>${state.currentSlide + 1} / ${state.totalSlides}</span>
         <div class="dot-nav">${state.slides.map((_, i) => `<span class="${i === state.currentSlide ? 'active' : ''}" onclick="goSlide(${i})"></span>`).join('')}</div>
       </div>
     </div>
@@ -530,26 +568,38 @@ function renderStoreDetail(s) {
 }
 
 function renderPromos() {
-  if (state.promos && state.promos.length > 1) {
-    let html = '<div style="padding:20px;">';
-    html += '<div style="font-size:28px;font-weight:900;color:#e67e22;letter-spacing:3px;text-align:center;margin-bottom:20px;">XM DAILY PROMOTION CARD</div>';
-    html += '<div style="display:grid;gap:8px;max-height:calc(100vh - 200px);overflow:auto;">';
-    for (let i = 1; i < state.promos.length; i++) {
-      const row = state.promos[i];
-      if (!row || !row.some(c => c)) continue;
-      html += `<div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:8px;padding:12px 16px;font-size:14px;color:#ddd;">${row.filter(c=>c).join(' &nbsp;|&nbsp; ')}</div>`;
-    }
-    html += '</div></div>';
-    return html;
+  if (state.promos) {
+    const cacheBust = '?t=' + Math.floor(Date.now() / 300000);
+    return `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
+      <div style="font-size:13px;font-weight:700;letter-spacing:3px;color:#e67e22;text-transform:uppercase;">XM Daily Promotion Card</div>
+      <img src="${state.promos}${cacheBust}"
+           style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid #1a3050;box-shadow:0 0 40px #e67e2222;"
+           alt="Daily Promotion Card"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+      <div style="display:none;color:#5a7a9a;font-size:15px;font-style:italic;">Promo card image could not be loaded.</div>
+    </div>`;
   }
   return `
     <div class="promo-slide">
       <div class="promo-title">DAILY PROMOTIONS</div>
       <div class="promo-badge">
-        <div class="promo-empty">Promotions will appear here when the daily promotion card is uploaded.</div>
-        <div style="color:#5a7a9a;font-size:12px;margin-top:8px;text-align:center;">Source: AWhiteside@blufoxmobile.com</div>
+        <div class="promo-empty">Today's promotion card will appear here automatically once uploaded.</div>
+        <div style="color:#5a7a9a;font-size:12px;margin-top:8px;text-align:center;">Source: Amanda Whiteside via Zapier</div>
       </div>
     </div>`;
+}
+
+// -- COUNTDOWN --
+function startCountdown() {
+  if (state.countdownTimer) clearInterval(state.countdownTimer);
+  state.countdownStart = Date.now();
+  state.countdownTimer = setInterval(() => {
+    const elapsed = Date.now() - state.countdownStart;
+    const pct = Math.max(0, 100 - (elapsed / CONFIG.SLIDE_INTERVAL) * 100);
+    const bar = document.getElementById('countdownBar');
+    if (bar) bar.style.width = pct + '%';
+  }, 100);
 }
 
 // -- SLIDESHOW --
@@ -558,7 +608,9 @@ function startSlideshow() {
   state.slideTimer = setInterval(() => {
     state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
     render();
+    startCountdown();
   }, CONFIG.SLIDE_INTERVAL);
+  startCountdown();
 
   // Auto-refresh data
   if (state.refreshTimer) clearInterval(state.refreshTimer);
@@ -570,12 +622,14 @@ function startSlideshow() {
 function goSlide(i) {
   state.currentSlide = i;
   render();
-  // Reset timer
+  // Reset auto-advance timer and countdown
   if (state.slideTimer) clearInterval(state.slideTimer);
   state.slideTimer = setInterval(() => {
     state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
     render();
+    startCountdown();
   }, CONFIG.SLIDE_INTERVAL);
+  startCountdown();
 }
 
 // -- KEYBOARD NAV --
