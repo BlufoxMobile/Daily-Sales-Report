@@ -2,48 +2,57 @@ name: Daily Sales Board Update
 
 on:
   push:
+    paths:
+      - 'reports/sales-report.txt'
   schedule:
     - cron: '15 14 * * 1-5'
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pages: write
       id-token: write
+    environment:
+      name: github-pages
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Excel from Zapier report and save to data/
+      - name: Extract Excel from Zapier report
         run: |
-          LATEST_TXT=$(ls -t reports/*.txt 2>/dev/null | head -1)
-          if [ -z "$LATEST_TXT" ]; then
-            echo "No Zapier txt file found, using existing Excel"
+          if [ -f reports/sales-report.txt ]; then
+            python3 -c "
+          import base64, os
+          with open('reports/sales-report.txt','r') as f:
+              content = f.read().strip()
+          try:
+              data = base64.b64decode(content)
+              os.makedirs('data', exist_ok=True)
+              with open('data/Sales Report.xlsx','wb') as out:
+                  out.write(data)
+              print('Decoded base64 Excel successfully, size:', len(data))
+          except Exception as e:
+              print('Base64 decode failed:', e)
+          "
           else
-            echo "Reading: $LATEST_TXT"
-            XLSX_URL=$(awk '/spreadsheetml/{found=1} found && /^file:/{print $2; exit}' "$LATEST_TXT")
-            if [ -n "$XLSX_URL" ]; then
-              echo "Downloading Excel from Zapier S3..."
-              curl -L -o "data/Sales Report.xlsx" "$XLSX_URL"
-              FILE_SIZE=$(wc -c < "data/Sales Report.xlsx")
-              echo "Downloaded: $FILE_SIZE bytes"
-              if [ "$FILE_SIZE" -lt 10000 ]; then
-                echo "File too small, using existing Excel"
-                git checkout -- "data/Sales Report.xlsx" 2>/dev/null || true
-              else
-                git config user.name "GitHub Actions Bot"
-                git config user.email "actions@github.com"
-                git add "data/Sales Report.xlsx"
-                git diff --staged --quiet || git commit -m "Auto-update: Sales Report.xlsx from Zapier"
-                git push || true
-              fi
-            else
-              echo "No Excel URL found, using existing data"
-            fi
+            echo "No new report file - using existing Excel data"
+          fi
+
+      - name: Clean up processed report and commit Excel
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          if [ -f reports/sales-report.txt ]; then
+            git rm reports/sales-report.txt
+            git add -f "data/Sales Report.xlsx" 2>/dev/null || true
+            git diff --staged --quiet || git commit -m "Auto: update Excel data from sales report [skip ci]"
+            git push
           fi
 
       - name: Setup Pages
@@ -55,4 +64,5 @@ jobs:
           path: '.'
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
