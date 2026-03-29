@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'reports/sales-report.txt'
+      - 'reports/promo-card.txt'
   schedule:
     - cron: '15 14 * * 1-5'
   workflow_dispatch:
@@ -24,34 +25,56 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Excel from Zapier report
+      - name: Extract files from Zapier uploads
         run: |
-          if [ -f reports/sales-report.txt ]; then
-            python3 -c "
-          import base64, os
-          with open('reports/sales-report.txt','r') as f:
-              content = f.read().strip()
-          try:
-              data = base64.b64decode(content)
-              os.makedirs('data', exist_ok=True)
-              with open('data/Sales Report.xlsx','wb') as out:
-                  out.write(data)
-              print('Decoded base64 Excel successfully, size:', len(data))
-          except Exception as e:
-              print('Base64 decode failed:', e)
-          "
-          else
-            echo "No new report file - using existing Excel data"
-          fi
+          python3 -c "
+import base64, os
+os.makedirs('data', exist_ok=True)
 
-      - name: Clean up processed report and commit Excel
+if os.path.exists('reports/sales-report.txt'):
+    with open('reports/sales-report.txt','r') as f:
+        content = f.read().strip()
+    try:
+        data = base64.b64decode(content)
+        with open('data/Sales Report.xlsx','wb') as out:
+            out.write(data)
+        print('Sales report decoded, size:', len(data))
+    except Exception as e:
+        print('Sales report decode failed:', e)
+else:
+    print('No sales report - using existing')
+
+if os.path.exists('reports/promo-card.txt'):
+    with open('reports/promo-card.txt','r') as f:
+        content = f.read().strip()
+    try:
+        data = base64.b64decode(content)
+        with open('data/promo-card.jpg','wb') as out:
+            out.write(data)
+        print('Promo card decoded, size:', len(data))
+    except Exception as e:
+        print('Promo card decode failed:', e)
+else:
+    print('No promo card - using existing')
+"
+
+      - name: Clean up processed uploads and commit data
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
+          changed=0
           if [ -f reports/sales-report.txt ]; then
             git rm reports/sales-report.txt
             git add -f "data/Sales Report.xlsx" 2>/dev/null || true
-            git diff --staged --quiet || git commit -m "Auto: update Excel data from sales report [skip ci]"
+            changed=1
+          fi
+          if [ -f reports/promo-card.txt ]; then
+            git rm reports/promo-card.txt
+            git add -f "data/promo-card.jpg" 2>/dev/null || true
+            changed=1
+          fi
+          if [ "$changed" = "1" ]; then
+            git diff --staged --quiet || git commit -m "Auto: update data from Zapier uploads [skip ci]"
             git push
           fi
 
