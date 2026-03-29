@@ -262,7 +262,7 @@ function parseWorkbook(wb) {
     });
   }
 
-  state.stores.sort((a, b) => a.r!nk - b.rank);
+  state.stores.sort((a, b) => a.rank - b.rank);
 
   // Parse Rep Rank
   const repWs = wb.Sheets['Rep Rank'];
