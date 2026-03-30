@@ -258,17 +258,26 @@ function parseWorkbook(wb) {
         iNewRGU=col('NEW RGU'), iScore=col('Total Score'),
         iVideo=col('Video attach');
 
-  // Jeff's 9 tracked metrics -- pinned to exact column indices from Store Rank tab
-  // Col M=12, V=21, X=23, AB=27, BJ=61, BT=71, BY=76, CJ=87, CM=90 (all 0-indexed)
-  const iGPTrend   = 12;  // GP Trend          (col M)
-  const iMobileCR  = 21;  // MCR               (col V)
-  const iFiscalCR  = 23;  // Fiscal Close Rate (col X)
-  const iNonTrad   = 27;  // Non Traditional   (col AB)
-  const iGig       = 61;  // Gig Percent       (col BJ)
-  const iPremium   = 71;  // Premium Mix       (col BT)
-  const iNewToUpg  = 76;  // New To Upgrade    (col BY)
-  const iAccDev    = 87;  // Accessories       (col CJ)
-  const iNPS       = 90;  // NPS               (col CM)
+  // Jeff's 9 tracked metrics -- dynamic lookup by header name so column shifts never break the dashboard
+  // GP $ Trend = col L (11) -- NOT "GP $ Est Net Trend" which is col M (12)
+  const iGPTrend  = headers.findIndex(h => h === 'GP $ Trend');
+  // Mobile Close rate = col V (21)
+  const iMobileCR = headers.findIndex(h => h.toLowerCase().includes('mobile close rate'));
+  // Fiscal Close Rate = col X (23)
+  const iFiscalCR = headers.findIndex(h => h.toLowerCase().includes('fiscal close rate'));
+  // Non Traditional CR = col AB (27)
+  const iNonTrad  = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
+  // GIG Plans % raw metric = col BJ (61) -- raw cols have "\nX Pts" in header; scoring section col (DH=111) does not
+  const iGig      = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%')
+                      && h.toLowerCase().includes('pts'));
+  // Premium Mix = col BT (71)
+  const iPremium  = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
+  // NEW TO UPGR % = col BY (76)
+  const iNewToUpg = headers.findIndex(h => h.toUpperCase().includes('NEW TO UPGR'));
+  // Accessory $ per Device (Net) = col CJ (87)
+  const iAccDev   = headers.findIndex(h => h.toLowerCase().includes('accessory') && h.toLowerCase().includes('device') && h.toLowerCase().includes('net'));
+  // Fiscal NPS = col CM (90) -- exclude "Last" variant
+  const iNPS      = headers.findIndex(h => h.toLowerCase().includes('fiscal nps') && !h.toLowerCase().includes('last'));
 
   state.stores = [];
   for (let i = headerRow + 1; i < data.length; i++) {
