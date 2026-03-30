@@ -461,13 +461,13 @@ function renderStoreGrid(stores) {
           <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
         </div>
         <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;">
-          ${m('GP TREND',   pct(s.gpTrend),  s.gpTrend>=0?'green':'red')}
+          ${m('GP TREND',   '$'+Math.round(s.gpTrend).toLocaleString(),  s.gpTrend>=0?'green':'red')}
           ${m('MCR',        pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
           ${m('FISCAL CR',  pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${m('NON-TRAD',   s.nonTrad,       'blue')}
+          ${m('NON-TRAD',   pct(s.nonTrad),       'blue')}
           ${m('GIG %',      pct(s.gigPct),   s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
           ${m('PREMIUM',    pct(s.premium),  s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${m('NEW->UPG',    s.newToUpg,      'blue')}
+          ${m('NEW->UPG',    pct(s.newToUpg),      'blue')}
           ${m('ACCESS',     '$'+Math.round(s.accPerDev), 'blue')}
           ${m('NPS',        pct(s.nps),      s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
         </div>
@@ -547,13 +547,13 @@ function renderStoreDetail(s) {
           </div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-          <div class="metric ${s.gpTrend>=0?'green':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">GP TREND</div><div class="metric-value" style="font-size:17px;">${(s.gpTrend*100).toFixed(1)}%</div></div>
+          <div class="metric ${s.gpTrend>=0?'green':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">GP TREND</div><div class="metric-value" style="font-size:17px;">$${Math.round(s.gpTrend).toLocaleString()}</div></div>
           <div class="metric ${s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">MCR</div><div class="metric-value" style="font-size:17px;">${(s.mobileCR*100).toFixed(1)}%</div></div>
           <div class="metric ${s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">FISCAL CR</div><div class="metric-value" style="font-size:17px;">${(s.fiscalCR*100).toFixed(1)}%</div></div>
-          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NON-TRAD</div><div class="metric-value" style="font-size:17px;">${s.nonTrad}</div></div>
+          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NON-TRAD</div><div class="metric-value" style="font-size:17px;">${(s.nonTrad*100).toFixed(1)}%</div></div>
           <div class="metric ${s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">GIG %</div><div class="metric-value" style="font-size:17px;">${(s.gigPct*100).toFixed(1)}%</div></div>
           <div class="metric ${s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">PREMIUM MIX</div><div class="metric-value" style="font-size:17px;">${(s.premium*100).toFixed(1)}%</div></div>
-          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NEW->UPGRADE</div><div class="metric-value" style="font-size:17px;">${s.newToUpg}</div></div>
+          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NEW->UPGRADE</div><div class="metric-value" style="font-size:17px;">${(s.newToUpg*100).toFixed(1)}%</div></div>
           <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">ACCESSORIES</div><div class="metric-value" style="font-size:17px;">$${Math.round(s.accPerDev)}</div></div>
           <div class="metric ${s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">NPS</div><div class="metric-value" style="font-size:17px;">${(s.nps*100).toFixed(1)}%</div></div>
         </div>
