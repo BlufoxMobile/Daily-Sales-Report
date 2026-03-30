@@ -188,7 +188,7 @@ async function loadData() {
     const wb = XLSX.read(buf, { type: 'array' });
     parseWorkbook(wb);
 
-    // Always set promo URL â img onerror handler hides it if missing
+    // Always set promo URL -- img onerror handler hides it if missing
     state.promos = CONFIG.PROMO_URL;
 
     state.lastRefresh = new Date();
@@ -258,285 +258,399 @@ function parseWorkbook(wb) {
         iNewRGU=col('NEW RGU'), iScore=col('Total Score'),
         iVideo=col('Video attach');
 
-  // Jeff's 9 tracked metrics â pinned to exact column indices from Store Rank tab
-  // Col M=12, V=21,LËPLËMKMÌKOMÍÒN
-ËÓONL
-[Z[^Y
-BÛÛÝQÔ[HLÈËÈÔ[
-ÛÛJBÛÛÝS[Ø[PÔHNÈËÈPÔ
-ÛÛBÛÛÝQ\ØØ[ÔHÎÈËÈ\ØØ[ÛÜÙH]H
-ÛÛ
-BÛÛÝSÛYHÎÈËÈÛY][Û[
-ÛÛPBÛÛÝQÚYÈH
-NÈËÈÚYÈ\Ù[
-ÛÛBÛÛÝT[Z][HH
-ÌNÈËÈ[Z][HZ^
-ÛÛ
-BÛÛÝS]ÕÕ\ÈH
-ÍÈËÈ]ÈÈ\ÜYH
-ÛÛJBÛÛÝPXØÑ]H
-ÎÈËÈXØÙ\ÜÛÜY\È
-ÛÛÒBÛÛÝSÈHLÈËÈÈ
-ÛÛÓJBÝ]KÝÜ\ÈH×NÂÜ
-]HHXY\ÝÈ
-ÈNÈH]K[ÝÈJÊÊHÂÛÛÝÝÈH]VÚWNÂY
-\ÝÈ\ÝÖÚT[×JHXZÎÂÛÛÝÙHÝÖÚTÑNÂY
-\ÙTÝ[ÊÙ
-K[ÛY\Ê	Ð[^IÊJHÛÛ[YNÂÝ]KÝÜ\Ë\Ú
-Â[ÎÝÖÚT[×KYÚ[ÛÝÖÚTYÚ[ÛH	ÉË[YNÝÖÚTÝÜWH	ÉË\ÛÜÝÖÚQ\ÛÜH	ÉËNÝÖÚQWH	ÉËÛNÝÖÚTÓWH	ÉËÜ[X\ÝÖÚQÔJHÜ[[X\ÝÖÚQÔ[JH\ÝÔS\ÝÔHÈ[X\ÝÖÚS\ÝÔJH\Ù][X\ÝÖÚU\Ù]JH\\Ù][X\ÝÖÚU\\Ù]JHÜ\^N[X\ÝÖÚQÔ^WJHZ[P[[X\ÝÖÚQZ[P[JH[Ø[PÔ[X\ÝÖÚS[Ø[PÔJH\ØØ[Ô[X\ÝÖÚQ\ØØ[ÔJHÛY[X\ÝÖÚSÛYJHÎ[X\ÝÖÚS×JH[Z][N[X\ÝÖÚT[Z][WJH[Ø[SU[X\ÝÖÚS[Ø[SUJH]Ó[Ø[NS]Ó[ØHÈ[X\ÝÖÚS]Ó[ØJH[Ø[U[[X\ÝÖÚS[Ø[JHÚN[X\ÝÖÚRÒWJHÚYÔÝ[X\ÝÖÚQÚY×JH]ÕÕ\Î[X\ÝÖÚS]ÕÕ\×JHXØÔ\][X\ÝÖÚPXØÑ]JH]ÔÕN[X\ÝÖÚS]ÔÕWJHÝ[ØÛÜN[X\ÝÖÚTØÛÜWJHY[Ð]XÚ[X\ÝÖÚUY[×JHJNÂBÝ]KÝÜ\ËÛÜ
+  // Jeff's 9 tracked metrics -- pinned to exact column indices from Store Rank tab
+  // Col M=12, V=21, X=23, AB=27, BJ=61, BT=71, BY=76, CJ=87, CM=90 (all 0-indexed)
+  const iGPTrend   = 12;  // GP Trend          (col M)
+  const iMobileCR  = 21;  // MCR               (col V)
+  const iFiscalCR  = 23;  // Fiscal Close Rate (col X)
+  const iNonTrad   = 27;  // Non Traditional   (col AB)
+  const iGig       = 61;  // Gig Percent       (col BJ)
+  const iPremium   = 71;  // Premium Mix       (col BT)
+  const iNewToUpg  = 76;  // New To Upgrade    (col BY)
+  const iAccDev    = 87;  // Accessories       (col CJ)
+  const iNPS       = 90;  // NPS               (col CM)
 
-KHOK[ÈH[ÊNÂËÈ\ÙH\[ÂÛÛÝ\ÜÈHØÚY]ÖÉÔ\[É×NÂY
-\ÜÊHÂÛÛÝ\]HHÖ][ËÚY]Ý×ÚÛÛ\ÜËÈXY\KY[[JNÂ]\XY\HLNÂÜ
-]HHÈHMNÈJÊÊHÂY
-\]VÚWH	\]VÚWKÛÛYJÈOÈ	Ý[ÊÊK[J
-HOOH	Ô[ÉÊH	\]VÚWKÛÛYJÈOÈ	Ý[ÊÊK[ÛY\Ê	Ñ[\ÞYYIÊJJHÂ\XY\HNÈXZÎÂBBY
-\XY\H
-HÂÛÛÝH\]VÜ\XY\KX\
-OÈÝ[Ê
-K[J
-H	ÉÊNÂÛÛÝÈH
-[YJHO[[^
-OÓÝÙ\Ø\ÙJ
-K[ÛY\Ê[YKÓÝÙ\Ø\ÙJ
-JJNÂÛÛÝT[Ï\Ê	Ü[ÉÊKS[YO\Ê	Ù[\ÞYYIÊKU]O\Ê	Ý]IÊKSØÏ\Ê	ÛØØ][ÛÊKQO\Ê	ÙIÊKQÔ\[[^
-OÝ\ÕÚ]
-	ÑÔ		Ê_Ý\ÕÚ]
-	ÑÔÊJKS[Ø[O\Ê	Û[Ø[H]	ÊKT[Z][O\[[^
-O[ÛY\Ê	Ô[Z][HZ^	ÊJKSÏ\[[^
-O[ÛY\Ê	Ñ\ØØ[ÉÊIZ[ÛY\Ê	Ó\Ý	ÊJKQÔ\[[^
-O[ÛY\Ê	ÑÔÈÊ_[ÛY\Ê	ÑÔÒÊJNÂÛÛÝYÝÜS[Y\ÈHÝ]KÝÜ\ËX\
-ÈOË[YKÓÝÙ\Ø\ÙJ
-JNÂÝ]K\ÈH×NÂÜ
-]HH\XY\
-ÈNÈH\]K[ÝÈJÊÊHÂÛÛÝÝÈH\]VÚWNÂY
-\ÝÈ\ÝÖÜT[×JHXZÎÂÛÛÝØÈHÝ[ÊÝÖÜSØ×H	ÉÊKÓÝÙ\Ø\ÙJ
-NÂY
-ZYÝÜS[Y\Ë[ÛY\ÊØÊJHÛÛ[YNÂÝ]K\Ë\Ú
-Â[ÎÝÖÜT[×K[YNÝÖÜS[YWH	ÉË]NÝÖÜU]WH	ÉËÝÜNÝÖÜSØ×H	ÉËNÝÖÜQWH	ÉËÜ[X\QÔHÈÝÖÜQÔH
-H[Ø[N[X\ÝÖÜS[Ø[WJH[Z][NT[Z][HHÈ[X\ÝÖÜT[Z][WJHÎSÈHÈ[X\ÝÖÜS×JHÜQÔHÈ[X\ÝÖÜQÔJHJNÂBÝ]K\ËÛÜ
+  state.stores = [];
+  for (let i = headerRow + 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row || !row[iRank]) break;
+    const rsd = row[iRSD];
+    if (!rsd || !String(rsd).includes('Bilbrey')) continue;
 
-KHOK[ÈH[ÊNÂBBBËÈKHÓQHRSSÈKB[Ý[ÛZ[ÛY\Ê
-HÂÝ]KÛY\ÈH×NÂËÈÝÜHÝ\Y]ÈYÙ\ÂÛÛÝÝÜTYÙ\ÈHX]ÙZ[
-Ý]KÝÜ\Ë[ÝÈÓÓQËÕÔWÐÐT×ÔTÔQÑJNÂÜ
-]HHÈHÝÜTYÙ\ÎÈJÊÊHÂÛÛÝX[HÝÜTYÙ\ÈHÈ	ÓÝ\Y]È
-È	È
-È
-JÌJH
-È	ÊIÈ	ÔÝÜHÝ\Y]ÉÎÂÝ]KÛY\Ë\Ú
-È\N	ÜÝÜ\ÉË]N	ÔÕÔHÕTQUÉËYÙNKX[JNÂBËÈ[]YX[ÝÜH]Z[ÛY\ÂÜ
-ÛÛÝÝÜHÙÝ]KÝÜ\ÊHÂÝ]KÛY\Ë\Ú
-È\N	ÜÝÜKY]Z[	ËÝÜNÝÜKX[	ÈÉÈ
-ÈÝÜK[È
-È	È	È
-ÈÝÜK[YHJNÂBËÈÛ[Ý[ÛÈÛYBÝ]KÛY\Ë\Ú
-È\N	ÜÛ[ÜÉË]N	ÑRSHÓSÕSÓÉËX[	ÔÛ[Ý[ÛÉÈJNÂÝ]KÝ[ÛY\ÈHÝ]KÛY\Ë[ÝÂÝ]KÝ\[ÛYHHÂBËÈKHSTSÈKB[Ý[Û[\
-HÂÛÛÝ\HØÝ[Y[Ù][[Y[RY
-	Ø\	ÊNÂÛÛÝÛYHHÝ]KÛY\ÖÜÝ]KÝ\[ÛYWHÝ]KÛY\ÖÌNÂ]ÛYPÛÛ[H	ÉÎÂ]ÛYU]HHÛYK]H	ÉÎÂY
-ÛYK\HOOH	ÜÝÜ\ÉÊHÂÛYU]HH	ÔÕÔHÕTQUÉÎÂÛÛÝÝ\HÛYKYÙH
-ÓÓQËÕÔWÐÐT×ÔTÔQÑNÂÛÛÝYÙTÝÜ\ÈHÝ]KÝÜ\ËÛXÙJÝ\Ý\
-ÈÓÓQËÕÔWÐÐT×ÔTÔQÑJNÂÛYPÛÛ[H[\ÝÜQÜY
-YÙTÝÜ\ÊNÂH[ÙHY
-ÛYK\HOOH	ÜÝÜKY]Z[	ÊHÂÛYU]HHÛYKÝÜK[YKÕ\\Ø\ÙJ
-H
-È	ÈHURS	ÎÂÛYPÛÛ[H[\ÝÜQ]Z[
-ÛYKÝÜJNÂH[ÙHY
-ÛYK\HOOH	ÜÛ[ÜÉÊHÂÛYU]HH	ÑRSHÓSÕSÓÉÎÂÛYPÛÛ[H[\Û[ÜÊ
-NÂBÛÛÝÝÈH]È]J
-NÂÛÛÝ]TÝHÝËÓØØ[Q]TÝ[Ê	Ù[UTÉËÝÙYZÙ^NÜÚÜ	Ë[ÛÜÚÜ	Ë^NÛ[Y\XÉßJNÂÛÛÝ[YTÝHÝËÓØØ[U[YTÝ[Ê	Ù[UTÉËÚÝ\Û[Y\XÉËZ[]NÌYYÚ]	ËÝ\LY_JNÂ\[\SH]Û\ÜÏHXY\]Û\ÜÏHXY\[Y]Û\ÜÏHÙÛËXÚ\ÛH]Ý[OHÛ\Ú^N\ÙÛ]ÙZYÚLØÛÛÜÙMÙLÝ^X[YÛÙ[\Û[KZZYÚKHÐÐÏÙ]Ù]]]Û\ÜÏH[]]HÓÓÒÈÓÕSHÜ[Û\ÜÏHYÚYÚÓÓÒÔÏÜÜ[Ù]]Û\ÜÏH[\ÝXRSHÐSTÈTÔ	Üß	ÜÈ	ÜÝ]KÝÜ\Ë[ÝHÕÔTÏÙ]Ù]Ù]]Û\ÜÏHXY\XÙ[\]Û\ÜÏHXY\XÙ[\\ÝXRSHÐSTÈTÔÙ]]Û\ÜÏHXY\XÙ[\]]HÜÛYU]_OÙ]Ù]]Û\ÜÏHXY\\YÚ]Û\ÜÏH]KXYÙH]Û\ÜÏH]KYÝÙ]UOÙ]]Û\ÜÏH]][YHÙ]TÝH	Ý[YTÝOÙ]Ù]Ù]]Û\ÜÏHÙÜ\ÜËX\Ù[XÝÛ\ÜÏHÛYK\Ù[XÝYHÛYTÙ[XÝÛÚ[ÙOHÛÔÛYJ\ÙR[
-\Ë[YJJH	ÜÝ]KÛY\ËX\
+    state.stores.push({
+      rank: row[iRank],
+      region: row[iRegion] || '',
+      name: row[iStore] || '',
+      esop: row[iEsop] || '',
+      dm: row[iDM] || '',
+      sm: row[iSM] || '',
+      gp: Number(row[iGP]) || 0,
+      gpTrend: Number(row[iGPTrend]) || 0,
+      lastGP: iLastGP >= 0 ? Number(row[iLastGP]) || 0 : 0,
+      target: Number(row[iTarget]) || 0,
+      varTarget: Number(row[iVarTarget]) || 0,
+      gpPerDay: Number(row[iGPDay]) || 0,
+      dailyBal: Number(row[iDailyBal]) || 0,
+      mobileCR: Number(row[iMobileCR]) || 0,
+      fiscalCR: Number(row[iFiscalCR]) || 0,
+      nonTrad: Number(row[iNonTrad]) || 0,
+      nps: Number(row[iNPS]) || 0,
+      premium: Number(row[iPremium]) || 0,
+      mobileMTD: Number(row[iMobileMTD]) || 0,
+      newMobile: iNewMob >= 0 ? Number(row[iNewMob]) || 0 : 0,
+      mobileTrend: Number(row[iMobTrend]) || 0,
+      hsi: Number(row[iHSI]) || 0,
+      gigPct: Number(row[iGig]) || 0,
+      newToUpg: Number(row[iNewToUpg]) || 0,
+      accPerDev: Number(row[iAccDev]) || 0,
+      newRGU: Number(row[iNewRGU]) || 0,
+      totalScore: Number(row[iScore]) || 0,
+      videoAttach: Number(row[iVideo]) || 0,
+    });
+  }
 
-ËJHOÜ[Û[YOHÚ_HÚHOOHÝ]KÝ\[ÛYHÈ	ÈÙ[XÝY	È	ÉßOÜËX[Ë]H	ÔÛYH	È
-È
-JÌJ_OÛÜ[Û
-KÚ[	ÉÊ_BÜÙ[XÝ]Û\ÜÏHÙÜ\ÜË]XÚÈ]OH[YH[[^ÛYH]Û\ÜÏHÛÝ[ÝÛY[YHÛÝ[ÝÛ\Ý[OHÚYL	HÙ]Ù]]Û\ÜÏHÛYK]\HÜ[ÜÝ]KÝ\[ÛYH
-È_HÈ	ÜÝ]KÝ[ÛY\ßOÜÜ[]Û\ÜÏHÝ[]ÜÝ]KÛY\ËX\
+  state.stores.sort((a, b) => a.rank - b.rank);
 
-ËJHOÜ[Û\ÜÏHÚHOOHÝ]KÝ\[ÛYHÈ	ØXÝ]IÈ	ÉßHÛÛXÚÏHÛÔÛYJ	Ú_JHÜÜ[
-KÚ[	ÉÊ_OÙ]Ù]Ù]]Û\ÜÏHÛYKXÛÛZ[\ÜÛYPÛÛ[OÙ]ÂB[Ý[Û[\ÝÜQÜY
-ÝÜ\ÊHÂËÈÝ[[X\HÝÂÛÛÝÝ[ÔHÝÜ\ËYXÙJ
-ËÝ
-HOÈ
-ÈÝÜ
-NÂÛÛÝ]ÓÈHÝÜ\ËYXÙJ
-ËÝ
-HOÈ
-ÈÝË
-HÈÝÜ\Ë[ÝÂÛÛÝÝ[[Ø[HHÝÜ\ËYXÙJ
-ËÝ
-HOÈ
-ÈÝ[Ø[SU
-NÂÛÛÝ]ÐÔHÝÜ\ËYXÙJ
-ËÝ
-HOÈ
-ÈÝ[Ø[PÔ
-HÈÝÜ\Ë[ÝÂ][H	Ï]Û\ÜÏHÝÜKYÜYÎÂÜ
-ÛÛÝÈÙÝÜ\ÊHÂÛÛÝ\ÛÛÜHË\\Ù]HÈ	ÙÜY[È	ÜY	ÎÂÛÛÝ\ÚYÛHË\\Ù]HÈ	ÊÉÈ	ËIÎÂÛÛÝÝHO
-
-L
-KÑ^Y
-JH
-È	ÉIÎÂÛÛÝHH
-X[[ÛÏIØYIÊHO]Û\ÜÏHY]XÈ	ØÛßHÝ[OHY[ÎÜ
-È]Û\ÜÏHY]XË[X[Ý[OHÛ\Ú^NÈÛX[OÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NL\ÈÝ[OÙ]Ù]Â[
-ÏH]Û\ÜÏHÝÜKXØ\]]Û\ÜÏHÝÜK\[ÈÉÜË[ßOÙ]]Û\ÜÏHÝÜK[[YHÜË[Y_OÙ]]Û\ÜÏHÝÜKYÜ	ÓX]Ý[
-ËÜ
-KÓØØ[TÝ[Ê
-_OÙ]]Û\ÜÏHÝÜKYÜ\ÝX\Ù]		ÓX]Ý[
-Ë\Ù]
-KÓØØ[TÝ[Ê
-_H	ÜÈÜ[Û\ÜÏHÝ\ÛÛÜHÝ\ÚYÛI	ÓX]Ý[
-X]XÊË\\Ù]
-JKÓØØ[TÝ[Ê
-_OÜÜ[Ù]Ù]]Û\ÜÏHÝÜK[Y]XÜÈÝ[OH\Ü^NÜYÙÜY][\]KXÛÛ[[Î\X]
-ËYNÙØ\ÜÈ	ÛJ	ÑÔS	ËÝ
-ËÜ[
-KËÜ[LÉÙÜY[ÎÜY	Ê_B	ÛJ	ÓPÔËÝ
-Ë[Ø[PÔKË[Ø[PÔLÉÙÜY[ÎË[Ø[PÔL
-OÉÞY[ÝÉÎÜY	Ê_B	ÛJ	ÑTÐÐSÔËÝ
-Ë\ØØ[ÔKË\ØØ[ÔLÉÙÜY[ÎË\ØØ[ÔL
-OÉÞY[ÝÉÎÜY	Ê_B	ÛJ	ÓÓUQ	ËËÛY	ØYIÊ_B	ÛJ	ÑÒQÈ	IËÝ
-ËÚYÔÝ
-KËÚYÔÝLOÉÙÜY[ÎËÚYÔÝLÍOÉÞY[ÝÉÎÜY	Ê_B	ÛJ	ÔSRUSIËÝ
-Ë[Z][JKË[Z][OL
-OÉÙÜY[ÎË[Z][OLÏÉÞY[ÝÉÎÜY	Ê_B	ÛJ	ÓUø¡¤TÉËË]ÕÕ\Ë	ØYIÊ_B	ÛJ	ÐPÐÑTÔÉË	É	ÊÓX]Ý[
-ËXØÔ\]K	ØYIÊ_B	ÛJ	ÓÉËÝ
-ËÊKËÏLÉÙÜY[ÎËÏLÉÞY[ÝÉÎÜY	Ê_BÙ]Ù]ÂBËÈ[[\HÙ[ÈY\ÜÈ[LÜ
-]HHÝÜ\Ë[ÝÈHÓÓQËÕÔWÐÐT×ÔTÔQÑNÈJÊÊHÂ[
-ÏH	Ï]Û\ÜÏHÝÜKXØ\Ý[OHÜXÚ]NØÜ\\\ÚYÌXLÌ
-LÈÙ]ÎÂB[
-ÏH	ÏÙ]ÎÂ]\[ÂB[Ý[Û[\ÝÜQ]Z[
-ÊHÂÛÛÝÜÛ\ÜÈHË[Ø[PÔHÈ	ÙÜY[ÈË[Ø[PÔH
-HÈ	ÞY[ÝÉÈ	ÜY	ÎÂÛÛÝÐÛ\ÜÈHËÈHÈ	ÙÜY[ÈËÈHÈ	ÞY[ÝÉÈ	ÜY	ÎÂÛÛÝ[PÛ\ÜÈHË[Z][HH
-HÈ	ÙÜY[ÈË[Z][HHÈÈ	ÞY[ÝÉÈ	ÜY	ÎÂÛÛÝ\ÛÛÜHË\\Ù]HÈ	ÈÌXØÍ	È	ÈÙMÍÌØÉÎÂÛÛÝ\ÚYÛHË\\Ù]HÈ	ÊÉÈ	ËIÎÂËÈÙ]\ÈÜ\ÈÝÜBÛÛÝÝÜT\ÈHÝ]K\Ë[\OÝÜKÓÝÙ\Ø\ÙJ
-HOOHË[YKÓÝÙ\Ø\ÙJ
-JNÂÝÜT\ËÛÜ
+  // Parse Rep Rank
+  const repWs = wb.Sheets['Rep Rank'];
+  if (repWs) {
+    const repData = XLSX.utils.sheet_to_json(repWs, { header:1, defval:null });
+    let repHeader = -1;
+    for (let i = 0; i < 15; i++) {
+      if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') && repData[i].some(c => c && String(c).includes('Employee'))) {
+        repHeader = i; break;
+      }
+    }
+    if (repHeader >= 0) {
+      const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
+      const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+      const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'), riLoc=rc('location'),
+            riDM=rc('dm'), riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
+            riMobile=rc('mobile mtd'), riPremium=rh.findIndex(h=>h.includes('Premium Mix')),
+            riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
+            riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
 
-KHOÜHKÜ
-NÂ]\[H	ÉÎÂY
-ÝÜT\Ë[Ý
-HÂ\[H]Ý[OHX\Ú[]ÜMÈ]Ý[OHÛ\Ú^NLÜÙÛ]ÙZYÚÌØÛÛÜÙMÙLÛ]\\ÜXÚ[ÎÛX\Ú[XÝÛNÈPSHQSPTÏÙ]]Ý[OH\Ü^NÜYÙÜY][\]KXÛÛ[[ÎLYL
-Ì
-Ì
-ÌÙØ\ÙÛ\Ú^NLØÛÛÜÎNXXNÜY[ÎÈÜ[SÏÜÜ[Ü[SQOÜÜ[Ü[Ô	ÜÜ[Ü[SÐSOÜÜ[Ü[ÏÜÜ[Ü[SRUSOÜÜ[Ù]	ÜÝÜT\ËX\
-O]Ý[OH\Ü^NÜYÙÜY][\]KXÛÛ[[ÎLYL
-Ì
-Ì
-ÌÙØ\ÙÛ\Ú^NLÜÜY[ÎØXÚÙÜÝ[ÌÌMLNØÜ\\Y]\ÎÛX\Ú[XÝÛNØÜ\\ÛÛYÌXLMÈÜ[Ý[OHÛÛÜÙMÙLÙÛ]ÙZYÚÈÉÜ[ßOÜÜ[Ü[Ý[OHÛ]ÙZYÚÌÈÜ[Y_OÜÜ[Ü[Ý[OHÛ]ÙZYÚÌÈ	ÓX]Ý[
-Ü
-KÓØØ[TÝ[Ê
-_OÜÜ[Ü[Ý[OH^X[YÛÙ[\ÈÜ[Ø[_OÜÜ[Ü[Ý[OH^X[YÛÙ[\ØÛÛÜÜÏLÉÈÌXØÍ	ÎÏLÉÈÙXÍÎÈÙMÍÌØÉßHÊÊL
-KÑ^Y
-
-_IOÜÜ[Ü[Ý[OH^X[YÛÙ[\ØÛÛÜÜ[Z][OL
-OÉÈÌXØÍ	Î[Z][OLÏÉÈÙXÍÎÈÙMÍÌØÉßHÊ[Z][JL
-KÑ^Y
-
-_IOÜÜ[Ù]
-KÚ[	ÉÊ_BÙ]ÂB]\]Ý[OH\Ü^NÜYÙÜY][\]KXÛÛ[[ÎYYÙØ\ÚZYÚL	NÈ]Ý[OH\Ü^N^Ù^Y\XÝ[ÛÛÛ[[ÙØ\MÈ]Ý[OHXÚÙÜÝ[[X\YÜYY[
-LÍYYËÌÌXLKÌLMLJNØÜ\\ÛÛYÌXLÌ
-LØÜ\\Y]\ÎLÜY[ÎÈ]Ý[OH\Ü^N^Ú\ÝYKXÛÛ[ÜXÙKX]ÙY[Ø[YÛZ][\ÎÝ\È]]Ý[OHÛ\Ú^NMØÛÛÜÙMÙLÙÛ]ÙZYÚÈSÈÉÜË[ßOÙ]]Ý[OHÛ\Ú^NÙÛ]ÙZYÚLÛX\Ú[]ÜÈÜË[Y_OÙ]]Ý[OHÛ\Ú^NLØÛÛÜÎNXXNÛX\Ú[]ÜÈÜËYÚ[ÛH	Üß	ÜÈÓN	ÜËÛ_H	Üß	ÜÈN	ÜË_OÙ]Ù]]Ý[OH^X[YÛYÚÈ]Ý[OHÛ\Ú^NÙÛ]ÙZYÚLØÛÛÜÙMÙLÈ	ÓX]Ý[
-ËÜ
-KÓØØ[TÝ[Ê
-_OÙ]]Ý[OHÛ\Ú^NLÜØÛÛÜÎNXXNÈÔ	UÙ]Ù]Ù]Ù]]Ý[OH\Ü^NÜYÙÜY][\]KXÛÛ[[Î\X]
-ËYNÙØ\LÈ]Ý[OHXÚÙÜÝ[ÌÌXLNØÜ\\ÛÛYÌXLÌ
-LØÜ\\Y]\ÎLÜY[ÎMÝ^X[YÛÙ[\È]Ý[OHÛ\Ú^NLØÛÛÜÎNXXNÛ]\\ÜXÚ[Î\ÈTÑUÔÙ]]Ý[OHÛ\Ú^NÙÛ]ÙZYÚÛX\Ú[]ÜÈ	ÓX]Ý[
-Ë\Ù]
-KÓØØ[TÝ[Ê
-_OÙ]]Ý[OHÛ\Ú^NLØÛÛÜÝ\ÛÛÜNÛX\Ú[]ÜÈÝ\ÚYÛI	ÓX]Ý[
-X]XÊË\\Ù]
-JKÓØØ[TÝ[Ê
-_OÙ]Ù]]Ý[OHXÚÙÜÝ[ÌÌXLNØÜ\\ÛÛYÌXLÌ
-LØÜ\\Y]\ÎLÜY[ÎMÝ^X[YÛÙ[\È]Ý[OHÛ\Ú^NLØÛÛÜÎNXXNÛ]\\ÜXÚ[Î\ÈÔÈVOÙ]]Ý[OHÛ\Ú^NÙÛ]ÙZYÚÛX\Ú[]ÜÈ	ÓX]Ý[
-ËÜ\^JKÓØØ[TÝ[Ê
-_OÙ]Ù]]Ý[OHXÚÙÜÝ[ÌÌXLNØÜ\\ÛÛYÌXLÌ
-LØÜ\\Y]\ÎLÜY[ÎMÝ^X[YÛÙ[\È]Ý[OHÛ\Ú^NLØÛÛÜÎNXXNÛ]\\ÜXÚ[Î\ÈRSHSÙ]]Ý[OHÛ\Ú^NÙÛ]ÙZYÚÛX\Ú[]ÜØÛÛÜÜËZ[P[LÉÈÌXØÍ	ÎÈÙMÍÌØÉßHÜËZ[P[LÉÊÉÎÉßI	ÓX]Ý[
-X]XÊËZ[P[
-JKÓØØ[TÝ[Ê
-_OÙ]Ù]Ù]]Ý[OH\Ü^NÜYÙÜY][\]KXÛÛ[[Î\X]
-ËYNÙØ\È]Û\ÜÏHY]XÈ	ÜËÜ[LÉÙÜY[ÎÜY	ßHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[ÔSÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÊËÜ[
-L
-KÑ^Y
-J_IOÙ]Ù]]Û\ÜÏHY]XÈ	ÜË[Ø[PÔLÉÙÜY[ÎË[Ø[PÔL
-OÉÞY[ÝÉÎÜY	ßHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[PÔÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÊË[Ø[PÔL
-KÑ^Y
-J_IOÙ]Ù]]Û\ÜÏHY]XÈ	ÜË\ØØ[ÔLÉÙÜY[ÎË\ØØ[ÔL
-OÉÞY[ÝÉÎÜY	ßHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[TÐÐSÔÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÊË\ØØ[ÔL
-KÑ^Y
-J_IOÙ]Ù]]Û\ÜÏHY]XÈYHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[ÓUQÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÜËÛYOÙ]Ù]]Û\ÜÏHY]XÈ	ÜËÚYÔÝLOÉÙÜY[ÎËÚYÔÝLÍOÉÞY[ÝÉÎÜY	ßHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[ÒQÈ	OÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÊËÚYÔÝ
-L
-KÑ^Y
-J_IOÙ]Ù]]Û\ÜÏHY]XÈ	ÜË[Z][OL
-OÉÙÜY[ÎË[Z][OLÏÉÞY[ÝÉÎÜY	ßHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[SRUSHRVÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÊË[Z][JL
-KÑ^Y
-J_IOÙ]Ù]]Û\ÜÏHY]XÈYHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[Uø¡¤TÔQOÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÜË]ÕÕ\ßOÙ]Ù]]Û\ÜÏHY]XÈYHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[PÐÑTÔÓÔQTÏÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈ	ÓX]Ý[
-ËXØÔ\]_OÙ]Ù]]Û\ÜÏHY]XÈ	ÜËÏLÉÙÜY[ÎËÏLÉÞY[ÝÉÎÜY	ßHÝ[OHY[ÎLØÜ\\Y]\ÎLÈ]Û\ÜÏHY]XË[X[ÏÙ]]Û\ÜÏHY]XË][YHÝ[OHÛ\Ú^NMÜÈÊËÊL
-KÑ^Y
-J_IOÙ]Ù]Ù]Ù]]Ý[OH\Ü^N^Ù^Y\XÝ[ÛÛÛ[[ÙØ\LÈ]Ý[OH\Ü^NÜYÙÜY][\]KXÛÛ[[Î\X]
-ËYNÙØ\È]Ý[OHXÚÙÜÝ[ÌÌXLNØÜ\\ÛÛYÌXLÌ
-LØÜ\\Y]\ÎLÜY[ÎLÝ^X[YÛÙ[\È]Ý[OHÛ\Ú^NLØÛÛÜÎNXXNÛ]\\ÜXÚ[Î\ÈUÈÕOÙ]]Ý[OHÛ\Ú^NMÜÙÛ]ÙZYÚÛX\Ú[]ÜÈÜË]ÔÕ_OÙ]Ù]]Ý[OHXÚÙÜÝ[ÌÌXLNØÜ\\ÛÛYÌXLÌ
-LØÜ\\Y]\ÎLÜY[ÎLÝ^X[YÛÙ[\È]Ý[OHÛ\Ú^NLØÛÛÜÎNXXNÛ]\\ÜXÚ[Î\ÈÒOÙ]]Ý[OHÛ\Ú^NMÜÙÛ]ÙZYÚÛX\Ú[]ÜÈÜËÚ_OÙ]Ù]]Ý[OHXÚÙÜÝ[ÌÌXLNØÜ\\ÛÛYÌXLÌ
-LØÜ\\Y]\ÎLÜY[ÎLÝ^X[YÛÙ[\È]Ý[OHÛ\Ú^NLØÛÛÜÎNXXNÛ]\\ÜXÚ[Î\ÈSÐSHUÙ]]Ý[OHÛ\Ú^NMÜÙÛ]ÙZYÚÛX\Ú[]ÜÈÜË[Ø[SUOÙ]Ù]Ù]	Ü\[BÙ]Ù]ÂB[Ý[Û[\Û[ÜÊ
-HÂY
-Ý]KÛ[ÜÊHÂÛÛÝØXÚP\ÝH	ÏÝIÈ
-ÈX]ÛÜ]KÝÊ
-HÈÌ
-NÂ]\]Ý[OH\Ü^N^Ù^Y\XÝ[ÛÛÛ[[Ø[YÛZ][\ÎÙ[\Ú\ÝYKXÛÛ[Ù[\ÚZYÚL	NÙØ\LÈ]Ý[OHÛ\Ú^NLÜÙÛ]ÙZYÚÌÛ]\\ÜXÚ[ÎÜØÛÛÜÙMÙLÝ^][ÙÜN\\Ø\ÙNÈHZ[HÛ[Ý[ÛØ\Ù][YÈÜÏHÜÝ]KÛ[ÜßIØØXÚP\ÝHÝ[OHX^]ÚYL	NÛX^ZZYÚØ[ÊLHMÌ
-NÛØXÝY]ÛÛZ[ØÜ\\Y]\ÎLØÜ\ÛÛYÌXLÌ
-LØÞ\ÚYÝÎ
-ÙMÙLÈ[HZ[HÛ[Ý[ÛØ\Û\ÜH\ËÝ[K\Ü^OIÛÛIÎÝ\Ë^[[Y[ÚX[ËÝ[K\Ü^OIØØÚÉÎÈÏ]Ý[OH\Ü^NÛNØÛÛÜÍXMØNXNÙÛ\Ú^NM\ÙÛ\Ý[N][XÎÈÛ[ÈØ\[XYÙHÛÝ[ÝHØYYÙ]Ù]ÂB]\]Û\ÜÏHÛ[Ë\ÛYH]Û\ÜÏHÛ[Ë]]HRSHÓSÕSÓÏÙ]]Û\ÜÏHÛ[ËXYÙH]Û\ÜÏHÛ[ËY[\HÙ^IÜÈÛ[Ý[ÛØ\Ú[\X\\H]]ÛX]XØ[HÛÙH\ØYYÙ]]Ý[OHÛÛÜÍXMØNXNÙÛ\Ú^NLÛX\Ú[]ÜÝ^X[YÛÙ[\ÈÛÝ\ÙN[X[HÚ]\ÚYHXH\Y\Ù]Ù]Ù]ÂBËÈKHÓÕSÕÓKB[Ý[ÛÝ\ÛÝ[ÝÛ
-HÂY
-Ý]KÛÝ[ÝÛ[Y\HÛX\[\[
-Ý]KÛÝ[ÝÛ[Y\NÂÝ]KÛÝ[ÝÛÝ\H]KÝÊ
-NÂÝ]KÛÝ[ÝÛ[Y\HÙ][\[
+      const jeffStoreNames = state.stores.map(s => s.name.toLowerCase());
+      state.reps = [];
+      for (let i = repHeader + 1; i < repData.length; i++) {
+        const row = repData[i];
+        if (!row || !row[riRank]) break;
+        const loc = String(row[riLoc] || '').toLowerCase();
+        if (!jeffStoreNames.includes(loc)) continue;
+        state.reps.push({
+          rank: row[riRank],
+          name: row[riName] || '',
+          title: row[riTitle] || '',
+          store: row[riLoc] || '',
+          dm: row[riDM] || '',
+          gp: Number(riGP >= 0 ? row[riGP] : 0) || 0,
+          mobile: Number(row[riMobile]) || 0,
+          premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
+          nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
+          gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
+        });
+      }
+      state.reps.sort((a, b) => a.rank - b.rank);
+    }
+  }
+}
 
+// -- SLIDE BUILDING --
+function buildSlides() {
+  state.slides = [];
 
-HOÂÛÛÝ[\ÙYH]KÝÊ
-HHÝ]KÛÝ[ÝÛÝ\ÂÛÛÝÝHX]X^
-LH
-[\ÙYÈÓÓQËÓQWÒSTS
-H
-L
-NÂÛÛÝ\HØÝ[Y[Ù][[Y[RY
-	ØÛÝ[ÝÛ\ÊNÂY
-\H\Ý[KÚYHÝ
-È	ÉIÎÂKL
-NÂBËÈKHÓQTÒÕÈKB[Ý[ÛÝ\ÛY\ÚÝÊ
-HÂY
-Ý]KÛYU[Y\HÛX\[\[
-Ý]KÛYU[Y\NÂÝ]KÛYU[Y\HÙ][\[
+  // Store overview pages
+  const storePages = Math.ceil(state.stores.length / CONFIG.STORE_CARDS_PER_PAGE);
+  for (let i = 0; i < storePages; i++) {
+    const label = storePages > 1 ? 'Overview (Pg ' + (i+1) + ')' : 'Store Overview';
+    state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
+  }
 
+  // Individual store detail slides
+  for (const store of state.stores) {
+    state.slides.push({ type: 'store-detail', store: store, label: '#' + store.rank + ' ' + store.name });
+  }
 
-HOÂÝ]KÝ\[ÛYHH
-Ý]KÝ\[ÛYH
-ÈJH	HÝ]KÝ[ÛY\ÎÂ[\
-NÂÝ\ÛÝ[ÝÛ
-NÂKÓÓQËÓQWÒSTS
-NÂÝ\ÛÝ[ÝÛ
-NÂËÈ]]Ë\Y\Ú]BY
-Ý]KY\Ú[Y\HÛX\[\[
-Ý]KY\Ú[Y\NÂÝ]KY\Ú[Y\HÙ][\[
+  // Promotions slide
+  state.slides.push({ type: 'promos', title: 'DAILY PROMOTIONS', label: 'Promotions' });
 
+  state.totalSlides = state.slides.length;
+  state.currentSlide = 0;
+}
 
-HOÂØY]J
-NÂKÓÓQËQTÒÒSTS
-NÂB[Ý[ÛÛÔÛYJJHÂÝ]KÝ\[ÛYHHNÂ[\
-NÂËÈ\Ù]]]ËXY[ÙH[Y\[ÛÝ[ÝÛY
-Ý]KÛYU[Y\HÛX\[\[
-Ý]KÛYU[Y\NÂÝ]KÛYU[Y\HÙ][\[
+// -- RENDERING --
+function render() {
+  const app = document.getElementById('app');
+  const slide = state.slides[state.currentSlide] || state.slides[0];
 
+  let slideContent = '';
+  let slideTitle = slide.title || '';
 
-HOÂÝ]KÝ\[ÛYHH
-Ý]KÝ\[ÛYH
-ÈJH	HÝ]KÝ[ÛY\ÎÂ[\
-NÂÝ\ÛÝ[ÝÛ
-NÂKÓÓQËÓQWÒSTS
-NÂÝ\ÛÝ[ÝÛ
-NÂBËÈKHÑVPÐTUKBØÝ[Y[Y][\Ý[\	ÚÙ^YÝÛË
-JHOÂY
-KÙ^HOOH	Ð\ÝÔYÚ	ÈKÙ^HOOH	È	ÊHÈÛÔÛYJ
-Ý]KÝ\[ÛYH
-ÈJH	HÝ]KÝ[ÛY\ÊNÈBY
-KÙ^HOOH	Ð\ÝÓY	ÊHÈÛÔÛYJ
-Ý]KÝ\[ÛYHHH
-ÈÝ]KÝ[ÛY\ÊH	HÝ]KÝ[ÛY\ÊNÈBJNÂËÈKHSUKBØY]J
-NÂÜØÜ\ØÙOÚ[
+  if (slide.type === 'stores') {
+    slideTitle = 'STORE OVERVIEW';
+    const start = slide.page * CONFIG.STORE_CARDS_PER_PAGE;
+    const pageStores = state.stores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
+    slideContent = renderStoreGrid(pageStores);
+  } else if (slide.type === 'store-detail') {
+    slideTitle = slide.store.name.toUpperCase() + ' - DETAIL';
+    slideContent = renderStoreDetail(slide.store);
+  } else if (slide.type === 'promos') {
+    slideTitle = 'DAILY PROMOTIONS';
+    slideContent = renderPromos();
+  }
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',hour12:true});
+
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-left">
+        <div class="logo-circle"><div style="font-size:9px;font-weight:900;color:#e67e22;text-align:center;line-height:1.1">CCC</div></div>
+        <div>
+          <div class="brand-title">COOK COUNTY <span class="highlight">COOKS</span></div>
+          <div class="brand-sub">DAILY SALES REPORT &nbsp;|&nbsp; ${state.stores.length} STORES</div>
+        </div>
+      </div>
+      <div class="header-center">
+        <div class="header-center-sub">DAILY SALES REPORT</div>
+        <div class="header-center-title">${slideTitle}</div>
+      </div>
+      <div class="header-right">
+        <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+        <div class="datetime">${dateStr} | ${timeStr}</div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <select class="slide-select" id="slideSelect" onchange="goSlide(parseInt(this.value))">
+        ${state.slides.map((s, i) => `<option value="${i}"${i === state.currentSlide ? ' selected' : ''}>${s.label || s.title || 'Slide ' + (i+1)}</option>`).join('')}
+      </select>
+      <div class="progress-track" title="Time until next slide">
+        <div class="countdown-fill" id="countdownBar" style="width:100%"></div>
+      </div>
+      <div class="slide-type">
+        <span>${state.currentSlide + 1} / ${state.totalSlides}</span>
+        <div class="dot-nav">${state.slides.map((_, i) => `<span class="${i === state.currentSlide ? 'active' : ''}" onclick="goSlide(${i})"></span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="slide-container">${slideContent}</div>
+  `;
+}
+
+function renderStoreGrid(stores) {
+  // Summary row
+  const totalGP = stores.reduce((s, st) => s + st.gp, 0);
+  const avgNPS = stores.reduce((s, st) => s + st.nps, 0) / stores.length;
+  const totalMobile = stores.reduce((s, st) => s + st.mobileMTD, 0);
+  const avgCR = stores.reduce((s, st) => s + st.mobileCR, 0) / stores.length;
+
+  let html = '<div class="store-grid">';
+
+  for (const s of stores) {
+    const varColor = s.varTarget >= 0 ? 'green' : 'red';
+    const varSign = s.varTarget >= 0 ? '+' : '-';
+    const pct = v => (v * 100).toFixed(1) + '%';
+    const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:3px 4px;"><div class="metric-label" style="font-size:8px;">${label}</div><div class="metric-value" style="font-size:11px;">${val}</div></div>`;
+
+    html += `
+      <div class="store-card">
+        <div>
+          <div class="store-rank">#${s.rank}</div>
+          <div class="store-name">${s.name}</div>
+          <div class="store-gp">$${Math.round(s.gp).toLocaleString()}</div>
+          <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
+        </div>
+        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;">
+          ${m('GP TREND',   pct(s.gpTrend),  s.gpTrend>=0?'green':'red')}
+          ${m('MCR',        pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
+          ${m('FISCAL CR',  pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
+          ${m('NON-TRAD',   s.nonTrad,       'blue')}
+          ${m('GIG %',      pct(s.gigPct),   s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
+          ${m('PREMIUM',    pct(s.premium),  s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
+          ${m('NEW->UPG',    s.newToUpg,      'blue')}
+          ${m('ACCESS',     '$'+Math.round(s.accPerDev), 'blue')}
+          ${m('NPS',        pct(s.nps),      s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
+        </div>
+      </div>`;
+  }
+
+  // Fill empty cells if less than 12
+  for (let i = stores.length; i < CONFIG.STORE_CARDS_PER_PAGE; i++) {
+    html += '<div class="store-card" style="opacity:0.2;border:1px dashed #1a3050;"></div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function renderStoreDetail(s) {
+  const crClass = s.mobileCR >= 0.08 ? 'green' : s.mobileCR >= 0.05 ? 'yellow' : 'red';
+  const npsClass = s.nps >= 0.8 ? 'green' : s.nps >= 0.6 ? 'yellow' : 'red';
+  const premClass = s.premium >= 0.85 ? 'green' : s.premium >= 0.7 ? 'yellow' : 'red';
+  const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
+  const varSign = s.varTarget >= 0 ? '+' : '-';
+
+  // Get reps for this store
+  const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
+  storeReps.sort((a, b) => b.gp - a.gp);
+
+  let repHtml = '';
+  if (storeReps.length) {
+    repHtml = `
+      <div style="margin-top:16px;">
+        <div style="font-size:13px;font-weight:700;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
+        <div style="display:grid;grid-template-columns:50px 1fr 90px 70px 70px 70px;gap:4px;font-size:12px;color:#8899aa;padding:4px 8px;">
+          <span>RANK</span><span>NAME</span><span>GP $</span><span>MOBILE</span><span>NPS</span><span>PREMIUM</span>
+        </div>
+        ${storeReps.map(r => `
+          <div style="display:grid;grid-template-columns:50px 1fr 90px 70px 70px 70px;gap:4px;font-size:13px;padding:6px 8px;background:#0c1525;border-radius:4px;margin-bottom:2px;border:1px solid #1a2540;">
+            <span style="color:#e67e22;font-weight:800;">#${r.rank}</span>
+            <span style="font-weight:700;">${r.name}</span>
+            <span style="font-weight:700;">$${Math.round(r.gp).toLocaleString()}</span>
+            <span style="text-align:center;">${r.mobile}</span>
+            <span style="text-align:center;color:${r.nps>=0.8?'#2ecc40':r.nps>=0.6?'#f1c40f':'#e74c3c'}">${(r.nps*100).toFixed(0)}%</span>
+            <span style="text-align:center;color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#f1c40f':'#e74c3c'}">${(r.premium*100).toFixed(0)}%</span>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  return `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;height:100%;">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div>
+              <div style="font-size:16px;color:#e67e22;font-weight:800;">RANK #${s.rank}</div>
+              <div style="font-size:28px;font-weight:900;margin-top:4px;">${s.name}</div>
+              <div style="font-size:12px;color:#8899aa;margin-top:4px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:42px;font-weight:900;color:#e67e22;">$${Math.round(s.gp).toLocaleString()}</div>
+              <div style="font-size:13px;color:#8899aa;">GP $ MTD</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
+            <div style="font-size:20px;font-weight:800;margin-top:4px;">$${Math.round(s.target).toLocaleString()}</div>
+            <div style="font-size:12px;color:${varColor};margin-top:2px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
+            <div style="font-size:20px;font-weight:800;margin-top:4px;">$${Math.round(s.gpPerDay).toLocaleString()}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
+            <div style="font-size:20px;font-weight:800;margin-top:4px;color:${s.dailyBal>=0?'#2ecc40':'#e74c3c'}">${s.dailyBal>=0?'+':''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <div class="metric ${s.gpTrend>=0?'green':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">GP TREND</div><div class="metric-value" style="font-size:17px;">${(s.gpTrend*100).toFixed(1)}%</div></div>
+          <div class="metric ${s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">MCR</div><div class="metric-value" style="font-size:17px;">${(s.mobileCR*100).toFixed(1)}%</div></div>
+          <div class="metric ${s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">FISCAL CR</div><div class="metric-value" style="font-size:17px;">${(s.fiscalCR*100).toFixed(1)}%</div></div>
+          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NON-TRAD</div><div class="metric-value" style="font-size:17px;">${s.nonTrad}</div></div>
+          <div class="metric ${s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">GIG %</div><div class="metric-value" style="font-size:17px;">${(s.gigPct*100).toFixed(1)}%</div></div>
+          <div class="metric ${s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">PREMIUM MIX</div><div class="metric-value" style="font-size:17px;">${(s.premium*100).toFixed(1)}%</div></div>
+          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NEW->UPGRADE</div><div class="metric-value" style="font-size:17px;">${s.newToUpg}</div></div>
+          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">ACCESSORIES</div><div class="metric-value" style="font-size:17px;">$${Math.round(s.accPerDev)}</div></div>
+          <div class="metric ${s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">NPS</div><div class="metric-value" style="font-size:17px;">${(s.nps*100).toFixed(1)}%</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
+            <div style="font-size:17px;font-weight:800;margin-top:4px;">${s.newRGU}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">HSI</div>
+            <div style="font-size:17px;font-weight:800;margin-top:4px;">${s.hsi}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
+            <div style="font-size:17px;font-weight:800;margin-top:4px;">${s.mobileMTD}</div>
+          </div>
+        </div>
+        ${repHtml}
+      </div>
+    </div>`;
+}
+
+function renderPromos() {
+  if (state.promos) {
+    const cacheBust = '?t=' + Math.floor(Date.now() / 300000);
+    return `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
+      <div style="font-size:13px;font-weight:700;letter-spacing:3px;color:#e67e22;text-transform:uppercase;">XM Daily Promotion Card</div>
+      <img src="${state.promos}${cacheBust}"
+           style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid #1a3050;box-shadow:0 0 40px #e67e2222;"
+           alt="Daily Promotion Card"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+      <div style="display:none;color:#5a7a9a;font-size:15px;font-style:italic;">Promo card image could not be loaded.</div>
+    </div>`;
+  }
+  return `
+    <div class="promo-slide">
+      <div class="promo-title">DAILY PROMOTIONS</div>
+      <div class="promo-badge">
+        <div class="promo-empty">Today's promotion card will appear here automatically once uploaded.</div>
+        <div style="color:#5a7a9a;font-size:12px;margin-top:8px;text-align:center;">Source: Amanda Whiteside via Zapier</div>
+      </div>
+    </div>`;
+}
+
+// -- COUNTDOWN --
+function startCountdown() {
+  if (state.countdownTimer) clearInterval(state.countdownTimer);
+  state.countdownStart = Date.now();
+  state.countdownTimer = setInterval(() => {
+    const elapsed = Date.now() - state.countdownStart;
+    const pct = Math.max(0, 100 - (elapsed / CONFIG.SLIDE_INTERVAL) * 100);
+    const bar = document.getElementById('countdownBar');
+    if (bar) bar.style.width = pct + '%';
+  }, 100);
+}
+
+// -- SLIDESHOW --
+function startSlideshow() {
+  if (state.slideTimer) clearInterval(state.slideTimer);
+  state.slideTimer = setInterval(() => {
+    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
+    render();
+    startCountdown();
+  }, CONFIG.SLIDE_INTERVAL);
+  startCountdown();
+
+  // Auto-refresh data
+  if (state.refreshTimer) clearInterval(state.refreshTimer);
+  state.refreshTimer = setInterval(() => {
+    loadData();
+  }, CONFIG.REFRESH_INTERVAL);
+}
+
+function goSlide(i) {
+  state.currentSlide = i;
+  render();
+  // Reset auto-advance timer and countdown
+  if (state.slideTimer) clearInterval(state.slideTimer);
+  state.slideTimer = setInterval(() => {
+    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
+    render();
+    startCountdown();
+  }, CONFIG.SLIDE_INTERVAL);
+  startCountdown();
+}
+
+// -- KEYBOARD NAV --
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { goSlide((state.currentSlide + 1) % state.totalSlides); }
+  if (e.key === 'ArrowLeft') { goSlide((state.currentSlide - 1 + state.totalSlides) % state.totalSlides); }
+});
+
+// -- INIT --
+loadData();
+</script>
+</body>
+</html>
