@@ -39,13 +39,13 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
 /* -- Slide Container -- */
 .slide-container { height:calc(100vh - 100px); padding:8px 20px; overflow:hidden; }
 /* -- Store Grid -- */
-.store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:12px; height:100%; }
-.store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:16px 18px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
+.store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
+.store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:20px 22px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
 .store-card:hover { border-color:#e67e22; }
 .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
 .store-rank { font-size:18px; font-weight:900; color:#e67e22; opacity:0.8; }
-.store-name { font-size:20px; font-weight:800; color:#fff; margin-top:2px; }
-.store-gp { font-size:36px; font-weight:900; color:#e67e22; margin-top:6px; }
+.store-name { font-size:22px; font-weight:800; color:#fff; margin-top:2px; }
+.store-gp { font-size:40px; font-weight:900; color:#e67e22; margin-top:6px; }
 .store-gp-sub { font-size:12px; color:#5a7a9a; margin-top:3px; }
 .store-gp-sub .green { color:#2ecc40; }
 .store-gp-sub .red { color:#e74c3c; }
@@ -59,8 +59,8 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
 .metric.blue { background:#0d1a2a; color:#3498db; }
 /* -- Rep Grid -- */
 .rep-grid { display:grid; gap:0; height:100%; align-content:start; overflow:hidden; }
-.rep-header-row { display:grid; grid-template-columns:44px 1fr 110px 82px 66px 68px 64px 64px 72px 80px 88px; gap:4px; padding:7px 10px; background:#0d1a2e; border-radius:8px 8px 0 0; font-size:10px; font-weight:700; color:#8899aa; letter-spacing:0.5px; margin-bottom:2px; }
-.rep-row { display:grid; grid-template-columns:44px 1fr 110px 82px 66px 68px 64px 64px 72px 80px 88px; gap:4px; padding:7px 10px; background:#0c1525; border-radius:4px; border:1px solid #1a2540; font-size:12px; align-items:center; margin-bottom:2px; }
+.rep-header-row { display:grid; grid-template-columns:36px 1fr 72px 50px 50px 48px 48px 56px 56px 46px; gap:4px; padding:7px 10px; background:#0d1a2e; border-radius:8px 8px 0 0; font-size:10px; font-weight:700; color:#8899aa; letter-spacing:0.5px; margin-bottom:2px; }
+.rep-row { display:grid; grid-template-columns:36px 1fr 72px 50px 50px 48px 48px 56px 56px 46px; gap:4px; padding:7px 10px; background:#0c1525; border-radius:4px; border:1px solid #1a2540; font-size:12px; align-items:center; margin-bottom:2px; }
 .rep-rank { color:#e67e22; font-weight:800; }
 .rep-name { font-weight:700; }
 .rep-store { color:#8899aa; font-size:10px; }
@@ -94,7 +94,7 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
 @media (max-width:900px) {
   .header-center { display:none; }
   .store-grid { grid-template-columns:repeat(2,1fr); grid-template-rows:auto; overflow-y:auto; }
-  .rep-header-row, .rep-row { grid-template-columns:40px 1fr 90px 70px 60px 60px; font-size:11px; padding:6px 8px; }
+  .rep-header-row, .rep-row { grid-template-columns:32px 1fr 62px 44px 44px 42px 42px 50px 50px 40px; font-size:11px; padding:6px 8px; }
   .rep-header-row > *:nth-child(n+7), .rep-row > *:nth-child(n+7) { display:none; }
 }
 @media (max-width:600px) {
@@ -115,7 +115,7 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
   .metric-value { font-size:12px; }
   .metric-label { font-size:7px; }
   .dot-nav { display:none; }
-  .rep-header-row, .rep-row { grid-template-columns:32px 1fr 70px 60px; font-size:10px; }
+  .rep-header-row, .rep-row { grid-template-columns:28px 1fr 56px 40px 40px 36px 36px 44px 44px 36px; font-size:10px; }
   .rep-header-row > *:nth-child(n+5), .rep-row > *:nth-child(n+5) { display:none; }
 }
 @media (max-width:400px) {
@@ -291,6 +291,11 @@ function parseWorkbook(wb) {
         riPremium=rh.findIndex(h=>h.includes('Premium Mix')),
         riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
         riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
+        const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
+        const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
+        const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
+        const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
+        const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
 
       // New columns for rep breakdown
       const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
@@ -314,6 +319,11 @@ function parseWorkbook(wb) {
           premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
           nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
           gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
+          gigPct: riGigPct>=0 ? parseFloat(row[riGigPct])||0 : 0,
+          tabletMTD: riTablet>=0 ? parseInt(row[riTablet])||0 : 0,
+          watchesMTD: riWatch>=0 ? parseInt(row[riWatch])||0 : 0,
+          newToUpg: riNewToUpg>=0 ? parseFloat(row[riNewToUpg])||0 : 0,
+          accPerMobile: riAcc>=0 ? parseFloat(row[riAcc])||0 : 0,
           gigPct: riGig >= 0 ? Number(row[riGig]) || 0 : 0,
           tabletMTD: riTablet >= 0 ? Number(row[riTablet]) || 0 : 0,
           watchesMTD: riWatches >= 0 ? Number(row[riWatches]) || 0 : 0,
@@ -451,7 +461,7 @@ function renderStoreGrid(stores) {
           ${m('NON-TRAD', pct(s.nonTrad), 'blue')}
           ${m('GIG %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
           ${m('PREMIUM', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${m('NEWâUPG', pct(s.newToUpg), 'blue')}
+          ${m('NEWÃ¢ÂÂUPG', pct(s.newToUpg), 'blue')}
           ${m('ACCESS', '$'+Math.round(s.accPerDev), 'blue')}
           ${m('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
         </div>
@@ -481,16 +491,20 @@ function renderStoreDetail(s) {
       <div style="margin-top:14px;">
         <div style="font-size:13px;font-weight:700;color:#e67e22;letter-spacing:2px;margin-bottom:6px;">TEAM MEMBERS</div>
         <div style="display:grid;grid-template-columns:46px 1fr 90px 72px 72px 72px;gap:4px;font-size:11px;color:#8899aa;padding:4px 8px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>MOBILE</span><span>NPS</span><span>PREMIUM</span>
+          <span>RANK</span><span>NAME</span><span>GP $</span><span>GIG %</span><span>MOBILE</span><span>TABLET</span><span>WATCH</span><span>PREMIUM</span><span>NEW:UPG</span><span>ACC</span>
         </div>
         ${storeReps.map(r => `
           <div style="display:grid;grid-template-columns:46px 1fr 90px 72px 72px 72px;gap:4px;font-size:13px;padding:7px 8px;background:#0c1525;border-radius:4px;margin-bottom:3px;border:1px solid #1a2540;align-items:center;">
-            <span style="color:#e67e22;font-weight:800;">#${r.rank}</span>
-            <span style="font-weight:700;">${r.name}</span>
-            <span style="font-weight:700;">$${Math.round(r.gp).toLocaleString()}</span>
-            <span style="text-align:center;">${r.mobile}</span>
-            <span style="text-align:center;color:${r.nps>=0.8?'#2ecc40':r.nps>=0.6?'#f1c40f':'#e74c3c'}">${(r.nps*100).toFixed(0)}%</span>
-            <span style="text-align:center;color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#f1c40f':'#e74c3c'}">${(r.premium*100).toFixed(0)}%</span>
+            <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
+            <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
+            <span style="font-weight:700">$${Math.round(r.gp).toLocaleString()}</span>
+            <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
+            <span>${r.mobile}</span>
+            <span>${r.tabletMTD||0}</span>
+            <span>${r.watchesMTD||0}</span>
+            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
+            <span>${r.newToUpg!==undefined?(r.newToUpg*100).toFixed(1)+'%':'--'}</span>
+            <span>$${Math.round(r.accPerMobile||0)}</span>
           </div>
         `).join('')}
       </div>`;
@@ -538,7 +552,7 @@ function renderStoreDetail(s) {
           ${tile('NON-TRAD', pct(s.nonTrad), 'blue')}
           ${tile('GIG PLANS %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
           ${tile('PREMIUM MIX', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${tile('NEWâUPGRADE', pct(s.newToUpg), 'blue')}
+          ${tile('NEWÃ¢ÂÂUPGRADE', pct(s.newToUpg), 'blue')}
           ${tile('ACCESSORIES', '$'+Math.round(s.accPerDev), 'blue')}
           ${tile('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
         </div>
@@ -573,9 +587,9 @@ function renderStoreDetail(s) {
 function renderRepBreakdown(page) {
   const start = page * CONFIG.REPS_PER_PAGE;
   const pageReps = state.reps.slice(start, start + CONFIG.REPS_PER_PAGE);
-  const pct = v => v ? (v * 100).toFixed(1) + '%' : 'â';
-  const dollar = v => v ? '$' + Math.round(v).toLocaleString() : 'â';
-  const num = v => v || 'â';
+  const pct = v => v ? (v * 100).toFixed(1) + '%' : 'Ã¢ÂÂ';
+  const dollar = v => v ? '$' + Math.round(v).toLocaleString() : 'Ã¢ÂÂ';
+  const num = v => v || 'Ã¢ÂÂ';
 
   // Color helpers
   const gpColor = (v) => v >= 5000 ? '#2ecc40' : v >= 3000 ? '#f1c40f' : '#e74c3c';
@@ -610,8 +624,8 @@ function renderRepBreakdown(page) {
         <span class="rep-val" style="color:#3498db">${num(r.mobile)}</span>
         <span class="rep-val" style="color:#3498db">${num(r.tabletMTD)}</span>
         <span class="rep-val" style="color:#3498db">${num(r.watchesMTD)}</span>
-        <span class="rep-val" style="color:#8899aa">${r.accPerMobile ? dollar(r.accPerMobile) : (r.gphr ? dollar(r.gphr) : 'â')}</span>
-        <span class="rep-val" style="color:#f1c40f">${r.blendedWage ? dollar(r.blendedWage) : 'â'}</span>
+        <span class="rep-val" style="color:#8899aa">${r.accPerMobile ? dollar(r.accPerMobile) : (r.gphr ? dollar(r.gphr) : 'Ã¢ÂÂ')}</span>
+        <span class="rep-val" style="color:#f1c40f">${r.blendedWage ? dollar(r.blendedWage) : 'Ã¢ÂÂ'}</span>
       </div>`;
   }
 
@@ -1031,6 +1045,11 @@ function parseWorkbook(wb) {
     if (repHeader >= 0) {
       const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
       const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+      const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
+      const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
+      const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
+      const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
+      const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
       const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'), riLoc=rc('location'),
             riDM=rc('dm'), riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
             riMobile=rc('mobile mtd'), riPremium=rh.findIndex(h=>h.includes('Premium Mix')),
@@ -1055,6 +1074,11 @@ function parseWorkbook(wb) {
           premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
           nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
           gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
+          gigPct: riGigPct>=0 ? parseFloat(row[riGigPct])||0 : 0,
+          tabletMTD: riTablet>=0 ? parseInt(row[riTablet])||0 : 0,
+          watchesMTD: riWatch>=0 ? parseInt(row[riWatch])||0 : 0,
+          newToUpg: riNewToUpg>=0 ? parseFloat(row[riNewToUpg])||0 : 0,
+          accPerMobile: riAcc>=0 ? parseFloat(row[riAcc])||0 : 0,
         });
       }
       state.reps.sort((a, b) => a.rank - b.rank);
@@ -1207,16 +1231,20 @@ function renderStoreDetail(s) {
       <div style="margin-top:16px;">
         <div style="font-size:13px;font-weight:700;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
         <div style="display:grid;grid-template-columns:50px 1fr 90px 70px 70px 70px;gap:4px;font-size:12px;color:#8899aa;padding:4px 8px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>MOBILE</span><span>NPS</span><span>PREMIUM</span>
+          <span>RANK</span><span>NAME</span><span>GP $</span><span>GIG %</span><span>MOBILE</span><span>TABLET</span><span>WATCH</span><span>PREMIUM</span><span>NEW:UPG</span><span>ACC</span>
         </div>
         ${storeReps.map(r => `
           <div style="display:grid;grid-template-columns:50px 1fr 90px 70px 70px 70px;gap:4px;font-size:13px;padding:6px 8px;background:#0c1525;border-radius:4px;margin-bottom:2px;border:1px solid #1a2540;">
-            <span style="color:#e67e22;font-weight:800;">#${r.rank}</span>
-            <span style="font-weight:700;">${r.name}</span>
-            <span style="font-weight:700;">$${Math.round(r.gp).toLocaleString()}</span>
-            <span style="text-align:center;">${r.mobile}</span>
-            <span style="text-align:center;color:${r.nps>=0.8?'#2ecc40':r.nps>=0.6?'#f1c40f':'#e74c3c'}">${(r.nps*100).toFixed(0)}%</span>
-            <span style="text-align:center;color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#f1c40f':'#e74c3c'}">${(r.premium*100).toFixed(0)}%</span>
+            <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
+            <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
+            <span style="font-weight:700">$${Math.round(r.gp).toLocaleString()}</span>
+            <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
+            <span>${r.mobile}</span>
+            <span>${r.tabletMTD||0}</span>
+            <span>${r.watchesMTD||0}</span>
+            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
+            <span>${r.newToUpg!==undefined?(r.newToUpg*100).toFixed(1)+'%':'--'}</span>
+            <span>$${Math.round(r.accPerMobile||0)}</span>
           </div>
         `).join('')}
       </div>`;
