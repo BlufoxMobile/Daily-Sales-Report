@@ -560,7 +560,7 @@ function renderStoreDetail(s) {
       <!-- Right column -->
       <div style="display:flex;flex-direction:column;gap:12px;overflow:hidden;">
         <!-- Extra metrics row -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
             <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
             <div style="font-size:22px;font-weight:800;margin-top:4px;">${s.mobileMTD}</div>
@@ -755,7 +755,7 @@ loadData();
   .slide-container { height:calc(100vh - 100px); padding:8px 20px; overflow:hidden; }
 
   /* -- Store Grid -- */
-  .store-grid { display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(3,1fr); gap:10px; height:100%; }
+  .store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
   .store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
   .store-card:hover { border-color:#e67e22; }
   .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
