@@ -17,10 +17,10 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
 .logo-text { font-size:11px; color:#e67e22; font-weight:800; letter-spacing:1.5px; }
 .brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
 .brand-title .highlight { color:#e67e22; }
-.brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:2px; }
+.brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:4px; }
 .header-center { text-align:center; }
 .header-center-sub { font-size:10px; color:#8899aa; letter-spacing:3px; }
-.header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:2px; }
+.header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:4px; }
 .header-right { text-align:right; display:flex; align-items:center; gap:14px; }
 .live-badge { display:flex; align-items:center; gap:6px; background:#0d2a0d; border:1px solid #2ecc40; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; color:#2ecc40; letter-spacing:1px; }
 .live-dot { width:8px; height:8px; border-radius:50%; background:#2ecc40; animation:pulse 1.5s infinite; }
@@ -44,7 +44,7 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
 .store-card:hover { border-color:#e67e22; }
 .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
 .store-rank { font-size:18px; font-weight:900; color:#e67e22; opacity:0.8; }
-.store-name { font-size:22px; font-weight:800; color:#fff; margin-top:2px; }
+.store-name { font-size:22px; font-weight:800; color:#fff; margin-top:4px; }
 .store-gp { font-size:40px; font-weight:900; color:#e67e22; margin-top:6px; }
 .store-gp-sub { font-size:12px; color:#5a7a9a; margin-top:3px; }
 .store-gp-sub .green { color:#2ecc40; }
@@ -79,11 +79,11 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
 .error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
 .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
 /* -- Summary Bar -- */
-.summary-bar { grid-column:1/-1; display:flex; gap:12px; }
-.summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:10px 16px; text-align:center; }
-.summary-label { font-size:10px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
-.summary-value { font-size:22px; font-weight:900; color:#e67e22; margin-top:2px; }
-.summary-sub { font-size:10px; color:#5a7a9a; margin-top:2px; }
+.summary-bar { grid-column:1/-1; display:flex; gap:14px; }
+.summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:14px 20px; text-align:center; }
+.summary-label { font-size:13px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
+.summary-value { font-size:28px; font-weight:900; color:#e67e22; margin-top:4px; }
+.summary-sub { font-size:12px; color:#5a7a9a; margin-top:4px; }
 /* -- Slide Dropdown -- */
 .slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
 .slide-select option { background:#0d1a2e; color:#fff; }
@@ -524,7 +524,7 @@ function renderStoreDetail(s) {
             </div>
             <div style="text-align:right;">
               <div style="font-size:50px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
-              <div style="font-size:13px;color:#8899aa;margin-top:2px;">GP $ MTD</div>
+              <div style="font-size:13px;color:#8899aa;margin-top:4px;">GP $ MTD</div>
             </div>
           </div>
         </div>
@@ -730,10 +730,10 @@ loadData();
   .logo-text { font-size:11px; color:#e67e22; font-weight:800; letter-spacing:1.5px; }
   .brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
   .brand-title .highlight { color:#e67e22; }
-  .brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:2px; }
+  .brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:4px; }
   .header-center { text-align:center; }
   .header-center-sub { font-size:10px; color:#8899aa; letter-spacing:3px; }
-  .header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:2px; }
+  .header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:4px; }
   .header-right { text-align:right; display:flex; align-items:center; gap:14px; }
   .live-badge { display:flex; align-items:center; gap:6px; background:#0d2a0d; border:1px solid #2ecc40; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; color:#2ecc40; letter-spacing:1px; }
   .live-dot { width:8px; height:8px; border-radius:50%; background:#2ecc40; animation:pulse 1.5s infinite; }
@@ -762,7 +762,7 @@ loadData();
   .store-rank { font-size:16px; font-weight:900; color:#e67e22; opacity:0.7; }
   .store-name { font-size:17px; font-weight:800; color:#fff; margin-top:1px; }
   .store-gp { font-size:30px; font-weight:900; color:#e67e22; margin-top:4px; }
-  .store-gp-sub { font-size:11px; color:#5a7a9a; margin-top:2px; }
+  .store-gp-sub { font-size:11px; color:#5a7a9a; margin-top:4px; }
   .store-gp-sub .green { color:#2ecc40; }
   .store-gp-sub .red { color:#e74c3c; }
 
@@ -800,11 +800,11 @@ loadData();
   .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
 
   /* -- Summary Bar -- */
-  .summary-bar { grid-column:1/-1; display:flex; gap:12px; }
-  .summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:10px 16px; text-align:center; }
-  .summary-label { font-size:10px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
-  .summary-value { font-size:22px; font-weight:900; color:#e67e22; margin-top:2px; }
-  .summary-sub { font-size:10px; color:#5a7a9a; margin-top:2px; }
+  .summary-bar { grid-column:1/-1; display:flex; gap:14px; }
+  .summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:14px 20px; text-align:center; }
+  .summary-label { font-size:13px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
+  .summary-value { font-size:28px; font-weight:900; color:#e67e22; margin-top:4px; }
+  .summary-sub { font-size:12px; color:#5a7a9a; margin-top:4px; }
 
   /* -- Slide Dropdown -- */
   .slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
@@ -1270,7 +1270,7 @@ function renderStoreDetail(s) {
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
             <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
             <div style="font-size:20px;font-weight:800;margin-top:4px;">$${Math.round(s.target).toLocaleString()}</div>
-            <div style="font-size:12px;color:${varColor};margin-top:2px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
+            <div style="font-size:12px;color:${varColor};margin-top:4px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
             <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
