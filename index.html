@@ -479,7 +479,7 @@ function renderStoreDetail(s) {
   const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
   const varSign = s.varTarget >= 0 ? '+' : '-';
   const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:14px;border-radius:10px;text-align:center;"><div class="metric-label" style="font-size:11px;letter-spacing:1px;margin-bottom:4px;">${label}</div><div class="metric-value" style="font-size:22px;margin-top:6px;">${val}</div></div>`;
+  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:18px;border-radius:10px;text-align:center;"><div class="metric-label" style="font-size:14px;letter-spacing:1px;margin-bottom:4px;">${label}</div><div class="metric-value" style="font-size:28px;margin-top:6px;">${val}</div></div>`;
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
@@ -529,18 +529,18 @@ function renderStoreDetail(s) {
         </div>
         <!-- GP Target + Daily -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">$${Math.round(s.target).toLocaleString()}</div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:18px;text-align:center;">
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${Math.round(s.target).toLocaleString()}</div>
             <div style="font-size:13px;color:${varColor};margin-top:3px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
           </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">$${Math.round(s.gpPerDay).toLocaleString()}</div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:18px;text-align:center;">
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${Math.round(s.gpPerDay).toLocaleString()}</div>
           </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;color:${s.dailyBal>=0?'#2ecc40':'#e74c3c'}">${s.dailyBal>=0?'+':''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:18px;text-align:center;">
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;color:${s.dailyBal>=0?'#2ecc40':'#e74c3c'}">${s.dailyBal>=0?'+':''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
           </div>
         </div>
         <!-- Performance Metrics Grid -->
@@ -561,20 +561,20 @@ function renderStoreDetail(s) {
         <!-- Extra metrics row -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.mobileMTD}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.mobileMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.tabletMTD}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.tabletMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.watchesMTD}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.watchesMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.newRGU}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.newRGU}</div>
           </div>
         </div>
         <!-- Team Members -->
@@ -946,7 +946,6 @@ function parseWorkbook(wb) {
   if (!ws) return;
   const data = XLSX.utils.sheet_to_json(ws, { header:1, defval:null });
 
-  // Find header row (contains "Rank", "Store", "GP $")
   let headerRow = -1;
   for (let i = 0; i < Math.min(15, data.length); i++) {
     const row = data[i];
@@ -960,35 +959,25 @@ function parseWorkbook(wb) {
   const col = (name) => headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
 
   const iRank=col('Rank'), iRegion=col('Region'), iStore=col('Store'), iEsop=col('ESOP'),
-        iRSD=col('RSD'), iDM=col('DM'), iSM=col('SM'), iGP=col('GP $'),
-        iLastGP=headers.findIndex(h=>h.includes('Last Month GP $')),
-        iTarget=col('Net Target GP'), iVarTarget=col('Var Target GP'),
-        iGPDay=col('GP $ per Day'), iDailyBal=col('Daily Bal'),
-        iMobileMTD=col('Mobile MTD'), iNewMob=headers.findIndex(h=>h.includes('New Mobile')),
-        iMobTrend=col('Mobile Trend'), iHSI=col('HSI'),
-        iNewRGU=col('NEW RGU'), iScore=col('Total Score'),
-        iVideo=col('Video attach');
+    iRSD=col('RSD'), iDM=col('DM'), iSM=col('SM'), iGP=col('GP $'),
+    iLastGP=headers.findIndex(h=>h.includes('Last Month GP $')),
+    iTarget=col('Net Target GP'), iVarTarget=col('Var Target GP'),
+    iGPDay=col('GP $ per Day'), iDailyBal=col('Daily Bal'),
+    iMobileMTD=col('Mobile MTD'), iNewMob=headers.findIndex(h=>h.includes('New Mobile')),
+    iMobTrend=col('Mobile Trend'), iHSI=col('HSI'), iNewRGU=col('NEW RGU'),
+    iScore=col('Total Score'), iVideo=col('Video attach');
 
-  // Jeff's 9 tracked metrics -- dynamic lookup by header name so column shifts never break the dashboard
-  // GP $ Trend = col L (11) -- NOT "GP $ Est Net Trend" which is col M (12)
-  const iGPTrend  = headers.findIndex(h => h === 'GP $ Trend');
-  // Mobile Close rate = col V (21)
+  const iGPTrend = headers.findIndex(h => h === 'GP $ Trend');
   const iMobileCR = headers.findIndex(h => h.toLowerCase().includes('mobile close rate'));
-  // Fiscal Close Rate = col X (23)
   const iFiscalCR = headers.findIndex(h => h.toLowerCase().includes('fiscal close rate'));
-  // Non Traditional CR = col AB (27)
-  const iNonTrad  = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
-  // GIG Plans % raw metric = col BJ (61) -- raw cols have "\nX Pts" in header; scoring section col (DH=111) does not
-  const iGig      = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%')
-                      && h.toLowerCase().includes('pts'));
-  // Premium Mix = col BT (71)
-  const iPremium  = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
-  // NEW TO UPGR % = col BY (76)
+  const iNonTrad = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
+  const iGig = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%') && h.toLowerCase().includes('pts'));
+  const iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
   const iNewToUpg = headers.findIndex(h => h.toUpperCase().includes('NEW TO UPGR'));
-  // Accessory $ per Device (Net) = col CJ (87)
-  const iAccDev   = headers.findIndex(h => h.toLowerCase().includes('accessory') && h.toLowerCase().includes('device') && h.toLowerCase().includes('net'));
-  // Fiscal NPS = col CM (90) -- exclude "Last" variant
-  const iNPS      = headers.findIndex(h => h.toLowerCase().includes('fiscal nps') && !h.toLowerCase().includes('last'));
+  const iAccDev = headers.findIndex(h => h.toLowerCase().includes('accessory') && h.toLowerCase().includes('device') && h.toLowerCase().includes('net'));
+  const iNPS = headers.findIndex(h => h.toLowerCase().includes('fiscal nps') && !h.toLowerCase().includes('last'));
+  const iTabletMTD = headers.findIndex(h => h.toLowerCase().includes('tablet') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
+  const iWatchesMTD = headers.findIndex(h => h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
 
   state.stores = [];
   for (let i = headerRow + 1; i < data.length; i++) {
@@ -996,39 +985,26 @@ function parseWorkbook(wb) {
     if (!row || !row[iRank]) break;
     const rsd = row[iRSD];
     if (!rsd || !String(rsd).includes('Bilbrey')) continue;
-
     state.stores.push({
-      rank: row[iRank],
-      region: row[iRegion] || '',
-      name: row[iStore] || '',
-      esop: row[iEsop] || '',
-      dm: row[iDM] || '',
-      sm: row[iSM] || '',
+      rank: row[iRank], region: row[iRegion] || '', name: row[iStore] || '',
+      esop: row[iEsop] || '', dm: row[iDM] || '', sm: row[iSM] || '',
       gp: Number(row[iGP]) || 0,
       gpTrend: Number(row[iGPTrend]) || 0,
       lastGP: iLastGP >= 0 ? Number(row[iLastGP]) || 0 : 0,
-      target: Number(row[iTarget]) || 0,
-      varTarget: Number(row[iVarTarget]) || 0,
-      gpPerDay: Number(row[iGPDay]) || 0,
-      dailyBal: Number(row[iDailyBal]) || 0,
-      mobileCR: Number(row[iMobileCR]) || 0,
-      fiscalCR: Number(row[iFiscalCR]) || 0,
-      nonTrad: Number(row[iNonTrad]) || 0,
-      nps: Number(row[iNPS]) || 0,
-      premium: Number(row[iPremium]) || 0,
-      mobileMTD: Number(row[iMobileMTD]) || 0,
+      target: Number(row[iTarget]) || 0, varTarget: Number(row[iVarTarget]) || 0,
+      gpPerDay: Number(row[iGPDay]) || 0, dailyBal: Number(row[iDailyBal]) || 0,
+      mobileCR: Number(row[iMobileCR]) || 0, fiscalCR: Number(row[iFiscalCR]) || 0,
+      nonTrad: Number(row[iNonTrad]) || 0, nps: Number(row[iNPS]) || 0,
+      premium: Number(row[iPremium]) || 0, mobileMTD: Number(row[iMobileMTD]) || 0,
       newMobile: iNewMob >= 0 ? Number(row[iNewMob]) || 0 : 0,
-      mobileTrend: Number(row[iMobTrend]) || 0,
-      hsi: Number(row[iHSI]) || 0,
-      gigPct: Number(row[iGig]) || 0,
-      newToUpg: Number(row[iNewToUpg]) || 0,
-      accPerDev: Number(row[iAccDev]) || 0,
-      newRGU: Number(row[iNewRGU]) || 0,
-      totalScore: Number(row[iScore]) || 0,
-      videoAttach: Number(row[iVideo]) || 0,
+      mobileTrend: Number(row[iMobTrend]) || 0, hsi: Number(row[iHSI]) || 0,
+      gigPct: Number(row[iGig]) || 0, newToUpg: Number(row[iNewToUpg]) || 0,
+      accPerDev: Number(row[iAccDev]) || 0, newRGU: Number(row[iNewRGU]) || 0,
+      totalScore: Number(row[iScore]) || 0, videoAttach: Number(row[iVideo]) || 0,
+      tabletMTD: iTabletMTD >= 0 ? Number(row[iTabletMTD]) || 0 : 0,
+      watchesMTD: iWatchesMTD >= 0 ? Number(row[iWatchesMTD]) || 0 : 0,
     });
   }
-
   state.stores.sort((a, b) => a.rank - b.rank);
 
   // Parse Rep Rank
@@ -1037,23 +1013,32 @@ function parseWorkbook(wb) {
     const repData = XLSX.utils.sheet_to_json(repWs, { header:1, defval:null });
     let repHeader = -1;
     for (let i = 0; i < 15; i++) {
-      if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') && repData[i].some(c => c && String(c).includes('Employee'))) {
-        repHeader = i; break;
-      }
+      if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') &&
+          repData[i].some(c => c && String(c).includes('Employee'))) { repHeader = i; break; }
     }
     if (repHeader >= 0) {
       const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
       const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
-      const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
-      const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
-      const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
-      const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
-      const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
-      const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'), riLoc=rc('location'),
-            riDM=rc('dm'), riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
-            riMobile=rc('mobile mtd'), riPremium=rh.findIndex(h=>h.includes('Premium Mix')),
-            riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
-            riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
+
+      const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'),
+        riLoc=rc('location'), riDM=rc('dm'),
+        riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
+        riMobile=rc('mobile mtd'),
+        riPremium=rh.findIndex(h=>h.includes('Premium Mix')),
+        riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
+        riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
+        const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
+        const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
+        const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
+        const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
+        const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
+
+      // New columns for rep breakdown
+      const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
+      const riTablet = rh.findIndex(h => h.toLowerCase().includes('tablet') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
+      const riWatches = rh.findIndex(h => h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
+      const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
+      const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
 
       const jeffStoreNames = state.stores.map(s => s.name.toLowerCase());
       state.reps = [];
@@ -1063,11 +1048,8 @@ function parseWorkbook(wb) {
         const loc = String(row[riLoc] || '').toLowerCase();
         if (!jeffStoreNames.includes(loc)) continue;
         state.reps.push({
-          rank: row[riRank],
-          name: row[riName] || '',
-          title: row[riTitle] || '',
-          store: row[riLoc] || '',
-          dm: row[riDM] || '',
+          rank: row[riRank], name: row[riName] || '', title: row[riTitle] || '',
+          store: row[riLoc] || '', dm: row[riDM] || '',
           gp: Number(riGP >= 0 ? row[riGP] : 0) || 0,
           mobile: Number(row[riMobile]) || 0,
           premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
@@ -1078,6 +1060,11 @@ function parseWorkbook(wb) {
           watchesMTD: riWatch>=0 ? parseInt(row[riWatch])||0 : 0,
           newToUpg: riNewToUpg>=0 ? parseFloat(row[riNewToUpg])||0 : 0,
           accPerMobile: riAcc>=0 ? parseFloat(row[riAcc])||0 : 0,
+          gigPct: riGig >= 0 ? Number(row[riGig]) || 0 : 0,
+          tabletMTD: riTablet >= 0 ? Number(row[riTablet]) || 0 : 0,
+          watchesMTD: riWatches >= 0 ? Number(row[riWatches]) || 0 : 0,
+          accPerMobile: riAccMobile >= 0 ? Number(row[riAccMobile]) || 0 : 0,
+          blendedWage: riBlendedWage >= 0 ? Number(row[riBlendedWage]) || 0 : 0,
         });
       }
       state.reps.sort((a, b) => a.rank - b.rank);
@@ -1207,7 +1194,7 @@ function renderStoreDetail(s) {
   const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
   const varSign = s.varTarget >= 0 ? '+' : '-';
   const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:14px;border-radius:10px;text-align:center;"><div class="metric-label" style="font-size:11px;letter-spacing:1px;margin-bottom:4px;">${label}</div><div class="metric-value" style="font-size:22px;margin-top:6px;">${val}</div></div>`;
+  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:18px;border-radius:10px;text-align:center;"><div class="metric-label" style="font-size:14px;letter-spacing:1px;margin-bottom:4px;">${label}</div><div class="metric-value" style="font-size:28px;margin-top:6px;">${val}</div></div>`;
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
@@ -1257,18 +1244,18 @@ function renderStoreDetail(s) {
         </div>
         <!-- GP Target + Daily -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">$${Math.round(s.target).toLocaleString()}</div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:18px;text-align:center;">
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${Math.round(s.target).toLocaleString()}</div>
             <div style="font-size:13px;color:${varColor};margin-top:3px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
           </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">$${Math.round(s.gpPerDay).toLocaleString()}</div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:18px;text-align:center;">
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${Math.round(s.gpPerDay).toLocaleString()}</div>
           </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;color:${s.dailyBal>=0?'#2ecc40':'#e74c3c'}">${s.dailyBal>=0?'+':''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:18px;text-align:center;">
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;color:${s.dailyBal>=0?'#2ecc40':'#e74c3c'}">${s.dailyBal>=0?'+':''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
           </div>
         </div>
         <!-- Performance Metrics Grid -->
@@ -1289,20 +1276,20 @@ function renderStoreDetail(s) {
         <!-- Extra metrics row -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.mobileMTD}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.mobileMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.tabletMTD}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.tabletMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.watchesMTD}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.watchesMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.newRGU}</div>
+            <div style="font-size:14px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
+            <div style="font-size:28px;font-weight:800;margin-top:6px;">${s.newRGU}</div>
           </div>
         </div>
         <!-- Team Members -->
