@@ -293,6 +293,7 @@ function parseWorkbook(wb) {
         riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
         const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
         const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
+        const riTablet=-1;
         const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
         const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
         const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
@@ -1028,6 +1029,7 @@ function parseWorkbook(wb) {
         const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
         const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
         const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
+        const riWatches=rh.findIndex(h=>h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
         const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
         const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
 
