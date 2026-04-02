@@ -299,8 +299,6 @@ function parseWorkbook(wb) {
 
       // New columns for rep breakdown
       const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
-      const riTablet = rh.findIndex(h => h.toLowerCase().includes('tablet') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
-      const riWatches = rh.findIndex(h => h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
       const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
       const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
 
@@ -1035,8 +1033,6 @@ function parseWorkbook(wb) {
 
       // New columns for rep breakdown
       const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
-      const riTablet = rh.findIndex(h => h.toLowerCase().includes('tablet') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
-      const riWatches = rh.findIndex(h => h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
       const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
       const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
 
