@@ -79,11 +79,11 @@ body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:
 .error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
 .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
 /* -- Summary Bar -- */
-.summary-bar { grid-column:1/-1; display:flex; gap:16px; }
-.summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:18px 24px; text-align:center; }
-.summary-label { font-size:16px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
-.summary-value { font-size:36px; font-weight:900; color:#e67e22; margin-top:6px; }
-.summary-sub { font-size:14px; color:#5a7a9a; margin-top:6px; }
+.summary-bar { grid-column:1/-1; display:flex; gap:20px; }
+.summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:24px 30px; text-align:center; }
+.summary-label { font-size:20px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
+.summary-value { font-size:44px; font-weight:900; color:#e67e22; margin-top:6px; }
+.summary-sub { font-size:16px; color:#5a7a9a; margin-top:6px; }
 /* -- Slide Dropdown -- */
 .slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
 .slide-select option { background:#0d1a2e; color:#fff; }
@@ -440,7 +440,7 @@ function render() {
 }
 
 function renderStoreGrid(stores) {
-  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:4px;"><div class="metric-label" style="font-size:9px;">${label}</div><div class="metric-value" style="font-size:13px;">${val}</div></div>`;
+  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:6px;"><div class="metric-label" style="font-size:11px;">${label}</div><div class="metric-value" style="font-size:15px;">${val}</div></div>`;
   let html = '<div class="store-grid">';
   for (const s of stores) {
     const varColor = s.varTarget >= 0 ? 'green' : 'red';
@@ -454,7 +454,7 @@ function renderStoreGrid(stores) {
           <div class="store-gp">$${Math.round(s.gp).toLocaleString()}</div>
           <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
         </div>
-        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px;">
+        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
           ${m('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
           ${m('MOB CR', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
           ${m('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
@@ -479,7 +479,7 @@ function renderStoreDetail(s) {
   const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
   const varSign = s.varTarget >= 0 ? '+' : '-';
   const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:12px 8px;border-radius:10px;"><div class="metric-label" style="font-size:10px;margin-bottom:4px;">${label}</div><div class="metric-value" style="font-size:20px;">${val}</div></div>`;
+  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:14px;border-radius:10px;text-align:center;"><div class="metric-label" style="font-size:11px;letter-spacing:1px;margin-bottom:4px;">${label}</div><div class="metric-value" style="font-size:22px;margin-top:6px;">${val}</div></div>`;
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
@@ -490,21 +490,20 @@ function renderStoreDetail(s) {
     repHtml = `
       <div style="margin-top:14px;">
         <div style="font-size:13px;font-weight:700;color:#e67e22;letter-spacing:2px;margin-bottom:6px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:46px 1fr 90px 72px 72px 72px;gap:4px;font-size:11px;color:#8899aa;padding:4px 8px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>GIG %</span><span>MOBILE</span><span>TABLET</span><span>WATCH</span><span>PREMIUM</span><span>NEW:UPG</span><span>ACC</span>
+        <div style="display:grid;grid-template-columns:40px 1fr 72px 58px 58px 58px 46px 46px 50px;gap:3px;font-size:10px;color:#8899aa;padding:4px 8px;">
+          <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PREM%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:46px 1fr 90px 72px 72px 72px;gap:4px;font-size:13px;padding:7px 8px;background:#0c1525;border-radius:4px;margin-bottom:3px;border:1px solid #1a2540;align-items:center;">
+          <div style="display:grid;grid-template-columns:40px 1fr 72px 58px 58px 58px 46px 46px 50px;gap:3px;font-size:12px;padding:7px 8px;background:#0c1525;border-radius:4px;margin-bottom:3px;border:1px solid #1a2540;align-items:center;">
             <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
             <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
-            <span style="font-weight:700">$${Math.round(r.gp).toLocaleString()}</span>
+            <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
+            <span>${Math.round(r.accPerMobile||0)}</span>
+            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
             <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
             <span>${r.mobile}</span>
             <span>${r.tabletMTD||0}</span>
             <span>${r.watchesMTD||0}</span>
-            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
-            <span>${r.newToUpg!==undefined?(r.newToUpg*100).toFixed(1)+'%':'--'}</span>
-            <span>$${Math.round(r.accPerMobile||0)}</span>
           </div>
         `).join('')}
       </div>`;
@@ -800,11 +799,11 @@ loadData();
   .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
 
   /* -- Summary Bar -- */
-  .summary-bar { grid-column:1/-1; display:flex; gap:16px; }
-  .summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:18px 24px; text-align:center; }
-  .summary-label { font-size:16px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
-  .summary-value { font-size:36px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .summary-sub { font-size:14px; color:#5a7a9a; margin-top:6px; }
+  .summary-bar { grid-column:1/-1; display:flex; gap:20px; }
+  .summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:24px 30px; text-align:center; }
+  .summary-label { font-size:20px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
+  .summary-value { font-size:44px; font-weight:900; color:#e67e22; margin-top:6px; }
+  .summary-sub { font-size:16px; color:#5a7a9a; margin-top:6px; }
 
   /* -- Slide Dropdown -- */
   .slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
@@ -1169,20 +1168,12 @@ function render() {
 }
 
 function renderStoreGrid(stores) {
-  // Summary row
-  const totalGP = stores.reduce((s, st) => s + st.gp, 0);
-  const avgNPS = stores.reduce((s, st) => s + st.nps, 0) / stores.length;
-  const totalMobile = stores.reduce((s, st) => s + st.mobileMTD, 0);
-  const avgCR = stores.reduce((s, st) => s + st.mobileCR, 0) / stores.length;
-
+  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:6px;"><div class="metric-label" style="font-size:11px;">${label}</div><div class="metric-value" style="font-size:15px;">${val}</div></div>`;
   let html = '<div class="store-grid">';
-
   for (const s of stores) {
     const varColor = s.varTarget >= 0 ? 'green' : 'red';
     const varSign = s.varTarget >= 0 ? '+' : '-';
     const pct = v => (v * 100).toFixed(1) + '%';
-    const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:3px 4px;"><div class="metric-label" style="font-size:8px;">${label}</div><div class="metric-value" style="font-size:11px;">${val}</div></div>`;
-
     html += `
       <div class="store-card">
         <div>
@@ -1191,35 +1182,32 @@ function renderStoreGrid(stores) {
           <div class="store-gp">$${Math.round(s.gp).toLocaleString()}</div>
           <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
         </div>
-        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;">
-          ${m('GP TREND',   '$'+Math.round(s.gpTrend).toLocaleString(),  s.gpTrend>=0?'green':'red')}
-          ${m('MCR',        pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
-          ${m('FISCAL CR',  pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${m('NON-TRAD',   pct(s.nonTrad),       'blue')}
-          ${m('GIG %',      pct(s.gigPct),   s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${m('PREMIUM',    pct(s.premium),  s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${m('NEW->UPG',    pct(s.newToUpg),      'blue')}
-          ${m('ACCESS',     '$'+Math.round(s.accPerDev), 'blue')}
-          ${m('NPS',        pct(s.nps),      s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
+        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
+          ${m('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
+          ${m('MOB CR', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
+          ${m('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
+          ${m('NON-TRAD', pct(s.nonTrad), 'blue')}
+          ${m('GIG %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
+          ${m('PREMIUM', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
+          ${m('NEWÃ¢ÂÂUPG', pct(s.newToUpg), 'blue')}
+          ${m('ACCESS', '$'+Math.round(s.accPerDev), 'blue')}
+          ${m('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
         </div>
       </div>`;
   }
-
-  // Fill empty cells if less than 12
+  // Fill empty cards
   for (let i = stores.length; i < CONFIG.STORE_CARDS_PER_PAGE; i++) {
-    html += '<div class="store-card" style="opacity:0.2;border:1px dashed #1a3050;"></div>';
+    html += '<div class="store-card" style="opacity:0.15;border:1px dashed #1a3050;"></div>';
   }
-
   html += '</div>';
   return html;
 }
 
 function renderStoreDetail(s) {
-  const crClass = s.mobileCR >= 0.08 ? 'green' : s.mobileCR >= 0.05 ? 'yellow' : 'red';
-  const npsClass = s.nps >= 0.8 ? 'green' : s.nps >= 0.6 ? 'yellow' : 'red';
-  const premClass = s.premium >= 0.85 ? 'green' : s.premium >= 0.7 ? 'yellow' : 'red';
   const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
   const varSign = s.varTarget >= 0 ? '+' : '-';
+  const pct = v => (v * 100).toFixed(1) + '%';
+  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:14px;border-radius:10px;text-align:center;"><div class="metric-label" style="font-size:11px;letter-spacing:1px;margin-bottom:4px;">${label}</div><div class="metric-value" style="font-size:22px;margin-top:6px;">${val}</div></div>`;
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
@@ -1228,87 +1216,97 @@ function renderStoreDetail(s) {
   let repHtml = '';
   if (storeReps.length) {
     repHtml = `
-      <div style="margin-top:16px;">
-        <div style="font-size:13px;font-weight:700;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:50px 1fr 90px 70px 70px 70px;gap:4px;font-size:12px;color:#8899aa;padding:4px 8px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>GIG %</span><span>MOBILE</span><span>TABLET</span><span>WATCH</span><span>PREMIUM</span><span>NEW:UPG</span><span>ACC</span>
+      <div style="margin-top:14px;">
+        <div style="font-size:13px;font-weight:700;color:#e67e22;letter-spacing:2px;margin-bottom:6px;">TEAM MEMBERS</div>
+        <div style="display:grid;grid-template-columns:40px 1fr 72px 58px 58px 58px 46px 46px 50px;gap:3px;font-size:10px;color:#8899aa;padding:4px 8px;">
+          <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PREM%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:50px 1fr 90px 70px 70px 70px;gap:4px;font-size:13px;padding:6px 8px;background:#0c1525;border-radius:4px;margin-bottom:2px;border:1px solid #1a2540;">
+          <div style="display:grid;grid-template-columns:40px 1fr 72px 58px 58px 58px 46px 46px 50px;gap:3px;font-size:12px;padding:7px 8px;background:#0c1525;border-radius:4px;margin-bottom:3px;border:1px solid #1a2540;align-items:center;">
             <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
             <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
-            <span style="font-weight:700">$${Math.round(r.gp).toLocaleString()}</span>
+            <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
+            <span>${Math.round(r.accPerMobile||0)}</span>
+            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
             <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
             <span>${r.mobile}</span>
             <span>${r.tabletMTD||0}</span>
             <span>${r.watchesMTD||0}</span>
-            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
-            <span>${r.newToUpg!==undefined?(r.newToUpg*100).toFixed(1)+'%':'--'}</span>
-            <span>$${Math.round(r.accPerMobile||0)}</span>
           </div>
         `).join('')}
       </div>`;
   }
 
   return `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;height:100%;">
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:24px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;height:100%;overflow:hidden;">
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
+        <!-- Store Header -->
+        <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:20px 24px;">
           <div style="display:flex;justify-content:space-between;align-items:start;">
             <div>
-              <div style="font-size:16px;color:#e67e22;font-weight:800;">RANK #${s.rank}</div>
-              <div style="font-size:28px;font-weight:900;margin-top:6px;">${s.name}</div>
+              <div style="font-size:18px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
+              <div style="font-size:34px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
               <div style="font-size:12px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:42px;font-weight:900;color:#e67e22;">$${Math.round(s.gp).toLocaleString()}</div>
-              <div style="font-size:13px;color:#8899aa;">GP $ MTD</div>
+              <div style="font-size:50px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
+              <div style="font-size:13px;color:#8899aa;margin-top:6px;">GP $ MTD</div>
             </div>
           </div>
         </div>
+        <!-- GP Target + Daily -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
-            <div style="font-size:20px;font-weight:800;margin-top:6px;">$${Math.round(s.target).toLocaleString()}</div>
-            <div style="font-size:12px;color:${varColor};margin-top:6px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
+            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;">$${Math.round(s.target).toLocaleString()}</div>
+            <div style="font-size:13px;color:${varColor};margin-top:3px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
-            <div style="font-size:20px;font-weight:800;margin-top:6px;">$${Math.round(s.gpPerDay).toLocaleString()}</div>
+            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;">$${Math.round(s.gpPerDay).toLocaleString()}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
-            <div style="font-size:20px;font-weight:800;margin-top:6px;color:${s.dailyBal>=0?'#2ecc40':'#e74c3c'}">${s.dailyBal>=0?'+':''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
+            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;color:${s.dailyBal>=0?'#2ecc40':'#e74c3c'}">${s.dailyBal>=0?'+':''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-          <div class="metric ${s.gpTrend>=0?'green':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">GP TREND</div><div class="metric-value" style="font-size:17px;">$${Math.round(s.gpTrend).toLocaleString()}</div></div>
-          <div class="metric ${s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">MCR</div><div class="metric-value" style="font-size:17px;">${(s.mobileCR*100).toFixed(1)}%</div></div>
-          <div class="metric ${s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">FISCAL CR</div><div class="metric-value" style="font-size:17px;">${(s.fiscalCR*100).toFixed(1)}%</div></div>
-          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NON-TRAD</div><div class="metric-value" style="font-size:17px;">${(s.nonTrad*100).toFixed(1)}%</div></div>
-          <div class="metric ${s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">GIG %</div><div class="metric-value" style="font-size:17px;">${(s.gigPct*100).toFixed(1)}%</div></div>
-          <div class="metric ${s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">PREMIUM MIX</div><div class="metric-value" style="font-size:17px;">${(s.premium*100).toFixed(1)}%</div></div>
-          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">NEW->UPGRADE</div><div class="metric-value" style="font-size:17px;">${(s.newToUpg*100).toFixed(1)}%</div></div>
-          <div class="metric blue" style="padding:10px;border-radius:10px;"><div class="metric-label">ACCESSORIES</div><div class="metric-value" style="font-size:17px;">$${Math.round(s.accPerDev)}</div></div>
-          <div class="metric ${s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red'}" style="padding:10px;border-radius:10px;"><div class="metric-label">NPS</div><div class="metric-value" style="font-size:17px;">${(s.nps*100).toFixed(1)}%</div></div>
+        <!-- Performance Metrics Grid -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;">
+          ${tile('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
+          ${tile('MOB CLOSE RATE', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
+          ${tile('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
+          ${tile('NON-TRAD', pct(s.nonTrad), 'blue')}
+          ${tile('GIG PLANS %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
+          ${tile('PREMIUM MIX', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
+          ${tile('NEWÃ¢ÂÂUPGRADE', pct(s.newToUpg), 'blue')}
+          ${tile('ACCESSORIES', '$'+Math.round(s.accPerDev), 'blue')}
+          ${tile('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:12px;overflow:hidden;">
+        <!-- Extra metrics row -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:10px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
-            <div style="font-size:17px;font-weight:800;margin-top:6px;">${s.newRGU}</div>
-          </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:10px;text-align:center;">
-            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">HSI</div>
-            <div style="font-size:17px;font-weight:800;margin-top:6px;">${s.hsi}</div>
-          </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:10px;text-align:center;">
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
             <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
-            <div style="font-size:17px;font-weight:800;margin-top:6px;">${s.mobileMTD}</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.mobileMTD}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.tabletMTD}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.watchesMTD}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:10px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;">${s.newRGU}</div>
           </div>
         </div>
-        ${repHtml}
+        <!-- Team Members -->
+        <div style="flex:1;overflow:hidden;">${repHtml}</div>
       </div>
     </div>`;
 }
