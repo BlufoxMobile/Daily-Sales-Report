@@ -58,26 +58,14 @@ jobs:
               print('No promo card - using existing')
           PYEOF
 
-      - name: Clean up processed uploads and commit data
+      - name: Commit decoded data files
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
-          changed=0
-          if [ -f reports/sales-report.txt ]; then
-            git rm reports/sales-report.txt
-            git add -f "data/Sales Report.xlsx" 2>/dev/null || true
-            changed=1
-          fi
-          if [ -f reports/promo-card.txt ]; then
-            git rm reports/promo-card.txt
-            git add -f "data/promo-card.jpg" 2>/dev/null || true
-            changed=1
-          fi
-          if [ "$changed" = "1" ]; then
-            git diff --staged --quiet || git commit -m "Auto: update data from Zapier uploads [skip ci]"
-            git push
-          fi
-
+          git add -f "data/Sales Report.xlsx" 2>/dev/null || true
+          git add -f "data/promo-card.jpg" 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Auto: update data files [skip ci]"
+          git diff --staged --quiet 2>/dev/null || git push
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
