@@ -3,8 +3,7 @@ name: Daily Sales Board Update
 on:
   push:
     paths:
-      - 'reports/sales-report.txt'
-      - 'reports/promo-card.txt'
+      - 'reports/**'
   schedule:
     - cron: '15 14 * * 1-5'
   workflow_dispatch:
@@ -28,34 +27,43 @@ jobs:
       - name: Extract files from Zapier uploads
         run: |
           python3 <<'PYEOF'
-          import base64, os
+          import base64, os, glob
+
           os.makedirs('data', exist_ok=True)
-          
-          if os.path.exists('reports/sales-report.txt'):
-              with open('reports/sales-report.txt','r') as f:
+
+          # Find most recent sales report (any filename pattern)
+          sales_files = sorted(glob.glob('reports/sales-report*.txt'), key=os.path.getmtime, reverse=True)
+          if sales_files:
+              src = sales_files[0]
+              print(f'Found sales report: {src}')
+              with open(src, 'r') as f:
                   content = f.read().strip()
               try:
                   data = base64.b64decode(content)
-                  with open('data/Sales Report.xlsx','wb') as out:
+                  with open('data/Sales Report.xlsx', 'wb') as out:
                       out.write(data)
-                  print('Sales report decoded, size:', len(data))
+                  print(f'Sales report decoded, size: {len(data)}')
               except Exception as e:
-                  print('Sales report decode failed:', e)
+                  print(f'Sales report decode failed: {e}')
           else:
-              print('No sales report - using existing')
-          
-          if os.path.exists('reports/promo-card.txt'):
-              with open('reports/promo-card.txt','r') as f:
+              print('No sales report found - using existing')
+
+          # Find most recent promo card (any filename pattern)
+          promo_files = sorted(glob.glob('reports/promo-card*.txt'), key=os.path.getmtime, reverse=True)
+          if promo_files:
+              src = promo_files[0]
+              print(f'Found promo card: {src}')
+              with open(src, 'r') as f:
                   content = f.read().strip()
               try:
                   data = base64.b64decode(content)
-                  with open('data/promo-card.jpg','wb') as out:
+                  with open('data/promo-card.jpg', 'wb') as out:
                       out.write(data)
-                  print('Promo card decoded, size:', len(data))
+                  print(f'Promo card decoded, size: {len(data)}')
               except Exception as e:
-                  print('Promo card decode failed:', e)
+                  print(f'Promo card decode failed: {e}')
           else:
-              print('No promo card - using existing')
+              print('No promo card found - using existing')
           PYEOF
 
       - name: Commit decoded data files
@@ -66,6 +74,7 @@ jobs:
           git add -f "data/promo-card.jpg" 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Auto: update data files [skip ci]"
           git diff --staged --quiet 2>/dev/null || git push
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
