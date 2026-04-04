@@ -68,8 +68,8 @@
 
   .store-metrics { display:flex; gap:6px; margin-top:auto; }
   .metric { flex:1; text-align:center; border-radius:6px; padding:5px 2px; }
-  .metric-label { font-size:8px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
-  .metric-value { font-size:14px; font-weight:800; }
+  .metric-label { font-size:10px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
+  .metric-value { font-size:16px; font-weight:800; }
   .metric.green { background:#0d2a1a; color:#2ecc40; }
   .metric.yellow { background:#2a2a0d; color:#f1c40f; }
   .metric.red { background:#2a0d0d; color:#e74c3c; }
@@ -113,6 +113,38 @@
 
   /* -- Countdown bar -- */
   .countdown-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.1s linear; }
+
+
+  /* -- Auto-scale for large screens / TVs -- */
+  @media (min-width:1600px) {
+    .header { padding:14px 36px; }
+    .logo-circle { width:72px; height:72px; }
+    .brand-title { font-size:1.6vw; }
+    .brand-sub { font-size:0.8vw; }
+    .header-center-title { font-size:2vw; }
+    .header-center-sub { font-size:0.7vw; }
+    .live-badge { font-size:0.85vw; padding:6px 18px; }
+    .datetime { font-size:0.85vw; }
+    .store-rank { font-size:1.15vw; }
+    .store-name { font-size:1.25vw; }
+    .store-gp { font-size:2.2vw; }
+    .store-gp-sub { font-size:0.85vw; }
+    .store-card { padding:1.1vw 1.2vw; border-radius:0.7vw; }
+    .store-grid { gap:1vw; }
+    .slide-container { padding:0.6vw 1.4vw; }
+    .progress-bar { padding:0.4vw 1.8vw; }
+    .slide-label { font-size:0.85vw; }
+    .slide-select { font-size:0.85vw; }
+    .slide-type { font-size:0.8vw; }
+    .metric-label { font-size:0.65vw !important; }
+    .metric-value { font-size:1.1vw !important; }
+    .summary-value { font-size:3.2vw; }
+    .summary-label { font-size:1.3vw; }
+    .summary-sub { font-size:1vw; }
+    .summary-card { padding:1.6vw 2vw; }
+    .promo-title { font-size:2.2vw; }
+    .promo-content { font-size:1.2vw; }
+  }
 
   /* -- Mobile responsive -- */
   @media (max-width:900px) {
@@ -160,6 +192,22 @@
 </div>
 
 <script>
+// -- AUTO-SCALE FOR TVs --
+(function autoScale() {
+  var w = Math.max(window.screen.availWidth || 0, window.innerWidth || 0);
+  if (w > 1600) {
+    document.documentElement.style.zoom = (w / 1440).toFixed(3);
+  }
+  window.addEventListener('resize', function() {
+    var w2 = Math.max(window.screen.availWidth || 0, window.innerWidth || 0);
+    if (w2 > 1600) {
+      document.documentElement.style.zoom = (w2 / 1440).toFixed(3);
+    } else {
+      document.documentElement.style.zoom = '1';
+    }
+  });
+})();
+
 // -- CONFIG --
 const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
@@ -455,7 +503,7 @@ function render() {
 }
 
 function renderStoreGrid(stores) {
-  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:10px;text-align:center;">${label}</div><div class="metric-value" style="font-size:18px;text-align:center;">${val}</div></div>`;
+  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:max(10px,0.7vw);text-align:center;">${label}</div><div class="metric-value" style="font-size:max(18px,1.25vw);text-align:center;">${val}</div></div>`;
   let html = '<div class="store-grid">';
   for (const s of stores) {
     const varColor = s.varTarget >= 0 ? 'green' : 'red';
@@ -494,7 +542,7 @@ function renderStoreDetail(s) {
   const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
   const varSign = s.varTarget >= 0 ? '+' : '-';
   const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:14px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:13px;letter-spacing:1px;margin-bottom:2px;">${label}</div><div class="metric-value" style="font-size:26px;margin-top:4px;">${val}</div></div>`;
+  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:14px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:max(13px,0.9vw);letter-spacing:1px;margin-bottom:2px;">${label}</div><div class="metric-value" style="font-size:max(26px,1.8vw);margin-top:4px;">${val}</div></div>`;
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
@@ -505,11 +553,11 @@ function renderStoreDetail(s) {
     repHtml = `
       <div style="margin-top:14px;">
         <div style="font-size:16px;font-weight:800;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:13px;color:#8899aa;padding:6px 10px;font-weight:700;letter-spacing:0.5px;">
+        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:max(13px,0.9vw);color:#8899aa;padding:6px 10px;font-weight:700;letter-spacing:0.5px;">
           <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PREM%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:15px;padding:10px 10px;background:#0c1525;border-radius:6px;margin-bottom:4px;border:1px solid #1a2540;align-items:center;">
+          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:max(15px,1vw);padding:10px 10px;background:#0c1525;border-radius:6px;margin-bottom:4px;border:1px solid #1a2540;align-items:center;">
             <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
             <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
             <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
@@ -533,11 +581,11 @@ function renderStoreDetail(s) {
           <div style="display:flex;justify-content:space-between;align-items:start;">
             <div>
               <div style="font-size:18px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
-              <div style="font-size:34px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
+              <div style="font-size:max(34px,2.4vw);font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
               <div style="font-size:12px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:50px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
+              <div style="font-size:max(50px,3.5vw);font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
               <div style="font-size:13px;color:#8899aa;margin-top:6px;">GP $ MTD</div>
             </div>
           </div>
@@ -550,15 +598,15 @@ function renderStoreDetail(s) {
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:13px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
-            <div style="font-size:34px;font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
+            <div style="font-size:max(34px,2.4vw);font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:13px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
-            <div style="font-size:34px;font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
+            <div style="font-size:max(34px,2.4vw);font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:13px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
-            <div style="font-size:34px;font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
+            <div style="font-size:max(34px,2.4vw);font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
           </div>
         </div>
         <!-- Performance Metrics Grid -->
