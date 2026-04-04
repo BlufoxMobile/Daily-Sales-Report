@@ -66,13 +66,16 @@ jobs:
               print('No promo card found - using existing')
           PYEOF
 
-      - name: Commit decoded data files
+      - name: Commit decoded data and clean up reports
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           git add -f "data/Sales Report.xlsx" 2>/dev/null || true
           git add -f "data/promo-card.jpg" 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Auto: update data files [skip ci]"
+          # Remove processed report files so next Zapier upload is a fresh create (no SHA needed)
+          git rm -f reports/sales-report*.txt 2>/dev/null || true
+          git rm -f reports/promo-card*.txt 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Auto: update data files and clean reports [skip ci]"
           git diff --staged --quiet 2>/dev/null || git push
 
       - name: Setup Pages
