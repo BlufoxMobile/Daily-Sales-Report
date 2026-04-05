@@ -488,17 +488,11 @@ function renderStoreGrid(stores) {
     const pct = v => (v * 100).toFixed(1) + '%';
     html += `
       <div class="store-card">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <div class="store-rank">#${s.rank}</div>
-            <div class="store-name">${s.name}</div>
-          </div>
-          <div style="text-align:right;">
-            <div class="store-gp">$${Math.round(s.gpTrend).toLocaleString()}</div>
-            <div style="font-size:10px;color:#8899aa;margin-top:2px;letter-spacing:1px;">GP TREND</div>
-          </div>
-        </div>
-        <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
+        <div>
+          <div class="store-rank">#${s.rank}</div>
+          <div class="store-name">${s.name}</div>
+          <div class="store-gp">$${Math.round(s.gpTrend).toLocaleString()}</div>
+          <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
         </div>
         <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
           ${m('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
@@ -561,18 +555,12 @@ function renderStoreDetail(s) {
       <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
         <!-- Store Header -->
         <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:20px 24px;">
-          <div style="display:flex;justify-content:space-between;align-items:start;">
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-            <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
+          <div>
+                          <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
               <div style="font-size:40px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
               <div style="font-size:15px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
             </div>
-            <div style="text-align:right;">
-              <div style="text-align:right;">
-              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gpTrend).toLocaleString()}</div>
-              <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP TREND</div>
-            </div>
+                                        <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gpTrend).toLocaleString()}</div>
           </div>
             </div>
           </div>
