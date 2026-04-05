@@ -28,12 +28,12 @@
   .logo-circle { width:56px; height:56px; border-radius:50%; background:#1a2744; display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
   .logo-circle img { width:100%; height:100%; object-fit:cover; }
   .logo-text { font-size:11px; color:#e67e22; font-weight:800; letter-spacing:1.5px; }
-  .brand-title { font-size:28px; font-weight:900; letter-spacing:2px; }
+  .brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
   .brand-title .highlight { color:#e67e22; }
-  .brand-sub { font-size:14px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
+  .brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
   .header-center { text-align:center; }
-  .header-center-sub { font-size:13px; color:#8899aa; letter-spacing:3px; }
-  .header-center-title { font-size:34px; font-weight:900; letter-spacing:4px; margin-top:6px; }
+  .header-center-sub { font-size:11px; color:#8899aa; letter-spacing:3px; }
+  .header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:6px; }
   .header-right { text-align:right; display:flex; align-items:center; gap:14px; }
   .live-badge { display:flex; align-items:center; gap:6px; background:#0d2a0d; border:1px solid #2ecc40; border-radius:20px; padding:6px 16px; font-size:14px; font-weight:700; color:#2ecc40; letter-spacing:1px; }
   .live-dot { width:8px; height:8px; border-radius:50%; background:#2ecc40; animation:pulse 1.5s infinite; }
@@ -59,17 +59,17 @@
   .store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
   .store-card:hover { border-color:#e67e22; }
   .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
-  .store-rank { font-size:20px; font-weight:900; color:#e67e22; opacity:0.7; }
-  .store-name { font-size:22px; font-weight:800; color:#fff; margin-top:1px; }
-  .store-gp { font-size:40px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .store-gp-sub { font-size:15px; color:#5a7a9a; margin-top:6px; }
+  .store-rank { font-size:16px; font-weight:900; color:#e67e22; opacity:0.7; }
+  .store-name { font-size:17px; font-weight:800; color:#fff; margin-top:1px; }
+  .store-gp { font-size:30px; font-weight:900; color:#e67e22; margin-top:6px; }
+  .store-gp-sub { font-size:12px; color:#5a7a9a; margin-top:6px; }
   .store-gp-sub .green { color:#2ecc40; }
   .store-gp-sub .red { color:#e74c3c; }
 
   .store-metrics { display:flex; gap:6px; margin-top:auto; }
   .metric { flex:1; text-align:center; border-radius:6px; padding:5px 2px; }
-  .metric-label { font-size:13px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
-  .metric-value { font-size:22px; font-weight:800; }
+  .metric-label { font-size:14px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
+  .metric-value { font-size:18px; font-weight:800; }
   .metric.green { background:#0d2a1a; color:#2ecc40; }
   .metric.yellow { background:#2a2a0d; color:#f1c40f; }
   .metric.red { background:#2a0d0d; color:#e74c3c; }
@@ -117,33 +117,14 @@
 
   /* -- Auto-scale for large screens / TVs -- */
   @media (min-width:1600px) {
-    .header { padding:14px 36px; }
-    .logo-circle { width:5vw; height:5vw; }
-    .brand-title { font-size:2vw; }
-    .brand-sub { font-size:1vw; }
-    .header-center-title { font-size:2.4vw; }
-    .header-center-sub { font-size:0.7vw; }
-    .live-badge { font-size:0.85vw; padding:6px 18px; }
-    .datetime { font-size:0.85vw; }
-    .store-rank { font-size:1.4vw; }
-    .store-name { font-size:1.6vw; }
-    .store-gp { font-size:2.8vw; }
-    .store-gp-sub { font-size:1.1vw; }
-    .store-card { padding:1.1vw 1.2vw; border-radius:0.7vw; }
-    .store-grid { gap:1vw; }
-    .slide-container { padding:0.6vw 1.4vw; }
-    .progress-bar { padding:0.4vw 1.8vw; }
-    .slide-label { font-size:0.85vw; }
-    .slide-select { font-size:0.85vw; }
-    .slide-type { font-size:0.8vw; }
-    .metric-label { font-size:0.9vw !important; }
-    .metric-value { font-size:1.5vw !important; }
-    .summary-value { font-size:3.8vw; }
-    .summary-label { font-size:1.6vw; }
-    .summary-sub { font-size:1vw; }
-    .summary-card { padding:1.6vw 2vw; }
-    .promo-title { font-size:2.8vw; }
-    .promo-content { font-size:1.5vw; }
+    .metric-label { font-size:max(14px, 0.9vw) !important; }
+    .metric-value { font-size:max(18px, 1.2vw) !important; }
+    .store-name { font-size:max(17px, 1.1vw); }
+    .store-gp { font-size:max(30px, 1.8vw); }
+    .store-gp-sub { font-size:max(12px, 0.75vw); }
+    .summary-value { font-size:max(28px, 2.5vw); }
+    .summary-label { font-size:max(14px, 1vw); }
+    .summary-sub { font-size:max(11px, 0.7vw); }
   }
 
   /* -- Mobile responsive -- */
@@ -192,22 +173,6 @@
 </div>
 
 <script>
-// -- AUTO-SCALE FOR TVs --
-(function autoScale() {
-  var w = Math.max(window.screen.availWidth || 0, window.innerWidth || 0);
-  if (w > 1600) {
-    document.documentElement.style.zoom = (w / 1440).toFixed(3);
-  }
-  window.addEventListener('resize', function() {
-    var w2 = Math.max(window.screen.availWidth || 0, window.innerWidth || 0);
-    if (w2 > 1600) {
-      document.documentElement.style.zoom = (w2 / 1440).toFixed(3);
-    } else {
-      document.documentElement.style.zoom = '1';
-    }
-  });
-})();
-
 // -- CONFIG --
 const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
@@ -503,7 +468,7 @@ function render() {
 }
 
 function renderStoreGrid(stores) {
-  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:max(13px,0.9vw);text-align:center;">${label}</div><div class="metric-value" style="font-size:max(24px,1.7vw);text-align:center;">${val}</div></div>`;
+  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:13px;text-align:center;">${label}</div><div class="metric-value" style="font-size:24px;text-align:center;">${val}</div></div>`;
   let html = '<div class="store-grid">';
   for (const s of stores) {
     const varColor = s.varTarget >= 0 ? 'green' : 'red';
@@ -542,7 +507,7 @@ function renderStoreDetail(s) {
   const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
   const varSign = s.varTarget >= 0 ? '+' : '-';
   const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:16px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:max(15px,1.1vw);letter-spacing:1px;margin-bottom:2px;">${label}</div><div class="metric-value" style="font-size:max(32px,2.2vw);margin-top:4px;">${val}</div></div>`;
+  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:16px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:15px;letter-spacing:1px;margin-bottom:2px;">${label}</div><div class="metric-value" style="font-size:32px;margin-top:4px;">${val}</div></div>`;
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
@@ -553,11 +518,11 @@ function renderStoreDetail(s) {
     repHtml = `
       <div style="margin-top:14px;">
         <div style="font-size:20px;font-weight:800;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:max(15px,1.1vw);color:#8899aa;padding:8px 10px;font-weight:700;letter-spacing:0.5px;">
+        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:15px;color:#8899aa;padding:8px 10px;font-weight:700;letter-spacing:0.5px;">
           <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PREM%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:max(18px,1.25vw);padding:12px 10px;background:#0c1525;border-radius:6px;margin-bottom:4px;border:1px solid #1a2540;align-items:center;">
+          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:18px;padding:12px 10px;background:#0c1525;border-radius:6px;margin-bottom:4px;border:1px solid #1a2540;align-items:center;">
             <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
             <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
             <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
@@ -581,11 +546,11 @@ function renderStoreDetail(s) {
           <div style="display:flex;justify-content:space-between;align-items:start;">
             <div>
               <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
-              <div style="font-size:max(40px,2.8vw);font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
+              <div style="font-size:40px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
               <div style="font-size:15px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:max(58px,4vw);font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
+              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
               <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP $ MTD</div>
             </div>
           </div>
@@ -598,15 +563,15 @@ function renderStoreDetail(s) {
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
-            <div style="font-size:max(40px,2.8vw);font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
+            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
-            <div style="font-size:max(40px,2.8vw);font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
+            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
-            <div style="font-size:max(40px,2.8vw);font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
+            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
           </div>
         </div>
         <!-- Performance Metrics Grid -->
