@@ -410,7 +410,6 @@ function buildSlides() {
       tempSlides.push(promoSlide);
     }
   }
-  // Ensure promo at end if not already there
   if (tempSlides.length === 0 || tempSlides[tempSlides.length - 1].type !== 'promos') {
     tempSlides.push(promoSlide);
   }
@@ -555,13 +554,15 @@ function renderStoreDetail(s) {
       <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
         <!-- Store Header -->
         <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:20px 24px;">
-          <div>
-                          <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div>
+              <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
               <div style="font-size:40px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
               <div style="font-size:15px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
             </div>
-                                        <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gpTrend).toLocaleString()}</div>
-          </div>
+            <div style="text-align:right;">
+              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gpTrend).toLocaleString()}</div>
+              <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP TREND</div>
             </div>
           </div>
         </div>
