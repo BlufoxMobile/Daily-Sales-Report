@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'reports/**'
+      - 'index.html'
+      - 'index.html'
   schedule:
     - cron: '15 14 * * 1-5'
   workflow_dispatch:
