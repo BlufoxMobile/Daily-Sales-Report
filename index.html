@@ -479,7 +479,7 @@ function renderStoreGrid(stores) {
         <div>
           <div class="store-rank">#${s.rank}</div>
           <div class="store-name">${s.name}</div>
-          <div class="store-gp">$${Math.round(s.gp).toLocaleString()}</div>
+          <div class="store-gp">${Math.round(s.gpTrend).toLocaleString()}</div>
           <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
         </div>
         <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
@@ -550,8 +550,8 @@ function renderStoreDetail(s) {
               <div style="font-size:15px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
-              <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP $ MTD</div>
+              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">${Math.round(s.gpTrend).toLocaleString()}</div>
+              <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP TREND</div>
             </div>
           </div>
         </div>
@@ -562,15 +562,15 @@ function renderStoreDetail(s) {
             <div style="font-size:34px;font-weight:900;margin-top:6px;color:#e67e22;">${s.newRGU}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">MOBILE MTD</div>
+            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">MOBILE</div>
             <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">TABLET MTD</div>
+            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">TABLET</div>
             <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
           </div>
           <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">WATCHES MTD</div>
+            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">WATCHES</div>
             <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
           </div>
         </div>
