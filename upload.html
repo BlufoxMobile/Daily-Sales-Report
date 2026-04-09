@@ -278,7 +278,10 @@ const FILE_PATHS = {
     const MY_STORES_LOWER = MY_STORES.map(s => s.toLowerCase());
 
 
-const excelInput      = document.getElementById('excelFile');
+const MY_STORES = ['Bourbonnais','Burbank','Cicero','Dekalb','Elkhart','Evanston','Evergreen Park','Frankfort','Glenview','Greeneville','Hammond','Johnson City','Kildeer','Michigan City','Oak Ridge','Round Lake Beach','Schererville','South Bend','South Knoxville','South Skokie','Tinley Park','Uptown','Valparaiso'];
+    const MY_STORES_LOWER = MY_STORES.map(s => s.toLowerCase());
+
+    const excelInput      = document.getElementById('excelFile');
 const promoInput      = document.getElementById('promoFile');
 const exceptionsInput = document.getElementById('exceptionsFile');
 const uploadBtn       = document.getElementById('uploadBtn');
@@ -494,6 +497,7 @@ function buildExceptionData(workbook) {
   if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
   const excRowsAll = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
       const excRows = excRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+      const excRows = excRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
 
   const rawData = excRows.map(r => {
     return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
@@ -504,6 +508,7 @@ function buildExceptionData(workbook) {
   let cancelData = [];
   if (cancelSheet) {
     const cancelRowsAll = XLSX.utils.sheet_to_json(cancelSheet, { defval: '' });
+        const cancelRows = cancelRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
         const filteredCancelRows = cancelRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
     cancelData = cancelfilteredCancelRows.map(r => {
       return `{store:"${escStr(r['Store'])}",rep:"",orderDate:"${fmtDate(r['Order Date'])}",cancelDate:"${fmtDate(r['Date Of Cancelation'])}",reason:"${escStr(r['Cancel Reason'])}"}`;
