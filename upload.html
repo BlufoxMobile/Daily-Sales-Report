@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blufox Daily Upload</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+  }
+  .logo-area {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logo-area h1 {
+    color: #f8fafc;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .logo-area p {
+    color: #94a3b8;
+    font-size: 14px;
+  }
+  .section-label {
+    color: #94a3b8;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    margin-top: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #334155;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  .upload-zone {
+    border: 2px dashed #475569;
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+  }
+  .upload-zone.has-file {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.05);
+  }
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .upload-icon {
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+  .upload-zone h3 {
+    color: #e2e8f0;
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+  .upload-zone p {
+    color: #64748b;
+    font-size: 12px;
+  }
+  .file-name {
+    color: #22c55e;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 5px;
+    word-break: break-all;
+  }
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .status {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: none;
+    line-height: 1.5;
+  }
+  .status.info { display: block; background: rgba(59,130,246,0.1); border: 1px solid #3b82f6; color: #93c5fd; }
+  .status.success { display: block; background: rgba(34,197,94,0.1); border: 1px solid #22c55e; color: #86efac; }
+  .status.error { display: block; background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #fca5a5; }
+  .progress-bar {
+    height: 4px;
+    background: #334155;
+    border-radius: 2px;
+    margin-top: 16px;
+    overflow: hidden;
+    display: none;
+  }
+  .progress-bar.active { display: block; }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    border-radius: 2px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .quick-links {
+    text-align: center;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  .quick-links a {
+    color: #60a5fa;
+    text-decoration: none;
+    font-size: 12px;
+  }
+  .quick-links a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo-area">
+    <h1>Blufox Daily Upload</h1>
+    <p>Upload your files — dashboards update automatically</p>
+  </div>
+
+  <!-- ─── DAILY SALES REPORT SECTION ─── -->
+  <div class="section-label">Daily Sales Dashboard</div>
+
+  <div class="upload-zone" id="excelZone">
+    <input type="file" id="excelFile" accept=".xlsx,.xls">
+    <div class="upload-icon">📊</div>
+    <h3>Sales Report (Excel)</h3>
+    <p>Drop your .xlsx file here or click to browse</p>
+    <div class="file-name" id="excelFileName"></div>
+  </div>
+
+  <div class="upload-zone" id="promoZone">
+    <input type="file" id="promoFile" accept=".jpg,.jpeg,.png">
+    <div class="upload-icon">🖼️</div>
+    <h3>Promo Card (Image)</h3>
+    <p>Drop your .jpg or .png file here or click to browse</p>
+    <div class="file-name" id="promoFileName"></div>
+  </div>
+
+  <!-- ─── EXCEPTION REPORT SECTION ─── -->
+  <div class="section-label">Exception Report</div>
+
+  <div class="upload-zone" id="exceptionsZone">
+    <input type="file" id="exceptionsFile" accept=".xlsx,.xls">
+    <div class="upload-icon">⚠️</div>
+    <h3>Order Status Excel (Exceptions)</h3>
+    <p>Drop your Order Status .xlsx — uses Exceptions &amp; Cancelled tabs</p>
+    <div class="file-name" id="exceptionsFileName"></div>
+  </div>
+
+  <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadFiles()">
+    Upload to Dashboards
+  </button>
+
+  <div class="progress-bar" id="progressBar">
+    <div class="fill" id="progressFill"></div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <!-- ─── TOKEN SECTION (collapsed after first save) ─── -->
+  <div id="tokenSection" style="margin-top:20px;">
+    <details id="tokenDetails">
+      <summary style="color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:8px;">GitHub Token Settings</summary>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="password" id="tokenInput" placeholder="Paste your GitHub PAT here"
+          style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#e2e8f0;font-size:13px;font-family:monospace;">
+        <button onclick="saveToken()" style="padding:10px 16px;border-radius:8px;border:none;background:#22c55e;color:white;font-weight:600;cursor:pointer;font-size:13px;white-space:nowrap;">Save</button>
+      </div>
+      <p style="color:#64748b;font-size:11px;margin-top:6px;">Your token is stored only in this browser. It never leaves your machine except to call the GitHub API.</p>
+    </details>
+    <div id="tokenStatus" style="display:none;color:#22c55e;font-size:12px;margin-top:4px;"></div>
+  </div>
+
+  <div class="quick-links">
+    <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard ↗</a>
+    <a href="https://blufoxmobile.github.io/Exception-Report/" target="_blank">Exception Report ↗</a>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+let GITHUB_TOKEN = localStorage.getItem('blufox_gh_token') || '';
+const REPO_OWNER   = 'BlufoxMobile';
+const BRANCH       = 'main';
+
+function saveToken() {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) return;
+  GITHUB_TOKEN = val;
+  localStorage.setItem('blufox_gh_token', val);
+  document.getElementById('tokenInput').value = '';
+  document.getElementById('tokenDetails').removeAttribute('open');
+  const ts = document.getElementById('tokenStatus');
+  ts.style.display = 'block';
+  ts.textContent = 'Token saved to this browser.';
+  setTimeout(() => { ts.style.display = 'none'; }, 3000);
+  checkReady();
+}
+
+// Pre-fill status on load
+if (GITHUB_TOKEN) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const ts = document.getElementById('tokenStatus');
+    ts.style.display = 'block';
+    ts.textContent = 'Token loaded from browser storage.';
+    setTimeout(() => { ts.style.display = 'none'; }, 2000);
+  });
+}
+
+const REPOS = {
+  sales:      'Daily-Sales-Report',
+  exceptions: 'Exception-Report'
+};
+const FILE_PATHS = {
+  excel: 'data/Sales Report.xlsx',
+  promo: 'data/promo-card.jpg',
+  exceptionsHtml: 'index.html'
+};
+// ──────────────────────────────────────────────────────────
+
+const excelInput      = document.getElementById('excelFile');
+const promoInput      = document.getElementById('promoFile');
+const exceptionsInput = document.getElementById('exceptionsFile');
+const uploadBtn       = document.getElementById('uploadBtn');
+
+// File selection handlers
+function bindFileZone(inputEl, zoneId, labelId) {
+  inputEl.addEventListener('change', function() {
+    const zone = document.getElementById(zoneId);
+    const label = document.getElementById(labelId);
+    if (this.files[0]) {
+      zone.classList.add('has-file');
+      label.textContent = this.files[0].name;
+    } else {
+      zone.classList.remove('has-file');
+      label.textContent = '';
+    }
+    checkReady();
+  });
+  const zone = document.getElementById(zoneId);
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); });
+}
+
+bindFileZone(excelInput, 'excelZone', 'excelFileName');
+bindFileZone(promoInput, 'promoZone', 'promoFileName');
+bindFileZone(exceptionsInput, 'exceptionsZone', 'exceptionsFileName');
+
+function checkReady() {
+  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0];
+  const hasToken = !!GITHUB_TOKEN;
+  uploadBtn.disabled = !(hasFiles && hasToken);
+  if (hasFiles && !hasToken) {
+    setStatus('Please save your GitHub token first (expand settings below).', 'info');
+  }
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.className = 'status ' + type;
+  el.innerHTML = msg;
+}
+
+function setProgress(pct) {
+  const bar = document.getElementById('progressBar');
+  const fill = document.getElementById('progressFill');
+  bar.classList.toggle('active', pct > 0 && pct < 100);
+  fill.style.width = pct + '%';
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function readFileAsArrayBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function getFileSHA(repoName, filePath) {
+  try {
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${encodeURIComponent(filePath)}?ref=${BRANCH}`;
+    const resp = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      return data.sha;
+    }
+    return null;
+  } catch { return null; }
+}
+
+async function getFileContent(repoName, filePath) {
+  // Get SHA from API
+  const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${encodeURIComponent(filePath)}?ref=${BRANCH}`;
+  const apiResp = await fetch(apiUrl, {
+    headers: {
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  });
+  if (!apiResp.ok) throw new Error('Could not fetch file info for ' + filePath);
+  const apiData = await apiResp.json();
+  const sha = apiData.sha;
+
+  // Fetch raw content directly (avoids base64 decode issues with large files)
+  const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${repoName}/${BRANCH}/${filePath}?t=${Date.now()}`;
+  const rawResp = await fetch(rawUrl);
+  if (!rawResp.ok) throw new Error('Could not fetch raw content for ' + filePath);
+  const content = await rawResp.text();
+
+  return { content, sha };
+}
+
+async function pushToGitHub(repoName, filePath, base64Content, message) {
+  const sha = await getFileSHA(repoName, filePath);
+  const body = { message, content: base64Content, branch: BRANCH };
+  if (sha) body.sha = sha;
+
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${encodeURIComponent(filePath)}`;
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error(err.message || `HTTP ${resp.status}`);
+  }
+  return await resp.json();
+}
+
+// ─── EXCEPTION REPORT LOGIC ──────────────────────────────
+
+function fmtDate(val) {
+  if (!val) return '';
+  let d;
+  if (typeof val === 'number') {
+    // Excel serial date
+    d = new Date((val - 25569) * 86400000);
+  } else if (val instanceof Date) {
+    d = val;
+  } else {
+    d = new Date(val);
+  }
+  if (isNaN(d.getTime())) return String(val);
+  return `${d.getMonth()+1}/${d.getDate()}/${String(d.getFullYear()).slice(-2)}`;
+}
+
+function escStr(s) {
+  if (s == null) return '';
+  return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function buildExceptionData(workbook) {
+  // ── Parse Exceptions tab ──
+  const excSheet = workbook.Sheets['Exceptions'];
+  if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
+  const excRows = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
+
+  const rawData = excRows.map(r => {
+    return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
+  });
+
+  // ── Parse Cancelled Orders tab ──
+  const cancelSheet = workbook.Sheets['Cancelled Orders'];
+  let cancelData = [];
+  if (cancelSheet) {
+    const cancelRows = XLSX.utils.sheet_to_json(cancelSheet, { defval: '' });
+    cancelData = cancelRows.map(r => {
+      return `{store:"${escStr(r['Store'])}",rep:"",orderDate:"${fmtDate(r['Order Date'])}",cancelDate:"${fmtDate(r['Date Of Cancelation'])}",reason:"${escStr(r['Cancel Reason'])}"}`;
+    });
+  }
+
+  return { rawData, cancelData };
+}
+
+function injectDataIntoHtml(html, rawData, cancelData) {
+  // Replace const RAW_DATA = [...]; with new data
+  html = html.replace(
+    /const RAW_DATA\s*=\s*\[[\s\S]*?\];/,
+    'const RAW_DATA = [\n' + rawData.join(',\n') + '\n];'
+  );
+  // Replace const CANCEL_DATA = [...]; with new data
+  html = html.replace(
+    /const CANCEL_DATA\s*=\s*\[[\s\S]*?\];/,
+    'const CANCEL_DATA = [\n' + cancelData.join(',\n') + '\n];'
+  );
+  return html;
+}
+
+async function uploadExceptionReport(file) {
+  setStatus('Reading Excel file...', 'info');
+  const buffer = await readFileAsArrayBuffer(file);
+  const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+
+  setStatus('Extracting Exceptions & Cancelled Orders...', 'info');
+  const { rawData, cancelData } = buildExceptionData(workbook);
+
+  setStatus(`Found ${rawData.length} exceptions, ${cancelData.length} cancellations. Fetching current report...`, 'info');
+
+  // Get the current index.html from the Exception-Report repo
+  const { content: currentHtml, sha } = await getFileContent(REPOS.exceptions, FILE_PATHS.exceptionsHtml);
+
+  // Inject the new data
+  const updatedHtml = injectDataIntoHtml(currentHtml, rawData, cancelData);
+
+  // Push the updated file
+  setStatus('Pushing updated Exception Report...', 'info');
+
+  // Robust base64 encoding for large strings with possible Unicode
+  function toBase64(str) {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(str);
+    let binary = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, i + chunkSize);
+      binary += String.fromCharCode(...chunk);
+    }
+    return btoa(binary);
+  }
+
+  const b64 = toBase64(updatedHtml);
+
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPOS.exceptions}/contents/${encodeURIComponent(FILE_PATHS.exceptionsHtml)}`;
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: 'Update exception data — ' + new Date().toLocaleDateString(),
+      content: b64,
+      sha: sha,
+      branch: BRANCH
+    })
+  });
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error('Exception Report push failed: ' + (err.message || `HTTP ${resp.status}`));
+  }
+
+  return { exceptions: rawData.length, cancellations: cancelData.length };
+}
+
+// ─── MAIN UPLOAD ─────────────────────────────────────────
+
+async function uploadFiles() {
+  uploadBtn.disabled = true;
+  uploadBtn.textContent = 'Uploading...';
+  setStatus('Starting upload...', 'info');
+  setProgress(10);
+
+  const tasks = [];
+  let totalSteps = 0;
+  let completed = 0;
+  const parts = [];
+  let excCounts = null;
+
+  if (excelInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading sales report...', 'info');
+        const b64 = await readFileAsBase64(excelInput.files[0]);
+        await pushToGitHub(REPOS.sales, FILE_PATHS.excel, b64, 'Update sales report — ' + new Date().toLocaleDateString());
+        completed++;
+        parts.push('Sales Report');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Sales Report: ' + e.message); }
+    });
+  }
+
+  if (promoInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading promo card...', 'info');
+        const b64 = await readFileAsBase64(promoInput.files[0]);
+        await pushToGitHub(REPOS.sales, FILE_PATHS.promo, b64, 'Update promo card — ' + new Date().toLocaleDateString());
+        completed++;
+        parts.push('Promo Card');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Promo Card: ' + e.message); }
+    });
+  }
+
+  if (exceptionsInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        excCounts = await uploadExceptionReport(exceptionsInput.files[0]);
+        completed++;
+        parts.push('Exception Report');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Exception Report: ' + e.message); }
+    });
+  }
+
+  try {
+    for (const task of tasks) {
+      await task();
+    }
+    setProgress(100);
+    let msg = `✅ <strong>${parts.join(' & ')}</strong> uploaded successfully!`;
+    if (excCounts) {
+      msg += `<br>${excCounts.exceptions} exceptions + ${excCounts.cancellations} cancellations loaded.`;
+    }
+    msg += `<br>Dashboards will refresh within 30 minutes, or open them now and hit refresh.`;
+    setStatus(msg, 'success');
+  } catch (err) {
+    setStatus('❌ Upload failed: ' + err.message, 'error');
+  } finally {
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = 'Upload to Dashboards';
+    setTimeout(() => setProgress(0), 2000);
+  }
+}
+</script>
+
+</body>
+</html>
