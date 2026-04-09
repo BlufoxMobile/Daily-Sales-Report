@@ -487,7 +487,6 @@ function buildExceptionData(workbook) {
   if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
   const excRowsAll = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
       const excRows = excRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
-      const excRows = excRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
 
   const rawData = excRows.map(r => {
     return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
