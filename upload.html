@@ -164,15 +164,15 @@
 <div class="container">
   <div class="logo-area">
     <h1>Blufox Daily Upload</h1>
-    <p>Upload your files — dashboards update automatically</p>
+    <p>Upload your files â dashboards update automatically</p>
   </div>
 
-  <!-- ─── DAILY SALES REPORT SECTION ─── -->
+  <!-- âââ DAILY SALES REPORT SECTION âââ -->
   <div class="section-label">Daily Sales Dashboard</div>
 
   <div class="upload-zone" id="excelZone">
     <input type="file" id="excelFile" accept=".xlsx,.xls">
-    <div class="upload-icon">📊</div>
+    <div class="upload-icon">ð</div>
     <h3>Sales Report (Excel)</h3>
     <p>Drop your .xlsx file here or click to browse</p>
     <div class="file-name" id="excelFileName"></div>
@@ -180,20 +180,20 @@
 
   <div class="upload-zone" id="promoZone">
     <input type="file" id="promoFile" accept=".jpg,.jpeg,.png">
-    <div class="upload-icon">🖼️</div>
+    <div class="upload-icon">ð¼ï¸</div>
     <h3>Promo Card (Image)</h3>
     <p>Drop your .jpg or .png file here or click to browse</p>
     <div class="file-name" id="promoFileName"></div>
   </div>
 
-  <!-- ─── EXCEPTION REPORT SECTION ─── -->
+  <!-- âââ EXCEPTION REPORT SECTION âââ -->
   <div class="section-label">Exception Report</div>
 
   <div class="upload-zone" id="exceptionsZone">
     <input type="file" id="exceptionsFile" accept=".xlsx,.xls">
-    <div class="upload-icon">⚠️</div>
+    <div class="upload-icon">â ï¸</div>
     <h3>Order Status Excel (Exceptions)</h3>
-    <p>Drop your Order Status .xlsx — uses Exceptions &amp; Cancelled tabs</p>
+    <p>Drop your Order Status .xlsx â uses Exceptions &amp; Cancelled tabs</p>
     <div class="file-name" id="exceptionsFileName"></div>
   </div>
 
@@ -207,7 +207,7 @@
 
   <div class="status" id="status"></div>
 
-  <!-- ─── TOKEN SECTION (collapsed after first save) ─── -->
+  <!-- âââ TOKEN SECTION (collapsed after first save) âââ -->
   <div id="tokenSection" style="margin-top:20px;">
     <details id="tokenDetails">
       <summary style="color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:8px;">GitHub Token Settings</summary>
@@ -222,13 +222,13 @@
   </div>
 
   <div class="quick-links">
-    <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard ↗</a>
-    <a href="https://blufoxmobile.github.io/Exception-Report/" target="_blank">Exception Report ↗</a>
+    <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard â</a>
+    <a href="https://blufoxmobile.github.io/Exception-Report/" target="_blank">Exception Report â</a>
   </div>
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────
+// âââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââ
 let GITHUB_TOKEN = localStorage.getItem('blufox_gh_token') || '';
 const REPO_OWNER   = 'BlufoxMobile';
 const BRANCH       = 'main';
@@ -266,7 +266,7 @@ const FILE_PATHS = {
   promo: 'data/promo-card.jpg',
   exceptionsHtml: 'index.html'
 };
-// ──────────────────────────────────────────────────────────
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 const excelInput      = document.getElementById('excelFile');
 const promoInput      = document.getElementById('promoFile');
@@ -398,7 +398,7 @@ async function pushToGitHub(repoName, filePath, base64Content, message) {
   return await resp.json();
 }
 
-// ─── EXCEPTION REPORT LOGIC ──────────────────────────────
+// âââ EXCEPTION REPORT LOGIC ââââââââââââââââââââââââââââââ
 
 function fmtDate(val) {
   if (!val) return '';
@@ -421,7 +421,7 @@ function escStr(s) {
 }
 
 function buildExceptionData(workbook) {
-  // ── Parse Exceptions tab ──
+  // ââ Parse Exceptions tab ââ
   const excSheet = workbook.Sheets['Exceptions'];
   if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
   const excRows = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
@@ -430,7 +430,7 @@ function buildExceptionData(workbook) {
     return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
   });
 
-  // ── Parse Cancelled Orders tab ──
+  // ââ Parse Cancelled Orders tab ââ
   const cancelSheet = workbook.Sheets['Cancelled Orders'];
   let cancelData = [];
   if (cancelSheet) {
@@ -500,7 +500,7 @@ async function uploadExceptionReport(file) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      message: 'Update exception data — ' + new Date().toLocaleDateString(),
+      message: 'Update exception data â ' + new Date().toLocaleDateString(),
       content: b64,
       sha: sha,
       branch: BRANCH
@@ -514,7 +514,7 @@ async function uploadExceptionReport(file) {
   return { exceptions: rawData.length, cancellations: cancelData.length };
 }
 
-// ─── MAIN UPLOAD ─────────────────────────────────────────
+// âââ MAIN UPLOAD âââââââââââââââââââââââââââââââââââââââââ
 
 async function uploadFiles() {
   uploadBtn.disabled = true;
@@ -534,7 +534,7 @@ async function uploadFiles() {
       try {
         setStatus('Uploading sales report...', 'info');
         const b64 = await readFileAsBase64(excelInput.files[0]);
-        await pushToGitHub(REPOS.sales, FILE_PATHS.excel, b64, 'Update sales report — ' + new Date().toLocaleDateString());
+        await pushToGitHub(REPOS.sales, FILE_PATHS.excel, b64, 'Update sales report â ' + new Date().toLocaleDateString());
         completed++;
         parts.push('Sales Report');
         setProgress(20 + (completed / totalSteps) * 70);
@@ -548,7 +548,7 @@ async function uploadFiles() {
       try {
         setStatus('Uploading promo card...', 'info');
         const b64 = await readFileAsBase64(promoInput.files[0]);
-        await pushToGitHub(REPOS.sales, FILE_PATHS.promo, b64, 'Update promo card — ' + new Date().toLocaleDateString());
+        await pushToGitHub(REPOS.sales, FILE_PATHS.promo, b64, 'Update promo card â ' + new Date().toLocaleDateString());
         completed++;
         parts.push('Promo Card');
         setProgress(20 + (completed / totalSteps) * 70);
@@ -573,14 +573,14 @@ async function uploadFiles() {
       await task();
     }
     setProgress(100);
-    let msg = `✅ <strong>${parts.join(' & ')}</strong> uploaded successfully!`;
+    let msg = `â <strong>${parts.join(' & ')}</strong> uploaded successfully!`;
     if (excCounts) {
       msg += `<br>${excCounts.exceptions} exceptions + ${excCounts.cancellations} cancellations loaded.`;
     }
     msg += `<br>Dashboards will refresh within 30 minutes, or open them now and hit refresh.`;
     setStatus(msg, 'success');
   } catch (err) {
-    setStatus('❌ Upload failed: ' + err.message, 'error');
+    setStatus('â Upload failed: ' + err.message, 'error');
   } finally {
     uploadBtn.disabled = false;
     uploadBtn.textContent = 'Upload to Dashboards';
@@ -590,4 +590,5 @@ async function uploadFiles() {
 </script>
 
 </body>
+<!-- deployed -->
 </html>
