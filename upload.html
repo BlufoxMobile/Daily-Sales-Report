@@ -339,7 +339,7 @@ function readFileAsArrayBuffer(file) {
 
 async function getFileSHA(repoName, filePath) {
   try {
-    const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${encodeURIComponent(filePath)}?ref=${BRANCH}`;
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
     const resp = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${GITHUB_TOKEN}`,
@@ -356,7 +356,7 @@ async function getFileSHA(repoName, filePath) {
 
 async function getFileContent(repoName, filePath) {
   // Get SHA from API
-  const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${encodeURIComponent(filePath)}?ref=${BRANCH}`;
+  const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
   const apiResp = await fetch(apiUrl, {
     headers: {
       'Authorization': `Bearer ${GITHUB_TOKEN}`,
@@ -381,7 +381,7 @@ async function pushToGitHub(repoName, filePath, base64Content, message) {
   const body = { message, content: base64Content, branch: BRANCH };
   if (sha) body.sha = sha;
 
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${encodeURIComponent(filePath)}`;
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}`;
   const resp = await fetch(url, {
     method: 'PUT',
     headers: {
@@ -393,7 +393,7 @@ async function pushToGitHub(repoName, filePath, base64Content, message) {
   });
   if (!resp.ok) {
     const err = await resp.json();
-    throw new Error(err.message || `HTTP ${resp.status}`);
+    throw new Error((err.message || 'Unknown') + ` (HTTP ${resp.status})`);
   }
   return await resp.json();
 }
