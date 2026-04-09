@@ -376,7 +376,65 @@ async function getFileContent(repoName, filePath) {
   return { content, sha };
 }
 
-async function pushToGitHub(repoName, filePath, base64Content, message) {
+
+    async function pushViaBlobs(repoName, filePath, base64Content, message) {
+      const apiBase = 'https://api.github.com/repos/' + REPO_OWNER + '/' + repoName;
+      const headers = {
+        'Authorization': 'Bearer ' + GITHUB_TOKEN,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      };
+
+      // 1. Create blob
+      const blobResp = await fetch(apiBase + '/git/blobs', {
+        method: 'POST', headers,
+        body: JSON.stringify({ content: base64Content, encoding: 'base64' })
+      });
+      if (!blobResp.ok) throw new Error('Blob create failed: ' + (await blobResp.json()).message);
+      const blob = await blobResp.json();
+
+      // 2. Get current ref
+      const refResp = await fetch(apiBase + '/git/ref/heads/' + BRANCH, { headers });
+      if (!refResp.ok) throw new Error('Ref fetch failed');
+      const ref = await refResp.json();
+
+      // 3. Get current commit to find tree
+      const commitResp = await fetch(apiBase + '/git/commits/' + ref.object.sha, { headers });
+      const currentCommit = await commitResp.json();
+
+      // 4. Create new tree
+      const treeResp = await fetch(apiBase + '/git/trees', {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          base_tree: currentCommit.tree.sha,
+          tree: [{ path: filePath, mode: '100644', type: 'blob', sha: blob.sha }]
+        })
+      });
+      if (!treeResp.ok) throw new Error('Tree create failed: ' + (await treeResp.json()).message);
+      const tree = await treeResp.json();
+
+      // 5. Create commit
+      const newCommitResp = await fetch(apiBase + '/git/commits', {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          message: message,
+          tree: tree.sha,
+          parents: [ref.object.sha]
+        })
+      });
+      if (!newCommitResp.ok) throw new Error('Commit create failed');
+      const newCommit = await newCommitResp.json();
+
+      // 6. Update ref
+      const updateResp = await fetch(apiBase + '/git/refs/heads/' + BRANCH, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ sha: newCommit.sha })
+      });
+      if (!updateResp.ok) throw new Error('Ref update failed');
+      return await updateResp.json();
+    }
+
+    async function pushToGitHub(repoName, filePath, base64Content, message) {
   const sha = await getFileSHA(repoName, filePath);
   const body = { message, content: base64Content, branch: BRANCH };
   if (sha) body.sha = sha;
