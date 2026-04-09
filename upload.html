@@ -482,30 +482,25 @@ function escStr(s) {
 }
 
 function buildExceptionData(workbook) {
-  // ââ Parse Exceptions tab ââ
-  const excSheet = workbook.Sheets['Exceptions'];
-  if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
-  const excRowsAll = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
-      const excRows = excRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+      const excSheet = workbook.Sheets['Exceptions'];
+      if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
+      const allExcRows = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
+      const excRows = allExcRows.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+      const rawData = excRows.map(r => {
+        return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
+      });
 
-  const rawData = excRows.map(r => {
-    return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
-  });
-
-  // ââ Parse Cancelled Orders tab ââ
-  const cancelSheet = workbook.Sheets['Cancelled Orders'];
-  let cancelData = [];
-  if (cancelSheet) {
-    const cancelRowsAll = XLSX.utils.sheet_to_json(cancelSheet, { defval: '' });
-        const cancelRows = cancelRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
-        const filteredCancelRows = cancelRowsAll.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
-    cancelData = cancelfilteredCancelRows.map(r => {
-      return `{store:"${escStr(r['Store'])}",rep:"",orderDate:"${fmtDate(r['Order Date'])}",cancelDate:"${fmtDate(r['Date Of Cancelation'])}",reason:"${escStr(r['Cancel Reason'])}"}`;
-    });
-  }
-
-  return { rawData, cancelData };
-}
+      const cancelSheet = workbook.Sheets['Cancelled Orders'];
+      let cancelData = [];
+      if (cancelSheet) {
+        const allCancelRows = XLSX.utils.sheet_to_json(cancelSheet, { defval: '' });
+        const cancelRows = allCancelRows.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+        cancelData = cancelRows.map(r => {
+          return `{store:"${escStr(r['Store'])}",rep:"",orderDate:"${fmtDate(r['Order Date'])}",cancelDate:"${fmtDate(r['Date Of Cancelation'])}",reason:"${escStr(r['Cancel Reason'])}"}`;
+        });
+      }
+      return { rawData, cancelData };
+    }
 
 function injectDataIntoHtml(html, rawData, cancelData) {
   // Replace const RAW_DATA = [...]; with new data
