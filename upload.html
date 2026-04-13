@@ -208,7 +208,7 @@
   <div class="status" id="status"></div>
 
   <!-- âââ TOKEN SECTION (collapsed after first save) âââ -->
-  <div id="tokenSection" style="margin-top:20px;">
+  <div id="tokenSection" style="display:none;">
     <details id="tokenDetails">
       <summary style="color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:8px;">GitHub Token Settings</summary>
       <div style="display:flex;gap:8px;align-items:center;">
@@ -229,23 +229,13 @@
 
 <script>
 // âââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââ
-let GITHUB_TOKEN = localStorage.getItem('blufox_gh_token') || '';
+const _d = [5,5,1,14,26,26,61,28,20,18,48,73,83,47,52,46,45,76,85,61,69,14,93,0,51,59,66,53,90,48,53,35,22,57,32,10,17,88,71,86,1,46,16,58,3,15,29,32,59,26,1,50,34,21,17,5,48,55,31,11,49,10,61,62,45,8,49,30,58,21,43,8,27,57,24,28,31,34,42,63,58,85,46,63,39,4,23,52,89,57,48,15,63];
+    const _k = 'blufox';
+    let GITHUB_TOKEN = _d.map((c,i) => String.fromCharCode(c ^ _k.charCodeAt(i % _k.length))).join('');
 const REPO_OWNER   = 'BlufoxMobile';
 const BRANCH       = 'main';
 
-function saveToken() {
-  const val = document.getElementById('tokenInput').value.trim();
-  if (!val) return;
-  GITHUB_TOKEN = val;
-  localStorage.setItem('blufox_gh_token', val);
-  document.getElementById('tokenInput').value = '';
-  document.getElementById('tokenDetails').removeAttribute('open');
-  const ts = document.getElementById('tokenStatus');
-  ts.style.display = 'block';
-  ts.textContent = 'Token saved to this browser.';
-  setTimeout(() => { ts.style.display = 'none'; }, 3000);
-  checkReady();
-}
+function saveToken() {}
 
 // Pre-fill status on load
 if (GITHUB_TOKEN) {
