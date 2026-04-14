@@ -249,12 +249,14 @@ if (GITHUB_TOKEN) {
 
 const REPOS = {
   sales:      'Daily-Sales-Report',
-  exceptions: 'Exception-Report'
+  exceptions: 'Exception-Report',
+  goals:      'Daily-Goals-Sheet'
 };
 const FILE_PATHS = {
   excel: 'data/Sales Report.xlsx',
   promo: 'data/promo-card.jpg',
-  exceptionsHtml: 'index.html'
+  exceptionsHtml: 'index.html',
+  goalsExcel:     'data/sales.xlsx'
 };
 // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
@@ -584,6 +586,11 @@ async function uploadFiles() {
         setStatus('Uploading sales report...', 'info');
         const b64 = await readFileAsBase64(excelInput.files[0]);
         await pushToGitHub(REPOS.sales, FILE_PATHS.excel, b64, 'Update sales report â ' + new Date().toLocaleDateString());
+              try {
+                await pushViaBlobs(REPOS.goals, FILE_PATHS.goalsExcel, b64, 'Update goals data â ' + new Date().toLocaleDateString());
+              } catch (goalsErr) {
+                console.warn('Goals push failed:', goalsErr);
+              }
         completed++;
         parts.push('Sales Report');
         setProgress(20 + (completed / totalSteps) * 70);
