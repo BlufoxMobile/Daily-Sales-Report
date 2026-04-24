@@ -250,13 +250,15 @@ if (GITHUB_TOKEN) {
 const REPOS = {
   sales:      'Daily-Sales-Report',
   exceptions: 'Exception-Report',
-  goals:      'Daily-Goals-Sheet'
+  goals:      'Daily-Goals-Sheet',
+  oneOnOne:   'One-On-One-Form'
 };
 const FILE_PATHS = {
   excel: 'data/Sales Report.xlsx',
   promo: 'data/promo-card.jpg',
   exceptionsHtml: 'index.html',
-  goalsExcel:     'data/sales.xlsx'
+  goalsExcel:     'data/sales.xlsx',
+  oneOnOneExcel:  'data/sales.xlsx'
 };
 // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
@@ -590,6 +592,11 @@ async function uploadFiles() {
                 await pushViaBlobs(REPOS.goals, FILE_PATHS.goalsExcel, b64, 'Update goals data â ' + new Date().toLocaleDateString());
               } catch (goalsErr) {
                 console.warn('Goals push failed:', goalsErr);
+              }
+              try {
+                await pushViaBlobs(REPOS.oneOnOne, FILE_PATHS.oneOnOneExcel, b64, 'Update 1:1 data - ' + new Date().toLocaleDateString());
+              } catch (oneOnOneErr) {
+                console.warn('One-On-One push failed:', oneOnOneErr);
               }
         completed++;
         parts.push('Sales Report');
