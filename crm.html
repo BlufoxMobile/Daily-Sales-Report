@@ -976,12 +976,12 @@ function renderGroups() {
           <tr class="${closedRow}">
             <td class="age-cell ${ageColor}">${o.age || 0}</td>
             <td class="meta-cell">${dateStr}</td>
-            <td class="acct">${escapeHtml(o.accountNumber || '')}</td>
+            <td class="acct">${escapeHtml(o.accountNumber || o.customerId || '')}</td>
             <td class="wo">${o.workOrder || ''}</td>
             <td>${escapeHtml(o.customerName || '')}</td>
             <td class="hide-mobile product">${escapeHtml(o.product || '')}</td>
             <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
-            <td class="hide-mobile colu-cell">${escapeHtml(o.colU || '')}</td>
+            <td class="hide-mobile colu-cell">${escapeHtml(o.colU || (o.age != null ? String(o.age) : ''))}</td>
             <td class="status-cell">
               <select class="status-select s-${status.replace(' ', '')}" onchange="onStatusChange('${o.workOrder}', this.value)">
                 <option value="Open" ${status === 'Open' ? 'selected' : ''}>Open</option>
