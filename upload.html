@@ -567,6 +567,77 @@ async function uploadExceptionReport(file) {
   return { exceptions: rawData.length, cancellations: cancelData.length };
 }
 
+// ─── OPEN ORDERS JSON (for CRM) ──────────────────────────
+const OPEN_ORDERS_JSON_PATH = 'data/open-orders.json';
+
+function buildOpenOrdersJson(workbook) {
+  const sheet = workbook.Sheets['Open Orders'];
+  if (!sheet) throw new Error('No "Open Orders" tab found in the Excel file');
+  const rows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false });
+
+  const orders = rows
+    .filter(r => r['Work Order Number'])
+    .map(r => {
+      // Order Date can come back as a string or Date depending on raw flag
+      let orderDate = r['Order Date'];
+      if (orderDate instanceof Date) orderDate = orderDate.toISOString();
+      else if (orderDate) {
+        // try to parse mm/dd/yy or similar
+        const d = new Date(orderDate);
+        if (!isNaN(d.getTime())) orderDate = d.toISOString();
+      }
+
+      return {
+        store: String(r['Store'] || '').trim(),
+        dm: String(r['DM'] || '').trim(),
+        orderDate: orderDate || null,
+        customerId: String(r['Customer ID'] || '').trim(),
+        workOrder: String(r['Work Order Number'] || '').trim(),
+        product: String(r['Product Description'] || '').trim(),
+        customerName: String(r['Customer Name'] || '').trim(),
+        repName: String(r['Rep Name'] || '').trim(),
+        age: Number(r['Ageing']) || 0
+      };
+    });
+
+  return {
+    generatedAt: new Date().toISOString(),
+    rowCount: orders.length,
+    orders: orders
+  };
+}
+
+async function uploadOpenOrdersJson(file) {
+  setStatus('Reading Open Orders tab for CRM...', 'info');
+  const buffer = await readFileAsArrayBuffer(file);
+  const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+
+  const json = buildOpenOrdersJson(workbook);
+  setStatus(`Found ${json.rowCount} open orders. Pushing to CRM...`, 'info');
+
+  // base64 encode the JSON string (UTF-8 safe)
+  const jsonStr = JSON.stringify(json);
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(jsonStr);
+  let binary = '';
+  const chunkSize = 8192;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  const b64 = btoa(binary);
+
+  // Use the existing pushViaBlobs since this file may be > 1MB
+  await pushViaBlobs(
+    REPOS.sales,
+    OPEN_ORDERS_JSON_PATH,
+    b64,
+    'Update open orders for CRM — ' + new Date().toLocaleDateString()
+  );
+
+  return { openOrders: json.rowCount };
+}
+
+
 // âââ MAIN UPLOAD âââââââââââââââââââââââââââââââââââââââââ
 
 async function uploadFiles() {
@@ -624,6 +695,14 @@ async function uploadFiles() {
     tasks.push(async () => {
       try {
         excCounts = await uploadExceptionReport(exceptionsInput.files[0]);
+        // also push Open Orders JSON for the CRM
+        try {
+          const ooResult = await uploadOpenOrdersJson(exceptionsInput.files[0]);
+          parts.push(`Open Orders CRM (${ooResult.openOrders} orders)`);
+        } catch (ooErr) {
+          console.warn('Open Orders CRM push failed:', ooErr);
+          // don't fail the whole upload if just the CRM piece fails
+        }
         completed++;
         parts.push('Exception Report');
         setProgress(20 + (completed / totalSteps) * 70);
