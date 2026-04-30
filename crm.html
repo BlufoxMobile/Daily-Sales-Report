@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blufox Open Orders CRM</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0f172a;
+    --bg-2: #1e293b;
+    --card: #1a2744;
+    --border: #334155;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --orange: #e67e22;
+    --orange-dark: #c0651a;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --purple: #a855f7;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* ========= LOGIN GATE ========= */
+  .gate {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .gate-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+  }
+  .gate .logo-circle {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    border: 3px solid var(--orange);
+    margin: 0 auto 20px;
+    overflow: hidden;
+  }
+  .gate .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+  .gate h1 { font-size: 22px; margin-bottom: 6px; }
+  .gate p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  .gate input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .gate input:focus { outline: none; border-color: var(--orange); }
+  .gate button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .gate button:hover { transform: translateY(-1px); }
+  .gate-error {
+    color: var(--red);
+    font-size: 13px;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+
+  /* ========= MAIN APP ========= */
+  .app { display: none; }
+  .app.visible { display: block; }
+
+  header {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-circle { width: 44px; height: 44px; border-radius: 50%; background: var(--card); display: flex; align-items: center; justify-content: center; border: 2px solid var(--orange); overflow: hidden; }
+  .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+  header h1 { font-size: 18px; font-weight: 700; }
+  header h1 span { color: var(--orange); }
+  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .live-status { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--orange); }
+
+  /* ========= TOP STATS ========= */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    padding: 20px 24px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .stat-value { font-size: 24px; font-weight: 700; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.orange { color: var(--orange); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.yellow { color: var(--yellow); }
+
+  /* ========= CONTROLS ========= */
+  .controls {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .controls input, .controls select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .controls input { flex: 1; min-width: 220px; }
+  .controls input:focus, .controls select:focus { outline: none; border-color: var(--orange); }
+
+  .toggle-group {
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .toggle-group button {
+    padding: 10px 16px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .toggle-group button.active {
+    background: var(--orange);
+    color: white;
+  }
+
+  /* ========= GROUP CARDS ========= */
+  .groups { padding: 0 24px 40px; }
+  .group {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .group-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .group-header:hover { background: rgba(230, 126, 34, 0.05); }
+  .group-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .chevron {
+    transition: transform 0.2s;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .group.expanded .chevron { transform: rotate(90deg); }
+  .group-stats {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .pill {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pill.open { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid var(--blue); }
+  .pill.closed { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid var(--green); }
+  .pill.pending { background: rgba(234,179,8,0.15); color: #fde047; border: 1px solid var(--yellow); }
+  .pill.other { background: rgba(168,85,247,0.15); color: #d8b4fe; border: 1px solid var(--purple); }
+  .pill.aged { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid var(--red); }
+
+  .group-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .group.expanded .group-body { display: block; }
+
+  /* sub-group by store */
+  .substore {
+    border-bottom: 1px solid var(--border);
+  }
+  .substore:last-child { border-bottom: none; }
+  .substore-header {
+    padding: 12px 20px 12px 36px;
+    background: rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .substore-header:hover { background: rgba(230, 126, 34, 0.04); }
+  .substore-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .substore-body { display: none; }
+  .substore.expanded .substore-body { display: block; }
+  .substore.expanded .chevron { transform: rotate(90deg); }
+
+  /* ========= ORDER ROWS (table) ========= */
+  .order-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .order-table th {
+    background: rgba(0,0,0,0.25);
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 76px;
+  }
+  .order-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(51,65,85,0.5);
+    vertical-align: middle;
+  }
+  .order-table tr.closed { opacity: 0.5; }
+  .order-table tr.closed td:not(.status-cell) { text-decoration: line-through; }
+  .order-table tr:hover { background: rgba(230, 126, 34, 0.03); }
+
+  .age-cell {
+    font-weight: 700;
+    text-align: center;
+    width: 60px;
+    border-radius: 6px;
+  }
+  .age-low { color: var(--green); }
+  .age-med { color: var(--yellow); }
+  .age-high { color: var(--orange); }
+  .age-critical { color: var(--red); }
+
+  .status-cell { width: 170px; }
+  .status-select {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .status-select.s-Open { border-color: var(--blue); }
+  .status-select.s-Closed { border-color: var(--green); background: rgba(34,197,94,0.1); }
+  .status-select.s-Pending { border-color: var(--yellow); background: rgba(234,179,8,0.1); }
+  .status-select.s-Other { border-color: var(--purple); background: rgba(168,85,247,0.1); }
+
+  .meta-cell { color: var(--muted); font-size: 12px; }
+  .order-table td.wo { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; }
+  .order-table td.product { color: var(--muted); }
+
+  /* ========= EMPTY / LOADING ========= */
+  .center-msg {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .center-msg h2 { font-size: 20px; margin-bottom: 10px; color: var(--text); }
+  .spinner {
+    border: 3px solid var(--border);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ========= TOAST ========= */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transform: translateY(120%);
+    transition: transform 0.3s;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.show { transform: translateY(0); }
+  .toast.success { border-color: var(--green); }
+  .toast.error { border-color: var(--red); }
+
+  /* ========= TOKEN MODAL ========= */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    max-width: 480px;
+    width: 100%;
+  }
+  .modal h2 { font-size: 18px; margin-bottom: 8px; }
+  .modal p { color: var(--muted); font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
+  .modal input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 14px;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .modal-buttons { display: flex; gap: 10px; }
+  .modal-buttons button { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-primary { background: linear-gradient(135deg, var(--orange), var(--orange-dark)); color: white; }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border) !important; }
+
+  @media (max-width: 700px) {
+    header { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+    .stats-bar { padding: 14px 16px; }
+    .controls { padding: 12px 16px; }
+    .groups { padding: 0 16px 30px; }
+    .order-table { font-size: 11px; }
+    .order-table th, .order-table td { padding: 8px 6px; }
+    .hide-mobile { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN GATE ============ -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="logo-circle">
+      <img id="gateLogo" alt="Blufox">
+    </div>
+    <h1>Blufox Open Orders CRM</h1>
+    <p>Manager access required</p>
+    <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+    <button onclick="checkPassword()">Access Dashboard</button>
+    <div class="gate-error" id="gateError"></div>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div class="app" id="app">
+  <header>
+    <div class="header-left">
+      <div class="logo-circle"><img id="headerLogo" alt="Blufox"></div>
+      <h1>Blufox <span>Open Orders</span></h1>
+    </div>
+    <div class="header-right">
+      <div class="live-status">
+        <div class="live-dot" id="liveDot"></div>
+        <span id="liveText">Live</span>
+      </div>
+      <button class="icon-btn" onclick="manualRefresh()">↻ Refresh</button>
+      <button class="icon-btn" onclick="openTokenModal()">⚙ Settings</button>
+    </div>
+  </header>
+
+  <div class="stats-bar" id="statsBar"></div>
+
+  <div class="controls">
+    <input type="search" id="searchBox" placeholder="Search by store, customer, work order, rep..." oninput="renderGroups()">
+    <select id="ageFilter" onchange="renderGroups()">
+      <option value="all">All Ages</option>
+      <option value="0-30">0-30 days</option>
+      <option value="30-60">30-60 days</option>
+      <option value="60-90">60-90 days</option>
+      <option value="90+">90+ days</option>
+    </select>
+    <select id="statusFilter" onchange="renderGroups()">
+      <option value="all">All Statuses</option>
+      <option value="Open">Open only</option>
+      <option value="Closed">Closed</option>
+      <option value="Pending Install">Pending Install</option>
+      <option value="Other">Other</option>
+    </select>
+    <div class="toggle-group">
+      <button id="groupByDM" class="active" onclick="setGroupBy('DM')">By DM</button>
+      <button id="groupByStore" onclick="setGroupBy('Store')">By Store</button>
+    </div>
+  </div>
+
+  <div class="groups" id="groupsContainer">
+    <div class="center-msg">
+      <div class="spinner"></div>
+      <h2>Loading open orders...</h2>
+      <p>Fetching latest data from GitHub</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOKEN MODAL ============ -->
+<div class="modal-overlay" id="tokenModal">
+  <div class="modal">
+    <h2>GitHub Token Settings</h2>
+    <p>This token allows the CRM to read open orders and save status updates back to your repository. Stored only in this browser.</p>
+    <input type="password" id="tokenInput" placeholder="ghp_... or github_pat_...">
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeTokenModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveToken()">Save Token</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   CONFIGURATION
+   ===================================================== */
+const CONFIG = {
+  PASSWORD: 'Xf!nity250',
+  REPO_OWNER: 'BlufoxMobile',
+  REPO_NAME: 'Daily-Sales-Report',
+  BRANCH: 'main',
+  ORDERS_PATH: 'data/open-orders.json',
+  CLOSURES_PATH: 'data/closures.json',
+  POLL_INTERVAL_MS: 30000,         // poll every 30 seconds
+  WRITE_DEBOUNCE_MS: 1500,         // wait this long after a click before pushing
+  RAW_BASE: 'https://raw.githubusercontent.com'
+};
+
+// ---- Embedded GitHub token (XOR-encoded, same scheme as upload.html) ----
+// Replace the array below with the encoded version of your token.
+// To generate: open browser console on upload.html and run:
+//   const t = 'YOUR_TOKEN_HERE'; const k = 'blufox';
+//   console.log('[' + Array.from(t).map((c,i) => c.charCodeAt(0) ^ k.charCodeAt(i % k.length)).join(',') + ']');
+const _TOKEN_ENCODED = [5,5,1,14,26,26,61,28,20,18,48,73,83,47,52,46,45,76,85,61,69,14,93,0,51,59,66,53,90,48,53,35,22,57,32,10,17,88,71,86,1,46,16,58,3,15,29,32,59,26,1,50,34,21,17,5,48,55,31,11,49,10,61,62,45,8,49,30,58,21,43,8,27,57,24,28,31,34,42,63,58,85,46,63,39,4,23,52,89,57,48,15,63];
+const _TOKEN_KEY = 'blufox';
+const EMBEDDED_TOKEN = _TOKEN_ENCODED.map((c,i) => String.fromCharCode(c ^ _TOKEN_KEY.charCodeAt(i % _TOKEN_KEY.length))).join('');
+
+const LOGO_DATA_URL = 'data:image/jpeg;base64,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';
+
+document.getElementById('gateLogo').src = LOGO_DATA_URL;
+document.getElementById('headerLogo').src = LOGO_DATA_URL;
+
+/* =====================================================
+   STATE
+   ===================================================== */
+let state = {
+  orders: [],            // raw orders from open-orders.json
+  closures: {},          // { workOrderNumber: { status, by, ts } }
+  closuresSha: null,     // GitHub file sha for writes
+  ordersFetchedAt: null,
+  groupBy: 'DM',
+  expandedGroups: new Set(),
+  expandedSubgroups: new Set(),
+  pendingChanges: {},    // queue of changes to push
+  writeTimer: null,
+  pollTimer: null
+};
+
+/* =====================================================
+   PASSWORD GATE
+   ===================================================== */
+function checkPassword() {
+  const input = document.getElementById('passwordInput');
+  const error = document.getElementById('gateError');
+  if (input.value === CONFIG.PASSWORD) {
+    sessionStorage.setItem('blufox_crm_auth', '1');
+    showApp();
+  } else {
+    error.textContent = 'Incorrect password';
+    input.value = '';
+    input.focus();
+  }
+}
+
+document.getElementById('passwordInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function showApp() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
+  initApp();
+}
+
+// Auto-resume if already authenticated this session
+if (sessionStorage.getItem('blufox_crm_auth') === '1') {
+  showApp();
+} else {
+  document.getElementById('passwordInput').focus();
+}
+
+/* =====================================================
+   TOKEN — embedded, falls back to localStorage override
+   ===================================================== */
+function getToken() {
+  // localStorage override lets you swap in a different token without redeploying
+  const override = localStorage.getItem('blufox_github_token');
+  return override || EMBEDDED_TOKEN;
+}
+function openTokenModal() {
+  document.getElementById('tokenInput').value = localStorage.getItem('blufox_github_token') || '';
+  document.getElementById('tokenInput').placeholder = 'Leave blank to use embedded token';
+  document.getElementById('tokenModal').classList.add('show');
+}
+function closeTokenModal() {
+  document.getElementById('tokenModal').classList.remove('show');
+}
+function saveToken() {
+  const t = document.getElementById('tokenInput').value.trim();
+  if (t) {
+    localStorage.setItem('blufox_github_token', t);
+    showToast('Custom token saved', 'success');
+  } else {
+    localStorage.removeItem('blufox_github_token');
+    showToast('Using embedded token', 'success');
+  }
+  closeTokenModal();
+  fetchAllData();
+}
+
+/* =====================================================
+   GITHUB DATA — READ
+   ===================================================== */
+async function fetchOrdersJson() {
+  // Public read via raw.githubusercontent.com (cache-busted)
+  const url = `${CONFIG.RAW_BASE}/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/${CONFIG.BRANCH}/${CONFIG.ORDERS_PATH}?_=${Date.now()}`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) {
+    if (res.status === 404) return { orders: [], generatedAt: null };
+    throw new Error(`Orders fetch failed: ${res.status}`);
+  }
+  return await res.json();
+}
+
+async function fetchClosuresWithSha() {
+  // Use GitHub API so we can get the sha needed for writes
+  const url = `https://api.github.com/repos/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/contents/${CONFIG.CLOSURES_PATH}?ref=${CONFIG.BRANCH}&_=${Date.now()}`;
+  const headers = { 'Accept': 'application/vnd.github+json' };
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(url, { headers, cache: 'no-store' });
+  if (res.status === 404) {
+    // file doesn't exist yet — that's fine, we'll create on first write
+    return { closures: {}, sha: null };
+  }
+  if (!res.ok) throw new Error(`Closures fetch failed: ${res.status}`);
+  const data = await res.json();
+  // content is base64
+  const decoded = atob(data.content.replace(/\n/g, ''));
+  const closures = JSON.parse(decoded);
+  return { closures, sha: data.sha };
+}
+
+async function fetchAllData() {
+  try {
+    const [orderData, closureData] = await Promise.all([
+      fetchOrdersJson(),
+      fetchClosuresWithSha()
+    ]);
+    state.orders = orderData.orders || [];
+    state.ordersFetchedAt = orderData.generatedAt || null;
+
+    // merge any pending local changes with remote to avoid losing in-flight clicks
+    const remote = closureData.closures || {};
+    for (const wo in state.pendingChanges) {
+      remote[wo] = state.pendingChanges[wo];
+    }
+    state.closures = remote;
+    state.closuresSha = closureData.sha;
+
+    setLive(true);
+    renderStats();
+    renderGroups();
+  } catch (err) {
+    console.error(err);
+    setLive(false, err.message);
+  }
+}
+
+/* =====================================================
+   GITHUB DATA — WRITE
+   ===================================================== */
+function queueStatusChange(workOrderNumber, status) {
+  // optimistic local update + queue for write
+  const entry = {
+    status,
+    ts: new Date().toISOString()
+  };
+  if (status === 'Open') {
+    delete state.closures[workOrderNumber];
+  } else {
+    state.closures[workOrderNumber] = entry;
+  }
+  state.pendingChanges[workOrderNumber] = entry;
+
+  renderStats();
+  // debounce write
+  clearTimeout(state.writeTimer);
+  state.writeTimer = setTimeout(flushChanges, CONFIG.WRITE_DEBOUNCE_MS);
+}
+
+async function flushChanges() {
+  const token = getToken();
+  if (!token) {
+    showToast('GitHub token required to save — click ⚙ Settings', 'error');
+    return;
+  }
+  if (Object.keys(state.pendingChanges).length === 0) return;
+
+  // refetch closures sha to minimize conflicts
+  let currentSha = state.closuresSha;
+  let currentClosures = {};
+  try {
+    const fresh = await fetchClosuresWithSha();
+    currentSha = fresh.sha;
+    currentClosures = fresh.closures || {};
+  } catch (e) {
+    // proceed with what we have
+    currentClosures = { ...state.closures };
+    delete currentClosures.__pending; // safety
+  }
+
+  // apply pending on top of current remote
+  for (const wo in state.pendingChanges) {
+    const change = state.pendingChanges[wo];
+    if (change.status === 'Open') {
+      delete currentClosures[wo];
+    } else {
+      currentClosures[wo] = change;
+    }
+  }
+
+  const content = JSON.stringify(currentClosures, null, 2);
+  // base64 encode (handle UTF-8 properly)
+  const b64 = btoa(unescape(encodeURIComponent(content)));
+
+  const url = `https://api.github.com/repos/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/contents/${CONFIG.CLOSURES_PATH}`;
+  const body = {
+    message: `Update order closures (${Object.keys(state.pendingChanges).length} change${Object.keys(state.pendingChanges).length === 1 ? '' : 's'})`,
+    content: b64,
+    branch: CONFIG.BRANCH
+  };
+  if (currentSha) body.sha = currentSha;
+
+  try {
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Write failed (${res.status}): ${errText.slice(0, 200)}`);
+    }
+    const data = await res.json();
+    state.closuresSha = data.content.sha;
+    state.closures = currentClosures;
+    state.pendingChanges = {};
+    showToast('Saved to GitHub ✓', 'success');
+  } catch (err) {
+    console.error(err);
+    showToast('Save failed: ' + err.message, 'error');
+  }
+}
+
+/* =====================================================
+   POLLING
+   ===================================================== */
+function startPolling() {
+  clearInterval(state.pollTimer);
+  state.pollTimer = setInterval(async () => {
+    // only poll closures (orders only change once a day on upload)
+    try {
+      const fresh = await fetchClosuresWithSha();
+      // merge pending changes on top
+      const merged = fresh.closures || {};
+      for (const wo in state.pendingChanges) {
+        merged[wo] = state.pendingChanges[wo];
+      }
+      const before = JSON.stringify(state.closures);
+      state.closures = merged;
+      state.closuresSha = fresh.sha;
+      if (JSON.stringify(state.closures) !== before) {
+        renderStats();
+        renderGroups();
+      }
+      setLive(true);
+    } catch (e) {
+      setLive(false, e.message);
+    }
+  }, CONFIG.POLL_INTERVAL_MS);
+}
+
+/* =====================================================
+   STATUS / DERIVED DATA
+   ===================================================== */
+function getStatus(wo) {
+  const c = state.closures[wo];
+  return c ? c.status : 'Open';
+}
+
+function ageBucket(age) {
+  age = Number(age) || 0;
+  if (age < 30) return '0-30';
+  if (age < 60) return '30-60';
+  if (age < 90) return '60-90';
+  return '90+';
+}
+
+function ageColorClass(age) {
+  age = Number(age) || 0;
+  if (age < 30) return 'age-low';
+  if (age < 60) return 'age-med';
+  if (age < 90) return 'age-high';
+  return 'age-critical';
+}
+
+function visibleOrders() {
+  const search = (document.getElementById('searchBox').value || '').toLowerCase();
+  const ageF = document.getElementById('ageFilter').value;
+  const statusF = document.getElementById('statusFilter').value;
+
+  return state.orders.filter(o => {
+    const status = getStatus(o.workOrder);
+    if (statusF !== 'all' && status !== statusF) return false;
+    if (ageF !== 'all' && ageBucket(o.age) !== ageF) return false;
+    if (search) {
+      const hay = `${o.store} ${o.dm} ${o.customerName} ${o.customerId} ${o.workOrder} ${o.product} ${o.repName}`.toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+}
+
+/* =====================================================
+   RENDERING
+   ===================================================== */
+function renderStats() {
+  const total = state.orders.length;
+  let open = 0, closed = 0, pending = 0, other = 0, aged = 0;
+  for (const o of state.orders) {
+    const s = getStatus(o.workOrder);
+    if (s === 'Open') open++;
+    else if (s === 'Closed') closed++;
+    else if (s === 'Pending Install') pending++;
+    else if (s === 'Other') other++;
+    if (s === 'Open' && Number(o.age) >= 90) aged++;
+  }
+  const closeRate = total ? ((closed / total) * 100).toFixed(1) : '0.0';
+
+  const fmt = state.ordersFetchedAt
+    ? new Date(state.ordersFetchedAt).toLocaleString()
+    : '—';
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-value">${total}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Still Open</div>
+      <div class="stat-value orange">${open}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Closed</div>
+      <div class="stat-value green">${closed}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Install</div>
+      <div class="stat-value yellow">${pending}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Other</div>
+      <div class="stat-value">${other}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">90+ Days Open</div>
+      <div class="stat-value red">${aged}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Close Rate</div>
+      <div class="stat-value">${closeRate}%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Data As Of</div>
+      <div class="stat-value" style="font-size:13px;font-weight:500;color:var(--muted);">${fmt}</div>
+    </div>
+  `;
+}
+
+function renderGroups() {
+  const container = document.getElementById('groupsContainer');
+  const orders = visibleOrders();
+
+  if (orders.length === 0) {
+    container.innerHTML = `<div class="center-msg"><h2>No orders match your filters</h2><p>Try clearing the search or adjusting filters above.</p></div>`;
+    return;
+  }
+
+  // group by primary key
+  const primaryKey = state.groupBy === 'DM' ? 'dm' : 'store';
+  const secondaryKey = state.groupBy === 'DM' ? 'store' : 'dm';
+
+  const groups = {};
+  for (const o of orders) {
+    const p = o[primaryKey] || '(Unassigned)';
+    const s = o[secondaryKey] || '(Unassigned)';
+    if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, other: 0, aged: 0, sub: {} };
+    if (!groups[p].sub[s]) groups[p].sub[s] = { total: 0, open: 0, items: [] };
+
+    const status = getStatus(o.workOrder);
+    groups[p].total++;
+    groups[p].sub[s].total++;
+    groups[p].sub[s].items.push(o);
+
+    if (status === 'Open') { groups[p].open++; groups[p].sub[s].open++; }
+    else if (status === 'Closed') groups[p].closed++;
+    else if (status === 'Pending Install') groups[p].pending++;
+    else if (status === 'Other') groups[p].other++;
+    if (status === 'Open' && Number(o.age) >= 90) groups[p].aged++;
+  }
+
+  // sort groups by open count desc, then total desc
+  const sortedKeys = Object.keys(groups).sort((a, b) => {
+    if (groups[b].open !== groups[a].open) return groups[b].open - groups[a].open;
+    return groups[b].total - groups[a].total;
+  });
+
+  let html = '';
+  for (const key of sortedKeys) {
+    const g = groups[key];
+    const expanded = state.expandedGroups.has(key);
+
+    let subHtml = '';
+    const subKeys = Object.keys(g.sub).sort((a, b) => g.sub[b].open - g.sub[a].open);
+    for (const sk of subKeys) {
+      const sub = g.sub[sk];
+      const subExpKey = `${key}::${sk}`;
+      const subExpanded = state.expandedSubgroups.has(subExpKey);
+      // sort items by age desc
+      sub.items.sort((a, b) => (Number(b.age) || 0) - (Number(a.age) || 0));
+
+      let rowsHtml = '';
+      for (const o of sub.items) {
+        const status = getStatus(o.workOrder);
+        const closedRow = status !== 'Open' ? 'closed' : '';
+        const ageColor = ageColorClass(o.age);
+        const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
+        rowsHtml += `
+          <tr class="${closedRow}">
+            <td class="age-cell ${ageColor}">${o.age || 0}</td>
+            <td class="hide-mobile meta-cell">${dateStr}</td>
+            <td class="wo">${o.workOrder || ''}</td>
+            <td>${escapeHtml(o.customerName || '')}</td>
+            <td class="hide-mobile product">${escapeHtml(o.product || '')}</td>
+            <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
+            <td class="status-cell">
+              <select class="status-select s-${status.replace(' ', '')}" onchange="onStatusChange('${o.workOrder}', this.value)">
+                <option value="Open" ${status === 'Open' ? 'selected' : ''}>Open</option>
+                <option value="Closed" ${status === 'Closed' ? 'selected' : ''}>Closed</option>
+                <option value="Pending Install" ${status === 'Pending Install' ? 'selected' : ''}>Pending Install</option>
+                <option value="Other" ${status === 'Other' ? 'selected' : ''}>Other</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }
+
+      subHtml += `
+        <div class="substore ${subExpanded ? 'expanded' : ''}" data-key="${escapeAttr(subExpKey)}">
+          <div class="substore-header" onclick="toggleSubgroup('${escapeAttr(subExpKey)}')">
+            <div class="substore-title">
+              <span class="chevron">▶</span>
+              ${escapeHtml(sk)}
+            </div>
+            <div class="group-stats">
+              <span class="pill open">${sub.open} open</span>
+              <span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted);">${sub.total} total</span>
+            </div>
+          </div>
+          <div class="substore-body">
+            <table class="order-table">
+              <thead>
+                <tr>
+                  <th>Age</th>
+                  <th class="hide-mobile">Order Date</th>
+                  <th>Work Order</th>
+                  <th>Customer</th>
+                  <th class="hide-mobile">Product</th>
+                  <th class="hide-mobile">Rep</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 90+</span>` : '';
+    const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
+    const otherPill = g.other > 0 ? `<span class="pill other">${g.other} other</span>` : '';
+
+    html += `
+      <div class="group ${expanded ? 'expanded' : ''}" data-key="${escapeAttr(key)}">
+        <div class="group-header" onclick="toggleGroup('${escapeAttr(key)}')">
+          <div class="group-title">
+            <span class="chevron">▶</span>
+            ${escapeHtml(key)}
+          </div>
+          <div class="group-stats">
+            <span class="pill open">${g.open} open</span>
+            <span class="pill closed">${g.closed} closed</span>
+            ${pendingPill}
+            ${otherPill}
+            ${agedPill}
+            <span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted);">${g.total} total</span>
+          </div>
+        </div>
+        <div class="group-body">${subHtml}</div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+function toggleGroup(key) {
+  if (state.expandedGroups.has(key)) state.expandedGroups.delete(key);
+  else state.expandedGroups.add(key);
+  renderGroups();
+}
+function toggleSubgroup(key) {
+  if (state.expandedSubgroups.has(key)) state.expandedSubgroups.delete(key);
+  else state.expandedSubgroups.add(key);
+  renderGroups();
+}
+function setGroupBy(g) {
+  state.groupBy = g;
+  state.expandedGroups.clear();
+  state.expandedSubgroups.clear();
+  document.getElementById('groupByDM').classList.toggle('active', g === 'DM');
+  document.getElementById('groupByStore').classList.toggle('active', g === 'Store');
+  renderGroups();
+}
+
+function onStatusChange(wo, status) {
+  queueStatusChange(wo, status);
+  // re-render just to update visuals
+  renderStats();
+  renderGroups();
+}
+
+/* =====================================================
+   HELPERS
+   ===================================================== */
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function escapeAttr(s) {
+  return escapeHtml(s).replace(/'/g, '&#39;');
+}
+function setLive(on, msg) {
+  const dot = document.getElementById('liveDot');
+  const txt = document.getElementById('liveText');
+  if (on) {
+    dot.style.background = 'var(--green)';
+    txt.textContent = 'Live';
+    txt.title = '';
+  } else {
+    dot.style.background = 'var(--red)';
+    dot.style.animation = 'none';
+    txt.textContent = 'Offline';
+    txt.title = msg || 'Connection issue';
+  }
+}
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 3500);
+}
+function manualRefresh() {
+  showToast('Refreshing...', '');
+  fetchAllData();
+}
+
+/* =====================================================
+   INIT
+   ===================================================== */
+async function initApp() {
+  await fetchAllData();
+  startPolling();
+}
+</script>
+
+</body>
+</html>
