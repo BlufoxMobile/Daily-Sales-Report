@@ -573,6 +573,13 @@ const OPEN_ORDERS_JSON_PATH = 'data/open-orders.json';
 function buildOpenOrdersJson(workbook) {
   const sheet = workbook.Sheets['Open Orders'];
   if (!sheet) throw new Error('No "Open Orders" tab found in the Excel file');
+
+  // Column F is the account number column. Read its header text dynamically
+  // so this works regardless of the exact header name ("Account Number",
+  // "Account #", "Acct Number", etc.).
+  const colFCell = sheet['F1'];
+  const accountKey = colFCell && colFCell.v != null ? String(colFCell.v).trim() : null;
+
   const rows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false });
 
   const orders = rows
@@ -592,6 +599,7 @@ function buildOpenOrdersJson(workbook) {
         dm: String(r['DM'] || '').trim(),
         orderDate: orderDate || null,
         customerId: String(r['Customer ID'] || '').trim(),
+        accountNumber: accountKey ? String(r[accountKey] || '').trim() : '',
         workOrder: String(r['Work Order Number'] || '').trim(),
         product: String(r['Product Description'] || '').trim(),
         customerName: String(r['Customer Name'] || '').trim(),
