@@ -580,6 +580,12 @@ function buildOpenOrdersJson(workbook) {
   const colFCell = sheet['F1'];
   const accountKey = colFCell && colFCell.v != null ? String(colFCell.v).trim() : null;
 
+  // Column U — the secondary aging metric Jeff wants surfaced in the CRM.
+  // Read its header text dynamically so the CRM can label the column with
+  // whatever the spreadsheet calls it.
+  const colUCell = sheet['U1'];
+  const colUKey = colUCell && colUCell.v != null ? String(colUCell.v).trim() : null;
+
   const rows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false });
 
   const orders = rows
@@ -594,6 +600,15 @@ function buildOpenOrdersJson(workbook) {
         if (!isNaN(d.getTime())) orderDate = d.toISOString();
       }
 
+      // Column U value — keep both the raw value (for display) and a numeric
+      // form (in case it's a number of days)
+      let colUValue = '';
+      if (colUKey) {
+        const v = r[colUKey];
+        if (v instanceof Date) colUValue = v.toLocaleDateString();
+        else if (v != null) colUValue = String(v).trim();
+      }
+
       return {
         store: String(r['Store'] || '').trim(),
         dm: String(r['DM'] || '').trim(),
@@ -604,13 +619,17 @@ function buildOpenOrdersJson(workbook) {
         product: String(r['Product Description'] || '').trim(),
         customerName: String(r['Customer Name'] || '').trim(),
         repName: String(r['Rep Name'] || '').trim(),
-        age: Number(r['Ageing']) || 0
+        age: Number(r['Ageing']) || 0,
+        colU: colUValue,
+        colULabel: colUKey || ''
       };
     });
 
   return {
     generatedAt: new Date().toISOString(),
     rowCount: orders.length,
+    accountLabel: accountKey || '',
+    colULabel: colUKey || '',
     orders: orders
   };
 }
