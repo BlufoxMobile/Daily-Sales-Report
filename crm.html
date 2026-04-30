@@ -332,6 +332,7 @@
   .meta-cell { color: var(--muted); font-size: 12px; }
   .order-table td.wo { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; }
   .order-table td.acct { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: var(--orange); font-weight: 600; }
+  .order-table td.colu-cell { font-size: 12px; color: var(--text); }
   .dm-tag {
     display: inline-block;
     margin-left: 10px;
@@ -561,6 +562,7 @@ let state = {
   closures: {},          // { workOrderNumber: { status, by, ts } }
   closuresSha: null,     // GitHub file sha for writes
   ordersFetchedAt: null,
+  colULabel: '',         // header text for column U (read from xlsx)
   groupBy: 'DM',
   expandedGroups: new Set(),
   expandedSubgroups: new Set(),
@@ -675,6 +677,10 @@ async function fetchAllData() {
     const allowed = new Set(CONFIG.ALLOWED_DMS);
     state.orders = (orderData.orders || []).filter(o => allowed.has(o.dm));
     state.ordersFetchedAt = orderData.generatedAt || null;
+    // Header label for column U — falls back to the per-row label, then empty
+    state.colULabel = orderData.colULabel
+      || (state.orders[0] && state.orders[0].colULabel)
+      || '';
 
     // merge any pending local changes with remote to avoid losing in-flight clicks
     const remote = closureData.closures || {};
@@ -829,9 +835,9 @@ function ageBucket(age) {
 
 function ageColorClass(age) {
   age = Number(age) || 0;
-  if (age < 30) return 'age-low';
-  if (age < 60) return 'age-med';
-  if (age < 90) return 'age-high';
+  if (age < 14) return 'age-low';
+  if (age < 21) return 'age-med';
+  if (age < 30) return 'age-high';
   return 'age-critical';
 }
 
@@ -864,7 +870,7 @@ function renderStats() {
     else if (s === 'Closed') closed++;
     else if (s === 'Pending Install') pending++;
     else if (s === 'Other') other++;
-    if (s === 'Open' && Number(o.age) >= 90) aged++;
+    if (s === 'Open' && Number(o.age) >= 30) aged++;
   }
   const closeRate = total ? ((closed / total) * 100).toFixed(1) : '0.0';
 
@@ -894,7 +900,7 @@ function renderStats() {
       <div class="stat-value">${other}</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">90+ Days Open</div>
+      <div class="stat-label">30+ Days Open</div>
       <div class="stat-value red">${aged}</div>
     </div>
     <div class="stat-card">
@@ -937,7 +943,7 @@ function renderGroups() {
     else if (status === 'Closed') groups[p].closed++;
     else if (status === 'Pending Install') groups[p].pending++;
     else if (status === 'Other') groups[p].other++;
-    if (status === 'Open' && Number(o.age) >= 90) groups[p].aged++;
+    if (status === 'Open' && Number(o.age) >= 30) groups[p].aged++;
   }
 
   // sort groups by open count desc, then total desc
@@ -969,12 +975,13 @@ function renderGroups() {
         rowsHtml += `
           <tr class="${closedRow}">
             <td class="age-cell ${ageColor}">${o.age || 0}</td>
-            <td class="hide-mobile meta-cell">${dateStr}</td>
-            <td class="wo">${o.workOrder || ''}</td>
+            <td class="meta-cell">${dateStr}</td>
             <td class="acct">${escapeHtml(o.accountNumber || '')}</td>
+            <td class="wo">${o.workOrder || ''}</td>
             <td>${escapeHtml(o.customerName || '')}</td>
             <td class="hide-mobile product">${escapeHtml(o.product || '')}</td>
             <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
+            <td class="hide-mobile colu-cell">${escapeHtml(o.colU || '')}</td>
             <td class="status-cell">
               <select class="status-select s-${status.replace(' ', '')}" onchange="onStatusChange('${o.workOrder}', this.value)">
                 <option value="Open" ${status === 'Open' ? 'selected' : ''}>Open</option>
@@ -1004,12 +1011,13 @@ function renderGroups() {
               <thead>
                 <tr>
                   <th>Age</th>
-                  <th class="hide-mobile">Order Date</th>
-                  <th>Work Order</th>
+                  <th>Order Date</th>
                   <th>Account #</th>
+                  <th>Work Order</th>
                   <th>Customer</th>
                   <th class="hide-mobile">Product</th>
                   <th class="hide-mobile">Rep</th>
+                  <th class="hide-mobile">${escapeHtml(state.colULabel || 'Col U')}</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -1020,7 +1028,7 @@ function renderGroups() {
       `;
     }
 
-    const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 90+</span>` : '';
+    const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 30+</span>` : '';
     const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
     const otherPill = g.other > 0 ? `<span class="pill other">${g.other} other</span>` : '';
 
