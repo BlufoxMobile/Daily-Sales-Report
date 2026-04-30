@@ -331,6 +331,19 @@
 
   .meta-cell { color: var(--muted); font-size: 12px; }
   .order-table td.wo { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; }
+  .order-table td.acct { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: var(--orange); font-weight: 600; }
+  .dm-tag {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(168, 85, 247, 0.12);
+    color: var(--purple);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+  }
   .order-table td.product { color: var(--muted); }
 
   /* ========= EMPTY / LOADING ========= */
@@ -457,7 +470,7 @@
   <div class="stats-bar" id="statsBar"></div>
 
   <div class="controls">
-    <input type="search" id="searchBox" placeholder="Search by store, customer, work order, rep..." oninput="renderGroups()">
+    <input type="search" id="searchBox" placeholder="Search by store, customer, account #, work order, rep..." oninput="renderGroups()">
     <select id="ageFilter" onchange="renderGroups()">
       <option value="all">All Ages</option>
       <option value="0-30">0-30 days</option>
@@ -515,7 +528,15 @@ const CONFIG = {
   CLOSURES_PATH: 'data/closures.json',
   POLL_INTERVAL_MS: 30000,         // poll every 30 seconds
   WRITE_DEBOUNCE_MS: 1500,         // wait this long after a click before pushing
-  RAW_BASE: 'https://raw.githubusercontent.com'
+  RAW_BASE: 'https://raw.githubusercontent.com',
+  // Only show orders whose DM is in this list. Names must match exactly
+  // what comes through from the spreadsheet's "DM" column.
+  ALLOWED_DMS: [
+    'Juan Carrillo',
+    'Imaad Dhorajiwala',
+    'Jacob Cabrales',
+    'Matthew Brooks'
+  ]
 };
 
 // ---- Embedded GitHub token (XOR-encoded, same scheme as upload.html) ----
@@ -650,7 +671,9 @@ async function fetchAllData() {
       fetchOrdersJson(),
       fetchClosuresWithSha()
     ]);
-    state.orders = orderData.orders || [];
+    // Filter to only the DMs Jeff manages
+    const allowed = new Set(CONFIG.ALLOWED_DMS);
+    state.orders = (orderData.orders || []).filter(o => allowed.has(o.dm));
     state.ordersFetchedAt = orderData.generatedAt || null;
 
     // merge any pending local changes with remote to avoid losing in-flight clicks
@@ -822,7 +845,7 @@ function visibleOrders() {
     if (statusF !== 'all' && status !== statusF) return false;
     if (ageF !== 'all' && ageBucket(o.age) !== ageF) return false;
     if (search) {
-      const hay = `${o.store} ${o.dm} ${o.customerName} ${o.customerId} ${o.workOrder} ${o.product} ${o.repName}`.toLowerCase();
+      const hay = `${o.store} ${o.dm} ${o.customerName} ${o.customerId} ${o.accountNumber || ''} ${o.workOrder} ${o.product} ${o.repName}`.toLowerCase();
       if (!hay.includes(search)) return false;
     }
     return true;
@@ -948,6 +971,7 @@ function renderGroups() {
             <td class="age-cell ${ageColor}">${o.age || 0}</td>
             <td class="hide-mobile meta-cell">${dateStr}</td>
             <td class="wo">${o.workOrder || ''}</td>
+            <td class="acct">${escapeHtml(o.accountNumber || '')}</td>
             <td>${escapeHtml(o.customerName || '')}</td>
             <td class="hide-mobile product">${escapeHtml(o.product || '')}</td>
             <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
@@ -982,6 +1006,7 @@ function renderGroups() {
                   <th>Age</th>
                   <th class="hide-mobile">Order Date</th>
                   <th>Work Order</th>
+                  <th>Account #</th>
                   <th>Customer</th>
                   <th class="hide-mobile">Product</th>
                   <th class="hide-mobile">Rep</th>
@@ -999,12 +1024,24 @@ function renderGroups() {
     const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
     const otherPill = g.other > 0 ? `<span class="pill other">${g.other} other</span>` : '';
 
+    // In Store view, label each store with its DM (small tag in the header).
+    // Each store typically maps to exactly one DM, so this just reads the
+    // unique secondary keys.
+    let dmTag = '';
+    if (state.groupBy === 'Store') {
+      const dms = Object.keys(g.sub).filter(d => d && d !== '(Unassigned)');
+      if (dms.length > 0) {
+        dmTag = `<span class="dm-tag">DM: ${escapeHtml(dms.join(', '))}</span>`;
+      }
+    }
+
     html += `
       <div class="group ${expanded ? 'expanded' : ''}" data-key="${escapeAttr(key)}">
         <div class="group-header" onclick="toggleGroup('${escapeAttr(key)}')">
           <div class="group-title">
             <span class="chevron">▶</span>
             ${escapeHtml(key)}
+            ${dmTag}
           </div>
           <div class="group-stats">
             <span class="pill open">${g.open} open</span>
