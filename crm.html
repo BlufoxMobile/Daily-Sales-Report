@@ -504,7 +504,6 @@
       <option value="Open">Open only</option>
       <option value="Closed">Closed</option>
       <option value="Pending Install">Pending Install</option>
-      <option value="Other">Other</option>
     </select>
     <div class="toggle-group">
       <button id="groupByDM" class="active" onclick="setGroupBy('DM')">By DM</button>
@@ -849,7 +848,14 @@ function startPolling() {
    ===================================================== */
 function getStatus(wo) {
   const c = state.closures[wo];
-  return c ? c.status : 'Open';
+  if (!c) return 'Open';
+  // Legacy "Other" entries — option no longer exists, treat as Open.
+  if (c.status === 'Other') return 'Open';
+  // If a Closed order reappears in today's upload, auto-reset to Open
+  // so the row is fully readable. The closure record remains so we can
+  // still show the "Previously Marked Closed - Still Open" badge.
+  if (isPencilWhipped(wo)) return 'Open';
+  return c.status;
 }
 
 // True if a manager marked this order Closed BEFORE today's daily upload,
@@ -877,6 +883,16 @@ function trulyClosedClosures() {
     out.push({ wo, closure: c });
   }
   return out;
+}
+
+// Month-to-date filter — closures with ts in the current calendar month.
+function startOfCurrentMonthMs() {
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+}
+function isThisMonth(tsStr) {
+  if (!tsStr) return false;
+  return new Date(tsStr).getTime() >= startOfCurrentMonthMs();
 }
 
 function ageBucket(age) {
@@ -916,26 +932,40 @@ function visibleOrders() {
    RENDERING
    ===================================================== */
 function renderStats() {
-  let open = 0, closedInList = 0, pending = 0, other = 0, aged = 0, pencilWhipped = 0;
+  let open = 0, pending = 0, aged = 0, pencilWhipped = 0;
   for (const o of state.orders) {
     const s = getStatus(o.workOrder);
     if (s === 'Open') open++;
-    else if (s === 'Closed') closedInList++;
     else if (s === 'Pending Install') pending++;
-    else if (s === 'Other') other++;
     if (s === 'Open' && Number(o.age) >= 30) aged++;
     if (isPencilWhipped(o.workOrder)) pencilWhipped++;
   }
-  // Orders that were marked Closed previously and dropped off today's list
-  // are truly closed — count them in "Closed" (they're not shown as rows).
-  const truly = trulyClosedClosures().length;
-  const closed = closedInList + truly;
-  const total = state.orders.length + truly;
-  const closeRate = total ? ((closed / total) * 100).toFixed(1) : '0.0';
+
+  // ── Month-to-date Closed counter ──
+  // Counts closures whose status=Closed AND timestamp is in the current
+  // calendar month AND were not pencil-whipped (those are auto-reset).
+  // Auto-resets on the 1st of every month.
+  const allowed = new Set(CONFIG.ALLOWED_DMS);
+  let closedMTD = 0;
+  for (const wo in state.closures) {
+    const c = state.closures[wo];
+    if (c.status !== 'Closed') continue;
+    if (isPencilWhipped(wo)) continue;       // doesn't count — was reset
+    if (!isThisMonth(c.ts)) continue;        // monthly reset
+    if (c.dm && !allowed.has(c.dm)) continue;
+    closedMTD++;
+  }
+
+  const totalDisplayed = state.orders.length;
+  const closeRateDenom = closedMTD + totalDisplayed;
+  const closeRate = closeRateDenom ? ((closedMTD / closeRateDenom) * 100).toFixed(1) : '0.0';
 
   const fmt = state.ordersFetchedAt
     ? new Date(state.ordersFetchedAt).toLocaleString()
     : '—';
+
+  // Show the month name on the Closed card so it's obvious it's MTD.
+  const monthName = new Date().toLocaleDateString(undefined, { month: 'short' });
 
   const pwCard = pencilWhipped > 0
     ? `<div class="stat-card pw-card">
@@ -947,23 +977,19 @@ function renderStats() {
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-card">
       <div class="stat-label">Total Orders</div>
-      <div class="stat-value">${total}</div>
+      <div class="stat-value">${totalDisplayed}</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Still Open</div>
       <div class="stat-value orange">${open}</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Closed</div>
-      <div class="stat-value green">${closed}</div>
+      <div class="stat-label">Closed (${monthName} MTD)</div>
+      <div class="stat-value green">${closedMTD}</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Pending Install</div>
       <div class="stat-value yellow">${pending}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Other</div>
-      <div class="stat-value">${other}</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">30+ Days Open</div>
@@ -971,7 +997,7 @@ function renderStats() {
     </div>
     ${pwCard}
     <div class="stat-card">
-      <div class="stat-label">Close Rate</div>
+      <div class="stat-label">Close Rate (${monthName})</div>
       <div class="stat-value">${closeRate}%</div>
     </div>
     <div class="stat-card">
@@ -998,7 +1024,7 @@ function renderGroups() {
   for (const o of orders) {
     const p = o[primaryKey] || '(Unassigned)';
     const s = o[secondaryKey] || '(Unassigned)';
-    if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, other: 0, aged: 0, pw: 0, sub: {} };
+    if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, aged: 0, pw: 0, sub: {} };
     if (!groups[p].sub[s]) groups[p].sub[s] = { total: 0, open: 0, items: [] };
 
     const status = getStatus(o.workOrder);
@@ -1009,7 +1035,6 @@ function renderGroups() {
     if (status === 'Open') { groups[p].open++; groups[p].sub[s].open++; }
     else if (status === 'Closed') groups[p].closed++;
     else if (status === 'Pending Install') groups[p].pending++;
-    else if (status === 'Other') groups[p].other++;
     if (status === 'Open' && Number(o.age) >= 30) groups[p].aged++;
     if (isPencilWhipped(o.workOrder)) groups[p].pw++;
   }
@@ -1038,8 +1063,9 @@ function renderGroups() {
       for (const o of sub.items) {
         const status = getStatus(o.workOrder);
         const pencilWhipped = isPencilWhipped(o.workOrder);
-        // Pencil-whipped rows look ALIVE (not greyed out) so the warning is visible.
-        const closedRow = (status !== 'Open' && !pencilWhipped) ? 'closed' : '';
+        // Strikethrough ONLY when the order is actually Closed (a fresh close
+        // for today). Pending Install rows stay fully readable.
+        const closedRow = status === 'Closed' ? 'closed' : '';
         const pwClass = pencilWhipped ? 'pencil-whipped' : '';
         const ageColor = ageColorClass(o.age);
         const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
@@ -1061,7 +1087,6 @@ function renderGroups() {
                 <option value="Open" ${status === 'Open' ? 'selected' : ''}>Open</option>
                 <option value="Closed" ${status === 'Closed' ? 'selected' : ''}>Closed</option>
                 <option value="Pending Install" ${status === 'Pending Install' ? 'selected' : ''}>Pending Install</option>
-                <option value="Other" ${status === 'Other' ? 'selected' : ''}>Other</option>
               </select>
             </td>
           </tr>
@@ -1104,7 +1129,6 @@ function renderGroups() {
 
     const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 30+</span>` : '';
     const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
-    const otherPill = g.other > 0 ? `<span class="pill other">${g.other} other</span>` : '';
     const pwPill = g.pw > 0 ? `<span class="pill pw-pill">${g.pw} prev. closed - still open</span>` : '';
 
     // In Store view, label each store with its DM (small tag in the header).
@@ -1130,7 +1154,6 @@ function renderGroups() {
             <span class="pill open">${g.open} open</span>
             <span class="pill closed">${g.closed} closed</span>
             ${pendingPill}
-            ${otherPill}
             ${pwPill}
             ${agedPill}
             <span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted);">${g.total} total</span>
