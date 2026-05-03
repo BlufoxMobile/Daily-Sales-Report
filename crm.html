@@ -245,6 +245,7 @@
   .pill.open { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid var(--blue); }
   .pill.closed { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid var(--green); }
   .pill.pw-pill { background: rgba(239,68,68,0.18); color: #fca5a5; border: 1px solid var(--red); font-weight: 700; }
+  .pill.cnc-pill { background: rgba(148,163,184,0.12); color: var(--muted); border: 1px solid var(--muted); }
   .pill.pending { background: rgba(234,179,8,0.15); color: #fde047; border: 1px solid var(--yellow); }
   .pill.other { background: rgba(168,85,247,0.15); color: #d8b4fe; border: 1px solid var(--purple); }
   .pill.aged { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid var(--red); }
@@ -346,8 +347,8 @@
   }
   .status-select.s-Open { border-color: var(--blue); }
   .status-select.s-Closed { border-color: var(--green); background: rgba(34,197,94,0.1); }
-  .status-select.s-Pending { border-color: var(--yellow); background: rgba(234,179,8,0.1); }
-  .status-select.s-Other { border-color: var(--purple); background: rgba(168,85,247,0.1); }
+  .status-select.s-PendingInstall { border-color: var(--yellow); background: rgba(234,179,8,0.1); }
+  .status-select.s-CanNotClose { border-color: var(--muted); background: rgba(148,163,184,0.12); color: var(--muted); }
 
   .meta-cell { color: var(--muted); font-size: 12px; }
   .order-table td.wo { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; }
@@ -503,6 +504,7 @@
       <option value="Open">Open only</option>
       <option value="Closed">Closed</option>
       <option value="Pending Install">Pending Install</option>
+      <option value="Can Not Close">Can Not Close</option>
     </select>
     <div class="toggle-group">
       <button id="groupByDM" class="active" onclick="setGroupBy('DM')">By DM</button>
@@ -931,11 +933,12 @@ function visibleOrders() {
    RENDERING
    ===================================================== */
 function renderStats() {
-  let open = 0, pending = 0, aged = 0, pencilWhipped = 0;
+  let open = 0, pending = 0, cnc = 0, aged = 0, pencilWhipped = 0;
   for (const o of state.orders) {
     const s = getStatus(o.workOrder);
     if (s === 'Open') open++;
     else if (s === 'Pending Install') pending++;
+    else if (s === 'Can Not Close') cnc++;
     if (s === 'Open' && Number(o.age) >= 30) aged++;
     if (isPencilWhipped(o.workOrder)) pencilWhipped++;
   }
@@ -973,6 +976,13 @@ function renderStats() {
        </div>`
     : '';
 
+  const cncCard = cnc > 0
+    ? `<div class="stat-card">
+         <div class="stat-label">Can Not Close</div>
+         <div class="stat-value" style="color:var(--muted);">${cnc}</div>
+       </div>`
+    : '';
+
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-card">
       <div class="stat-label">Total Orders</div>
@@ -990,6 +1000,7 @@ function renderStats() {
       <div class="stat-label">Pending Install</div>
       <div class="stat-value yellow">${pending}</div>
     </div>
+    ${cncCard}
     <div class="stat-card">
       <div class="stat-label">30+ Days Open</div>
       <div class="stat-value red">${aged}</div>
@@ -1023,7 +1034,7 @@ function renderGroups() {
   for (const o of orders) {
     const p = o[primaryKey] || '(Unassigned)';
     const s = o[secondaryKey] || '(Unassigned)';
-    if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, aged: 0, pw: 0, sub: {} };
+    if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, cnc: 0, aged: 0, pw: 0, sub: {} };
     if (!groups[p].sub[s]) groups[p].sub[s] = { total: 0, open: 0, items: [] };
 
     const status = getStatus(o.workOrder);
@@ -1034,6 +1045,7 @@ function renderGroups() {
     if (status === 'Open') { groups[p].open++; groups[p].sub[s].open++; }
     else if (status === 'Closed') groups[p].closed++;
     else if (status === 'Pending Install') groups[p].pending++;
+    else if (status === 'Can Not Close') groups[p].cnc++;
     if (status === 'Open' && Number(o.age) >= 30) groups[p].aged++;
     if (isPencilWhipped(o.workOrder)) groups[p].pw++;
   }
@@ -1062,9 +1074,10 @@ function renderGroups() {
       for (const o of sub.items) {
         const status = getStatus(o.workOrder);
         const pencilWhipped = isPencilWhipped(o.workOrder);
-        // Strikethrough ONLY when the order is actually Closed (a fresh close
-        // for today). Pending Install rows stay fully readable.
-        const closedRow = status === 'Closed' ? 'closed' : '';
+        // Strikethrough on Closed (a fresh close for today) AND on Can Not
+        // Close so managers don't keep re-opening orders that are stuck.
+        // Pending Install rows stay fully readable.
+        const closedRow = (status === 'Closed' || status === 'Can Not Close') ? 'closed' : '';
         const pwClass = pencilWhipped ? 'pencil-whipped' : '';
         const ageColor = ageColorClass(o.age);
         const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
@@ -1082,10 +1095,11 @@ function renderGroups() {
             <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
             <td class="hide-mobile colu-cell">${escapeHtml(o.colU || (o.age != null ? String(o.age) : ''))}</td>
             <td class="status-cell">
-              <select class="status-select s-${status.replace(' ', '')}" onchange="onStatusChange('${o.workOrder}', this.value)">
+              <select class="status-select s-${status.replace(/ /g, '')}" onchange="onStatusChange('${o.workOrder}', this.value)">
                 <option value="Open" ${status === 'Open' ? 'selected' : ''}>Open</option>
                 <option value="Closed" ${status === 'Closed' ? 'selected' : ''}>Closed</option>
                 <option value="Pending Install" ${status === 'Pending Install' ? 'selected' : ''}>Pending Install</option>
+                <option value="Can Not Close" ${status === 'Can Not Close' ? 'selected' : ''}>Can Not Close</option>
               </select>
             </td>
           </tr>
@@ -1128,6 +1142,7 @@ function renderGroups() {
 
     const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 30+</span>` : '';
     const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
+    const cncPill = g.cnc > 0 ? `<span class="pill cnc-pill">${g.cnc} can not close</span>` : '';
     const pwPill = g.pw > 0 ? `<span class="pill pw-pill">${g.pw} prev. closed - still open</span>` : '';
 
     // In Store view, label each store with its DM (small tag in the header).
@@ -1153,6 +1168,7 @@ function renderGroups() {
             <span class="pill open">${g.open} open</span>
             <span class="pill closed">${g.closed} closed</span>
             ${pendingPill}
+            ${cncPill}
             ${pwPill}
             ${agedPill}
             <span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted);">${g.total} total</span>
