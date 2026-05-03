@@ -244,6 +244,7 @@
   }
   .pill.open { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid var(--blue); }
   .pill.closed { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid var(--green); }
+  .pill.pw-pill { background: rgba(239,68,68,0.18); color: #fca5a5; border: 1px solid var(--red); font-weight: 700; }
   .pill.pending { background: rgba(234,179,8,0.15); color: #fde047; border: 1px solid var(--yellow); }
   .pill.other { background: rgba(168,85,247,0.15); color: #d8b4fe; border: 1px solid var(--purple); }
   .pill.aged { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid var(--red); }
@@ -300,6 +301,25 @@
   }
   .order-table tr.closed { opacity: 0.5; }
   .order-table tr.closed td:not(.status-cell) { text-decoration: line-through; }
+  /* Pencil-whipped: marked Closed before today's upload but still open. */
+  .order-table tr.pencil-whipped {
+    background: rgba(239, 68, 68, 0.08);
+    box-shadow: inset 4px 0 0 0 var(--red);
+  }
+  .order-table tr.pencil-whipped td { color: var(--text); }
+  .pw-badge {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(239, 68, 68, 0.18);
+    color: #fca5a5;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .stat-card.pw-card { border-color: var(--red); background: rgba(239, 68, 68, 0.08); }
   .order-table tr:hover { background: rgba(230, 126, 34, 0.03); }
 
   .age-cell {
@@ -681,6 +701,9 @@ async function fetchAllData() {
     state.colULabel = orderData.colULabel
       || (state.orders[0] && state.orders[0].colULabel)
       || '';
+    // Set of work orders present in today's daily upload — used to detect
+    // pencil-whipped closures and to count truly-closed orders.
+    state.todayOpenWOs = new Set(state.orders.map(o => o.workOrder));
 
     // merge any pending local changes with remote to avoid losing in-flight clicks
     const remote = closureData.closures || {};
@@ -703,10 +726,14 @@ async function fetchAllData() {
    GITHUB DATA — WRITE
    ===================================================== */
 function queueStatusChange(workOrderNumber, status) {
-  // optimistic local update + queue for write
+  // capture the DM and store name on the closure so we can still filter
+  // "truly closed" orders by DM after they fall off the daily file.
+  const order = state.orders.find(o => o.workOrder === workOrderNumber);
   const entry = {
     status,
-    ts: new Date().toISOString()
+    ts: new Date().toISOString(),
+    dm: order ? order.dm : null,
+    store: order ? order.store : null
   };
   if (status === 'Open') {
     delete state.closures[workOrderNumber];
@@ -825,6 +852,33 @@ function getStatus(wo) {
   return c ? c.status : 'Open';
 }
 
+// True if a manager marked this order Closed BEFORE today's daily upload,
+// yet the order is still in today's open-orders list. That means Xfinity
+// disagrees — the close didn't actually happen.
+function isPencilWhipped(wo) {
+  const c = state.closures[wo];
+  if (!c || c.status !== 'Closed') return false;
+  if (!state.todayOpenWOs || !state.todayOpenWOs.has(wo)) return false;
+  if (!state.ordersFetchedAt || !c.ts) return false;
+  // closure timestamp must predate the data generation timestamp
+  return new Date(c.ts) < new Date(state.ordersFetchedAt);
+}
+
+// Closures for our DMs whose work order is NOT in today's open list = truly
+// closed. Returns an array of { wo, closure } entries.
+function trulyClosedClosures() {
+  const allowed = new Set(CONFIG.ALLOWED_DMS);
+  const out = [];
+  for (const wo in state.closures) {
+    const c = state.closures[wo];
+    if (c.status !== 'Closed') continue;
+    if (state.todayOpenWOs && state.todayOpenWOs.has(wo)) continue;
+    if (c.dm && !allowed.has(c.dm)) continue; // skip other DMs' closures
+    out.push({ wo, closure: c });
+  }
+  return out;
+}
+
 function ageBucket(age) {
   age = Number(age) || 0;
   if (age < 30) return '0-30';
@@ -862,21 +916,33 @@ function visibleOrders() {
    RENDERING
    ===================================================== */
 function renderStats() {
-  const total = state.orders.length;
-  let open = 0, closed = 0, pending = 0, other = 0, aged = 0;
+  let open = 0, closedInList = 0, pending = 0, other = 0, aged = 0, pencilWhipped = 0;
   for (const o of state.orders) {
     const s = getStatus(o.workOrder);
     if (s === 'Open') open++;
-    else if (s === 'Closed') closed++;
+    else if (s === 'Closed') closedInList++;
     else if (s === 'Pending Install') pending++;
     else if (s === 'Other') other++;
     if (s === 'Open' && Number(o.age) >= 30) aged++;
+    if (isPencilWhipped(o.workOrder)) pencilWhipped++;
   }
+  // Orders that were marked Closed previously and dropped off today's list
+  // are truly closed — count them in "Closed" (they're not shown as rows).
+  const truly = trulyClosedClosures().length;
+  const closed = closedInList + truly;
+  const total = state.orders.length + truly;
   const closeRate = total ? ((closed / total) * 100).toFixed(1) : '0.0';
 
   const fmt = state.ordersFetchedAt
     ? new Date(state.ordersFetchedAt).toLocaleString()
     : '—';
+
+  const pwCard = pencilWhipped > 0
+    ? `<div class="stat-card pw-card">
+         <div class="stat-label">Pencil Whipped</div>
+         <div class="stat-value red">${pencilWhipped}</div>
+       </div>`
+    : '';
 
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-card">
@@ -903,6 +969,7 @@ function renderStats() {
       <div class="stat-label">30+ Days Open</div>
       <div class="stat-value red">${aged}</div>
     </div>
+    ${pwCard}
     <div class="stat-card">
       <div class="stat-label">Close Rate</div>
       <div class="stat-value">${closeRate}%</div>
@@ -931,7 +998,7 @@ function renderGroups() {
   for (const o of orders) {
     const p = o[primaryKey] || '(Unassigned)';
     const s = o[secondaryKey] || '(Unassigned)';
-    if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, other: 0, aged: 0, sub: {} };
+    if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, other: 0, aged: 0, pw: 0, sub: {} };
     if (!groups[p].sub[s]) groups[p].sub[s] = { total: 0, open: 0, items: [] };
 
     const status = getStatus(o.workOrder);
@@ -944,6 +1011,7 @@ function renderGroups() {
     else if (status === 'Pending Install') groups[p].pending++;
     else if (status === 'Other') groups[p].other++;
     if (status === 'Open' && Number(o.age) >= 30) groups[p].aged++;
+    if (isPencilWhipped(o.workOrder)) groups[p].pw++;
   }
 
   // sort groups by open count desc, then total desc
@@ -969,16 +1037,22 @@ function renderGroups() {
       let rowsHtml = '';
       for (const o of sub.items) {
         const status = getStatus(o.workOrder);
-        const closedRow = status !== 'Open' ? 'closed' : '';
+        const pencilWhipped = isPencilWhipped(o.workOrder);
+        // Pencil-whipped rows look ALIVE (not greyed out) so the warning is visible.
+        const closedRow = (status !== 'Open' && !pencilWhipped) ? 'closed' : '';
+        const pwClass = pencilWhipped ? 'pencil-whipped' : '';
         const ageColor = ageColorClass(o.age);
         const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
+        const pwBadge = pencilWhipped
+          ? `<div class="pw-badge">⚠ Previously Marked As Closed</div>`
+          : '';
         rowsHtml += `
-          <tr class="${closedRow}">
+          <tr class="${closedRow} ${pwClass}">
             <td class="age-cell ${ageColor}">${o.age || 0}</td>
             <td class="meta-cell">${dateStr}</td>
             <td class="acct">${escapeHtml(o.accountNumber || o.customerId || '')}</td>
             <td class="wo">${o.workOrder || ''}</td>
-            <td>${escapeHtml(o.customerName || '')}</td>
+            <td>${escapeHtml(o.customerName || '')}${pwBadge}</td>
             <td class="hide-mobile product">${escapeHtml(o.product || '')}</td>
             <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
             <td class="hide-mobile colu-cell">${escapeHtml(o.colU || (o.age != null ? String(o.age) : ''))}</td>
@@ -1031,6 +1105,7 @@ function renderGroups() {
     const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 30+</span>` : '';
     const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
     const otherPill = g.other > 0 ? `<span class="pill other">${g.other} other</span>` : '';
+    const pwPill = g.pw > 0 ? `<span class="pill pw-pill">⚠ ${g.pw} pencil-whipped</span>` : '';
 
     // In Store view, label each store with its DM (small tag in the header).
     // Each store typically maps to exactly one DM, so this just reads the
@@ -1056,6 +1131,7 @@ function renderGroups() {
             <span class="pill closed">${g.closed} closed</span>
             ${pendingPill}
             ${otherPill}
+            ${pwPill}
             ${agedPill}
             <span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted);">${g.total} total</span>
           </div>
