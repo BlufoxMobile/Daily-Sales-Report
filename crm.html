@@ -484,7 +484,6 @@
         <span id="liveText">Live</span>
       </div>
       <button class="icon-btn" onclick="manualRefresh()">↻ Refresh</button>
-      <button class="icon-btn" onclick="openTokenModal()">⚙ Settings</button>
     </div>
   </header>
 
@@ -750,7 +749,7 @@ function queueStatusChange(workOrderNumber, status) {
 async function flushChanges() {
   const token = getToken();
   if (!token) {
-    showToast('GitHub token required to save — click ⚙ Settings', 'error');
+    showToast('GitHub token unavailable — contact Jeff', 'error');
     return;
   }
   if (Object.keys(state.pendingChanges).length === 0) return;
