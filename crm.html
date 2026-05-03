@@ -308,18 +308,19 @@
     box-shadow: inset 4px 0 0 0 var(--red);
   }
   .order-table tr.pencil-whipped td { color: var(--text); }
-  .pw-badge {
+  .pw-badge, .install-badge {
     display: inline-block;
     margin-top: 4px;
     padding: 2px 8px;
     border-radius: 4px;
-    background: rgba(239, 68, 68, 0.18);
-    color: #fca5a5;
     font-size: 10.5px;
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
+    text-decoration: none !important;
   }
+  .pw-badge { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
+  .install-badge { background: rgba(234, 179, 8, 0.16); color: #fde68a; }
   .stat-card.pw-card { border-color: var(--red); background: rgba(239, 68, 68, 0.08); }
   .order-table tr:hover { background: rgba(230, 126, 34, 0.03); }
 
@@ -534,6 +535,19 @@
   </div>
 </div>
 
+<!-- ============ INSTALL DATE MODAL ============ -->
+<div class="modal-overlay" id="installDateModal">
+  <div class="modal">
+    <h2>Pending Install</h2>
+    <p>What is the designated install date for this order? After this date, if the order is still on the list, it will reappear as Open.</p>
+    <input type="date" id="installDateInput">
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="cancelInstallDate()">Cancel</button>
+      <button class="btn-primary" onclick="confirmInstallDate()">Save Install Date</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -725,7 +739,7 @@ async function fetchAllData() {
 /* =====================================================
    GITHUB DATA — WRITE
    ===================================================== */
-function queueStatusChange(workOrderNumber, status) {
+function queueStatusChange(workOrderNumber, status, extra) {
   // capture the DM and store name on the closure so we can still filter
   // "truly closed" orders by DM after they fall off the daily file.
   const order = state.orders.find(o => o.workOrder === workOrderNumber);
@@ -733,7 +747,8 @@ function queueStatusChange(workOrderNumber, status) {
     status,
     ts: new Date().toISOString(),
     dm: order ? order.dm : null,
-    store: order ? order.store : null
+    store: order ? order.store : null,
+    ...(extra || {})
   };
   if (status === 'Open') {
     delete state.closures[workOrderNumber];
@@ -856,7 +871,23 @@ function getStatus(wo) {
   // so the row is fully readable. The closure record remains so we can
   // still show the "Previously Marked Closed - Still Open" badge.
   if (isPencilWhipped(wo)) return 'Open';
+  // If a Pending Install order's install date has passed and it's still
+  // in today's open list, auto-revert to Open so it goes back into the
+  // active queue.
+  if (isPastInstallDate(wo)) return 'Open';
   return c.status;
+}
+
+// Pending Install with a scheduled install date that's already passed
+// AND the order is still on today's open list = the install didn't
+// happen, treat as Open again.
+function isPastInstallDate(wo) {
+  const c = state.closures[wo];
+  if (!c || c.status !== 'Pending Install') return false;
+  if (!c.pendingUntil) return false;
+  if (!state.todayOpenWOs || !state.todayOpenWOs.has(wo)) return false;
+  const todayStr = new Date().toISOString().slice(0, 10);
+  return c.pendingUntil < todayStr;
 }
 
 // True if a manager marked this order Closed BEFORE today's daily upload,
@@ -1074,16 +1105,24 @@ function renderGroups() {
       for (const o of sub.items) {
         const status = getStatus(o.workOrder);
         const pencilWhipped = isPencilWhipped(o.workOrder);
-        // Strikethrough on Closed (a fresh close for today) AND on Can Not
-        // Close so managers don't keep re-opening orders that are stuck.
-        // Pending Install rows stay fully readable.
-        const closedRow = (status === 'Closed' || status === 'Can Not Close') ? 'closed' : '';
-        const pwClass = pencilWhipped ? 'pencil-whipped' : '';
+        const installPassed = isPastInstallDate(o.workOrder);
+        const cl = state.closures[o.workOrder];
+        // Strikethrough on Closed, Can Not Close, AND Pending Install (sticky
+        // through the scheduled install date). Pending past its date has
+        // already been reset to Open by getStatus.
+        const closedRow = (status === 'Closed' || status === 'Can Not Close' || status === 'Pending Install') ? 'closed' : '';
+        const pwClass = (pencilWhipped || installPassed) ? 'pencil-whipped' : '';
         const ageColor = ageColorClass(o.age);
         const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
-        const pwBadge = pencilWhipped
-          ? `<div class="pw-badge">Previously Marked Closed - Still Open</div>`
-          : '';
+        let pwBadge = '';
+        if (pencilWhipped) {
+          pwBadge = `<div class="pw-badge">Previously Marked Closed - Still Open</div>`;
+        } else if (installPassed) {
+          pwBadge = `<div class="pw-badge">Install Date Passed - Still Open</div>`;
+        } else if (status === 'Pending Install' && cl && cl.pendingUntil) {
+          const dt = new Date(cl.pendingUntil + 'T00:00:00');
+          pwBadge = `<div class="install-badge">Install scheduled: ${dt.toLocaleDateString()}</div>`;
+        }
         rowsHtml += `
           <tr class="${closedRow} ${pwClass}">
             <td class="age-cell ${ageColor}">${o.age || 0}</td>
@@ -1201,10 +1240,49 @@ function setGroupBy(g) {
   renderGroups();
 }
 
+// When the user picks Pending Install, prompt for the install date BEFORE
+// committing the status change. If they cancel, revert the dropdown.
+let pendingInstallContext = null;
+
 function onStatusChange(wo, status) {
+  if (status === 'Pending Install') {
+    pendingInstallContext = { wo, prevStatus: getStatus(wo) };
+    const today = new Date();
+    const todayIso = today.toISOString().slice(0, 10);
+    const def = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
+    const input = document.getElementById('installDateInput');
+    // Pre-fill with previously-saved install date if any, else 7 days out
+    const c = state.closures[wo];
+    input.value = (c && c.pendingUntil) || def;
+    input.min = todayIso;
+    document.getElementById('installDateModal').classList.add('show');
+    setTimeout(() => input.focus(), 0);
+    return;
+  }
   queueStatusChange(wo, status);
-  // re-render just to update visuals
   renderStats();
+  renderGroups();
+}
+
+function confirmInstallDate() {
+  const input = document.getElementById('installDateInput');
+  const date = input.value;
+  const ctx = pendingInstallContext;
+  if (!date || !ctx) {
+    showToast('Please pick an install date', 'error');
+    return;
+  }
+  document.getElementById('installDateModal').classList.remove('show');
+  pendingInstallContext = null;
+  queueStatusChange(ctx.wo, 'Pending Install', { pendingUntil: date });
+  renderStats();
+  renderGroups();
+}
+
+function cancelInstallDate() {
+  // revert dropdown to previous status — re-render will set it correctly
+  document.getElementById('installDateModal').classList.remove('show');
+  pendingInstallContext = null;
   renderGroups();
 }
 
