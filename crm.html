@@ -939,7 +939,7 @@ function renderStats() {
 
   const pwCard = pencilWhipped > 0
     ? `<div class="stat-card pw-card">
-         <div class="stat-label">Pencil Whipped</div>
+         <div class="stat-label">Prev. Closed - Still Open</div>
          <div class="stat-value red">${pencilWhipped}</div>
        </div>`
     : '';
@@ -1044,7 +1044,7 @@ function renderGroups() {
         const ageColor = ageColorClass(o.age);
         const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
         const pwBadge = pencilWhipped
-          ? `<div class="pw-badge">⚠ Previously Marked As Closed</div>`
+          ? `<div class="pw-badge">Previously Marked Closed - Still Open</div>`
           : '';
         rowsHtml += `
           <tr class="${closedRow} ${pwClass}">
@@ -1105,7 +1105,7 @@ function renderGroups() {
     const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 30+</span>` : '';
     const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
     const otherPill = g.other > 0 ? `<span class="pill other">${g.other} other</span>` : '';
-    const pwPill = g.pw > 0 ? `<span class="pill pw-pill">⚠ ${g.pw} pencil-whipped</span>` : '';
+    const pwPill = g.pw > 0 ? `<span class="pill pw-pill">${g.pw} prev. closed - still open</span>` : '';
 
     // In Store view, label each store with its DM (small tag in the header).
     // Each store typically maps to exactly one DM, so this just reads the
