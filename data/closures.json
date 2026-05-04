@@ -299,6 +299,12 @@
     "status": "Other",
     "ts": "2026-05-02T21:30:04.237Z"
   },
+  "2270492442": {
+    "status": "Closed",
+    "ts": "2026-05-04T22:29:45.106Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach"
+  },
   "2272760054": {
     "status": "Closed",
     "ts": "2026-05-02T21:30:45.270Z"
@@ -328,6 +334,12 @@
   "2275803824": {
     "status": "Closed",
     "ts": "2026-05-01T21:20:27.329Z"
+  },
+  "2275815078": {
+    "status": "Closed",
+    "ts": "2026-05-04T22:29:46.730Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach"
   },
   "2276192001": {
     "status": "Closed",
