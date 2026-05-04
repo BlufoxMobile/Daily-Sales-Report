@@ -802,6 +802,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2305197118": {
+    "status": "Pending Install",
+    "ts": "2026-05-04T22:26:05.161Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach",
+    "pendingUntil": "2026-05-08"
+  },
   "2305225052": {
     "status": "Closed",
     "ts": "2026-05-04T22:19:09.033Z",
