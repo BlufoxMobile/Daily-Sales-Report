@@ -1359,5 +1359,12 @@
     "ts": "2026-05-04T22:37:37.960Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "1002276039542057": {
+    "status": "Pending Install",
+    "ts": "2026-05-04T22:38:03.638Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-05-23"
   }
 }
