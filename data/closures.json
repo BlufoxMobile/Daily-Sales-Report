@@ -191,6 +191,12 @@
     "status": "Other",
     "ts": "2026-05-01T22:57:56.529Z"
   },
+  "2255741573": {
+    "status": "Can Not Close",
+    "ts": "2026-05-04T23:46:30.006Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2255754314": {
     "status": "Closed",
     "ts": "2026-05-01T22:57:42.476Z"
