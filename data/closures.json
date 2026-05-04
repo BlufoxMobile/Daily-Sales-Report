@@ -98,8 +98,10 @@
     "store": "Kildeer"
   },
   "2246959213": {
-    "status": "Closed",
-    "ts": "2026-05-01T20:00:35.582Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-04T22:47:38.268Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2247787450": {
     "status": "Other",
