@@ -765,6 +765,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2304502445": {
+    "status": "Closed",
+    "ts": "2026-05-04T22:13:19.210Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2304599003": {
     "status": "Closed",
     "ts": "2026-05-01T23:14:14.925Z"
