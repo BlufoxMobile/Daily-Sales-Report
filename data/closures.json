@@ -834,6 +834,13 @@
     "status": "Closed",
     "ts": "2026-05-02T16:43:29.493Z"
   },
+  "2305824856": {
+    "status": "Pending Install",
+    "ts": "2026-05-04T22:27:15.225Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach",
+    "pendingUntil": "2026-05-08"
+  },
   "2306223423": {
     "status": "Closed",
     "ts": "2026-05-02T18:46:34.226Z"
