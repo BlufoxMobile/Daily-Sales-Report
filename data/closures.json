@@ -1130,5 +1130,12 @@
     "ts": "2026-05-04T21:47:25.258Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "1002276270292057": {
+    "status": "Pending Install",
+    "ts": "2026-05-04T21:58:04.722Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-05-08"
   }
 }
