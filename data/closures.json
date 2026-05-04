@@ -692,9 +692,10 @@
     "ts": "2026-05-03T16:04:05.718Z"
   },
   "1002276121982054": {
-    "status": "Closed",
-    "ts": "2026-05-04T19:21:42.667Z",
+    "status": "Pending Install",
+    "ts": "2026-05-04T19:22:35.203Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond"
+    "store": "Hammond",
+    "pendingUntil": "2026-05-08"
   }
 }
