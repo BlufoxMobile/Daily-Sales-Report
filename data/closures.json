@@ -1864,6 +1864,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2314960468": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T20:19:39.126Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-05-12"
+  },
   "2315004877": {
     "status": "Closed",
     "ts": "2026-05-05T18:58:48.831Z"
