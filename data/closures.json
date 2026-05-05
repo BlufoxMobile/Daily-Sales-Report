@@ -1325,6 +1325,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2315667298": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T16:09:44.582Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero",
+    "pendingUntil": "2026-05-15"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
