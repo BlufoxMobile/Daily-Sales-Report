@@ -1252,6 +1252,13 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
+  "2303205440": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T18:52:29.482Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-05-12"
+  },
   "2303301686": {
     "status": "Closed",
     "ts": "2026-05-04T19:36:03.521Z",
