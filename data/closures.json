@@ -1819,6 +1819,12 @@
     "store": "Hammond",
     "pendingUntil": "2026-05-08"
   },
+  "2315037362": {
+    "status": "Closed",
+    "ts": "2026-05-05T19:59:37.169Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2315050179": {
     "status": "Pending Install",
     "ts": "2026-05-05T16:53:59.384Z",
