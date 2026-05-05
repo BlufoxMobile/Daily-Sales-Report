@@ -2426,5 +2426,12 @@
     "ts": "2026-05-05T20:23:54.987Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "1002275595992052": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T20:34:53.806Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-05-12"
   }
 }
