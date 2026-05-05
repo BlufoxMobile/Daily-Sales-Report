@@ -2092,8 +2092,11 @@
     "pendingUntil": "2026-05-07"
   },
   "1002273771082053": {
-    "status": "Closed",
-    "ts": "2026-05-01T23:10:17.162Z"
+    "status": "Pending Install",
+    "ts": "2026-05-05T21:02:54.241Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-05-20"
   },
   "1002273996162052": {
     "status": "Closed",
