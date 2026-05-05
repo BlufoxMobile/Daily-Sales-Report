@@ -341,6 +341,12 @@
     "dm": "Juan Carrillo",
     "store": "Dekalb"
   },
+  "2258893763": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T17:33:03.915Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "2258926335": {
     "status": "Closed",
     "ts": "2026-05-04T23:43:24.735Z",
@@ -428,6 +434,18 @@
     "ts": "2026-05-04T22:29:38.146Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Round Lake Beach"
+  },
+  "2265732970": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T17:33:02.519Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
+  "2266201316": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T17:33:01.090Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
   },
   "2267720544": {
     "status": "Closed",
