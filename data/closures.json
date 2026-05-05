@@ -718,8 +718,10 @@
     "store": "Uptown"
   },
   "2279294683": {
-    "status": "Other",
-    "ts": "2026-05-01T22:59:00.131Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T20:22:52.682Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2279681255": {
     "status": "Closed",
