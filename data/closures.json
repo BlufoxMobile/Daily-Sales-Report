@@ -2074,6 +2074,13 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
+  "2315399513": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T21:21:32.229Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-05-12"
+  },
   "2315417731": {
     "status": "Closed",
     "ts": "2026-05-05T20:04:56.239Z",
