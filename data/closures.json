@@ -246,8 +246,10 @@
     "ts": "2026-05-02T18:44:36.399Z"
   },
   "2257378703": {
-    "status": "Closed",
-    "ts": "2026-05-02T17:34:20.708Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T15:24:10.830Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2257411501": {
     "status": "Closed",
