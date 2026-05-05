@@ -1754,6 +1754,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2311065059": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T21:04:23.802Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-05-07"
+  },
   "2311067915": {
     "status": "Closed",
     "ts": "2026-05-04T21:47:12.343Z",
