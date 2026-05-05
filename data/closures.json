@@ -1712,6 +1712,10 @@
     "store": "Hammond",
     "pendingUntil": "2026-05-06"
   },
+  "2315004877": {
+    "status": "Closed",
+    "ts": "2026-05-05T18:58:48.831Z"
+  },
   "2315018043": {
     "status": "Pending Install",
     "ts": "2026-05-05T16:53:49.480Z",
