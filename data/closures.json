@@ -232,8 +232,10 @@
     "store": "Tinley Park"
   },
   "2257212843": {
-    "status": "Closed",
-    "ts": "2026-05-02T17:34:22.257Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T15:22:53.277Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2257235299": {
     "status": "Other",
