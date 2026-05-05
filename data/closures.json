@@ -404,10 +404,11 @@
     "store": "Hammond"
   },
   "2258926335": {
-    "status": "Closed",
-    "ts": "2026-05-04T23:43:24.735Z",
+    "status": "Pending Install",
+    "ts": "2026-05-05T22:25:52.407Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-05-12"
   },
   "2259051985": {
     "status": "Other",
