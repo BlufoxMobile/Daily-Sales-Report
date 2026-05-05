@@ -1610,6 +1610,12 @@
     "dm": "Juan Carrillo",
     "store": "Dekalb"
   },
+  "2311196280": {
+    "status": "Closed",
+    "ts": "2026-05-05T19:00:02.427Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2311676786": {
     "status": "Pending Install",
     "ts": "2026-05-04T21:42:54.825Z",
@@ -2120,5 +2126,11 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview",
     "pendingUntil": "2026-05-12"
+  },
+  "1002275832282051": {
+    "status": "Closed",
+    "ts": "2026-05-05T19:00:03.547Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   }
 }
