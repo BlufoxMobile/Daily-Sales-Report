@@ -152,8 +152,10 @@
     "store": "Valparaiso"
   },
   "2248671462": {
-    "status": "Other",
-    "ts": "2026-05-02T17:29:44.974Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T15:24:15.773Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2248916917": {
     "status": "Closed",
