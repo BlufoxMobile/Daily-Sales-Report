@@ -1939,5 +1939,12 @@
     "ts": "2026-05-05T17:07:06.610Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "1002275868102058": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T17:54:02.339Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb",
+    "pendingUntil": "2026-05-15"
   }
 }
