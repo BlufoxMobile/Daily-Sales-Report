@@ -680,8 +680,10 @@
     "ts": "2026-05-02T17:29:26.527Z"
   },
   "2292068019": {
-    "status": "Other",
-    "ts": "2026-05-02T17:25:48.860Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T15:24:28.637Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2292186635": {
     "status": "Can Not Close",
