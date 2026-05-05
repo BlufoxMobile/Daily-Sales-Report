@@ -200,8 +200,10 @@
     "store": "Schererville"
   },
   "2254254462": {
-    "status": "Closed",
-    "ts": "2026-05-01T20:00:51.493Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T15:52:36.293Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2255035573": {
     "status": "Pending Install",
