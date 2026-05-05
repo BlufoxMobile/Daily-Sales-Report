@@ -748,8 +748,10 @@
     "store": "Kildeer"
   },
   "2279937918": {
-    "status": "Closed",
-    "ts": "2026-05-01T22:59:11.978Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T20:21:25.480Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2279988010": {
     "status": "Closed",
