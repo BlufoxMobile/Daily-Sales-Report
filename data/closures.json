@@ -868,8 +868,8 @@
     "store": "Bourbonnais"
   },
   "2284703464": {
-    "status": "Closed",
-    "ts": "2026-05-04T21:33:37.296Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-05T21:02:12.987Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -886,8 +886,8 @@
     "store": "Evanston"
   },
   "2285202409": {
-    "status": "Closed",
-    "ts": "2026-05-04T21:33:39.995Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-05T21:02:10.520Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
