@@ -1244,6 +1244,13 @@
     "store": "Evanston",
     "pendingUntil": "2026-05-11"
   },
+  "2312155103": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T16:06:25.092Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero",
+    "pendingUntil": "2026-05-15"
+  },
   "2312668526": {
     "status": "Closed",
     "ts": "2026-05-04T21:47:28.925Z",
