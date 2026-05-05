@@ -820,8 +820,10 @@
     "store": "Michigan City"
   },
   "2280822759": {
-    "status": "Closed",
-    "ts": "2026-05-02T22:37:43.988Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T22:04:20.015Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
   },
   "2280904362": {
     "status": "Closed",
