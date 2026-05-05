@@ -1697,6 +1697,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2313259531": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T19:25:22.841Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-05-12"
+  },
   "2313272594": {
     "status": "Closed",
     "ts": "2026-05-05T19:24:17.246Z",
