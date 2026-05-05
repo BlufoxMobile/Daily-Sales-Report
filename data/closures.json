@@ -957,6 +957,12 @@
     "dm": "Jacob Cabrales",
     "store": "Cicero"
   },
+  "2294443124": {
+    "status": "Closed",
+    "ts": "2026-05-05T18:14:32.486Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2294478335": {
     "status": "Other",
     "ts": "2026-05-01T23:04:26.394Z"
@@ -968,6 +974,12 @@
   "2294517217": {
     "status": "Closed",
     "ts": "2026-05-02T16:44:13.092Z"
+  },
+  "2294773522": {
+    "status": "Closed",
+    "ts": "2026-05-05T18:14:33.902Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2295110614": {
     "status": "Closed",
