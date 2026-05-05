@@ -622,8 +622,10 @@
     "store": "South Skokie"
   },
   "2287409657": {
-    "status": "Other",
-    "ts": "2026-05-02T17:29:32.767Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T15:24:23.237Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2287982098": {
     "status": "Closed",
