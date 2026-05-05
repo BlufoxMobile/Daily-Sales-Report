@@ -210,6 +210,18 @@
     <div class="file-name" id="punchFileName"></div>
   </div>
 
+  <!-- ─── SHOPPERTRACK SECTION ─── -->
+  <div class="section-label">ShopperTrack Traffic</div>
+
+  <div class="upload-zone" id="shopperZone">
+    <input type="file" id="shopperFile" accept=".xlsx,.xls">
+    <div class="upload-icon">📊</div>
+    <h3>ShopperTrack Report (Excel)</h3>
+    <p>Drop your Blufox ShopperTrak .xlsx file here or click to browse</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Feeds T-Sheet MTD traffic (col F) + Yesterday's Conversion dashboard</p>
+    <div class="file-name" id="shopperFileName"></div>
+  </div>
+
   <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadFiles()">
     Upload to Dashboards
   </button>
@@ -235,9 +247,11 @@
   </div>
 
   <div class="quick-links">
-    <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard â</a>
-    <a href="https://blufoxmobile.github.io/Exception-Report/" target="_blank">Exception Report â</a>
+    <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard →</a>
+    <a href="https://blufoxmobile.github.io/Exception-Report/" target="_blank">Exception Report →</a>
     <a href="https://blufoxmobile.github.io/Auto-Punch-Report/" target="_blank">Punch Audit →</a>
+    <a href="https://blufoxmobile.github.io/T-Sheet-Submissions/" target="_blank">T-Sheets →</a>
+    <a href="https://blufoxmobile.github.io/Yesterday-s-Conversion/" target="_blank">Y-Conversion →</a>
   </div>
 </div>
 
@@ -266,7 +280,9 @@ const REPOS = {
   exceptions: 'Exception-Report',
   goals:      'Daily-Goals-Sheet',
   oneOnOne:   'One-On-One-Form',
-  punch:      'Auto-Punch-Report'
+  punch:      'Auto-Punch-Report',
+  tsheet:     'T-Sheet-Submissions',
+  yconv:      'Yesterday-s-Conversion'
 };
 const FILE_PATHS = {
   excel: 'data/Sales Report.xlsx',
@@ -274,7 +290,8 @@ const FILE_PATHS = {
   exceptionsHtml: 'index.html',
   goalsExcel:     'data/sales.xlsx',
   oneOnOneExcel:  'data/sales.xlsx',
-  punchExcel:     'data/punch-data.xlsx'
+  punchExcel:     'data/punch-data.xlsx',
+  shopperExcel:   'data/shoppertrack.xlsx'
 };
 // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
@@ -285,6 +302,7 @@ const FILE_PATHS = {
 const promoInput      = document.getElementById('promoFile');
 const exceptionsInput = document.getElementById('exceptionsFile');
 const punchInput      = document.getElementById('punchFile');
+const shopperInput    = document.getElementById('shopperFile');
 const uploadBtn       = document.getElementById('uploadBtn');
 
 // File selection handlers
@@ -311,9 +329,10 @@ bindFileZone(excelInput, 'excelZone', 'excelFileName');
 bindFileZone(promoInput, 'promoZone', 'promoFileName');
 bindFileZone(exceptionsInput, 'exceptionsZone', 'exceptionsFileName');
 bindFileZone(punchInput, 'punchZone', 'punchFileName');
+bindFileZone(shopperInput, 'shopperZone', 'shopperFileName');
 
 function checkReady() {
-  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0];
+  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0];
   const hasToken = !!GITHUB_TOKEN;
   uploadBtn.disabled = !(hasFiles && hasToken);
   if (hasFiles && !hasToken) {
@@ -766,6 +785,23 @@ async function uploadFiles() {
         parts.push('Lunch Punch Audit');
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('Lunch Punch Audit: ' + e.message); }
+    });
+  }
+
+  if (shopperInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading ShopperTrack file (single source of truth)...', 'info');
+        const b64 = await readFileAsBase64(shopperInput.files[0]);
+        const dateStr = new Date().toLocaleDateString();
+        // Single source of truth: push to Daily-Sales-Report/data/shoppertrack.xlsx
+        // T-Sheet-Submissions and Yesterday-s-Conversion both fetch from this URL.
+        await pushViaBlobs(REPOS.sales, FILE_PATHS.shopperExcel, b64, 'Update ShopperTrack traffic — ' + dateStr);
+        completed++;
+        parts.push('ShopperTrack');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('ShopperTrack: ' + e.message); }
     });
   }
 
