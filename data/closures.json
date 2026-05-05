@@ -1201,6 +1201,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2304502804": {
+    "status": "Closed",
+    "ts": "2026-05-05T17:49:28.729Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
+  },
   "2304599003": {
     "status": "Closed",
     "ts": "2026-05-01T23:14:14.925Z"
