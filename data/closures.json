@@ -123,6 +123,12 @@
     "status": "Other",
     "ts": "2026-05-02T18:44:15.059Z"
   },
+  "2245603168": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T17:33:08.664Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "2245925313": {
     "status": "Other",
     "ts": "2026-05-02T18:47:24.179Z"
@@ -283,6 +289,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2257108940": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T17:33:10.323Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "2257172661": {
     "status": "Can Not Close",
     "ts": "2026-05-04T20:37:51.826Z",
@@ -376,6 +388,12 @@
     "ts": "2026-05-05T16:58:21.562Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "2260328593": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T17:33:07.202Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
   },
   "2261017051": {
     "status": "Closed",
