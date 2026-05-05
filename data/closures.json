@@ -1857,10 +1857,11 @@
     "ts": "2026-05-05T19:25:23.610Z"
   },
   "2312864240": {
-    "status": "Closed",
-    "ts": "2026-05-04T21:40:08.882Z",
+    "status": "Pending Install",
+    "ts": "2026-05-05T21:28:46.698Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-05-12"
   },
   "2312867940": {
     "status": "Closed",
