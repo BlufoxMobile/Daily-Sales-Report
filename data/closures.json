@@ -2534,5 +2534,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-05-05"
+  },
+  "1002276459932051": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T21:10:30.714Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-05-15"
   }
 }
