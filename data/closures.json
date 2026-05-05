@@ -944,8 +944,10 @@
     "store": "Hammond"
   },
   "2302851422": {
-    "status": "Closed",
-    "ts": "2026-05-02T21:08:59.643Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T16:03:24.660Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   },
   "2302862162": {
     "status": "Closed",
