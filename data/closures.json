@@ -2187,5 +2187,12 @@
     "ts": "2026-05-05T19:00:03.547Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "1002276437942057": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T19:25:28.249Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-05-12"
   }
 }
