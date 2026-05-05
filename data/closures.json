@@ -52,8 +52,8 @@
     "store": "Round Lake Beach"
   },
   "2243475410": {
-    "status": "Closed",
-    "ts": "2026-05-04T15:56:25.684Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-05T21:06:30.852Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
@@ -942,8 +942,8 @@
     "store": "Schererville"
   },
   "2287876403": {
-    "status": "Closed",
-    "ts": "2026-05-05T20:45:45.062Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-05T21:04:59.071Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
