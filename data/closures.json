@@ -1986,6 +1986,13 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
+  "2314905060": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T21:22:27.703Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-05-12"
+  },
   "2314907319": {
     "status": "Pending Install",
     "ts": "2026-05-05T16:57:20.926Z",
