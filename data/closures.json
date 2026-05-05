@@ -912,8 +912,10 @@
     "store": "Valparaiso"
   },
   "2288343756": {
-    "status": "Other",
-    "ts": "2026-05-01T23:02:57.560Z"
+    "status": "Closed",
+    "ts": "2026-05-05T20:25:01.324Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2288387004": {
     "status": "Closed",
