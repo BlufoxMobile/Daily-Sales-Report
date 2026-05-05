@@ -1730,6 +1730,10 @@
     "store": "Cicero",
     "pendingUntil": "2026-05-15"
   },
+  "2312605721": {
+    "status": "Closed",
+    "ts": "2026-05-05T20:24:20.039Z"
+  },
   "2312619542": {
     "status": "Pending Install",
     "ts": "2026-05-05T19:58:44.309Z",
