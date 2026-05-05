@@ -1405,10 +1405,11 @@
     "ts": "2026-05-02T18:24:01.419Z"
   },
   "2308216580": {
-    "status": "Closed",
-    "ts": "2026-05-04T22:21:54.810Z",
+    "status": "Pending Install",
+    "ts": "2026-05-05T18:20:47.224Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-05-12"
   },
   "2308285567": {
     "status": "Closed",
