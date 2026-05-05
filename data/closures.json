@@ -1212,8 +1212,10 @@
     "ts": "2026-05-02T16:04:53.201Z"
   },
   "2309837538": {
-    "status": "Other",
-    "ts": "2026-05-02T22:52:08.097Z"
+    "status": "Closed",
+    "ts": "2026-05-05T16:41:56.619Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2309882517": {
     "status": "Closed",
