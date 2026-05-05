@@ -1717,6 +1717,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2313892350": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T19:23:16.845Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-05-12"
+  },
   "2314431342": {
     "status": "Closed",
     "ts": "2026-05-05T15:23:41.186Z",
