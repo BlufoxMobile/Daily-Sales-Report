@@ -1508,6 +1508,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Round Lake Beach"
   },
+  "2309338585": {
+    "status": "Closed",
+    "ts": "2026-05-05T18:54:12.038Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2309435126": {
     "status": "Closed",
     "ts": "2026-05-04T22:27:31.730Z",
@@ -1567,6 +1573,12 @@
     "ts": "2026-05-04T21:55:31.474Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2310568555": {
+    "status": "Closed",
+    "ts": "2026-05-05T18:54:10.798Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2311037892": {
     "status": "Can Not Close",
