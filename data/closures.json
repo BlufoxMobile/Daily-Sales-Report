@@ -1399,11 +1399,10 @@
     "store": "Evanston"
   },
   "2315018043": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T16:51:35.329Z",
+    "status": "Closed",
+    "ts": "2026-05-05T16:53:43.182Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-05-14"
+    "store": "Hammond"
   },
   "2315050179": {
     "status": "Pending Install",
