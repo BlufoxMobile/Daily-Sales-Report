@@ -874,8 +874,10 @@
     "store": "Kildeer"
   },
   "2288557422": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:43.078Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T19:34:08.856Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2289373408": {
     "status": "Can Not Close",
