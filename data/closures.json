@@ -1087,6 +1087,12 @@
     "store": "Round Lake Beach",
     "pendingUntil": "2026-05-08"
   },
+  "2305796643": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T16:36:48.694Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2305809018": {
     "status": "Closed",
     "ts": "2026-05-02T16:43:29.493Z"
