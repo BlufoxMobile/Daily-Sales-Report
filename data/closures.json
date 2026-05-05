@@ -2108,6 +2108,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2315605383": {
+    "status": "Pending Install",
+    "ts": "2026-05-05T21:27:11.696Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-05-07"
+  },
   "2315610827": {
     "status": "Can Not Close",
     "ts": "2026-05-05T20:09:46.446Z",
