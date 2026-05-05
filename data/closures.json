@@ -418,8 +418,10 @@
     "store": "South Skokie"
   },
   "2275803824": {
-    "status": "Closed",
-    "ts": "2026-05-01T21:20:27.329Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T15:56:39.216Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2275815078": {
     "status": "Closed",
