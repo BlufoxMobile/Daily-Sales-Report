@@ -235,6 +235,12 @@
     "status": "Other",
     "ts": "2026-05-02T16:53:00.957Z"
   },
+  "2254079793": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T16:51:40.325Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2254177700": {
     "status": "Closed",
     "ts": "2026-05-04T15:56:35.644Z",
