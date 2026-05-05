@@ -198,6 +198,18 @@
     <div class="file-name" id="exceptionsFileName"></div>
   </div>
 
+  <!-- LUNCH PUNCH AUDIT SECTION -->
+  <div class="section-label">Lunch Punch Audit</div>
+
+  <div class="upload-zone" id="punchZone">
+    <input type="file" id="punchFile" accept=".xlsx,.xls">
+    <div class="upload-icon">🕐</div>
+    <h3>Break Compliance Extract (Excel)</h3>
+    <p>Drop your BreakComplianceExtract .xlsx file here or click to browse</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Routes to the Auto-Punch-Report dashboard</p>
+    <div class="file-name" id="punchFileName"></div>
+  </div>
+
   <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadFiles()">
     Upload to Dashboards
   </button>
@@ -225,6 +237,7 @@
   <div class="quick-links">
     <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard â</a>
     <a href="https://blufoxmobile.github.io/Exception-Report/" target="_blank">Exception Report â</a>
+    <a href="https://blufoxmobile.github.io/Auto-Punch-Report/" target="_blank">Punch Audit →</a>
   </div>
 </div>
 
@@ -252,14 +265,16 @@ const REPOS = {
   sales:      'Daily-Sales-Report',
   exceptions: 'Exception-Report',
   goals:      'Daily-Goals-Sheet',
-  oneOnOne:   'One-On-One-Form'
+  oneOnOne:   'One-On-One-Form',
+  punch:      'Auto-Punch-Report'
 };
 const FILE_PATHS = {
   excel: 'data/Sales Report.xlsx',
   promo: 'data/promo-card.jpg',
   exceptionsHtml: 'index.html',
   goalsExcel:     'data/sales.xlsx',
-  oneOnOneExcel:  'data/sales.xlsx'
+  oneOnOneExcel:  'data/sales.xlsx',
+  punchExcel:     'data/punch-data.xlsx'
 };
 // ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
@@ -269,6 +284,7 @@ const FILE_PATHS = {
     const excelInput      = document.getElementById('excelFile');
 const promoInput      = document.getElementById('promoFile');
 const exceptionsInput = document.getElementById('exceptionsFile');
+const punchInput      = document.getElementById('punchFile');
 const uploadBtn       = document.getElementById('uploadBtn');
 
 // File selection handlers
@@ -294,9 +310,10 @@ function bindFileZone(inputEl, zoneId, labelId) {
 bindFileZone(excelInput, 'excelZone', 'excelFileName');
 bindFileZone(promoInput, 'promoZone', 'promoFileName');
 bindFileZone(exceptionsInput, 'exceptionsZone', 'exceptionsFileName');
+bindFileZone(punchInput, 'punchZone', 'punchFileName');
 
 function checkReady() {
-  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0];
+  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0];
   const hasToken = !!GITHUB_TOKEN;
   uploadBtn.disabled = !(hasFiles && hasToken);
   if (hasFiles && !hasToken) {
@@ -735,6 +752,20 @@ async function uploadFiles() {
         parts.push('Exception Report');
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('Exception Report: ' + e.message); }
+    });
+  }
+
+  if (punchInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading Lunch Punch Audit data...', 'info');
+        const b64 = await readFileAsBase64(punchInput.files[0]);
+        await pushViaBlobs(REPOS.punch, FILE_PATHS.punchExcel, b64, 'Update punch data — ' + new Date().toLocaleDateString());
+        completed++;
+        parts.push('Lunch Punch Audit');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Lunch Punch Audit: ' + e.message); }
     });
   }
 
