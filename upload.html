@@ -797,7 +797,9 @@ async function uploadFiles() {
         const dateStr = new Date().toLocaleDateString();
         // Single source of truth: push to Daily-Sales-Report/data/shoppertrack.xlsx
         // T-Sheet-Submissions and Yesterday-s-Conversion both fetch from this URL.
-        await pushViaBlobs(REPOS.sales, FILE_PATHS.shopperExcel, b64, 'Update ShopperTrack traffic — ' + dateStr);
+        // Using pushToGitHub (Contents API) — simpler & known-good for this repo.
+        // pushViaBlobs (Git Database API) was failing on the ref-update step.
+        await pushToGitHub(REPOS.sales, FILE_PATHS.shopperExcel, b64, 'Update ShopperTrack traffic — ' + dateStr);
         completed++;
         parts.push('ShopperTrack');
         setProgress(20 + (completed / totalSteps) * 70);
