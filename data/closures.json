@@ -1080,8 +1080,10 @@
     "ts": "2026-05-05T20:12:48.926Z"
   },
   "2296022507": {
-    "status": "Closed",
-    "ts": "2026-05-01T23:05:38.904Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T20:26:14.412Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2296037717": {
     "status": "Closed",
