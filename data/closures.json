@@ -722,8 +722,10 @@
     "ts": "2026-05-01T21:43:24.009Z"
   },
   "2294286441": {
-    "status": "Closed",
-    "ts": "2026-05-02T21:05:55.094Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T16:03:20.876Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   },
   "2294364348": {
     "status": "Closed",
