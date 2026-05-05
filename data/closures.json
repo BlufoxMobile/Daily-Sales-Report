@@ -1052,8 +1052,10 @@
     "store": "Glenview"
   },
   "2294478335": {
-    "status": "Other",
-    "ts": "2026-05-01T23:04:26.394Z"
+    "status": "Closed",
+    "ts": "2026-05-05T20:26:22.590Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2294509770": {
     "status": "Closed",
