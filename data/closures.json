@@ -55,6 +55,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
+  "2243669971": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T16:51:24.162Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2243741782": {
     "status": "Closed",
     "ts": "2026-05-04T15:56:21.128Z",
@@ -78,6 +84,12 @@
     "ts": "2026-05-04T23:57:51.430Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2244497703": {
+    "status": "Can Not Close",
+    "ts": "2026-05-05T16:51:25.633Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2245120791": {
     "status": "Closed",
