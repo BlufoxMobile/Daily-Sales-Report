@@ -116,8 +116,10 @@
     "store": "Round Lake Beach"
   },
   "2245353778": {
-    "status": "Other",
-    "ts": "2026-05-01T22:52:42.716Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-05T20:06:36.992Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2245511365": {
     "status": "Other",
