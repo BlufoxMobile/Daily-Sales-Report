@@ -2538,8 +2538,8 @@
     "pendingUntil": "2026-05-15"
   },
   "1002272796612050": {
-    "status": "Closed",
-    "ts": "2026-05-05T18:11:48.934Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-06T18:02:33.716Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
