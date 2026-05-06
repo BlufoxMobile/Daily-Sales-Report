@@ -2670,5 +2670,12 @@
     "ts": "2026-05-05T22:04:39.855Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
+  },
+  "1002274117282050": {
+    "status": "Pending Install",
+    "ts": "2026-05-06T01:19:32.080Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-05-13"
   }
 }
