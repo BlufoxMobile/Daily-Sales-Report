@@ -2690,5 +2690,12 @@
     "ts": "2026-05-06T01:23:30.817Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
+  },
+  "1002276695562050": {
+    "status": "Pending Install",
+    "ts": "2026-05-06T16:30:48.574Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond",
+    "pendingUntil": "2026-05-09"
   }
 }
