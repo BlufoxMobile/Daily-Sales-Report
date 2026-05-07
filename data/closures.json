@@ -278,8 +278,10 @@
     "store": "Frankfort"
   },
   "2253261898": {
-    "status": "Other",
-    "ts": "2026-05-02T16:53:00.957Z"
+    "status": "Cancelled Order",
+    "ts": "2026-05-07T20:17:53.716Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
   },
   "2254079793": {
     "status": "Can Not Close",
