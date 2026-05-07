@@ -168,8 +168,10 @@
     "store": "Glenview"
   },
   "2247787450": {
-    "status": "Other",
-    "ts": "2026-05-02T18:47:31.442Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:17:42.965Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
   },
   "2247844580": {
     "status": "Closed",
