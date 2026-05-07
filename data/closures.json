@@ -723,8 +723,10 @@
     "store": "South Skokie"
   },
   "2276628795": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:40.134Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:50:46.905Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2276766156": {
     "status": "Closed",
