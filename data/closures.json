@@ -234,8 +234,10 @@
     "store": "Evergreen Park"
   },
   "2250090563": {
-    "status": "Other",
-    "ts": "2026-05-02T18:47:15.202Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:42:54.398Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2250144105": {
     "status": "Can Not Close",
