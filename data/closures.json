@@ -180,8 +180,10 @@
     "store": "Frankfort"
   },
   "2247904708": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:25.284Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:51:04.642Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2248063450": {
     "status": "Can Not Close",
