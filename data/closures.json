@@ -2209,6 +2209,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-05-15"
   },
+  "2315830105": {
+    "status": "Closed",
+    "ts": "2026-05-07T20:35:13.986Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
+  },
   "2316461212": {
     "status": "Pending Install",
     "ts": "2026-05-06T15:27:01.873Z",
