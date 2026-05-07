@@ -358,8 +358,10 @@
     "store": "Elkhart"
   },
   "2257235299": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:27.589Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:51:01.262Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2257276707": {
     "status": "Can Not Close",
