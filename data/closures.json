@@ -419,8 +419,10 @@
     "pendingUntil": "2026-05-12"
   },
   "2259051985": {
-    "status": "Other",
-    "ts": "2026-05-02T18:47:01.352Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:43:00.664Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2259713769": {
     "status": "Closed",
