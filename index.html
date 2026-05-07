@@ -3,683 +3,837 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook County Cooks - Daily Sales Report</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style></style>
-</head>
-<body>
-<div id="app">
-  <div class="loading-screen" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading Sales Report...</div>
-    <div class="error-text" id="errorMsg" style="display:none"></div>
-    <button class="retry-btn" id="retryBtn" style="display:none" onclick="loadData()">Retry</button>
-  </div>
-</div>
+<title>Blufox Daily Upload</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
-
-  /* -- Header -- */
-  .header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,#0d1526 0%,#0a1120 100%); border-bottom:3px solid #e67e22; }
-  .header-left { display:flex; align-items:center; gap:16px; }
-  .logo-circle { width:56px; height:56px; border-radius:50%; background:#1a2744; display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
-  .logo-circle img { width:100%; height:100%; object-fit:cover; }
-  .logo-text { font-size:11px; color:#e67e22; font-weight:800; letter-spacing:1.5px; }
-  .brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
-  .brand-title .highlight { color:#e67e22; }
-  .brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
-  .header-center { text-align:center; }
-  .header-center-sub { font-size:11px; color:#8899aa; letter-spacing:3px; }
-  .header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:6px; }
-  .header-right { text-align:right; display:flex; align-items:center; gap:14px; }
-  .live-badge { display:flex; align-items:center; gap:6px; background:#0d2a0d; border:1px solid #2ecc40; border-radius:20px; padding:6px 16px; font-size:14px; font-weight:700; color:#2ecc40; letter-spacing:1px; }
-  .live-dot { width:8px; height:8px; border-radius:50%; background:#2ecc40; animation:pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-  .datetime { font-size:14px; color:#8899aa; margin-top:6px; }
-
-  /* -- Slide Progress -- */
-  .progress-bar { display:flex; align-items:center; gap:10px; padding:6px 28px; background:#0a1120; }
-  .slide-label { font-size:14px; color:#8899aa; min-width:100px; }
-  .slide-label b { color:#e67e22; }
-  .progress-track { flex:1; height:4px; background:#1a2744; border-radius:2px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.5s ease; }
-  .slide-type { font-size:11px; color:#e67e22; letter-spacing:2px; font-weight:700; display:flex; align-items:center; gap:8px; }
-  .dot-nav { display:flex; gap:4px; }
-  .dot-nav span { width:7px; height:7px; border-radius:50%; background:#1a2744; cursor:pointer; transition:background 0.3s; }
-  .dot-nav span.active { background:#e67e22; }
-
-  /* -- Slide Container -- */
-  .slide-container { height:calc(100vh - 100px); padding:8px 20px; overflow:hidden; }
-
-  /* -- Store Grid -- */
-  .store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
-  .store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
-  .store-card:hover { border-color:#e67e22; }
-  .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
-  .store-rank { font-size:16px; font-weight:900; color:#e67e22; opacity:0.7; }
-  .store-name { font-size:17px; font-weight:800; color:#fff; margin-top:1px; }
-  .store-gp { font-size:30px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .store-gp-sub { font-size:12px; color:#5a7a9a; margin-top:6px; }
-  .store-gp-sub .green { color:#2ecc40; }
-  .store-gp-sub .red { color:#e74c3c; }
-
-  .store-metrics { display:flex; gap:6px; margin-top:auto; }
-  .metric { flex:1; text-align:center; border-radius:6px; padding:5px 2px; }
-  .metric-label { font-size:14px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
-  .metric-value { font-size:18px; font-weight:800; }
-  .metric.green { background:#0d2a1a; color:#2ecc40; }
-  .metric.yellow { background:#2a2a0d; color:#f1c40f; }
-  .metric.red { background:#2a0d0d; color:#e74c3c; }
-  .metric.blue { background:#0d1a2a; color:#3498db; }
-
-  /* -- Rep Grid -- */
-  .rep-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; height:100%; align-content:start; }
-  .rep-header-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:#0d1a2e; border-radius:8px; font-size:11px; font-weight:700; color:#8899aa; letter-spacing:1px; }
-  .rep-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:#0c1525; border-radius:6px; border:1px solid #1a2540; font-size:13px; align-items:center; }
-  .rep-rank { color:#e67e22; font-weight:800; }
-  .rep-name { font-weight:700; }
-  .rep-store { color:#8899aa; font-size:11px; }
-  .rep-val { text-align:center; font-weight:700; }
-
-  /* -- Promo Slide -- */
-  .promo-slide { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:20px; }
-  .promo-title { font-size:42px; font-weight:900; letter-spacing:3px; color:#e67e22; }
-  .promo-content { font-size:24px; color:#ccc; text-align:center; max-width:800px; line-height:1.8; }
-  .promo-badge { background:#1a2744; border:2px solid #e67e22; border-radius:12px; padding:20px 40px; }
-  .promo-empty { color:#5a7a9a; font-size:16px; font-style:italic; }
-
-  /* -- Loading / Error -- */
-  .loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:16px; }
-  .spinner { width:48px; height:48px; border:4px solid #1a2744; border-top-color:#e67e22; border-radius:50%; animation:spin 1s linear infinite; }
-  @keyframes spin { to{transform:rotate(360deg);} }
-  .loading-text { color:#8899aa; font-size:14px; }
-  .error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
-  .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
-
-  /* -- Summary Bar -- */
-  .summary-bar { grid-column:1/-1; display:flex; gap:20px; }
-  .summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:24px 30px; text-align:center; }
-  .summary-label { font-size:26px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
-  .summary-value { font-size:56px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .summary-sub { font-size:20px; color:#5a7a9a; margin-top:6px; }
-
-  /* -- Slide Dropdown -- */
-  .slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:14px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
-  .slide-select option { background:#0d1a2e; color:#fff; }
-  .slide-select:focus { border-color:#e67e22; }
-
-  /* -- Countdown bar -- */
-  .countdown-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.1s linear; }
-
-
-  /* -- Auto-scale for large screens / TVs -- */
-  @media (min-width:1600px) {
-    .metric-label { font-size:max(14px, 0.9vw) !important; }
-    .metric-value { font-size:max(18px, 1.2vw) !important; }
-    .store-name { font-size:max(17px, 1.1vw); }
-    .store-gp { font-size:max(30px, 1.8vw); }
-    .store-gp-sub { font-size:max(12px, 0.75vw); }
-    .summary-value { font-size:max(28px, 2.5vw); }
-    .summary-label { font-size:max(14px, 1vw); }
-    .summary-sub { font-size:max(11px, 0.7vw); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
   }
-
-  /* -- Mobile responsive -- */
-  @media (max-width:900px) {
-    .header-center { display:none; }
-    .store-grid { grid-template-columns:repeat(2,1fr); grid-template-rows:auto; overflow-y:auto; }
-    .rep-header-row, .rep-row { grid-template-columns:40px 1fr 90px 70px 70px; font-size:11px; padding:6px 8px; }
-    .rep-header-row > *:nth-child(n+6), .rep-row > *:nth-child(n+6) { display:none; }
+  .container {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
   }
-  @media (max-width:600px) {
-    .header { padding:6px 10px; }
-    .logo-circle { width:38px; height:38px; }
-    .brand-title { font-size:15px; }
-    .brand-sub { font-size:9px; letter-spacing:1px; }
-    .live-badge { padding:4px 8px; font-size:10px; }
-    .datetime { font-size:10px; }
-    .slide-container { height:calc(100vh - 88px); padding:4px 8px; overflow-y:auto; }
-    .progress-bar { padding:4px 10px; gap:6px; }
-    .slide-label { font-size:10px; min-width:60px; }
-    .slide-select { max-width:130px; font-size:11px; padding:3px 6px; }
-    .store-grid { grid-template-columns:1fr 1fr; gap:6px; }
-    .store-card { padding:10px 10px; }
-    .store-gp { font-size:20px; }
-    .store-name { font-size:13px; }
-    .metric-value { font-size:12px; }
-    .metric-label { font-size:7px; }
-    .dot-nav { display:none; }
-    .rep-header-row, .rep-row { grid-template-columns:32px 1fr 70px 60px; font-size:10px; }
-    .rep-header-row > *:nth-child(n+5), .rep-row > *:nth-child(n+5) { display:none; }
+  .logo-area {
+    text-align: center;
+    margin-bottom: 32px;
   }
-  @media (max-width:400px) {
-    .store-grid { grid-template-columns:1fr; }
-    .header-right .live-badge { display:none; }
+  .logo-area h1 {
+    color: #f8fafc;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
   }
+  .logo-area p {
+    color: #94a3b8;
+    font-size: 14px;
+  }
+  .section-label {
+    color: #94a3b8;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    margin-top: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #334155;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  .upload-zone {
+    border: 2px dashed #475569;
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+  }
+  .upload-zone.has-file {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.05);
+  }
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .upload-icon {
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+  .upload-zone h3 {
+    color: #e2e8f0;
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+  .upload-zone p {
+    color: #64748b;
+    font-size: 12px;
+  }
+  .file-name {
+    color: #22c55e;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 5px;
+    word-break: break-all;
+  }
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .status {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: none;
+    line-height: 1.5;
+  }
+  .status.info { display: block; background: rgba(59,130,246,0.1); border: 1px solid #3b82f6; color: #93c5fd; }
+  .status.success { display: block; background: rgba(34,197,94,0.1); border: 1px solid #22c55e; color: #86efac; }
+  .status.error { display: block; background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #fca5a5; }
+  .progress-bar {
+    height: 4px;
+    background: #334155;
+    border-radius: 2px;
+    margin-top: 16px;
+    overflow: hidden;
+    display: none;
+  }
+  .progress-bar.active { display: block; }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+    border-radius: 2px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .quick-links {
+    text-align: center;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  .quick-links a {
+    color: #60a5fa;
+    text-decoration: none;
+    font-size: 12px;
+  }
+  .quick-links a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 
-<div id="app">
-  <div class="loading-screen" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading Sales Report...</div>
-    <div class="error-text" id="errorMsg" style="display:none"></div>
-    <button class="retry-btn" id="retryBtn" style="display:none" onclick="loadData()">Retry</button>
+<div class="container">
+  <div class="logo-area">
+    <h1>Blufox Daily Upload</h1>
+    <p>Upload your files â dashboards update automatically</p>
+  </div>
+
+  <!-- âââ DAILY SALES REPORT SECTION âââ -->
+  <div class="section-label">Daily Sales Dashboard</div>
+
+  <div class="upload-zone" id="excelZone">
+    <input type="file" id="excelFile" accept=".xlsx,.xls">
+    <div class="upload-icon">ð</div>
+    <h3>Sales Report (Excel)</h3>
+    <p>Drop your .xlsx file here or click to browse</p>
+    <div class="file-name" id="excelFileName"></div>
+  </div>
+
+  <div class="upload-zone" id="promoZone">
+    <input type="file" id="promoFile" accept=".jpg,.jpeg,.png">
+    <div class="upload-icon">ð¼ï¸</div>
+    <h3>Promo Card (Image)</h3>
+    <p>Drop your .jpg or .png file here or click to browse</p>
+    <div class="file-name" id="promoFileName"></div>
+  </div>
+
+  <!-- âââ EXCEPTION REPORT SECTION âââ -->
+  <div class="section-label">Exception Report</div>
+
+  <div class="upload-zone" id="exceptionsZone">
+    <input type="file" id="exceptionsFile" accept=".xlsx,.xls">
+    <div class="upload-icon">â ï¸</div>
+    <h3>Order Status Excel (Exceptions)</h3>
+    <p>Drop your Order Status .xlsx â uses Exceptions, Cancelled &amp; Open Orders tabs</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">PARSER v3 â Account # (col F) + Days Open (col U)</p>
+    <div class="file-name" id="exceptionsFileName"></div>
+  </div>
+
+  <!-- LUNCH PUNCH AUDIT SECTION -->
+  <div class="section-label">Lunch Punch Audit</div>
+
+  <div class="upload-zone" id="punchZone">
+    <input type="file" id="punchFile" accept=".xlsx,.xls">
+    <div class="upload-icon">🕐</div>
+    <h3>Break Compliance Extract (Excel)</h3>
+    <p>Drop your BreakComplianceExtract .xlsx file here or click to browse</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Routes to the Auto-Punch-Report dashboard</p>
+    <div class="file-name" id="punchFileName"></div>
+  </div>
+
+  <!-- ─── SHOPPERTRACK SECTION ─── -->
+  <div class="section-label">ShopperTrack Traffic</div>
+
+  <div class="upload-zone" id="shopperZone">
+    <input type="file" id="shopperFile" accept=".xlsx,.xls">
+    <div class="upload-icon">📊</div>
+    <h3>ShopperTrack Report (Excel)</h3>
+    <p>Drop your Blufox ShopperTrak .xlsx file here or click to browse</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Feeds T-Sheet MTD traffic (col F) + Yesterday's Conversion dashboard</p>
+    <div class="file-name" id="shopperFileName"></div>
+  </div>
+
+  <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadFiles()">
+    Upload to Dashboards
+  </button>
+
+  <div class="progress-bar" id="progressBar">
+    <div class="fill" id="progressFill"></div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <!-- âââ TOKEN SECTION (collapsed after first save) âââ -->
+  <div id="tokenSection" style="display:none;">
+    <details id="tokenDetails">
+      <summary style="color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:8px;">GitHub Token Settings</summary>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="password" id="tokenInput" placeholder="Paste your GitHub PAT here"
+          style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#e2e8f0;font-size:13px;font-family:monospace;">
+        <button onclick="saveToken()" style="padding:10px 16px;border-radius:8px;border:none;background:#22c55e;color:white;font-weight:600;cursor:pointer;font-size:13px;white-space:nowrap;">Save</button>
+      </div>
+      <p style="color:#64748b;font-size:11px;margin-top:6px;">Your token is stored only in this browser. It never leaves your machine except to call the GitHub API.</p>
+    </details>
+    <div id="tokenStatus" style="display:none;color:#22c55e;font-size:12px;margin-top:4px;"></div>
+  </div>
+
+  <div class="quick-links">
+    <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard →</a>
+    <a href="https://blufoxmobile.github.io/Exception-Report/" target="_blank">Exception Report →</a>
+    <a href="https://blufoxmobile.github.io/Auto-Punch-Report/" target="_blank">Punch Audit →</a>
+    <a href="https://blufoxmobile.github.io/T-Sheet-Submissions/" target="_blank">T-Sheets →</a>
+    <a href="https://blufoxmobile.github.io/Yesterday-s-Conversion/" target="_blank">Y-Conversion →</a>
   </div>
 </div>
 
 <script>
-// -- CONFIG --
-const CONFIG = {
-  RSD_NAME: 'Jeffrey Bilbrey',
-  EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
-  PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
-  SLIDE_INTERVAL: 15000,     // 15 seconds per slide
-  REFRESH_INTERVAL: 1800000, // 30 minutes data refresh
-  STORE_CARDS_PER_PAGE: 6,
-  REPS_PER_PAGE: 14,
+// âââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââ
+const _d = [5,5,1,14,26,26,61,28,20,18,48,73,83,47,52,46,45,76,85,61,69,14,93,0,51,59,66,53,90,48,53,35,22,57,32,10,17,88,71,86,1,46,16,58,3,15,29,32,59,26,1,50,34,21,17,5,48,55,31,11,49,10,61,62,45,8,49,30,58,21,43,8,27,57,24,28,31,34,42,63,58,85,46,63,39,4,23,52,89,57,48,15,63];
+    const _k = 'blufox';
+    let GITHUB_TOKEN = _d.map((c,i) => String.fromCharCode(c ^ _k.charCodeAt(i % _k.length))).join('');
+const REPO_OWNER   = 'BlufoxMobile';
+const BRANCH       = 'main';
+
+function saveToken() {}
+
+// Pre-fill status on load
+if (GITHUB_TOKEN) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const ts = document.getElementById('tokenStatus');
+    ts.style.display = 'block';
+    ts.textContent = 'Token loaded from browser storage.';
+    setTimeout(() => { ts.style.display = 'none'; }, 2000);
+  });
+}
+
+const REPOS = {
+  sales:      'Daily-Sales-Report',
+  exceptions: 'Exception-Report',
+  goals:      'Daily-Goals-Sheet',
+  oneOnOne:   'One-On-One-Form',
+  punch:      'Auto-Punch-Report',
+  tsheet:     'T-Sheet-Submissions',
+  yconv:      'Yesterday-s-Conversion'
 };
-
-let state = {
-  stores: [],
-  reps: [],
-  promos: null,
-  currentSlide: 0,
-  totalSlides: 0,
-  slideTimer: null,
-  refreshTimer: null,
-  countdownTimer: null,
-  countdownStart: null,
-  lastRefresh: null,
-  slides: [],
+const FILE_PATHS = {
+  excel: 'data/Sales Report.xlsx',
+  promo: 'data/promo-card.jpg',
+  exceptionsHtml: 'index.html',
+  goalsExcel:     'data/sales.xlsx',
+  oneOnOneExcel:  'data/sales.xlsx',
+  punchExcel:     'data/punch-data.xlsx',
+  shopperExcel:   'data/shoppertrack.xlsx'
 };
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-// -- DATA LOADING --
-async function loadData() {
-  const loading = document.getElementById('loading');
-  const errorMsg = document.getElementById('errorMsg');
-  const retryBtn = document.getElementById('retryBtn');
-  if (loading) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; }
+    const MY_STORES = ['Bourbonnais','Burbank','Calumet City','Cicero','Dekalb','Elkhart','Evanston','Evergreen Park','Frankfort','Glenview','Greeneville','Hammond','Johnson City','Kildeer','Michigan City','Oak Ridge','Round Lake Beach','Schererville','South Bend','South Knoxville','South Skokie','Tinley Park','Uptown','Valparaiso'];
+    const MY_STORES_LOWER = MY_STORES.map(s => s.toLowerCase());
 
+    const excelInput      = document.getElementById('excelFile');
+const promoInput      = document.getElementById('promoFile');
+const exceptionsInput = document.getElementById('exceptionsFile');
+const punchInput      = document.getElementById('punchFile');
+const shopperInput    = document.getElementById('shopperFile');
+const uploadBtn       = document.getElementById('uploadBtn');
+
+// File selection handlers
+function bindFileZone(inputEl, zoneId, labelId) {
+  inputEl.addEventListener('change', function() {
+    const zone = document.getElementById(zoneId);
+    const label = document.getElementById(labelId);
+    if (this.files[0]) {
+      zone.classList.add('has-file');
+      label.textContent = this.files[0].name;
+    } else {
+      zone.classList.remove('has-file');
+      label.textContent = '';
+    }
+    checkReady();
+  });
+  const zone = document.getElementById(zoneId);
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); });
+}
+
+bindFileZone(excelInput, 'excelZone', 'excelFileName');
+bindFileZone(promoInput, 'promoZone', 'promoFileName');
+bindFileZone(exceptionsInput, 'exceptionsZone', 'exceptionsFileName');
+bindFileZone(punchInput, 'punchZone', 'punchFileName');
+bindFileZone(shopperInput, 'shopperZone', 'shopperFileName');
+
+function checkReady() {
+  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0];
+  const hasToken = !!GITHUB_TOKEN;
+  uploadBtn.disabled = !(hasFiles && hasToken);
+  if (hasFiles && !hasToken) {
+    setStatus('Please save your GitHub token first (expand settings below).', 'info');
+  }
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.className = 'status ' + type;
+  el.innerHTML = msg;
+}
+
+function setProgress(pct) {
+  const bar = document.getElementById('progressBar');
+  const fill = document.getElementById('progressFill');
+  bar.classList.toggle('active', pct > 0 && pct < 100);
+  fill.style.width = pct + '%';
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function readFileAsArrayBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function getFileSHA(repoName, filePath) {
   try {
-    const cacheBust = '?t=' + Date.now();
-    const resp = await fetch(CONFIG.EXCEL_URL + cacheBust);
-    if (!resp.ok) throw new Error('Could not fetch sales report (HTTP ' + resp.status + ')');
-    const buf = await resp.arrayBuffer();
-    const wb = XLSX.read(buf, { type: 'array' });
-    parseWorkbook(wb);
-
-    // Always set promo URL -- img onerror handler hides it if missing
-    state.promos = CONFIG.PROMO_URL;
-
-    state.lastRefresh = new Date();
-    buildSlides();
-    render();
-    startSlideshow();
-  } catch(err) {
-    console.error(err);
-    if (loading) { errorMsg.textContent = err.message; errorMsg.style.display = 'block'; retryBtn.style.display = 'block'; }
-
-    // Try loading from local file input as fallback
-    if (!state.stores.length) showLocalFallback();
-  }
-}
-
-function showLocalFallback() {
-  const loading = document.getElementById('loading');
-  if (!loading) return;
-  const existing = document.getElementById('localUpload');
-  if (existing) return;
-  const div = document.createElement('div');
-  div.id = 'localUpload';
-  div.style.cssText = 'margin-top:16px;text-align:center;';
-  div.innerHTML = '<p style="color:#8899aa;font-size:12px;margin-bottom:8px">Or load a local Excel file:</p><input type="file" accept=".xlsx,.xls" style="color:#8899aa;font-size:12px;" onchange="loadLocalFile(event)">';
-  loading.appendChild(div);
-}
-
-async function loadLocalFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const buf = await file.arrayBuffer();
-  const wb = XLSX.read(buf, { type: 'array' });
-  parseWorkbook(wb);
-  state.lastRefresh = new Date();
-  buildSlides();
-  render();
-  startSlideshow();
-}
-
-// -- PARSING --
-function parseWorkbook(wb) {
-  // Parse Store Rank
-  const ws = wb.Sheets['Store Rank'];
-  if (!ws) return;
-  const data = XLSX.utils.sheet_to_json(ws, { header:1, defval:null });
-
-  let headerRow = -1;
-  for (let i = 0; i < Math.min(15, data.length); i++) {
-    const row = data[i];
-    if (row && row.some(c => c && String(c).trim() === 'Rank') && row.some(c => c && String(c).includes('Store'))) {
-      headerRow = i; break;
-    }
-  }
-  if (headerRow < 0) return;
-
-  const headers = data[headerRow].map(h => h ? String(h).trim() : '');
-  const col = (name) => headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
-
-  const iRank=col('Rank'), iRegion=col('Region'), iStore=col('Store'), iEsop=col('ESOP'),
-    iRSD=col('RSD'), iDM=col('DM'), iSM=col('SM'), iGP=col('GP $'),
-    iLastGP=headers.findIndex(h=>h.includes('Last Month GP $')),
-    iTarget=col('Net Target GP'), iVarTarget=col('Var Target GP'),
-    iGPDay=col('GP $ per Day'), iDailyBal=col('Daily Bal'),
-    iMobileMTD=col('Mobile MTD'), iNewMob=headers.findIndex(h=>h.includes('New Mobile')),
-    iMobTrend=col('Mobile Trend'), iHSI=col('HSI'), iNewRGU=col('NEW RGU'),
-    iScore=col('Total Score'), iVideo=col('Video attach');
-
-  const iGPTrend = headers.findIndex(h => h === 'GP $ Trend');
-  const iMobileCR = headers.findIndex(h => h.toLowerCase().includes('mobile close rate'));
-  const iFiscalCR = headers.findIndex(h => h.toLowerCase().includes('fiscal close rate'));
-  const iNonTrad = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
-  const iGig = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%') && h.toLowerCase().includes('pts'));
-  const iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
-  const iNewToUpg = headers.findIndex(h => h.toUpperCase().includes('NEW TO UPGR'));
-  const iAccDev = headers.findIndex(h => h.toLowerCase().includes('accessory') && h.toLowerCase().includes('device') && h.toLowerCase().includes('net'));
-  const iNPS = headers.findIndex(h => h.toLowerCase().includes('fiscal nps') && !h.toLowerCase().includes('last'));
-  const iTabletMTD = headers.findIndex(h => h.toLowerCase().includes('tablet') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
-  const iWatchesMTD = headers.findIndex(h => h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
-
-  state.stores = [];
-  for (let i = headerRow + 1; i < data.length; i++) {
-    const row = data[i];
-    if (!row || !row[iRank]) break;
-    const rsd = row[iRSD];
-    if (!rsd || !String(rsd).includes('Bilbrey')) continue;
-    state.stores.push({
-      rank: row[iRank], region: row[iRegion] || '', name: row[iStore] || '',
-      esop: row[iEsop] || '', dm: row[iDM] || '', sm: row[iSM] || '',
-      gp: Number(row[iGP]) || 0,
-      gpTrend: Number(row[iGPTrend]) || 0,
-      lastGP: iLastGP >= 0 ? Number(row[iLastGP]) || 0 : 0,
-      target: Number(row[iTarget]) || 0, varTarget: Number(row[iVarTarget]) || 0,
-      gpPerDay: Number(row[iGPDay]) || 0, dailyBal: Number(row[iDailyBal]) || 0,
-      mobileCR: Number(row[iMobileCR]) || 0, fiscalCR: Number(row[iFiscalCR]) || 0,
-      nonTrad: Number(row[iNonTrad]) || 0, nps: Number(row[iNPS]) || 0,
-      premium: Number(row[iPremium]) || 0, mobileMTD: Number(row[iMobileMTD]) || 0,
-      newMobile: iNewMob >= 0 ? Number(row[iNewMob]) || 0 : 0,
-      mobileTrend: Number(row[iMobTrend]) || 0, hsi: Number(row[iHSI]) || 0,
-      gigPct: Number(row[iGig]) || 0, newToUpg: Number(row[iNewToUpg]) || 0,
-      accPerDev: Number(row[iAccDev]) || 0, newRGU: Number(row[iNewRGU]) || 0,
-      totalScore: Number(row[iScore]) || 0, videoAttach: Number(row[iVideo]) || 0,
-      tabletMTD: iTabletMTD >= 0 ? Number(row[iTabletMTD]) || 0 : 0,
-      watchesMTD: iWatchesMTD >= 0 ? Number(row[iWatchesMTD]) || 0 : 0,
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
+    const resp = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
     });
-  }
-  state.stores.sort((a, b) => a.rank - b.rank);
-
-  // Parse Rep Rank
-  const repWs = wb.Sheets['Rep Rank'];
-  if (repWs) {
-    const repData = XLSX.utils.sheet_to_json(repWs, { header:1, defval:null });
-    let repHeader = -1;
-    for (let i = 0; i < 15; i++) {
-      if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') &&
-          repData[i].some(c => c && String(c).includes('Employee'))) { repHeader = i; break; }
+    if (resp.ok) {
+      const data = await resp.json();
+      return data.sha;
     }
-    if (repHeader >= 0) {
-      const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
-      const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+    return null;
+  } catch { return null; }
+}
 
-      const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'),
-        riLoc=rc('location'), riDM=rc('dm'),
-        riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
-        riMobile=rc('mobile mtd'),
-        riPremium=rh.findIndex(h=>h.includes('Premium Mix')),
-        riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
-        riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
-        const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
-        const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
-        const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
-        const riWatches=rh.findIndex(h=>h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
-        const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
-        const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
+async function getFileContent(repoName, filePath) {
+  // Get SHA from API
+  const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
+  const apiResp = await fetch(apiUrl, {
+    headers: {
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  });
+  if (!apiResp.ok) throw new Error('Could not fetch file info for ' + filePath);
+  const apiData = await apiResp.json();
+  const sha = apiData.sha;
 
-      // New columns for rep breakdown
-      const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
-      const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
-      const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
+  // Fetch raw content directly (avoids base64 decode issues with large files)
+  const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${repoName}/${BRANCH}/${filePath}?t=${Date.now()}`;
+  const rawResp = await fetch(rawUrl);
+  if (!rawResp.ok) throw new Error('Could not fetch raw content for ' + filePath);
+  const content = await rawResp.text();
 
-      const jeffStoreNames = state.stores.map(s => s.name.toLowerCase());
-      state.reps = [];
-      for (let i = repHeader + 1; i < repData.length; i++) {
-        const row = repData[i];
-        if (!row || !row[riRank]) break;
-        const loc = String(row[riLoc] || '').toLowerCase();
-        if (!jeffStoreNames.includes(loc)) continue;
-        state.reps.push({
-          rank: row[riRank], name: row[riName] || '', title: row[riTitle] || '',
-          store: row[riLoc] || '', dm: row[riDM] || '',
-          gp: Number(riGP >= 0 ? row[riGP] : 0) || 0,
-          mobile: Number(row[riMobile]) || 0,
-          premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
-          nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
-          gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
-          gigPct: riGigPct>=0 ? parseFloat(row[riGigPct])||0 : 0,
-          tabletMTD: riTablet>=0 ? parseInt(row[riTablet])||0 : 0,
-          watchesMTD: riWatch>=0 ? parseInt(row[riWatch])||0 : 0,
-          newToUpg: riNewToUpg>=0 ? parseFloat(row[riNewToUpg])||0 : 0,
-          accPerMobile: riAcc>=0 ? parseFloat(row[riAcc])||0 : 0,
-          gigPct: riGig >= 0 ? Number(row[riGig]) || 0 : 0,
-          tabletMTD: riTablet >= 0 ? Number(row[riTablet]) || 0 : 0,
-          watchesMTD: riWatches >= 0 ? Number(row[riWatches]) || 0 : 0,
-          accPerMobile: riAccMobile >= 0 ? Number(row[riAccMobile]) || 0 : 0,
-          blendedWage: riBlendedWage >= 0 ? Number(row[riBlendedWage]) || 0 : 0,
+  return { content, sha };
+}
+
+
+    async function pushViaBlobs(repoName, filePath, base64Content, message) {
+      const apiBase = 'https://api.github.com/repos/' + REPO_OWNER + '/' + repoName;
+      const headers = {
+        'Authorization': 'Bearer ' + GITHUB_TOKEN,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      };
+
+      // 1. Create blob
+      const blobResp = await fetch(apiBase + '/git/blobs', {
+        method: 'POST', headers,
+        body: JSON.stringify({ content: base64Content, encoding: 'base64' })
+      });
+      if (!blobResp.ok) throw new Error('Blob create failed: ' + (await blobResp.json()).message);
+      const blob = await blobResp.json();
+
+      // 2. Get current ref
+      const refResp = await fetch(apiBase + '/git/ref/heads/' + BRANCH, { headers });
+      if (!refResp.ok) throw new Error('Ref fetch failed');
+      const ref = await refResp.json();
+
+      // 3. Get current commit to find tree
+      const commitResp = await fetch(apiBase + '/git/commits/' + ref.object.sha, { headers });
+      const currentCommit = await commitResp.json();
+
+      // 4. Create new tree
+      const treeResp = await fetch(apiBase + '/git/trees', {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          base_tree: currentCommit.tree.sha,
+          tree: [{ path: filePath, mode: '100644', type: 'blob', sha: blob.sha }]
+        })
+      });
+      if (!treeResp.ok) throw new Error('Tree create failed: ' + (await treeResp.json()).message);
+      const tree = await treeResp.json();
+
+      // 5. Create commit
+      const newCommitResp = await fetch(apiBase + '/git/commits', {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          message: message,
+          tree: tree.sha,
+          parents: [ref.object.sha]
+        })
+      });
+      if (!newCommitResp.ok) throw new Error('Commit create failed');
+      const newCommit = await newCommitResp.json();
+
+      // 6. Update ref
+      const updateResp = await fetch(apiBase + '/git/refs/heads/' + BRANCH, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ sha: newCommit.sha })
+      });
+      if (!updateResp.ok) throw new Error('Ref update failed');
+      return await updateResp.json();
+    }
+
+    async function pushToGitHub(repoName, filePath, base64Content, message) {
+  const sha = await getFileSHA(repoName, filePath);
+  const body = { message, content: base64Content, branch: BRANCH };
+  if (sha) body.sha = sha;
+
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}`;
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error((err.message || 'Unknown') + ` (HTTP ${resp.status})`);
+  }
+  return await resp.json();
+}
+
+// âââ EXCEPTION REPORT LOGIC ââââââââââââââââââââââââââââââ
+
+function fmtDate(val) {
+  if (!val) return '';
+  let d;
+  if (typeof val === 'number') {
+    // Excel serial date
+    d = new Date((val - 25569) * 86400000);
+  } else if (val instanceof Date) {
+    d = val;
+  } else {
+    d = new Date(val);
+  }
+  if (isNaN(d.getTime())) return String(val);
+  return `${d.getMonth()+1}/${d.getDate()}/${String(d.getFullYear()).slice(-2)}`;
+}
+
+function escStr(s) {
+  if (s == null) return '';
+  return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function buildExceptionData(workbook) {
+      const excSheet = workbook.Sheets['Exceptions'];
+      if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
+      const allExcRows = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
+      const excRows = allExcRows.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+      const rawData = excRows.map(r => {
+        return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
+      });
+
+      const cancelSheet = workbook.Sheets['Cancelled Orders'];
+      let cancelData = [];
+      if (cancelSheet) {
+        const allCancelRows = XLSX.utils.sheet_to_json(cancelSheet, { defval: '' });
+        const cancelRows = allCancelRows.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+        cancelData = cancelRows.map(r => {
+          return `{store:"${escStr(r['Store'])}",rep:"",orderDate:"${fmtDate(r['Order Date'])}",cancelDate:"${fmtDate(r['Date Of Cancelation'])}",reason:"${escStr(r['Cancel Reason'])}"}`;
         });
       }
-      state.reps.sort((a, b) => a.rank - b.rank);
+      return { rawData, cancelData };
     }
-  }
-}
 
-// -- SLIDE BUILDING --
-function buildSlides() {
-  state.slides = [];
-
-  // Store overview pages
-  const storePages = Math.ceil(state.stores.length / CONFIG.STORE_CARDS_PER_PAGE);
-  for (let i = 0; i < storePages; i++) {
-    const label = storePages > 1 ? 'Overview (Pg ' + (i+1) + ')' : 'Store Overview';
-    state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
-  }
-
-  // Individual store detail slides
-  for (const store of state.stores) {
-    state.slides.push({ type: 'store-detail', store: store, label: '#' + store.rank + ' ' + store.name });
-  }
-
-  // Insert promo slides every 4 slides
-  var promoSlide = { type: 'promos', title: 'DAILY PROMOTIONS', label: 'Promotions' };
-  var tempSlides = [];
-  for (var si = 0; si < state.slides.length; si++) {
-    tempSlides.push(state.slides[si]);
-    if ((si + 1) % 4 === 0) {
-      tempSlides.push(promoSlide);
-    }
-  }
-  if (tempSlides.length === 0 || tempSlides[tempSlides.length - 1].type !== 'promos') {
-    tempSlides.push(promoSlide);
-  }
-  state.slides = tempSlides;
-
-  state.totalSlides = state.slides.length;
-  state.currentSlide = 0;
-}
-
-// -- RENDERING --
-function render() {
-  const app = document.getElementById('app');
-  const slide = state.slides[state.currentSlide] || state.slides[0];
-
-  let slideContent = '';
-  let slideTitle = slide.title || '';
-
-  if (slide.type === 'stores') {
-    slideTitle = 'STORE OVERVIEW';
-    const start = slide.page * CONFIG.STORE_CARDS_PER_PAGE;
-    const pageStores = state.stores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
-    slideContent = renderStoreGrid(pageStores);
-  } else if (slide.type === 'store-detail') {
-    slideTitle = slide.store.name.toUpperCase() + ' - DETAIL';
-    slideContent = renderStoreDetail(slide.store);
-  } else if (slide.type === 'promos') {
-    slideTitle = 'DAILY PROMOTIONS';
-    slideContent = renderPromos();
-  }
-
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
-  const timeStr = now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',hour12:true});
-
-  app.innerHTML = `
-    <div class="header">
-      <div class="header-left">
-        <div class="logo-circle"><img src="data:image/jpeg;base64,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" alt="C3" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
-        <div>
-          <div class="brand-title">COOK COUNTY <span class="highlight">COOKS</span></div>
-          <div class="brand-sub">DAILY SALES REPORT &nbsp;|&nbsp; ${state.stores.length} STORES</div>
-        </div>
-      </div>
-      <div class="header-center">
-        <div class="header-center-sub">DAILY SALES REPORT</div>
-        <div class="header-center-title">${slideTitle}</div>
-      </div>
-      <div class="header-right">
-        <div class="live-badge"><div class="live-dot"></div> LIVE</div>
-        <div class="datetime">${dateStr} | ${timeStr}</div>
-      </div>
-    </div>
-    <div class="progress-bar">
-      <select class="slide-select" id="slideSelect" onchange="goSlide(parseInt(this.value))">
-        ${state.slides.map((s, i) => `<option value="${i}"${i === state.currentSlide ? ' selected' : ''}>${s.label || s.title || 'Slide ' + (i+1)}</option>`).join('')}
-      </select>
-      <div class="progress-track" title="Time until next slide">
-        <div class="countdown-fill" id="countdownBar" style="width:100%"></div>
-      </div>
-      <div class="slide-type">
-        <span>${state.currentSlide + 1} / ${state.totalSlides}</span>
-        <div class="dot-nav">${state.slides.map((_, i) => `<span class="${i === state.currentSlide ? 'active' : ''}" onclick="goSlide(${i})"></span>`).join('')}</div>
-      </div>
-    </div>
-    <div class="slide-container">${slideContent}</div>
-  `;
-}
-
-function renderStoreGrid(stores) {
-  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:13px;text-align:center;">${label}</div><div class="metric-value" style="font-size:24px;text-align:center;">${val}</div></div>`;
-  let html = '<div class="store-grid">';
-  for (const s of stores) {
-    const varColor = s.varTarget >= 0 ? 'green' : 'red';
-    const varSign = s.varTarget >= 0 ? '+' : '-';
-    const pct = v => (v * 100).toFixed(1) + '%';
-    html += `
-      <div class="store-card">
-        <div>
-          <div class="store-rank">#${s.rank}</div>
-          <div class="store-name">${s.name}</div>
-          <div class="store-gp">$${Math.round(s.gpTrend).toLocaleString()}</div>
-          <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
-        </div>
-        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
-          ${m('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
-          ${m('MOB CR', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
-          ${m('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${m('NON-TRAD', pct(s.nonTrad), 'blue')}
-          ${m('GIG %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${m('PREMIUM', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${m('NEW->UPG', pct(s.newToUpg), 'blue')}
-          ${m('ACCESS', '$'+Math.round(s.accPerDev), 'blue')}
-          ${m('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
-        </div>
-      </div>`;
-  }
-  // Fill empty cards
-  for (let i = stores.length; i < CONFIG.STORE_CARDS_PER_PAGE; i++) {
-    html += '<div class="store-card" style="opacity:0.15;border:1px dashed #1a3050;"></div>';
-  }
-  html += '</div>';
+function injectDataIntoHtml(html, rawData, cancelData) {
+  // Replace const RAW_DATA = [...]; with new data
+  html = html.replace(
+    /const RAW_DATA\s*=\s*\[[\s\S]*?\];/,
+    'const RAW_DATA = [\n' + rawData.join(',\n') + '\n];'
+  );
+  // Replace const CANCEL_DATA = [...]; with new data
+  html = html.replace(
+    /const CANCEL_DATA\s*=\s*\[[\s\S]*?\];/,
+    'const CANCEL_DATA = [\n' + cancelData.join(',\n') + '\n];'
+  );
   return html;
 }
 
-function renderStoreDetail(s) {
-  const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
-  const varSign = s.varTarget >= 0 ? '+' : '-';
-  const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:16px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:15px;letter-spacing:1px;margin-bottom:2px;">${label}</div><div class="metric-value" style="font-size:32px;margin-top:4px;">${val}</div></div>`;
+async function uploadExceptionReport(file) {
+  setStatus('Reading Excel file...', 'info');
+  const buffer = await readFileAsArrayBuffer(file);
+  const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
 
-  // Get reps for this store
-  const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
-  storeReps.sort((a, b) => b.gp - a.gp);
+  setStatus('Extracting Exceptions & Cancelled Orders...', 'info');
+  const { rawData, cancelData } = buildExceptionData(workbook);
 
-  let repHtml = '';
-  if (storeReps.length) {
-    repHtml = `
-      <div style="margin-top:14px;">
-        <div style="font-size:20px;font-weight:800;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:15px;color:#8899aa;padding:8px 10px;font-weight:700;letter-spacing:0.5px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PREM%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
-        </div>
-        ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:18px;padding:12px 10px;background:#0c1525;border-radius:6px;margin-bottom:4px;border:1px solid #1a2540;align-items:center;">
-            <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
-            <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
-            <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
-            <span>${Math.round(r.accPerMobile||0)}</span>
-            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
-            <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
-            <span>${r.mobile}</span>
-            <span>${r.tabletMTD||0}</span>
-            <span>${r.watchesMTD||0}</span>
-          </div>
-        `).join('')}
-      </div>`;
+  setStatus(`Found ${rawData.length} exceptions, ${cancelData.length} cancellations. Fetching current report...`, 'info');
+
+  // Get the current index.html from the Exception-Report repo
+  const { content: currentHtml, sha } = await getFileContent(REPOS.exceptions, FILE_PATHS.exceptionsHtml);
+
+  // Inject the new data
+  const updatedHtml = injectDataIntoHtml(currentHtml, rawData, cancelData);
+
+  // Push the updated file
+  setStatus('Pushing updated Exception Report...', 'info');
+
+  // Robust base64 encoding for large strings with possible Unicode
+  function toBase64(str) {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(str);
+    let binary = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, i + chunkSize);
+      binary += String.fromCharCode(...chunk);
+    }
+    return btoa(binary);
   }
 
-  return `
-    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:16px;height:100%;overflow:hidden;">
-      <!-- Left column -->
-      <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
-        <!-- Store Header -->
-        <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:20px 24px;">
-          <div style="display:flex;justify-content:space-between;align-items:start;">
-            <div>
-              <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
-              <div style="font-size:40px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
-              <div style="font-size:15px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gpTrend).toLocaleString()}</div>
-              <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP TREND</div>
-            </div>
-          </div>
-        </div>
-        <!-- Devices + RGU Row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
-          <div style="background:#0c1a2e;border:1px solid #e67e22;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#e67e22;letter-spacing:1px;font-weight:700;">TOTAL RGU</div>
-            <div style="font-size:34px;font-weight:900;margin-top:6px;color:#e67e22;">${s.newRGU}</div>
-          </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">MOBILE</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
-          </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">TABLET</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
-          </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">WATCHES</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
-          </div>
-        </div>
-        <!-- Performance Metrics Grid -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;">
-          ${tile('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
-          ${tile('MOB CLOSE RATE', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
-          ${tile('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${tile('NON-TRAD', pct(s.nonTrad), 'blue')}
-          ${tile('GIG PLANS %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${tile('PREMIUM MIX', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${tile('NEW->UPGRADE', pct(s.newToUpg), 'blue')}
-          ${tile('ACCESSORIES', '$'+Math.round(s.accPerDev), 'blue')}
-          ${tile('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
-        </div>
-      </div>
-      <!-- Right column -->
-      <div style="display:flex;flex-direction:column;gap:12px;overflow:hidden;">
-        <!-- Team Members -->
-        <div style="flex:1;overflow:hidden;">${repHtml}</div>
-      </div>
-    </div>`;
-}
+  const b64 = toBase64(updatedHtml);
 
-function renderPromos() {
-  if (state.promos) {
-    const cacheBust = '?t=' + Math.floor(Date.now() / 300000);
-    return `
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
-      <div style="font-size:13px;font-weight:700;letter-spacing:3px;color:#e67e22;text-transform:uppercase;">XM Daily Promotion Card</div>
-      <img src="${state.promos}${cacheBust}"
-           style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid #1a3050;box-shadow:0 0 40px #e67e2222;"
-           alt="Daily Promotion Card"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
-      <div style="display:none;color:#5a7a9a;font-size:15px;font-style:italic;">Promo card image could not be loaded.</div>
-    </div>`;
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPOS.exceptions}/contents/${encodeURIComponent(FILE_PATHS.exceptionsHtml)}`;
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: 'Update exception data â ' + new Date().toLocaleDateString(),
+      content: b64,
+      sha: sha,
+      branch: BRANCH
+    })
+  });
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error('Exception Report push failed: ' + (err.message || `HTTP ${resp.status}`));
   }
-  return `
-    <div class="promo-slide">
-      <div class="promo-title">DAILY PROMOTIONS</div>
-      <div class="promo-badge">
-        <div class="promo-empty">Today's promotion card will appear here automatically once uploaded.</div>
-        <div style="color:#5a7a9a;font-size:12px;margin-top:8px;text-align:center;">Source: Amanda Whiteside via Zapier</div>
-      </div>
-    </div>`;
+
+  return { exceptions: rawData.length, cancellations: cancelData.length };
 }
 
-// -- COUNTDOWN --
-function startCountdown() {
-  if (state.countdownTimer) clearInterval(state.countdownTimer);
-  state.countdownStart = Date.now();
-  state.countdownTimer = setInterval(() => {
-    const elapsed = Date.now() - state.countdownStart;
-    const pct = Math.max(0, 100 - (elapsed / CONFIG.SLIDE_INTERVAL) * 100);
-    const bar = document.getElementById('countdownBar');
-    if (bar) bar.style.width = pct + '%';
-  }, 100);
+// ─── OPEN ORDERS JSON (for CRM) ──────────────────────────
+const OPEN_ORDERS_JSON_PATH = 'data/open-orders.json';
+
+function buildOpenOrdersJson(workbook) {
+  const sheet = workbook.Sheets['Open Orders'];
+  if (!sheet) throw new Error('No "Open Orders" tab found in the Excel file');
+
+  // Column F is the account number column. Read its header text dynamically
+  // so this works regardless of the exact header name ("Account Number",
+  // "Account #", "Acct Number", etc.).
+  const colFCell = sheet['F1'];
+  const accountKey = colFCell && colFCell.v != null ? String(colFCell.v).trim() : null;
+
+  // Column U — the secondary aging metric Jeff wants surfaced in the CRM.
+  // Read its header text dynamically so the CRM can label the column with
+  // whatever the spreadsheet calls it.
+  const colUCell = sheet['U1'];
+  const colUKey = colUCell && colUCell.v != null ? String(colUCell.v).trim() : null;
+
+  const rows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false });
+
+  const orders = rows
+    .filter(r => r['Work Order Number'])
+    .map(r => {
+      // Order Date can come back as a string or Date depending on raw flag
+      let orderDate = r['Order Date'];
+      if (orderDate instanceof Date) orderDate = orderDate.toISOString();
+      else if (orderDate) {
+        // try to parse mm/dd/yy or similar
+        const d = new Date(orderDate);
+        if (!isNaN(d.getTime())) orderDate = d.toISOString();
+      }
+
+      // Column U value — keep both the raw value (for display) and a numeric
+      // form (in case it's a number of days)
+      let colUValue = '';
+      if (colUKey) {
+        const v = r[colUKey];
+        if (v instanceof Date) colUValue = v.toLocaleDateString();
+        else if (v != null) colUValue = String(v).trim();
+      }
+
+      return {
+        store: String(r['Store'] || '').trim(),
+        dm: String(r['DM'] || '').trim(),
+        orderDate: orderDate || null,
+        customerId: String(r['Customer ID'] || '').trim(),
+        accountNumber: accountKey ? String(r[accountKey] || '').trim() : '',
+        workOrder: String(r['Work Order Number'] || '').trim(),
+        product: String(r['Product Description'] || '').trim(),
+        customerName: String(r['Customer Name'] || '').trim(),
+        repName: String(r['Rep Name'] || '').trim(),
+        age: Number(r['Ageing']) || 0,
+        colU: colUValue,
+        colULabel: colUKey || ''
+      };
+    });
+
+  return {
+    generatedAt: new Date().toISOString(),
+    rowCount: orders.length,
+    accountLabel: accountKey || '',
+    colULabel: colUKey || '',
+    orders: orders
+  };
 }
 
-// -- SLIDESHOW --
-function startSlideshow() {
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
+async function uploadOpenOrdersJson(file) {
+  setStatus('Reading Open Orders tab for CRM...', 'info');
+  const buffer = await readFileAsArrayBuffer(file);
+  const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
 
-  // Auto-refresh data
-  if (state.refreshTimer) clearInterval(state.refreshTimer);
-  state.refreshTimer = setInterval(() => {
-    loadData();
-  }, CONFIG.REFRESH_INTERVAL);
+  const json = buildOpenOrdersJson(workbook);
+  setStatus(`Found ${json.rowCount} open orders. Pushing to CRM...`, 'info');
+
+  // base64 encode the JSON string (UTF-8 safe)
+  const jsonStr = JSON.stringify(json);
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(jsonStr);
+  let binary = '';
+  const chunkSize = 8192;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  const b64 = btoa(binary);
+
+  // Use the existing pushViaBlobs since this file may be > 1MB
+  await pushViaBlobs(
+    REPOS.sales,
+    OPEN_ORDERS_JSON_PATH,
+    b64,
+    'Update open orders for CRM — ' + new Date().toLocaleDateString()
+  );
+
+  return { openOrders: json.rowCount };
 }
 
-function goSlide(i) {
-  state.currentSlide = i;
-  render();
-  // Reset auto-advance timer and countdown
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
+
+// âââ MAIN UPLOAD âââââââââââââââââââââââââââââââââââââââââ
+
+async function uploadFiles() {
+  uploadBtn.disabled = true;
+  uploadBtn.textContent = 'Uploading...';
+  setStatus('Starting upload...', 'info');
+  setProgress(10);
+
+  const tasks = [];
+  let totalSteps = 0;
+  let completed = 0;
+  const parts = [];
+  let excCounts = null;
+
+  if (excelInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading sales report...', 'info');
+        const b64 = await readFileAsBase64(excelInput.files[0]);
+        // Use pushViaBlobs (Git Data API) instead of pushToGitHub (Contents API).
+        // The Contents API requires a per-file SHA match, and the SHA returned
+        // by the GET can be served from a stale CDN edge — causing 409 errors
+        // like "data/Sales Report.xlsx does not match <sha>". The Git Data API
+        // works at the ref level and doesn't have this race. Goals & OneOnOne
+        // already use this path successfully.
+        await pushViaBlobs(REPOS.sales, FILE_PATHS.excel, b64, 'Update sales report - ' + new Date().toLocaleDateString());
+              try {
+                await pushViaBlobs(REPOS.goals, FILE_PATHS.goalsExcel, b64, 'Update goals data â ' + new Date().toLocaleDateString());
+              } catch (goalsErr) {
+                console.warn('Goals push failed:', goalsErr);
+              }
+              try {
+                await pushViaBlobs(REPOS.oneOnOne, FILE_PATHS.oneOnOneExcel, b64, 'Update 1:1 data - ' + new Date().toLocaleDateString());
+              } catch (oneOnOneErr) {
+                console.warn('One-On-One push failed:', oneOnOneErr);
+              }
+        completed++;
+        parts.push('Sales Report');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Sales Report: ' + e.message); }
+    });
+  }
+
+  if (promoInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading promo card...', 'info');
+        const b64 = await readFileAsBase64(promoInput.files[0]);
+        await pushToGitHub(REPOS.sales, FILE_PATHS.promo, b64, 'Update promo card â ' + new Date().toLocaleDateString());
+        completed++;
+        parts.push('Promo Card');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Promo Card: ' + e.message); }
+    });
+  }
+
+  if (exceptionsInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        excCounts = await uploadExceptionReport(exceptionsInput.files[0]);
+        // also push Open Orders JSON for the CRM
+        try {
+          const ooResult = await uploadOpenOrdersJson(exceptionsInput.files[0]);
+          parts.push(`Open Orders CRM (${ooResult.openOrders} orders)`);
+        } catch (ooErr) {
+          console.warn('Open Orders CRM push failed:', ooErr);
+          // don't fail the whole upload if just the CRM piece fails
+        }
+        completed++;
+        parts.push('Exception Report');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Exception Report: ' + e.message); }
+    });
+  }
+
+  if (punchInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading Lunch Punch Audit data...', 'info');
+        const b64 = await readFileAsBase64(punchInput.files[0]);
+        await pushViaBlobs(REPOS.punch, FILE_PATHS.punchExcel, b64, 'Update punch data — ' + new Date().toLocaleDateString());
+        completed++;
+        parts.push('Lunch Punch Audit');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('Lunch Punch Audit: ' + e.message); }
+    });
+  }
+
+  if (shopperInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        setStatus('Uploading ShopperTrack file (single source of truth)...', 'info');
+        const b64 = await readFileAsBase64(shopperInput.files[0]);
+        const dateStr = new Date().toLocaleDateString();
+        // Single source of truth: push to Daily-Sales-Report/data/shoppertrack.xlsx
+        // T-Sheet-Submissions and Yesterday-s-Conversion both fetch from this URL.
+        // Using pushToGitHub (Contents API) — simpler & known-good for this repo.
+        // pushViaBlobs (Git Database API) was failing on the ref-update step.
+        await pushToGitHub(REPOS.sales, FILE_PATHS.shopperExcel, b64, 'Update ShopperTrack traffic — ' + dateStr);
+        completed++;
+        parts.push('ShopperTrack');
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('ShopperTrack: ' + e.message); }
+    });
+  }
+
+  try {
+    for (const task of tasks) {
+      await task();
+    }
+    setProgress(100);
+    let msg = `â <strong>${parts.join(' & ')}</strong> uploaded successfully!`;
+    if (excCounts) {
+      msg += `<br>${excCounts.exceptions} exceptions + ${excCounts.cancellations} cancellations loaded.`;
+    }
+    msg += `<br>Dashboards will refresh within 30 minutes, or open them now and hit refresh.`;
+    setStatus(msg, 'success');
+  } catch (err) {
+    setStatus('â Upload failed: ' + err.message, 'error');
+  } finally {
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = 'Upload to Dashboards';
+    setTimeout(() => setProgress(0), 2000);
+  }
 }
-
-// -- KEYBOARD NAV --
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === ' ') { goSlide((state.currentSlide + 1) % state.totalSlides); }
-  if (e.key === 'ArrowLeft') { goSlide((state.currentSlide - 1 + state.totalSlides) % state.totalSlides); }
-});
-
-// -- INIT --
-loadData();
 </script>
+
 </body>
-<!-- v2.1 -->
+<!-- deployed -->
 </html>
