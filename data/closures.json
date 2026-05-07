@@ -138,8 +138,10 @@
     "store": "Hammond"
   },
   "2245925313": {
-    "status": "Other",
-    "ts": "2026-05-02T18:47:24.179Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:12:27.925Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
   },
   "2246281038": {
     "status": "Closed",
