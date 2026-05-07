@@ -362,8 +362,10 @@
     "ts": "2026-05-02T18:44:27.589Z"
   },
   "2257276707": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:36.399Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:50:54.073Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2257378703": {
     "status": "Can Not Close",
