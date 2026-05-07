@@ -380,8 +380,10 @@
     "store": "Schererville"
   },
   "2257542698": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:30.033Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:50:57.707Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2257575158": {
     "status": "Can Not Close",
