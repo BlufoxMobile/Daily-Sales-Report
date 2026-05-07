@@ -733,8 +733,10 @@
     "store": "Uptown"
   },
   "2277098336": {
-    "status": "Other",
-    "ts": "2026-05-02T16:48:26.486Z"
+    "status": "Closed",
+    "ts": "2026-05-07T20:21:59.957Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
   },
   "2277296768": {
     "status": "Closed",
