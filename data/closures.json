@@ -246,8 +246,10 @@
     "store": "Kildeer"
   },
   "2251283950": {
-    "status": "Other",
-    "ts": "2026-05-02T18:47:08.441Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:43:04.820Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2251538360": {
     "status": "Can Not Close",
