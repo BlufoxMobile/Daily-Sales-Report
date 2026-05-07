@@ -388,8 +388,10 @@
     "store": "Tinley Park"
   },
   "2257677943": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:33.634Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-07T20:50:50.421Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2258198836": {
     "status": "Can Not Close",
