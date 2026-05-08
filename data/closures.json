@@ -2221,11 +2221,10 @@
     "store": "Evanston"
   },
   "2315605383": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T21:27:11.696Z",
+    "status": "Closed",
+    "ts": "2026-05-08T22:34:55.734Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-05-07"
+    "store": "Evanston"
   },
   "2315610827": {
     "status": "Can Not Close",
