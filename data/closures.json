@@ -146,10 +146,11 @@
     "store": "South Knoxville"
   },
   "2246281038": {
-    "status": "Closed",
-    "ts": "2026-05-04T23:55:14.374Z",
+    "status": "Pending Install",
+    "ts": "2026-05-09T18:52:37.339Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-05-16"
   },
   "2246368696": {
     "status": "Can Not Close",
