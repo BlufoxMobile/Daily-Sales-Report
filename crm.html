@@ -800,6 +800,187 @@
     color: var(--muted);
   }
   .fu-empty h2 { color: var(--text); font-size: 17px; margin-bottom: 8px; }
+
+  /* ========= T-SHEET-STYLE COMPACT LAYOUT (used by both tabs) ========= */
+  .tk-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    padding: 24px;
+  }
+  .tk-stat {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+  }
+  .tk-stat .tk-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .tk-stat .tk-value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .tk-stat .tk-value.purple { color: var(--orange); }
+  .tk-stat .tk-value.green  { color: var(--green); }
+  .tk-stat .tk-value.amber  { color: var(--yellow); }
+  .tk-stat .tk-value.red    { color: var(--red); }
+  .tk-stat .tk-value.violet { color: var(--purple); }
+  .tk-stat .tk-sub { font-size: 12.5px; color: var(--muted); }
+
+  .tk-controls { padding: 0 24px 18px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .tk-search {
+    flex: 1;
+    min-width: 240px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .tk-search:focus { outline: none; border-color: var(--orange); }
+
+  .tk-section-label {
+    padding: 0 24px;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .tk-list {
+    padding: 0 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tk-row {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .tk-row:hover { border-color: var(--border-bright); }
+  .tk-row-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    gap: 16px;
+    transition: background 0.15s;
+  }
+  .tk-row-header:hover { background: rgba(97, 56, 245, 0.06); }
+  .tk-row-info { flex: 1; min-width: 0; }
+  .tk-row-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
+  .tk-row-meta { font-size: 12.5px; color: var(--muted); }
+  .tk-row-metrics {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+  .tk-metric { text-align: center; min-width: 56px; }
+  .tk-metric .tk-num { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .tk-metric .tk-num.purple { color: var(--orange); }
+  .tk-metric .tk-num.green  { color: var(--green); }
+  .tk-metric .tk-num.amber  { color: var(--yellow); }
+  .tk-metric .tk-num.red    { color: var(--red); }
+  .tk-metric .tk-num.muted  { color: var(--muted); }
+  .tk-metric .tk-num.zero   { color: var(--muted); opacity: 0.55; }
+  .tk-metric .tk-mlabel {
+    font-size: 9.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .tk-arrow {
+    color: var(--muted);
+    font-size: 22px;
+    transition: transform 0.2s;
+    line-height: 1;
+    margin-left: 8px;
+  }
+  .tk-row.expanded .tk-arrow { transform: rotate(90deg); color: var(--orange); }
+
+  .tk-row-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.18);
+  }
+  .tk-row.expanded .tk-row-body { display: block; }
+
+  .tk-substore {
+    border-bottom: 1px solid var(--border);
+  }
+  .tk-substore:last-child { border-bottom: none; }
+  .tk-substore-header {
+    padding: 13px 20px 13px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .tk-substore-header:hover { background: rgba(97, 56, 245, 0.05); }
+  .tk-substore .tk-row-name { font-size: 14px; }
+  .tk-substore .tk-arrow { font-size: 18px; }
+  .tk-substore.expanded .tk-arrow { transform: rotate(90deg); color: var(--orange); }
+  .tk-substore-body { display: none; padding: 0 20px 16px 36px; }
+  .tk-substore.expanded .tk-substore-body { display: block; }
+
+  /* Filter chips for credit escalation status (Approved / Resubmit / Denied) */
+  .tk-chips { display: flex; gap: 8px; padding: 0 24px 16px; flex-wrap: wrap; }
+  .tk-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tk-chip:hover { color: var(--text); border-color: var(--border-bright); }
+  .tk-chip.active { background: var(--orange); border-color: var(--orange); color: white; }
+  .tk-chip .tk-chip-num {
+    background: rgba(0,0,0,0.25);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 11px;
+  }
+  .tk-chip.active .tk-chip-num { background: rgba(255,255,255,0.25); }
+
+  @media (max-width: 700px) {
+    .tk-stats { padding: 16px; }
+    .tk-row-metrics { gap: 14px; }
+    .tk-metric { min-width: 44px; }
+    .tk-metric .tk-num { font-size: 15px; }
+    .tk-controls, .tk-list, .tk-section-label { padding-left: 16px; padding-right: 16px; }
+  }
 </style>
 </head>
 <body>
@@ -841,18 +1022,18 @@
 
   <!-- ============ TAB: OPEN ORDERS ============ -->
   <div class="tab-pane active" id="tab-orders">
-    <div class="stats-bar" id="statsBar"></div>
+    <div class="tk-stats" id="statsBar"></div>
 
-    <div class="controls">
-      <input type="search" id="searchBox" placeholder="Search by store, customer, account #, work order, rep..." oninput="renderGroups()">
-      <select id="ageFilter" onchange="renderGroups()">
+    <div class="tk-controls">
+      <input class="tk-search" type="search" id="searchBox" placeholder="Search store, customer, account #, work order, rep..." oninput="renderGroups()">
+      <select id="ageFilter" onchange="renderGroups()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:10px;font-size:14px;font-family:inherit;">
         <option value="all">All Ages</option>
         <option value="0-30">0-30 days</option>
         <option value="30-60">30-60 days</option>
         <option value="60-90">60-90 days</option>
         <option value="90+">90+ days</option>
       </select>
-      <select id="statusFilter" onchange="renderGroups()">
+      <select id="statusFilter" onchange="renderGroups()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:10px;font-size:14px;font-family:inherit;">
         <option value="all">All Statuses</option>
         <option value="Open">Open only</option>
         <option value="Closed">Closed</option>
@@ -866,8 +1047,9 @@
       </div>
     </div>
 
-    <div class="groups" id="groupsContainer">
-      <div class="center-msg">
+    <div class="tk-section-label" id="ordersSectionLabel">DISTRICTS</div>
+    <div class="tk-list" id="groupsContainer">
+      <div class="fu-empty">
         <div class="spinner"></div>
         <h2>Loading open orders...</h2>
         <p>Fetching latest data from GitHub</p>
@@ -877,67 +1059,53 @@
 
   <!-- ============ TAB: CREDIT ESCALATION FOLLOW-UPS ============ -->
   <div class="tab-pane" id="tab-followup">
-    <div class="fu-stats" id="fuStats">
-      <div class="fu-stat submitted"><div class="label">Submitted</div><div class="value" id="fuStatSubmitted">0</div></div>
-      <div class="fu-stat approved"><div class="label">Approved (in queue)</div><div class="value" id="fuStatApproved">0</div></div>
-      <div class="fu-stat denied"><div class="label">Not Approved</div><div class="value" id="fuStatDenied">0</div></div>
-      <div class="fu-stat due"><div class="label">Follow-ups Due</div><div class="value" id="fuStatDue">0</div></div>
-      <div class="fu-stat sold"><div class="label">Sold 🔥</div><div class="value" id="fuStatSold">0</div></div>
-    </div>
-
-    <div class="fu-sold-section">
-      <div class="fu-sold-header" onclick="toggleSoldSection()">
-        <h2>💰 Sold Leads <span class="fu-count-badge" id="fuSoldCount">0</span></h2>
-        <div class="fu-sold-toggle" id="fuSoldToggle">▾ Show</div>
+    <div class="tk-stats" id="fuTopStats">
+      <div class="tk-stat">
+        <div class="tk-label">Submitted</div>
+        <div class="tk-value" id="fuStatSubmitted">0</div>
+        <div class="tk-sub">all credit escalations</div>
       </div>
-      <div class="fu-sold-body" id="fuSoldBody">
-        <div id="fuSoldList"></div>
+      <div class="tk-stat">
+        <div class="tk-label">Approved</div>
+        <div class="tk-value green" id="fuStatApproved">0</div>
+        <div class="tk-sub" id="fuStatApprovedPct">— approval rate</div>
       </div>
-    </div>
-
-    <div class="fu-controls">
-      <div class="field">
-        <label>District Manager</label>
-        <select id="fuDmFilter" onchange="onFuDmChange()">
-          <option value="">All DMs</option>
-        </select>
+      <div class="tk-stat">
+        <div class="tk-label">Resubmit</div>
+        <div class="tk-value amber" id="fuStatResubmit">0</div>
+        <div class="tk-sub">need to resubmit</div>
       </div>
-      <div class="field">
-        <label>Store</label>
-        <select id="fuStoreFilter" onchange="renderFuLeads()">
-          <option value="">All Stores</option>
-        </select>
+      <div class="tk-stat">
+        <div class="tk-label">Denied</div>
+        <div class="tk-value red" id="fuStatDenied">0</div>
+        <div class="tk-sub">not eligible</div>
       </div>
-      <div class="field" style="flex:1;">
-        <label>Search</label>
-        <input class="search" type="search" id="fuSearch" placeholder="Customer name, phone, account #, rep..." oninput="renderFuLeads()">
-      </div>
-      <div class="field">
-        <label>&nbsp;</label>
-        <button class="icon-btn" onclick="clearFuFilters()" style="padding: 9px 14px;">Clear</button>
-      </div>
-      <div class="field">
-        <label>&nbsp;</label>
-        <button class="icon-btn" onclick="loadFuLeads()" style="padding: 9px 14px;">↻ Reload</button>
+      <div class="tk-stat">
+        <div class="tk-label">Sold 🔥</div>
+        <div class="tk-value green" id="fuStatSold">0</div>
+        <div class="tk-sub" id="fuStatSoldPct">— sold rate</div>
       </div>
     </div>
 
-    <div class="fu-view-tabs">
-      <button class="fu-view-tab active" data-view="active" onclick="setFuView('active')">Active Queue <span class="pill-num" id="fuTabActive">0</span></button>
-      <button class="fu-view-tab" data-view="due" onclick="setFuView('due')">Due Today <span class="pill-num" id="fuTabDue">0</span></button>
-      <button class="fu-view-tab" data-view="contacted" onclick="setFuView('contacted')">Contacted <span class="pill-num" id="fuTabContacted">0</span></button>
-      <button class="fu-view-tab" data-view="scheduled" onclick="setFuView('scheduled')">Scheduled Later <span class="pill-num" id="fuTabScheduled">0</span></button>
-      <button class="fu-view-tab" data-view="all" onclick="setFuView('all')">All Approved <span class="pill-num" id="fuTabAll">0</span></button>
+    <div class="tk-controls">
+      <input class="tk-search" type="search" id="fuSearch" placeholder="Search store, customer, account #, phone, rep..." oninput="renderFu()">
     </div>
 
-    <div class="fu-section">
-      <h2 id="fuListTitle">Active Queue <span class="fu-count-badge" id="fuListCount">0</span></h2>
-      <div class="fu-leads" id="fuLeadsList">
-        <div class="fu-empty">
-          <div class="spinner"></div>
-          <h2>Loading credit escalations...</h2>
-          <p>Fetching from Google Sheets</p>
-        </div>
+    <div class="tk-chips">
+      <button class="tk-chip active" data-bucket="all" onclick="setFuBucket('all')">All <span class="tk-chip-num" id="fuChipAll">0</span></button>
+      <button class="tk-chip" data-bucket="approved" onclick="setFuBucket('approved')">✅ Approved <span class="tk-chip-num" id="fuChipApproved">0</span></button>
+      <button class="tk-chip" data-bucket="resubmit" onclick="setFuBucket('resubmit')">🔁 Resubmit <span class="tk-chip-num" id="fuChipResubmit">0</span></button>
+      <button class="tk-chip" data-bucket="denied" onclick="setFuBucket('denied')">⛔ Denied <span class="tk-chip-num" id="fuChipDenied">0</span></button>
+      <button class="tk-chip" data-bucket="due" onclick="setFuBucket('due')">⚡ Follow-ups Due <span class="tk-chip-num" id="fuChipDue">0</span></button>
+      <button class="tk-chip" data-bucket="sold" onclick="setFuBucket('sold')">💰 Sold <span class="tk-chip-num" id="fuChipSold">0</span></button>
+    </div>
+
+    <div class="tk-section-label">DISTRICTS</div>
+    <div class="tk-list" id="fuDistrictList">
+      <div class="fu-empty">
+        <div class="spinner"></div>
+        <h2>Loading credit escalations...</h2>
+        <p>Fetching from Google Sheets</p>
       </div>
     </div>
   </div>
@@ -1427,49 +1595,58 @@ function renderStats() {
   const monthName = new Date().toLocaleDateString(undefined, { month: 'short' });
 
   const pwCard = pencilWhipped > 0
-    ? `<div class="stat-card pw-card">
-         <div class="stat-label">Prev. Closed - Still Open</div>
-         <div class="stat-value red">${pencilWhipped}</div>
+    ? `<div class="tk-stat" style="border-color: var(--red);">
+         <div class="tk-label">Prev. Closed - Still Open</div>
+         <div class="tk-value red">${pencilWhipped}</div>
+         <div class="tk-sub">closures Xfinity didn't honor</div>
        </div>`
     : '';
 
   const cncCard = cnc > 0
-    ? `<div class="stat-card">
-         <div class="stat-label">Can Not Close</div>
-         <div class="stat-value" style="color:var(--muted);">${cnc}</div>
+    ? `<div class="tk-stat">
+         <div class="tk-label">Can Not Close</div>
+         <div class="tk-value" style="color:var(--muted);">${cnc}</div>
+         <div class="tk-sub">flagged by managers</div>
        </div>`
     : '';
 
   document.getElementById('statsBar').innerHTML = `
-    <div class="stat-card">
-      <div class="stat-label">Total Orders</div>
-      <div class="stat-value">${totalDisplayed}</div>
+    <div class="tk-stat">
+      <div class="tk-label">Total Orders</div>
+      <div class="tk-value">${totalDisplayed}</div>
+      <div class="tk-sub">on today's list</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Still Open</div>
-      <div class="stat-value orange">${open}</div>
+    <div class="tk-stat">
+      <div class="tk-label">Still Open</div>
+      <div class="tk-value purple">${open}</div>
+      <div class="tk-sub">need attention</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Closed (${monthName} MTD)</div>
-      <div class="stat-value green">${closedMTD}</div>
+    <div class="tk-stat">
+      <div class="tk-label">Closed (${monthName} MTD)</div>
+      <div class="tk-value green">${closedMTD}</div>
+      <div class="tk-sub">month-to-date</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Pending Install</div>
-      <div class="stat-value yellow">${pending}</div>
+    <div class="tk-stat">
+      <div class="tk-label">Pending Install</div>
+      <div class="tk-value amber">${pending}</div>
+      <div class="tk-sub">scheduled out</div>
     </div>
     ${cncCard}
-    <div class="stat-card">
-      <div class="stat-label">30+ Days Open</div>
-      <div class="stat-value red">${aged}</div>
+    <div class="tk-stat">
+      <div class="tk-label">30+ Days Open</div>
+      <div class="tk-value red">${aged}</div>
+      <div class="tk-sub">aging out</div>
     </div>
     ${pwCard}
-    <div class="stat-card">
-      <div class="stat-label">Close Rate (${monthName})</div>
-      <div class="stat-value">${closeRate}%</div>
+    <div class="tk-stat">
+      <div class="tk-label">Close Rate (${monthName})</div>
+      <div class="tk-value">${closeRate}%</div>
+      <div class="tk-sub">closed ÷ total MTD</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Data As Of</div>
-      <div class="stat-value" style="font-size:13px;font-weight:500;color:var(--muted);">${fmt}</div>
+    <div class="tk-stat">
+      <div class="tk-label">Data As Of</div>
+      <div class="tk-value" style="font-size:14px;font-weight:600;color:var(--muted);">${fmt}</div>
+      <div class="tk-sub">last upload</div>
     </div>
   `;
 }
@@ -1478,8 +1655,12 @@ function renderGroups() {
   const container = document.getElementById('groupsContainer');
   const orders = visibleOrders();
 
+  // Update the section label to match the current grouping
+  const lbl = document.getElementById('ordersSectionLabel');
+  if (lbl) lbl.textContent = state.groupBy === 'DM' ? 'DISTRICTS' : 'STORES';
+
   if (orders.length === 0) {
-    container.innerHTML = `<div class="center-msg"><h2>No orders match your filters</h2><p>Try clearing the search or adjusting filters above.</p></div>`;
+    container.innerHTML = `<div class="fu-empty"><h2>No orders match your filters</h2><p>Try clearing the search or adjusting filters above.</p></div>`;
     return;
   }
 
@@ -1492,20 +1673,20 @@ function renderGroups() {
     const p = o[primaryKey] || '(Unassigned)';
     const s = o[secondaryKey] || '(Unassigned)';
     if (!groups[p]) groups[p] = { total: 0, open: 0, closed: 0, pending: 0, cnc: 0, cancelled: 0, aged: 0, pw: 0, sub: {} };
-    if (!groups[p].sub[s]) groups[p].sub[s] = { total: 0, open: 0, items: [] };
+    if (!groups[p].sub[s]) groups[p].sub[s] = { total: 0, open: 0, closed: 0, pending: 0, cnc: 0, aged: 0, pw: 0, items: [] };
 
     const status = getStatus(o.workOrder);
     groups[p].total++;
     groups[p].sub[s].total++;
     groups[p].sub[s].items.push(o);
 
-    if (status === 'Open') { groups[p].open++; groups[p].sub[s].open++; }
-    else if (status === 'Closed') groups[p].closed++;
-    else if (status === 'Pending Install') groups[p].pending++;
-    else if (status === 'Can Not Close') groups[p].cnc++;
-    else if (status === 'Cancelled Order') groups[p].cancelled++;
-    if (status === 'Open' && Number(o.age) >= 30) groups[p].aged++;
-    if (isPencilWhipped(o.workOrder)) groups[p].pw++;
+    if (status === 'Open')                  { groups[p].open++;     groups[p].sub[s].open++; }
+    else if (status === 'Closed')           { groups[p].closed++;   groups[p].sub[s].closed++; }
+    else if (status === 'Pending Install')  { groups[p].pending++;  groups[p].sub[s].pending++; }
+    else if (status === 'Can Not Close')    { groups[p].cnc++;      groups[p].sub[s].cnc++; }
+    else if (status === 'Cancelled Order')  groups[p].cancelled++;
+    if (status === 'Open' && Number(o.age) >= 30) { groups[p].aged++; groups[p].sub[s].aged++; }
+    if (isPencilWhipped(o.workOrder))             { groups[p].pw++;   groups[p].sub[s].pw++; }
   }
 
   // sort groups by open count desc, then total desc
@@ -1519,129 +1700,143 @@ function renderGroups() {
     const g = groups[key];
     const expanded = state.expandedGroups.has(key);
 
+    // Build the inline metrics row
+    const closeRate = (g.closed + g.total) > 0 ? Math.round((g.closed / (g.closed + g.total)) * 100) : 0;
+
+    // Build store sub-rows
     let subHtml = '';
     const subKeys = Object.keys(g.sub).sort((a, b) => g.sub[b].open - g.sub[a].open);
     for (const sk of subKeys) {
       const sub = g.sub[sk];
       const subExpKey = `${key}::${sk}`;
       const subExpanded = state.expandedSubgroups.has(subExpKey);
-      // sort items by age desc
       sub.items.sort((a, b) => (Number(b.age) || 0) - (Number(a.age) || 0));
 
+      // Order rows for this store (rendered when sub is expanded)
       let rowsHtml = '';
-      for (const o of sub.items) {
-        const status = getStatus(o.workOrder);
-        const pencilWhipped = isPencilWhipped(o.workOrder);
-        const installPassed = isPastInstallDate(o.workOrder);
-        const cl = state.closures[o.workOrder];
-        // Strikethrough on Closed, Can Not Close, Pending Install (sticky
-        // through the scheduled install date), and Cancelled Order. Pending
-        // past its date has already been reset to Open by getStatus.
-        const closedRow = (status === 'Closed' || status === 'Can Not Close' || status === 'Pending Install' || status === 'Cancelled Order') ? 'closed' : '';
-        const pwClass = (pencilWhipped || installPassed) ? 'pencil-whipped' : '';
-        const ageColor = ageColorClass(o.age);
-        const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
-        let pwBadge = '';
-        if (pencilWhipped) {
-          pwBadge = `<div class="pw-badge">Previously Marked Closed - Still Open</div>`;
-        } else if (installPassed) {
-          pwBadge = `<div class="pw-badge">Install Date Passed - Still Open</div>`;
-        } else if (status === 'Pending Install' && cl && cl.pendingUntil) {
-          const dt = new Date(cl.pendingUntil + 'T00:00:00');
-          pwBadge = `<div class="install-badge">Install scheduled: ${dt.toLocaleDateString()}</div>`;
+      if (subExpanded) {
+        for (const o of sub.items) {
+          const status = getStatus(o.workOrder);
+          const pencilWhipped = isPencilWhipped(o.workOrder);
+          const installPassed = isPastInstallDate(o.workOrder);
+          const cl = state.closures[o.workOrder];
+          const closedRow = (status === 'Closed' || status === 'Can Not Close' || status === 'Pending Install' || status === 'Cancelled Order') ? 'closed' : '';
+          const pwClass = (pencilWhipped || installPassed) ? 'pencil-whipped' : '';
+          const ageColor = ageColorClass(o.age);
+          const dateStr = o.orderDate ? new Date(o.orderDate).toLocaleDateString() : '—';
+          let pwBadge = '';
+          if (pencilWhipped) {
+            pwBadge = `<div class="pw-badge">Previously Marked Closed - Still Open</div>`;
+          } else if (installPassed) {
+            pwBadge = `<div class="pw-badge">Install Date Passed - Still Open</div>`;
+          } else if (status === 'Pending Install' && cl && cl.pendingUntil) {
+            const dt = new Date(cl.pendingUntil + 'T00:00:00');
+            pwBadge = `<div class="install-badge">Install scheduled: ${dt.toLocaleDateString()}</div>`;
+          }
+          rowsHtml += `
+            <tr class="${closedRow} ${pwClass}">
+              <td class="age-cell ${ageColor}">${o.age || 0}</td>
+              <td class="meta-cell">${dateStr}</td>
+              <td class="acct">${escapeHtml(o.accountNumber || o.customerId || '')}</td>
+              <td class="wo">${o.workOrder || ''}</td>
+              <td>${escapeHtml(o.customerName || '')}${pwBadge}</td>
+              <td class="hide-mobile product">${escapeHtml(o.product || '')}</td>
+              <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
+              <td class="hide-mobile colu-cell">${escapeHtml(o.colU || (o.age != null ? String(o.age) : ''))}</td>
+              <td class="status-cell">
+                <select class="status-select s-${status.replace(/ /g, '')}" onchange="onStatusChange('${o.workOrder}', this.value)">
+                  <option value="Open" ${status === 'Open' ? 'selected' : ''}>Open</option>
+                  <option value="Closed" ${status === 'Closed' ? 'selected' : ''}>Closed</option>
+                  <option value="Pending Install" ${status === 'Pending Install' ? 'selected' : ''}>Pending Install</option>
+                  <option value="Can Not Close" ${status === 'Can Not Close' ? 'selected' : ''}>Can Not Close</option>
+                  <option value="Cancelled Order" ${status === 'Cancelled Order' ? 'selected' : ''}>Cancelled Order</option>
+                </select>
+              </td>
+            </tr>
+          `;
         }
-        rowsHtml += `
-          <tr class="${closedRow} ${pwClass}">
-            <td class="age-cell ${ageColor}">${o.age || 0}</td>
-            <td class="meta-cell">${dateStr}</td>
-            <td class="acct">${escapeHtml(o.accountNumber || o.customerId || '')}</td>
-            <td class="wo">${o.workOrder || ''}</td>
-            <td>${escapeHtml(o.customerName || '')}${pwBadge}</td>
-            <td class="hide-mobile product">${escapeHtml(o.product || '')}</td>
-            <td class="hide-mobile meta-cell">${escapeHtml(o.repName || '')}</td>
-            <td class="hide-mobile colu-cell">${escapeHtml(o.colU || (o.age != null ? String(o.age) : ''))}</td>
-            <td class="status-cell">
-              <select class="status-select s-${status.replace(/ /g, '')}" onchange="onStatusChange('${o.workOrder}', this.value)">
-                <option value="Open" ${status === 'Open' ? 'selected' : ''}>Open</option>
-                <option value="Closed" ${status === 'Closed' ? 'selected' : ''}>Closed</option>
-                <option value="Pending Install" ${status === 'Pending Install' ? 'selected' : ''}>Pending Install</option>
-                <option value="Can Not Close" ${status === 'Can Not Close' ? 'selected' : ''}>Can Not Close</option>
-                <option value="Cancelled Order" ${status === 'Cancelled Order' ? 'selected' : ''}>Cancelled Order</option>
-              </select>
-            </td>
-          </tr>
-        `;
       }
 
+      const subPwMetric = sub.pw > 0
+        ? `<div class="tk-metric"><div class="tk-num red">${sub.pw}</div><div class="tk-mlabel">Prev Closed</div></div>`
+        : '';
+
       subHtml += `
-        <div class="substore ${subExpanded ? 'expanded' : ''}" data-key="${escapeAttr(subExpKey)}">
-          <div class="substore-header" onclick="toggleSubgroup('${escapeAttr(subExpKey)}')">
-            <div class="substore-title">
-              <span class="chevron">▶</span>
-              ${escapeHtml(sk)}
+        <div class="tk-substore ${subExpanded ? 'expanded' : ''}">
+          <div class="tk-substore-header" onclick="toggleSubgroup('${escapeAttr(subExpKey)}')">
+            <div class="tk-row-info">
+              <div class="tk-row-name">${escapeHtml(sk)}</div>
             </div>
-            <div class="group-stats">
-              <span class="pill open">${sub.open} open</span>
-              <span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted);">${sub.total} total</span>
+            <div class="tk-row-metrics">
+              <div class="tk-metric"><div class="tk-num">${sub.total}</div><div class="tk-mlabel">Total</div></div>
+              <div class="tk-metric"><div class="tk-num purple ${sub.open ? '' : 'zero'}">${sub.open}</div><div class="tk-mlabel">Open</div></div>
+              <div class="tk-metric"><div class="tk-num green ${sub.closed ? '' : 'zero'}">${sub.closed}</div><div class="tk-mlabel">Closed</div></div>
+              <div class="tk-metric"><div class="tk-num amber ${sub.pending ? '' : 'zero'}">${sub.pending}</div><div class="tk-mlabel">Pending</div></div>
+              <div class="tk-metric"><div class="tk-num red ${sub.aged ? '' : 'zero'}">${sub.aged}</div><div class="tk-mlabel">Aged 30+</div></div>
+              ${subPwMetric}
             </div>
+            <span class="tk-arrow">›</span>
           </div>
-          <div class="substore-body">
-            <table class="order-table">
-              <thead>
-                <tr>
-                  <th>Age</th>
-                  <th>Order Date</th>
-                  <th>Account #</th>
-                  <th>Work Order</th>
-                  <th>Customer</th>
-                  <th class="hide-mobile">Product</th>
-                  <th class="hide-mobile">Rep</th>
-                  <th class="hide-mobile">Days Open</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>${rowsHtml}</tbody>
-            </table>
+          <div class="tk-substore-body">
+            ${subExpanded ? `
+              <table class="order-table">
+                <thead>
+                  <tr>
+                    <th>Age</th>
+                    <th>Order Date</th>
+                    <th>Account #</th>
+                    <th>Work Order</th>
+                    <th>Customer</th>
+                    <th class="hide-mobile">Product</th>
+                    <th class="hide-mobile">Rep</th>
+                    <th class="hide-mobile">Days Open</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+              </table>` : ''}
           </div>
         </div>
       `;
     }
 
-    const agedPill = g.aged > 0 ? `<span class="pill aged">${g.aged} aged 30+</span>` : '';
-    const pendingPill = g.pending > 0 ? `<span class="pill pending">${g.pending} pending</span>` : '';
-    const cncPill = g.cnc > 0 ? `<span class="pill cnc-pill">${g.cnc} can not close</span>` : '';
-    const pwPill = g.pw > 0 ? `<span class="pill pw-pill">${g.pw} prev. closed - still open</span>` : '';
-
-    // In Store view, label each store with its DM (small tag in the header).
-    // Each store typically maps to exactly one DM, so this just reads the
-    // unique secondary keys.
-    let dmTag = '';
+    // In Store view, show DM as the meta line; in DM view show store count.
+    let metaLine;
     if (state.groupBy === 'Store') {
       const dms = Object.keys(g.sub).filter(d => d && d !== '(Unassigned)');
-      if (dms.length > 0) {
-        dmTag = `<span class="dm-tag">DM: ${escapeHtml(dms.join(', '))}</span>`;
-      }
+      metaLine = dms.length > 0 ? `DM: ${escapeHtml(dms.join(', '))}` : '';
+    } else {
+      const storeCount = subKeys.length;
+      metaLine = `${storeCount} ${storeCount === 1 ? 'store' : 'stores'}`;
     }
 
+    const pwMetric = g.pw > 0
+      ? `<div class="tk-metric"><div class="tk-num red">${g.pw}</div><div class="tk-mlabel">Prev Closed</div></div>`
+      : '';
+    const cncMetric = g.cnc > 0
+      ? `<div class="tk-metric"><div class="tk-num muted">${g.cnc}</div><div class="tk-mlabel">CNC</div></div>`
+      : '';
+
     html += `
-      <div class="group ${expanded ? 'expanded' : ''}" data-key="${escapeAttr(key)}">
-        <div class="group-header" onclick="toggleGroup('${escapeAttr(key)}')">
-          <div class="group-title">
-            <span class="chevron">▶</span>
-            ${escapeHtml(key)}
-            ${dmTag}
+      <div class="tk-row ${expanded ? 'expanded' : ''}">
+        <div class="tk-row-header" onclick="toggleGroup('${escapeAttr(key)}')">
+          <div class="tk-row-info">
+            <div class="tk-row-name">${escapeHtml(key)}</div>
+            <div class="tk-row-meta">${metaLine}</div>
           </div>
-          <div class="group-stats">
-            <span class="pill open">${g.open} open</span>
-            <span class="pill closed">${g.closed} closed</span>
-            ${pendingPill}
-            ${cncPill}
-            ${pwPill}
-            ${agedPill}
-            <span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted);">${g.total} total</span>
+          <div class="tk-row-metrics">
+            <div class="tk-metric"><div class="tk-num">${g.total}</div><div class="tk-mlabel">Total</div></div>
+            <div class="tk-metric"><div class="tk-num purple ${g.open ? '' : 'zero'}">${g.open}</div><div class="tk-mlabel">Open</div></div>
+            <div class="tk-metric"><div class="tk-num green ${g.closed ? '' : 'zero'}">${g.closed}</div><div class="tk-mlabel">Closed</div></div>
+            <div class="tk-metric"><div class="tk-num amber ${g.pending ? '' : 'zero'}">${g.pending}</div><div class="tk-mlabel">Pending</div></div>
+            <div class="tk-metric"><div class="tk-num red ${g.aged ? '' : 'zero'}">${g.aged}</div><div class="tk-mlabel">Aged 30+</div></div>
+            ${pwMetric}
+            ${cncMetric}
+            <div class="tk-metric"><div class="tk-num">${closeRate}%</div><div class="tk-mlabel">Close %</div></div>
           </div>
+          <span class="tk-arrow">›</span>
         </div>
-        <div class="group-body">${subHtml}</div>
+        <div class="tk-row-body">${subHtml}</div>
       </div>
     `;
   }
@@ -1792,18 +1987,28 @@ Object.entries(FU_DM_TO_STORES).forEach(([dm, stores]) => stores.forEach(s => FU
 let fuState = {
   initialized: false,
   allLeads: [],
-  approvedLeads: [],
   followState: loadFuState(),
-  view: 'active',
-  dm: '',
-  store: '',
+  bucket: 'all',
   search: '',
+  expandedDms: new Set(),
+  expandedStores: new Set(),
   pollTimer: null
 };
 
+// Categorize a lead based on the credit team's response text.
+// Per Jeff:
+//   "Resubmit"    → text contains the word "Resubmit"
+//   "Approved"    → text contains "can confirm the customer is eligible"
+//   "Denied"      → anything else (including blank pending responses)
+function classifyFuLead(l) {
+  const txt = stripHtml(l.creditTeamResponse || '').toLowerCase();
+  if (!txt) return 'pending';                                            // not yet replied
+  if (/\bresubmit\b/i.test(txt)) return 'resubmit';
+  if (txt.includes('can confirm the customer is eligible')) return 'approved';
+  return 'denied';
+}
+
 function initFollowUp() {
-  populateFuDmFilter();
-  populateFuStoreFilter('');
   loadFuLeads();
   // gentle background refresh while the tab is open
   clearInterval(fuState.pollTimer);
@@ -1859,161 +2064,252 @@ function parseFuCSV(text) {
     });
 }
 
+
 function setFuLeads(leads) {
+  // Latest first
   fuState.allLeads = leads.slice().sort((a, b) =>
     new Date(b.respondedAt || b.submittedAt || 0) - new Date(a.respondedAt || a.submittedAt || 0)
   );
-  fuState.approvedLeads = fuState.allLeads.filter(l => (l.creditStatus || '').toLowerCase() === 'approved');
+  // Tag every lead with its computed bucket once so we don't re-parse on every render.
+  fuState.allLeads.forEach(l => { l._bucket = classifyFuLead(l); });
   renderFu();
 }
 
 function renderFu() {
+  fuState.search = (document.getElementById('fuSearch')?.value || '').trim().toLowerCase();
   renderFuStats();
-  renderFuViewTabs();
-  renderFuSold();
-  renderFuLeads();
+  renderFuChips();
+  renderFuList();
+}
+
+// Lead is "approved-for-followup" only if classified as approved AND not yet sold.
+function isFuApprovedForFollowUp(l) {
+  return l._bucket === 'approved' && !((fuState.followState[l.id] || {}).sold);
+}
+function isFuSold(l) { return !!(fuState.followState[l.id] || {}).sold; }
+function isFuDue(l) {
+  const s = fuState.followState[l.id] || {};
+  if (s.sold) return false;
+  if (l._bucket !== 'approved') return false;
+  return s.status === 'follow-up' && s.followUpDate && s.followUpDate <= todayISO();
 }
 
 function renderFuStats() {
-  const submitted = fuState.allLeads.length;
-  const approved = fuState.approvedLeads.length;
-  const denied = fuState.allLeads.filter(l => (l.creditStatus || '').toLowerCase() === 'denied').length;
-  const sold = fuState.approvedLeads.filter(l => (fuState.followState[l.id] || {}).sold).length;
-  const today = todayISO();
-  const due = fuState.approvedLeads.filter(l => {
-    const s = fuState.followState[l.id] || {};
-    if (s.sold) return false;
-    return s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today;
-  }).length;
+  const counts = { submitted: 0, approved: 0, resubmit: 0, denied: 0, sold: 0 };
+  for (const l of fuState.allLeads) {
+    counts.submitted++;
+    if (l._bucket === 'approved') counts.approved++;
+    else if (l._bucket === 'resubmit') counts.resubmit++;
+    else if (l._bucket === 'denied') counts.denied++;
+    if (isFuSold(l)) counts.sold++;
+  }
+  const approvalRate = counts.submitted ? Math.round((counts.approved / counts.submitted) * 100) : 0;
+  const soldRate = counts.approved ? Math.round((counts.sold / counts.approved) * 100) : 0;
 
-  document.getElementById('fuStatSubmitted').textContent = submitted;
-  document.getElementById('fuStatApproved').textContent = approved - sold;
-  document.getElementById('fuStatDenied').textContent = denied;
-  document.getElementById('fuStatDue').textContent = due;
-  document.getElementById('fuStatSold').textContent = sold;
+  document.getElementById('fuStatSubmitted').textContent = counts.submitted;
+  document.getElementById('fuStatApproved').textContent = counts.approved;
+  document.getElementById('fuStatApprovedPct').textContent = `${approvalRate}% approval rate`;
+  document.getElementById('fuStatResubmit').textContent = counts.resubmit;
+  document.getElementById('fuStatDenied').textContent = counts.denied;
+  document.getElementById('fuStatSold').textContent = counts.sold;
+  document.getElementById('fuStatSoldPct').textContent = `${soldRate}% of approved sold`;
 }
 
-function renderFuViewTabs() {
+function renderFuChips() {
   const today = todayISO();
-  const counts = { active: 0, due: 0, contacted: 0, scheduled: 0, all: 0 };
-  fuState.approvedLeads.forEach(l => {
-    const s = fuState.followState[l.id] || {};
-    if (s.sold) return;
-    counts.all++;
-    if (s.status === 'follow-up' && s.followUpDate && s.followUpDate > today) {
-      counts.scheduled++;
-    } else {
-      counts.active++;
+  const c = { all: fuState.allLeads.length, approved: 0, resubmit: 0, denied: 0, due: 0, sold: 0 };
+  for (const l of fuState.allLeads) {
+    if (l._bucket === 'approved') c.approved++;
+    if (l._bucket === 'resubmit') c.resubmit++;
+    if (l._bucket === 'denied') c.denied++;
+    if (isFuDue(l)) c.due++;
+    if (isFuSold(l)) c.sold++;
+  }
+  document.getElementById('fuChipAll').textContent = c.all;
+  document.getElementById('fuChipApproved').textContent = c.approved;
+  document.getElementById('fuChipResubmit').textContent = c.resubmit;
+  document.getElementById('fuChipDenied').textContent = c.denied;
+  document.getElementById('fuChipDue').textContent = c.due;
+  document.getElementById('fuChipSold').textContent = c.sold;
+}
+
+// Filter the global lead list by current bucket + search.
+function fuFilteredLeads() {
+  return fuState.allLeads.filter(l => {
+    if (fuState.bucket === 'approved' && l._bucket !== 'approved') return false;
+    if (fuState.bucket === 'resubmit' && l._bucket !== 'resubmit') return false;
+    if (fuState.bucket === 'denied' && l._bucket !== 'denied') return false;
+    if (fuState.bucket === 'due' && !isFuDue(l)) return false;
+    if (fuState.bucket === 'sold' && !isFuSold(l)) return false;
+    if (fuState.search) {
+      const hay = `${l.customerName || ''} ${l.phone || ''} ${l.accountNumber || ''} ${l.rep || ''} ${l.store || ''}`.toLowerCase();
+      if (!hay.includes(fuState.search)) return false;
     }
-    if (s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today) counts.due++;
-    if (s.status === 'contacted') counts.contacted++;
-  });
-  document.getElementById('fuTabActive').textContent = counts.active;
-  document.getElementById('fuTabDue').textContent = counts.due;
-  document.getElementById('fuTabContacted').textContent = counts.contacted;
-  document.getElementById('fuTabScheduled').textContent = counts.scheduled;
-  document.getElementById('fuTabAll').textContent = counts.all;
-}
-
-function renderFuSold() {
-  const sold = fuState.approvedLeads
-    .filter(l => (fuState.followState[l.id] || {}).sold)
-    .sort((a, b) => (fuState.followState[b.id].soldAt || '').localeCompare(fuState.followState[a.id].soldAt || ''));
-  document.getElementById('fuSoldCount').textContent = sold.length;
-  const list = document.getElementById('fuSoldList');
-  if (sold.length === 0) {
-    list.innerHTML = '<div style="color:var(--muted);padding:18px 0;text-align:center;font-size:13px;">No sold deals yet — go close some! 🔥</div>';
-    return;
-  }
-  list.innerHTML = sold.map(l => {
-    const s = fuState.followState[l.id];
-    return `
-      <div class="fu-sold-row">
-        <div><strong>${escapeHtml(l.customerName)}</strong></div>
-        <div class="mono" style="font-family:'SF Mono',Consolas,monospace;color:var(--muted);">${escapeHtml(l.phone || '—')}</div>
-        <div>${escapeHtml(l.store || '—')}</div>
-        <div style="color:var(--muted);font-size:12px;">Sold ${formatFuDate(s.soldAt)}</div>
-        <button class="undo" onclick="undoFuSold('${escapeAttr(l.id)}')">Undo</button>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderFuLeads() {
-  const today = todayISO();
-  fuState.dm = document.getElementById('fuDmFilter').value;
-  fuState.store = document.getElementById('fuStoreFilter').value;
-  fuState.search = (document.getElementById('fuSearch').value || '').trim().toLowerCase();
-
-  let leads = fuState.approvedLeads.filter(l => !(fuState.followState[l.id] || {}).sold);
-
-  if (fuState.dm) {
-    const stores = new Set(FU_DM_TO_STORES[fuState.dm] || []);
-    leads = leads.filter(l => stores.has(l.store));
-  }
-  if (fuState.store) leads = leads.filter(l => l.store === fuState.store);
-  if (fuState.search) {
-    leads = leads.filter(l =>
-      (l.customerName || '').toLowerCase().includes(fuState.search) ||
-      (l.phone || '').toLowerCase().includes(fuState.search) ||
-      (l.accountNumber || '').toLowerCase().includes(fuState.search) ||
-      (l.rep || '').toLowerCase().includes(fuState.search)
-    );
-  }
-
-  const titles = {
-    active: 'Active Queue',
-    due: 'Follow-ups Due Today',
-    contacted: 'Customer Contacted',
-    scheduled: 'Scheduled Follow-ups',
-    all: 'All Approved Leads'
-  };
-
-  leads = leads.filter(l => {
-    const s = fuState.followState[l.id] || {};
-    const scheduled = s.status === 'follow-up' && s.followUpDate && s.followUpDate > today;
-    const due = s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today;
-    if (fuState.view === 'active') return !scheduled;
-    if (fuState.view === 'due') return due;
-    if (fuState.view === 'contacted') return s.status === 'contacted';
-    if (fuState.view === 'scheduled') return scheduled;
-    if (fuState.view === 'all') return true;
     return true;
   });
-
-  document.getElementById('fuListTitle').innerHTML = titles[fuState.view] + ' <span class="fu-count-badge" id="fuListCount">' + leads.length + '</span>';
-
-  const container = document.getElementById('fuLeadsList');
-  if (leads.length === 0) {
-    container.innerHTML = `<div class="fu-empty"><h2>Nothing here</h2><p>${fuState.view === 'all' ? 'No approved leads match your filters.' : 'No leads in this view right now.'}</p></div>`;
-    return;
-  }
-  container.innerHTML = leads.map(renderFuCard).join('');
 }
 
-function renderFuCard(l) {
+function renderFuList() {
+  const container = document.getElementById('fuDistrictList');
+  const filtered = fuFilteredLeads();
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="fu-empty"><h2>No leads match your filters</h2><p>Try a different bucket or clear the search.</p></div>`;
+    return;
+  }
+
+  // Build per-DM aggregates (always over filtered set)
+  const dms = {};
+  for (const l of filtered) {
+    const dm = FU_STORE_TO_DM[l.store] || '(Unassigned)';
+    if (!dms[dm]) dms[dm] = { stores: {}, totals: { submitted: 0, approved: 0, resubmit: 0, denied: 0, sold: 0 } };
+    if (!dms[dm].stores[l.store]) dms[dm].stores[l.store] = { items: [], totals: { submitted: 0, approved: 0, resubmit: 0, denied: 0, sold: 0 } };
+    dms[dm].totals.submitted++; dms[dm].stores[l.store].totals.submitted++;
+    if (l._bucket === 'approved')  { dms[dm].totals.approved++;  dms[dm].stores[l.store].totals.approved++; }
+    if (l._bucket === 'resubmit')  { dms[dm].totals.resubmit++;  dms[dm].stores[l.store].totals.resubmit++; }
+    if (l._bucket === 'denied')    { dms[dm].totals.denied++;    dms[dm].stores[l.store].totals.denied++; }
+    if (isFuSold(l))               { dms[dm].totals.sold++;      dms[dm].stores[l.store].totals.sold++; }
+    dms[dm].stores[l.store].items.push(l);
+  }
+
+  // Sort DMs by submitted desc
+  const dmKeys = Object.keys(dms).sort((a, b) => dms[b].totals.submitted - dms[a].totals.submitted);
+
+  let html = '';
+  for (const dmName of dmKeys) {
+    const d = dms[dmName];
+    const expanded = fuState.expandedDms.has(dmName);
+    const storeCount = Object.keys(d.stores).length;
+    const apvPct = d.totals.submitted ? Math.round((d.totals.approved / d.totals.submitted) * 100) : 0;
+    const soldPct = d.totals.approved ? Math.round((d.totals.sold / d.totals.approved) * 100) : 0;
+
+    // Sub-rows for stores under this DM
+    let storesHtml = '';
+    const storeKeys = Object.keys(d.stores).sort((a, b) => d.stores[b].totals.submitted - d.stores[a].totals.submitted);
+    for (const storeName of storeKeys) {
+      const s = d.stores[storeName];
+      const subKey = `${dmName}::${storeName}`;
+      const subExpanded = fuState.expandedStores.has(subKey);
+      const sApv = s.totals.submitted ? Math.round((s.totals.approved / s.totals.submitted) * 100) : 0;
+      const sSold = s.totals.approved ? Math.round((s.totals.sold / s.totals.approved) * 100) : 0;
+
+      // Lead cards (rendered when store is expanded)
+      const leadsHtml = subExpanded ? s.items.map(renderFuLeadCard).join('') : '';
+
+      storesHtml += `
+        <div class="tk-substore ${subExpanded ? 'expanded' : ''}">
+          <div class="tk-substore-header" onclick="toggleFuStore('${escapeAttr(subKey)}')">
+            <div class="tk-row-info">
+              <div class="tk-row-name">${escapeHtml(storeName)}</div>
+            </div>
+            <div class="tk-row-metrics">
+              <div class="tk-metric"><div class="tk-num">${s.totals.submitted}</div><div class="tk-mlabel">Submitted</div></div>
+              <div class="tk-metric"><div class="tk-num green ${s.totals.approved ? '' : 'zero'}">${s.totals.approved}</div><div class="tk-mlabel">Approved</div></div>
+              <div class="tk-metric"><div class="tk-num amber ${s.totals.resubmit ? '' : 'zero'}">${s.totals.resubmit}</div><div class="tk-mlabel">Resubmit</div></div>
+              <div class="tk-metric"><div class="tk-num red ${s.totals.denied ? '' : 'zero'}">${s.totals.denied}</div><div class="tk-mlabel">Denied</div></div>
+              <div class="tk-metric"><div class="tk-num purple">${sApv}%</div><div class="tk-mlabel">Apv %</div></div>
+              <div class="tk-metric"><div class="tk-num green ${s.totals.sold ? '' : 'zero'}">${s.totals.sold}</div><div class="tk-mlabel">Sold</div></div>
+              <div class="tk-metric"><div class="tk-num green">${sSold}%</div><div class="tk-mlabel">Sold %</div></div>
+            </div>
+            <span class="tk-arrow">›</span>
+          </div>
+          <div class="tk-substore-body">
+            ${leadsHtml || '<div style="color:var(--muted);padding:14px 0;font-size:13px;">No leads in this view.</div>'}
+          </div>
+        </div>
+      `;
+    }
+
+    html += `
+      <div class="tk-row ${expanded ? 'expanded' : ''}">
+        <div class="tk-row-header" onclick="toggleFuDm('${escapeAttr(dmName)}')">
+          <div class="tk-row-info">
+            <div class="tk-row-name">${escapeHtml(dmName)}</div>
+            <div class="tk-row-meta">${storeCount} ${storeCount === 1 ? 'store' : 'stores'}</div>
+          </div>
+          <div class="tk-row-metrics">
+            <div class="tk-metric"><div class="tk-num">${d.totals.submitted}</div><div class="tk-mlabel">Submitted</div></div>
+            <div class="tk-metric"><div class="tk-num green ${d.totals.approved ? '' : 'zero'}">${d.totals.approved}</div><div class="tk-mlabel">Approved</div></div>
+            <div class="tk-metric"><div class="tk-num amber ${d.totals.resubmit ? '' : 'zero'}">${d.totals.resubmit}</div><div class="tk-mlabel">Resubmit</div></div>
+            <div class="tk-metric"><div class="tk-num red ${d.totals.denied ? '' : 'zero'}">${d.totals.denied}</div><div class="tk-mlabel">Denied</div></div>
+            <div class="tk-metric"><div class="tk-num purple">${apvPct}%</div><div class="tk-mlabel">Apv %</div></div>
+            <div class="tk-metric"><div class="tk-num green ${d.totals.sold ? '' : 'zero'}">${d.totals.sold}</div><div class="tk-mlabel">Sold</div></div>
+            <div class="tk-metric"><div class="tk-num green">${soldPct}%</div><div class="tk-mlabel">Sold %</div></div>
+          </div>
+          <span class="tk-arrow">›</span>
+        </div>
+        <div class="tk-row-body">${storesHtml}</div>
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+}
+
+// Detailed lead card shown when a store row is expanded.
+function renderFuLeadCard(l) {
   const s = fuState.followState[l.id] || {};
-  const dm = FU_STORE_TO_DM[l.store] || '—';
   const today = todayISO();
-  const isDue = s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today;
+  const isDue = isFuDue(l);
+  const isApproved = l._bucket === 'approved';
   const cardClass = ['fu-card', isDue ? 'due' : '', s.status === 'contacted' ? 'contacted' : ''].filter(Boolean).join(' ');
-  const statusCls = s.status === 'contacted' ? 'is-contacted' : (s.status === 'follow-up' ? 'is-followup' : (s.method ? 'is-set' : ''));
   const methodCls = s.method ? 'is-set' : '';
+  const statusCls = s.status === 'contacted' ? 'is-contacted' : (s.status === 'follow-up' ? 'is-followup' : (s.method ? 'is-set' : ''));
   const soldCls = s.sold ? 'is-sold' : '';
   const showDate = s.status === 'follow-up';
   const respText = stripHtml(l.creditTeamResponse || '(no response paragraph captured)');
 
-  let badges = '';
-  if (isDue) badges += '<span class="fu-badge due">⚡ Follow-up due</span> ';
-  if (s.status === 'contacted') badges += '<span class="fu-badge contacted">✓ Contacted</span>';
+  let badge = '';
+  if (l._bucket === 'approved') badge = '<span class="fu-badge contacted">✅ Approved</span>';
+  else if (l._bucket === 'resubmit') badge = `<span class="fu-badge" style="background:rgba(255,170,0,0.18);color:#FFD27A;border:1px solid var(--yellow);">🔁 Resubmit</span>`;
+  else if (l._bucket === 'denied') badge = `<span class="fu-badge" style="background:rgba(230,0,77,0.18);color:#FBA5BC;border:1px solid var(--red);">⛔ Denied</span>`;
+
+  let dueBadge = '';
+  if (isDue) dueBadge = ' <span class="fu-badge due">⚡ Follow-up due</span>';
+  if (s.status === 'contacted') dueBadge += ' <span class="fu-badge contacted">✓ Contacted</span>';
+
+  // Only show follow-up dropdowns for approved leads (Jeff: "I only want to follow up with leads that are approved")
+  const actionsHtml = isApproved ? `
+    <div class="fu-actions">
+      <div class="fu-action-group">
+        <label>Method</label>
+        <select class="${methodCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','method',this.value)">
+          <option value="">—</option>
+          <option value="Call" ${s.method === 'Call' ? 'selected' : ''}>📞 Call</option>
+          <option value="Text" ${s.method === 'Text' ? 'selected' : ''}>💬 Text</option>
+          <option value="Email" ${s.method === 'Email' ? 'selected' : ''}>✉️ Email</option>
+        </select>
+      </div>
+      <div class="fu-action-group">
+        <label>Status</label>
+        <select class="${statusCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','status',this.value)">
+          <option value="">—</option>
+          <option value="contacted" ${s.status === 'contacted' ? 'selected' : ''}>Customer Contacted</option>
+          <option value="follow-up" ${s.status === 'follow-up' ? 'selected' : ''}>Follow Up Needed</option>
+        </select>
+      </div>
+      <div class="fu-action-group followup-date" style="${showDate ? '' : 'opacity:0.45;'}">
+        <label>Follow-up Date</label>
+        <input type="date" value="${s.followUpDate || ''}" ${showDate ? '' : 'disabled'} onchange="onFuFieldChange('${escapeAttr(l.id)}','followUpDate',this.value)">
+      </div>
+      <div class="fu-action-group">
+        <label>Outcome</label>
+        <select class="${soldCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','sold',this.value)">
+          <option value="">—</option>
+          <option value="sold" ${s.sold ? 'selected' : ''}>💰 Sold</option>
+        </select>
+      </div>
+      <div class="fu-action-group" style="min-width:140px;">
+        <label>&nbsp;</label>
+        <div class="fu-save ${s.updatedAt ? 'saved' : ''}">${s.updatedAt ? 'Saved ' + formatFuRelative(s.updatedAt) : ''}</div>
+      </div>
+    </div>` : '';
 
   return `
-    <div class="${cardClass}" data-lead="${escapeAttr(l.id)}">
+    <div class="${cardClass}" data-lead="${escapeAttr(l.id)}" style="margin-top:10px;">
       <div class="fu-card-head">
         <div class="fu-field">
           <span class="fu-field-label">Customer</span>
           <span class="fu-field-value">${escapeHtml(l.customerName || '—')}</span>
-          ${badges}
+          ${badge}${dueBadge}
         </div>
         <div class="fu-field">
           <span class="fu-field-label">Phone</span>
@@ -2027,48 +2323,14 @@ function renderFuCard(l) {
           <span class="fu-field-label">Rep</span>
           <span class="fu-field-value">${escapeHtml(l.rep || '—')}</span>
         </div>
-        <div class="fu-store-tag" title="DM: ${escapeAttr(dm)}">${escapeHtml(l.store || '—')} · ${escapeHtml(dm)}</div>
       </div>
       <div class="fu-response">
         <strong>Credit Team Response</strong>${escapeHtml(respText)}
       </div>
-      <div class="fu-actions">
-        <div class="fu-action-group">
-          <label>Method</label>
-          <select class="${methodCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','method',this.value)">
-            <option value="">—</option>
-            <option value="Call" ${s.method === 'Call' ? 'selected' : ''}>📞 Call</option>
-            <option value="Text" ${s.method === 'Text' ? 'selected' : ''}>💬 Text</option>
-            <option value="Email" ${s.method === 'Email' ? 'selected' : ''}>✉️ Email</option>
-          </select>
-        </div>
-        <div class="fu-action-group">
-          <label>Status</label>
-          <select class="${statusCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','status',this.value)">
-            <option value="">—</option>
-            <option value="contacted" ${s.status === 'contacted' ? 'selected' : ''}>Customer Contacted</option>
-            <option value="follow-up" ${s.status === 'follow-up' ? 'selected' : ''}>Follow Up Needed</option>
-          </select>
-        </div>
-        <div class="fu-action-group followup-date" style="${showDate ? '' : 'opacity:0.45;'}">
-          <label>Follow-up Date</label>
-          <input type="date" value="${s.followUpDate || ''}" ${showDate ? '' : 'disabled'} onchange="onFuFieldChange('${escapeAttr(l.id)}','followUpDate',this.value)">
-        </div>
-        <div class="fu-action-group">
-          <label>Outcome</label>
-          <select class="${soldCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','sold',this.value)">
-            <option value="">—</option>
-            <option value="sold" ${s.sold ? 'selected' : ''}>💰 Sold</option>
-          </select>
-        </div>
-        <div class="fu-action-group" style="min-width:140px;">
-          <label>&nbsp;</label>
-          <div class="fu-save ${s.updatedAt ? 'saved' : ''}">${s.updatedAt ? 'Saved ' + formatFuRelative(s.updatedAt) : ''}</div>
-        </div>
-      </div>
+      ${actionsHtml}
       <div class="fu-meta">
         <span class="fu-meta-item">📅 Submitted ${formatFuDate(l.submittedAt)}</span>
-        ${l.respondedAt ? `<span class="fu-meta-item">✅ Approved ${formatFuDate(l.respondedAt)}</span>` : ''}
+        ${l.respondedAt ? `<span class="fu-meta-item">✉️ Responded ${formatFuDate(l.respondedAt)}</span>` : ''}
       </div>
     </div>
   `;
@@ -2097,68 +2359,21 @@ function onFuFieldChange(id, field, value) {
   renderFu();
 }
 
-function undoFuSold(id) {
-  const cur = fuState.followState[id] || {};
-  cur.sold = false;
-  delete cur.soldAt;
-  cur.updatedAt = new Date().toISOString();
-  fuState.followState[id] = cur;
-  saveFuState();
+function setFuBucket(bucket) {
+  fuState.bucket = bucket;
+  document.querySelectorAll('.tk-chip').forEach(c => c.classList.toggle('active', c.dataset.bucket === bucket));
   renderFu();
-  showToast('Lead returned to active queue', 'success');
 }
 
-function setFuView(view) {
-  fuState.view = view;
-  document.querySelectorAll('.fu-view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
-  renderFuLeads();
+function toggleFuDm(name) {
+  if (fuState.expandedDms.has(name)) fuState.expandedDms.delete(name);
+  else fuState.expandedDms.add(name);
+  renderFu();
 }
-
-function populateFuDmFilter() {
-  const sel = document.getElementById('fuDmFilter');
-  if (!sel) return;
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">All DMs</option>';
-  Object.keys(FU_DM_TO_STORES).sort().forEach(dm => {
-    const o = document.createElement('option');
-    o.value = dm; o.textContent = dm;
-    sel.appendChild(o);
-  });
-  sel.value = cur || '';
-}
-
-function populateFuStoreFilter(dm) {
-  const sel = document.getElementById('fuStoreFilter');
-  if (!sel) return;
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">All Stores</option>';
-  const stores = dm ? (FU_DM_TO_STORES[dm] || []) : Object.keys(FU_STORE_TO_DM);
-  stores.sort().forEach(s => {
-    const o = document.createElement('option');
-    o.value = s; o.textContent = s;
-    sel.appendChild(o);
-  });
-  if (stores.includes(cur)) sel.value = cur;
-}
-
-function onFuDmChange() {
-  const dm = document.getElementById('fuDmFilter').value;
-  populateFuStoreFilter(dm);
-  renderFuLeads();
-}
-
-function clearFuFilters() {
-  document.getElementById('fuDmFilter').value = '';
-  document.getElementById('fuStoreFilter').value = '';
-  document.getElementById('fuSearch').value = '';
-  populateFuStoreFilter('');
-  renderFuLeads();
-}
-
-function toggleSoldSection() {
-  const body = document.getElementById('fuSoldBody');
-  body.classList.toggle('open');
-  document.getElementById('fuSoldToggle').textContent = body.classList.contains('open') ? '▴ Hide' : '▾ Show';
+function toggleFuStore(key) {
+  if (fuState.expandedStores.has(key)) fuState.expandedStores.delete(key);
+  else fuState.expandedStores.add(key);
+  renderFu();
 }
 
 function loadFuState() {
