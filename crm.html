@@ -1092,12 +1092,13 @@
     </div>
 
     <div class="tk-chips">
-      <button class="tk-chip active" data-bucket="all" onclick="setFuBucket('all')">All <span class="tk-chip-num" id="fuChipAll">0</span></button>
+      <button class="tk-chip active" data-bucket="action" onclick="setFuBucket('action')">⚡ Action Needed <span class="tk-chip-num" id="fuChipAction">0</span></button>
       <button class="tk-chip" data-bucket="approved" onclick="setFuBucket('approved')">✅ Approved <span class="tk-chip-num" id="fuChipApproved">0</span></button>
       <button class="tk-chip" data-bucket="resubmit" onclick="setFuBucket('resubmit')">🔁 Resubmit <span class="tk-chip-num" id="fuChipResubmit">0</span></button>
-      <button class="tk-chip" data-bucket="denied" onclick="setFuBucket('denied')">⛔ Denied <span class="tk-chip-num" id="fuChipDenied">0</span></button>
-      <button class="tk-chip" data-bucket="due" onclick="setFuBucket('due')">⚡ Follow-ups Due <span class="tk-chip-num" id="fuChipDue">0</span></button>
+      <button class="tk-chip" data-bucket="due" onclick="setFuBucket('due')">📅 Follow-ups Due <span class="tk-chip-num" id="fuChipDue">0</span></button>
       <button class="tk-chip" data-bucket="sold" onclick="setFuBucket('sold')">💰 Sold <span class="tk-chip-num" id="fuChipSold">0</span></button>
+      <button class="tk-chip" data-bucket="denied" onclick="setFuBucket('denied')">⛔ Denied <span class="tk-chip-num" id="fuChipDenied">0</span></button>
+      <button class="tk-chip" data-bucket="all" onclick="setFuBucket('all')">All <span class="tk-chip-num" id="fuChipAll">0</span></button>
     </div>
 
     <div class="tk-section-label">DISTRICTS</div>
@@ -1133,6 +1134,22 @@
     <div class="modal-buttons">
       <button class="btn-secondary" onclick="cancelInstallDate()">Cancel</button>
       <button class="btn-primary" onclick="confirmInstallDate()">Save Install Date</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RESUBMIT CREDIT REQUEST MODAL ============ -->
+<div class="modal-overlay" id="fuResubmitModal">
+  <div class="modal">
+    <h2>🔁 Resubmit Credit Request</h2>
+    <p>Resubmitting <strong id="fuResubmitCustomer" style="color:var(--text);">—</strong> to the credit escalation team. The customer's name, phone, store, and rep will be reused — only the account number changes.</p>
+    <p style="margin-bottom:8px;">Old account number: <span id="fuResubmitOldAccount" style="font-family:'SF Mono',Consolas,monospace;color:var(--orange);"></span></p>
+    <label style="display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600;">Corrected account number</label>
+    <input type="text" id="fuResubmitNew" placeholder="Enter the correct account #" autocomplete="off">
+    <p id="fuResubmitError" style="color:var(--red);font-size:13px;margin:0 0 8px;min-height:18px;"></p>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeFuResubmit()">Cancel</button>
+      <button class="btn-primary" id="fuResubmitConfirmBtn" onclick="confirmFuResubmit()">Resubmit</button>
     </div>
   </div>
 </div>
@@ -2004,23 +2021,37 @@ let fuState = {
   initialized: false,
   allLeads: [],
   followState: loadFuState(),
-  bucket: 'all',
+  bucket: 'action',                        // default to "Action Needed"
   search: '',
   expandedDms: new Set(),
   expandedStores: new Set(),
   pollTimer: null
 };
 
+// True if a manager has explicitly removed this lead from the action queue
+// (cancelled, resubmitted, or sold). They still appear under "All".
+function isFuClosed(l) {
+  const s = fuState.followState[l.id] || {};
+  return !!(s.sold || s.cancelled || s.resubmitted);
+}
+// True if this lead requires manager attention right now.
+function isFuActionable(l) {
+  if (isFuClosed(l)) return false;
+  return l._bucket === 'approved' || l._bucket === 'resubmit';
+}
+
 // Categorize a lead based on the credit team's response text.
 // Per Jeff:
-//   "Resubmit"    → text contains the word "Resubmit"
-//   "Approved"    → text contains "can confirm the customer is eligible"
-//   "Denied"      → anything else (including blank pending responses)
+//   "Resubmit"  → text contains the word "Resubmit"
+//   "Approved"  → text contains "confirm" AND "eligible" (catches both
+//                 "can confirm the customer is eligible" and
+//                 "confirm that they are eligible for up to N lines")
+//   "Denied"    → anything else (response present but no approval/resubmit cue)
 function classifyFuLead(l) {
   const txt = stripHtml(l.creditTeamResponse || '').toLowerCase();
-  if (!txt) return 'pending';                                            // not yet replied
+  if (!txt) return 'pending';                                  // no reply yet
   if (/\bresubmit\b/i.test(txt)) return 'resubmit';
-  if (txt.includes('can confirm the customer is eligible')) return 'approved';
+  if (/\bconfirm[a-z]*\b[\s\S]{0,80}\beligible\b/i.test(txt)) return 'approved';
   return 'denied';
 }
 
@@ -2098,14 +2129,14 @@ function renderFu() {
   renderFuList();
 }
 
-// Lead is "approved-for-followup" only if classified as approved AND not yet sold.
+// Lead is "approved-for-followup" only if classified as approved AND not closed.
 function isFuApprovedForFollowUp(l) {
-  return l._bucket === 'approved' && !((fuState.followState[l.id] || {}).sold);
+  return l._bucket === 'approved' && !isFuClosed(l);
 }
 function isFuSold(l) { return !!(fuState.followState[l.id] || {}).sold; }
 function isFuDue(l) {
   const s = fuState.followState[l.id] || {};
-  if (s.sold) return false;
+  if (isFuClosed(l)) return false;
   if (l._bucket !== 'approved') return false;
   return s.status === 'follow-up' && s.followUpDate && s.followUpDate <= todayISO();
 }
@@ -2132,16 +2163,17 @@ function renderFuStats() {
 }
 
 function renderFuChips() {
-  const today = todayISO();
-  const c = { all: fuState.allLeads.length, approved: 0, resubmit: 0, denied: 0, due: 0, sold: 0 };
+  const c = { all: fuState.allLeads.length, action: 0, approved: 0, resubmit: 0, denied: 0, due: 0, sold: 0 };
   for (const l of fuState.allLeads) {
-    if (l._bucket === 'approved') c.approved++;
-    if (l._bucket === 'resubmit') c.resubmit++;
+    if (isFuActionable(l)) c.action++;
+    if (l._bucket === 'approved' && !isFuClosed(l)) c.approved++;
+    if (l._bucket === 'resubmit' && !isFuClosed(l)) c.resubmit++;
     if (l._bucket === 'denied') c.denied++;
     if (isFuDue(l)) c.due++;
     if (isFuSold(l)) c.sold++;
   }
   document.getElementById('fuChipAll').textContent = c.all;
+  document.getElementById('fuChipAction').textContent = c.action;
   document.getElementById('fuChipApproved').textContent = c.approved;
   document.getElementById('fuChipResubmit').textContent = c.resubmit;
   document.getElementById('fuChipDenied').textContent = c.denied;
@@ -2150,13 +2182,15 @@ function renderFuChips() {
 }
 
 // Filter the global lead list by current bucket + search.
+// Action Needed is the default — only Approved or Resubmit, neither closed nor sold.
 function fuFilteredLeads() {
   return fuState.allLeads.filter(l => {
-    if (fuState.bucket === 'approved' && l._bucket !== 'approved') return false;
-    if (fuState.bucket === 'resubmit' && l._bucket !== 'resubmit') return false;
-    if (fuState.bucket === 'denied' && l._bucket !== 'denied') return false;
-    if (fuState.bucket === 'due' && !isFuDue(l)) return false;
-    if (fuState.bucket === 'sold' && !isFuSold(l)) return false;
+    if (fuState.bucket === 'action'   && !isFuActionable(l)) return false;
+    if (fuState.bucket === 'approved' && (l._bucket !== 'approved' || isFuClosed(l))) return false;
+    if (fuState.bucket === 'resubmit' && (l._bucket !== 'resubmit' || isFuClosed(l))) return false;
+    if (fuState.bucket === 'denied'   &&  l._bucket !== 'denied') return false;
+    if (fuState.bucket === 'due'      && !isFuDue(l)) return false;
+    if (fuState.bucket === 'sold'     && !isFuSold(l)) return false;
     if (fuState.search) {
       const hay = `${l.customerName || ''} ${l.phone || ''} ${l.accountNumber || ''} ${l.rep || ''} ${l.store || ''}`.toLowerCase();
       if (!hay.includes(fuState.search)) return false;
@@ -2266,9 +2300,10 @@ function renderFuList() {
 // Detailed lead card shown when a store row is expanded.
 function renderFuLeadCard(l) {
   const s = fuState.followState[l.id] || {};
-  const today = todayISO();
   const isDue = isFuDue(l);
+  const closed = isFuClosed(l);
   const isApproved = l._bucket === 'approved';
+  const isResubmit = l._bucket === 'resubmit';
   const cardClass = ['fu-card', isDue ? 'due' : '', s.status === 'contacted' ? 'contacted' : ''].filter(Boolean).join(' ');
   const methodCls = s.method ? 'is-set' : '';
   const statusCls = s.status === 'contacted' ? 'is-contacted' : (s.status === 'follow-up' ? 'is-followup' : (s.method ? 'is-set' : ''));
@@ -2276,59 +2311,77 @@ function renderFuLeadCard(l) {
   const showDate = s.status === 'follow-up';
   const respText = stripHtml(l.creditTeamResponse || '(no response paragraph captured)');
 
+  // Bucket badge
   let badge = '';
   if (l._bucket === 'approved') badge = '<span class="fu-badge contacted">✅ Approved</span>';
   else if (l._bucket === 'resubmit') badge = `<span class="fu-badge" style="background:rgba(255,170,0,0.18);color:#FFD27A;border:1px solid var(--yellow);">🔁 Resubmit</span>`;
   else if (l._bucket === 'denied') badge = `<span class="fu-badge" style="background:rgba(230,0,77,0.18);color:#FBA5BC;border:1px solid var(--red);">⛔ Denied</span>`;
 
-  let dueBadge = '';
-  if (isDue) dueBadge = ' <span class="fu-badge due">⚡ Follow-up due</span>';
-  if (s.status === 'contacted') dueBadge += ' <span class="fu-badge contacted">✓ Contacted</span>';
+  // Status badges (due / contacted / closed states)
+  let extraBadges = '';
+  if (isDue) extraBadges += ' <span class="fu-badge due">⚡ Follow-up due</span>';
+  if (s.status === 'contacted' && !closed) extraBadges += ' <span class="fu-badge contacted">✓ Contacted</span>';
+  if (s.sold) extraBadges += ' <span class="fu-badge contacted">💰 Sold ' + formatFuRelative(s.soldAt) + '</span>';
+  if (s.resubmitted) extraBadges += ` <span class="fu-badge contacted">🔁 Resubmitted ${formatFuRelative(s.resubmittedAt)}${s.newAccountNumber ? ' as #' + escapeHtml(s.newAccountNumber) : ''}</span>`;
+  if (s.cancelled) extraBadges += ' <span class="fu-badge" style="background:rgba(176,168,208,0.15);color:var(--muted);border:1px solid var(--muted);">✕ Dismissed ' + formatFuRelative(s.cancelledAt) + '</span>';
 
-  // Only show follow-up dropdowns for approved leads (Jeff: "I only want to follow up with leads that are approved")
-  const actionsHtml = isApproved ? `
-    <div class="fu-actions">
-      <div class="fu-action-group">
-        <label>Method</label>
-        <select class="${methodCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','method',this.value)">
-          <option value="">—</option>
-          <option value="Call" ${s.method === 'Call' ? 'selected' : ''}>📞 Call</option>
-          <option value="Text" ${s.method === 'Text' ? 'selected' : ''}>💬 Text</option>
-          <option value="Email" ${s.method === 'Email' ? 'selected' : ''}>✉️ Email</option>
-        </select>
-      </div>
-      <div class="fu-action-group">
-        <label>Status</label>
-        <select class="${statusCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','status',this.value)">
-          <option value="">—</option>
-          <option value="contacted" ${s.status === 'contacted' ? 'selected' : ''}>Customer Contacted</option>
-          <option value="follow-up" ${s.status === 'follow-up' ? 'selected' : ''}>Follow Up Needed</option>
-        </select>
-      </div>
-      <div class="fu-action-group followup-date" style="${showDate ? '' : 'opacity:0.45;'}">
-        <label>Follow-up Date</label>
-        <input type="date" value="${s.followUpDate || ''}" ${showDate ? '' : 'disabled'} onchange="onFuFieldChange('${escapeAttr(l.id)}','followUpDate',this.value)">
-      </div>
-      <div class="fu-action-group">
-        <label>Outcome</label>
-        <select class="${soldCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','sold',this.value)">
-          <option value="">—</option>
-          <option value="sold" ${s.sold ? 'selected' : ''}>💰 Sold</option>
-        </select>
-      </div>
-      <div class="fu-action-group" style="min-width:140px;">
-        <label>&nbsp;</label>
-        <div class="fu-save ${s.updatedAt ? 'saved' : ''}">${s.updatedAt ? 'Saved ' + formatFuRelative(s.updatedAt) : ''}</div>
-      </div>
-    </div>` : '';
+  // ----- Actions vary by bucket -----
+  let actionsHtml = '';
+
+  if (isApproved && !closed) {
+    // Approved → follow-up controls
+    actionsHtml = `
+      <div class="fu-actions">
+        <div class="fu-action-group">
+          <label>Method</label>
+          <select class="${methodCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','method',this.value)">
+            <option value="">—</option>
+            <option value="Call" ${s.method === 'Call' ? 'selected' : ''}>📞 Call</option>
+            <option value="Text" ${s.method === 'Text' ? 'selected' : ''}>💬 Text</option>
+            <option value="Email" ${s.method === 'Email' ? 'selected' : ''}>✉️ Email</option>
+          </select>
+        </div>
+        <div class="fu-action-group">
+          <label>Status</label>
+          <select class="${statusCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','status',this.value)">
+            <option value="">—</option>
+            <option value="contacted" ${s.status === 'contacted' ? 'selected' : ''}>Customer Contacted</option>
+            <option value="follow-up" ${s.status === 'follow-up' ? 'selected' : ''}>Follow Up Needed</option>
+          </select>
+        </div>
+        <div class="fu-action-group followup-date" style="${showDate ? '' : 'opacity:0.45;'}">
+          <label>Follow-up Date</label>
+          <input type="date" value="${s.followUpDate || ''}" ${showDate ? '' : 'disabled'} onchange="onFuFieldChange('${escapeAttr(l.id)}','followUpDate',this.value)">
+        </div>
+        <div class="fu-action-group">
+          <label>Outcome</label>
+          <select class="${soldCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','sold',this.value)">
+            <option value="">—</option>
+            <option value="sold" ${s.sold ? 'selected' : ''}>💰 Sold</option>
+          </select>
+        </div>
+        <div class="fu-action-group" style="min-width:140px;">
+          <label>&nbsp;</label>
+          <div class="fu-save ${s.updatedAt ? 'saved' : ''}">${s.updatedAt ? 'Saved ' + formatFuRelative(s.updatedAt) : ''}</div>
+        </div>
+      </div>`;
+  } else if (isResubmit && !closed) {
+    // Resubmit → two buttons. Cancel = dismiss from queue. Resubmit = open modal.
+    actionsHtml = `
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="icon-btn" style="padding:10px 18px;" onclick="dismissFuLead('${escapeAttr(l.id)}')">Cancel</button>
+        <button class="icon-btn" style="padding:10px 18px;background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-color:transparent;color:white;font-weight:600;" onclick="openFuResubmit('${escapeAttr(l.id)}')">🔁 Resubmit with corrected account #</button>
+      </div>`;
+  }
+  // Denied / closed → no actions
 
   return `
-    <div class="${cardClass}" data-lead="${escapeAttr(l.id)}" style="margin-top:10px;">
+    <div class="${cardClass}" data-lead="${escapeAttr(l.id)}" style="margin-top:10px;${closed ? 'opacity:0.7;' : ''}">
       <div class="fu-card-head">
         <div class="fu-field">
           <span class="fu-field-label">Customer</span>
           <span class="fu-field-value">${escapeHtml(l.customerName || '—')}</span>
-          ${badge}${dueBadge}
+          ${badge}${extraBadges}
         </div>
         <div class="fu-field">
           <span class="fu-field-label">Phone</span>
@@ -2353,6 +2406,92 @@ function renderFuLeadCard(l) {
       </div>
     </div>
   `;
+}
+
+/* ---------- Resubmit & dismiss handlers ---------- */
+const FU_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/20441079/uj2a2vg/';
+const FU_FALLBACK_EMAIL = 'jbilbrey@blufoxmobile.com';
+let fuResubmitContext = null;
+
+function dismissFuLead(id) {
+  if (!confirm('Dismiss this lead from the action queue? It will move out of "Action Needed" but stay visible under "All".')) return;
+  const cur = fuState.followState[id] || {};
+  cur.cancelled = true;
+  cur.cancelledAt = new Date().toISOString();
+  cur.updatedAt = cur.cancelledAt;
+  fuState.followState[id] = cur;
+  saveFuState();
+  showToast('Lead dismissed from queue', 'success');
+  renderFu();
+}
+
+function openFuResubmit(id) {
+  const lead = fuState.allLeads.find(l => l.id === id);
+  if (!lead) return;
+  fuResubmitContext = { id, lead };
+  document.getElementById('fuResubmitCustomer').textContent = lead.customerName || '—';
+  document.getElementById('fuResubmitOldAccount').textContent = lead.accountNumber || '(none)';
+  document.getElementById('fuResubmitNew').value = '';
+  document.getElementById('fuResubmitError').textContent = '';
+  document.getElementById('fuResubmitModal').classList.add('show');
+  setTimeout(() => document.getElementById('fuResubmitNew').focus(), 60);
+}
+
+function closeFuResubmit() {
+  document.getElementById('fuResubmitModal').classList.remove('show');
+  fuResubmitContext = null;
+}
+
+async function confirmFuResubmit() {
+  const ctx = fuResubmitContext;
+  if (!ctx) return;
+  const newAcct = (document.getElementById('fuResubmitNew').value || '').trim();
+  const errEl = document.getElementById('fuResubmitError');
+  if (!newAcct) { errEl.textContent = 'Enter the corrected account number.'; return; }
+
+  const btn = document.getElementById('fuResubmitConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Resubmitting…';
+  errEl.textContent = '';
+
+  // Construct the same payload the credit form sends, swapping the account number.
+  const l = ctx.lead;
+  const payload = {
+    date: (l.submittedAt || new Date().toISOString()).slice(0, 10),
+    repName: l.rep || '',
+    store: fuNormalizeStore(l.store) || l.store || '',
+    repEmail: FU_FALLBACK_EMAIL,
+    managerEmail: FU_FALLBACK_EMAIL,
+    dmEmail: FU_FALLBACK_EMAIL,
+    customerName: l.customerName || '',
+    accountNumber: newAcct,
+    customerPhone: l.phone || '',
+    submittedAt: new Date().toISOString(),
+    resubmitOf: l.id,
+    originalAccountNumber: l.accountNumber || ''
+  };
+  const body = new URLSearchParams();
+  Object.keys(payload).forEach(k => body.append(k, payload[k]));
+
+  try {
+    const res = await fetch(FU_WEBHOOK_URL, { method: 'POST', body });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // Mark this lead as resubmitted locally so it drops out of the queue.
+    const cur = fuState.followState[ctx.id] || {};
+    cur.resubmitted = true;
+    cur.resubmittedAt = new Date().toISOString();
+    cur.newAccountNumber = newAcct;
+    cur.updatedAt = cur.resubmittedAt;
+    fuState.followState[ctx.id] = cur;
+    saveFuState();
+    closeFuResubmit();
+    showToast('🔁 Resubmitted to credit team with #' + newAcct, 'success');
+    renderFu();
+  } catch (e) {
+    errEl.textContent = 'Submit failed: ' + e.message;
+    btn.disabled = false;
+    btn.textContent = 'Resubmit';
+  }
 }
 
 function onFuFieldChange(id, field, value) {
