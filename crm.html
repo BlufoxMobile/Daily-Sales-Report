@@ -1982,7 +1982,23 @@ const FU_DM_TO_STORES = {
   'Matthew Brooks':      ['Greeneville', 'Johnson City', 'Oak Ridge', 'South Knoxville']
 };
 const FU_STORE_TO_DM = {};
-Object.entries(FU_DM_TO_STORES).forEach(([dm, stores]) => stores.forEach(s => FU_STORE_TO_DM[s] = dm));
+Object.entries(FU_DM_TO_STORES).forEach(([dm, stores]) => stores.forEach(s => FU_STORE_TO_DM[s.toLowerCase()] = dm));
+
+// Match store names from the Zap regardless of suffix variations like
+// "Uptown Xfinity Store" or "Tinley Park Xfinity Store · " — strip
+// trailing "Xfinity Store" / "Test Xfinity Store" / punctuation, case-insensitively.
+function fuNormalizeStore(rawStore) {
+  if (!rawStore) return '';
+  return String(rawStore)
+    .replace(/\s+Test\s+Xfinity\s+Store\b/gi, '')
+    .replace(/\s+Xfinity\s+Store\b/gi, '')
+    .replace(/[·•\-—,]+\s*$/g, '')
+    .trim();
+}
+function fuLookupDM(rawStore) {
+  const norm = fuNormalizeStore(rawStore).toLowerCase();
+  return FU_STORE_TO_DM[norm] || '(Unassigned)';
+}
 
 let fuState = {
   initialized: false,
@@ -2157,18 +2173,21 @@ function renderFuList() {
     return;
   }
 
-  // Build per-DM aggregates (always over filtered set)
+  // Build per-DM aggregates (always over filtered set). Stores are keyed by
+  // their NORMALIZED display name so "Uptown Xfinity Store" and "Uptown"
+  // collapse to one row.
   const dms = {};
   for (const l of filtered) {
-    const dm = FU_STORE_TO_DM[l.store] || '(Unassigned)';
+    const dm = fuLookupDM(l.store);
+    const storeKey = fuNormalizeStore(l.store) || '(Unknown)';
     if (!dms[dm]) dms[dm] = { stores: {}, totals: { submitted: 0, approved: 0, resubmit: 0, denied: 0, sold: 0 } };
-    if (!dms[dm].stores[l.store]) dms[dm].stores[l.store] = { items: [], totals: { submitted: 0, approved: 0, resubmit: 0, denied: 0, sold: 0 } };
-    dms[dm].totals.submitted++; dms[dm].stores[l.store].totals.submitted++;
-    if (l._bucket === 'approved')  { dms[dm].totals.approved++;  dms[dm].stores[l.store].totals.approved++; }
-    if (l._bucket === 'resubmit')  { dms[dm].totals.resubmit++;  dms[dm].stores[l.store].totals.resubmit++; }
-    if (l._bucket === 'denied')    { dms[dm].totals.denied++;    dms[dm].stores[l.store].totals.denied++; }
-    if (isFuSold(l))               { dms[dm].totals.sold++;      dms[dm].stores[l.store].totals.sold++; }
-    dms[dm].stores[l.store].items.push(l);
+    if (!dms[dm].stores[storeKey]) dms[dm].stores[storeKey] = { items: [], totals: { submitted: 0, approved: 0, resubmit: 0, denied: 0, sold: 0 } };
+    dms[dm].totals.submitted++; dms[dm].stores[storeKey].totals.submitted++;
+    if (l._bucket === 'approved')  { dms[dm].totals.approved++;  dms[dm].stores[storeKey].totals.approved++; }
+    if (l._bucket === 'resubmit')  { dms[dm].totals.resubmit++;  dms[dm].stores[storeKey].totals.resubmit++; }
+    if (l._bucket === 'denied')    { dms[dm].totals.denied++;    dms[dm].stores[storeKey].totals.denied++; }
+    if (isFuSold(l))               { dms[dm].totals.sold++;      dms[dm].stores[storeKey].totals.sold++; }
+    dms[dm].stores[storeKey].items.push(l);
   }
 
   // Sort DMs by submitted desc
