@@ -1,6 +1,3 @@
-HTTP 200 
-Content-Type: text/html; charset=utf-8
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -459,6 +456,339 @@ Content-Type: text/html; charset=utf-8
     .order-table th, .order-table td { padding: 8px 6px; }
     .hide-mobile { display: none; }
   }
+
+  /* ========= TABS ========= */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    padding: 0 24px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ========= FOLLOW-UP TRACKER ========= */
+  .fu-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    padding: 20px 24px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .fu-stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .fu-stat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent, var(--orange));
+  }
+  .fu-stat .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .fu-stat .value { font-size: 24px; font-weight: 700; color: var(--accent, var(--text)); font-family: 'SF Mono', Consolas, monospace; }
+  .fu-stat.submitted { --accent: var(--blue); }
+  .fu-stat.approved { --accent: var(--green); }
+  .fu-stat.denied { --accent: var(--red); }
+  .fu-stat.due { --accent: var(--yellow); }
+  .fu-stat.sold { --accent: var(--green); }
+
+  .fu-controls {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px;
+    flex-wrap: wrap;
+    align-items: end;
+  }
+  .fu-controls .field { display: flex; flex-direction: column; gap: 4px; }
+  .fu-controls label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .fu-controls select,
+  .fu-controls input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    min-width: 160px;
+    font-family: inherit;
+  }
+  .fu-controls select:focus,
+  .fu-controls input:focus { outline: none; border-color: var(--orange); }
+  .fu-controls input.search { flex: 1; min-width: 220px; }
+
+  .fu-view-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 0 24px 16px;
+    flex-wrap: wrap;
+  }
+  .fu-view-tab {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+  }
+  .fu-view-tab:hover { color: var(--text); border-color: var(--orange); }
+  .fu-view-tab.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: white;
+  }
+  .fu-view-tab .pill-num {
+    background: rgba(0,0,0,0.25);
+    color: inherit;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 11px;
+  }
+  .fu-view-tab.active .pill-num { background: rgba(255,255,255,0.25); }
+
+  .fu-section {
+    padding: 0 24px 40px;
+  }
+  .fu-section h2 {
+    font-size: 16px;
+    margin-bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .fu-count-badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-weight: 600;
+  }
+
+  .fu-sold-section {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 0 24px 18px;
+    overflow: hidden;
+  }
+  .fu-sold-header {
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: linear-gradient(90deg, rgba(34,197,94,0.08), transparent);
+    transition: background 0.15s;
+  }
+  .fu-sold-header:hover { background: linear-gradient(90deg, rgba(34,197,94,0.15), transparent); }
+  .fu-sold-header h2 { color: var(--green); font-size: 15px; }
+  .fu-sold-toggle { color: var(--muted); font-size: 13px; font-weight: 600; }
+  .fu-sold-body { display: none; padding: 0 20px 16px; }
+  .fu-sold-body.open { display: block; }
+  .fu-sold-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr 90px;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(51,65,85,0.5);
+    align-items: center;
+    font-size: 13px;
+  }
+  .fu-sold-row:last-child { border-bottom: none; }
+  .fu-sold-row strong { color: var(--text); }
+  .fu-sold-row .undo {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .fu-sold-row .undo:hover { color: var(--yellow); border-color: var(--yellow); }
+
+  .fu-leads { display: flex; flex-direction: column; gap: 12px; }
+  .fu-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: border-color 0.15s;
+  }
+  .fu-card:hover { border-color: rgba(230,126,34,0.4); }
+  .fu-card.due { border-color: var(--yellow); box-shadow: inset 4px 0 0 0 var(--yellow); }
+  .fu-card.contacted { border-left: 4px solid var(--green); }
+
+  .fu-card-head {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
+    gap: 14px;
+    margin-bottom: 12px;
+    align-items: start;
+  }
+  @media (max-width: 900px) { .fu-card-head { grid-template-columns: 1fr 1fr; } }
+  .fu-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .fu-field-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .fu-field-value { font-size: 14px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fu-field-value.mono { font-family: 'SF Mono', Consolas, monospace; font-size: 13px; font-weight: 500; }
+  .fu-field-value.acct { color: var(--orange); }
+
+  .fu-store-tag {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--blue);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    align-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .fu-store-tag::before {
+    content: ''; width: 6px; height: 6px; background: var(--blue); border-radius: 50%;
+  }
+
+  .fu-response {
+    background: var(--card);
+    border-left: 3px solid var(--green);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+    max-height: 110px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+  .fu-response strong {
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .fu-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto;
+    gap: 10px;
+    align-items: end;
+  }
+  @media (max-width: 900px) {
+    .fu-actions { grid-template-columns: 1fr 1fr; }
+    .fu-actions > .followup-date { grid-column: 1 / -1; }
+  }
+  .fu-action-group label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: block;
+    font-weight: 600;
+  }
+  .fu-action-group select,
+  .fu-action-group input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    width: 100%;
+    font-family: inherit;
+  }
+  .fu-action-group select:focus,
+  .fu-action-group input:focus { outline: none; border-color: var(--orange); }
+  .fu-action-group select.is-set { border-color: var(--orange); }
+  .fu-action-group select.is-followup { border-color: var(--yellow); color: var(--yellow); font-weight: 600; }
+  .fu-action-group select.is-contacted { border-color: var(--green); color: var(--green); font-weight: 600; }
+  .fu-action-group select.is-sold { border-color: var(--green); color: var(--green); font-weight: 700; background: rgba(34,197,94,0.1); }
+
+  .fu-save { font-size: 11px; color: var(--muted); margin-top: 6px; min-height: 14px; font-style: italic; }
+  .fu-save.saved { color: var(--green); font-style: normal; }
+
+  .fu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .fu-badge.due { background: rgba(234,179,8,0.18); color: #fde047; border: 1px solid var(--yellow); }
+  .fu-badge.contacted { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid var(--green); }
+
+  .fu-meta {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .fu-meta-item { font-size: 11px; color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
+
+  .fu-empty {
+    background: var(--bg-2);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 50px 24px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .fu-empty h2 { color: var(--text); font-size: 17px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -493,36 +823,111 @@ Content-Type: text/html; charset=utf-8
     </div>
   </header>
 
-  <div class="stats-bar" id="statsBar"></div>
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="tab-orders" onclick="switchTab('tab-orders')">Open Orders</button>
+    <button class="tab-btn" data-tab="tab-followup" onclick="switchTab('tab-followup')">Credit Escalation Follow Ups</button>
+  </nav>
 
-  <div class="controls">
-    <input type="search" id="searchBox" placeholder="Search by store, customer, account #, work order, rep..." oninput="renderGroups()">
-    <select id="ageFilter" onchange="renderGroups()">
-      <option value="all">All Ages</option>
-      <option value="0-30">0-30 days</option>
-      <option value="30-60">30-60 days</option>
-      <option value="60-90">60-90 days</option>
-      <option value="90+">90+ days</option>
-    </select>
-    <select id="statusFilter" onchange="renderGroups()">
-      <option value="all">All Statuses</option>
-      <option value="Open">Open only</option>
-      <option value="Closed">Closed</option>
-      <option value="Pending Install">Pending Install</option>
-      <option value="Can Not Close">Can Not Close</option>
-      <option value="Cancelled Order">Cancelled Order</option>
-    </select>
-    <div class="toggle-group">
-      <button id="groupByDM" class="active" onclick="setGroupBy('DM')">By DM</button>
-      <button id="groupByStore" onclick="setGroupBy('Store')">By Store</button>
+  <!-- ============ TAB: OPEN ORDERS ============ -->
+  <div class="tab-pane active" id="tab-orders">
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="controls">
+      <input type="search" id="searchBox" placeholder="Search by store, customer, account #, work order, rep..." oninput="renderGroups()">
+      <select id="ageFilter" onchange="renderGroups()">
+        <option value="all">All Ages</option>
+        <option value="0-30">0-30 days</option>
+        <option value="30-60">30-60 days</option>
+        <option value="60-90">60-90 days</option>
+        <option value="90+">90+ days</option>
+      </select>
+      <select id="statusFilter" onchange="renderGroups()">
+        <option value="all">All Statuses</option>
+        <option value="Open">Open only</option>
+        <option value="Closed">Closed</option>
+        <option value="Pending Install">Pending Install</option>
+        <option value="Can Not Close">Can Not Close</option>
+        <option value="Cancelled Order">Cancelled Order</option>
+      </select>
+      <div class="toggle-group">
+        <button id="groupByDM" class="active" onclick="setGroupBy('DM')">By DM</button>
+        <button id="groupByStore" onclick="setGroupBy('Store')">By Store</button>
+      </div>
+    </div>
+
+    <div class="groups" id="groupsContainer">
+      <div class="center-msg">
+        <div class="spinner"></div>
+        <h2>Loading open orders...</h2>
+        <p>Fetching latest data from GitHub</p>
+      </div>
     </div>
   </div>
 
-  <div class="groups" id="groupsContainer">
-    <div class="center-msg">
-      <div class="spinner"></div>
-      <h2>Loading open orders...</h2>
-      <p>Fetching latest data from GitHub</p>
+  <!-- ============ TAB: CREDIT ESCALATION FOLLOW-UPS ============ -->
+  <div class="tab-pane" id="tab-followup">
+    <div class="fu-stats" id="fuStats">
+      <div class="fu-stat submitted"><div class="label">Submitted</div><div class="value" id="fuStatSubmitted">0</div></div>
+      <div class="fu-stat approved"><div class="label">Approved (in queue)</div><div class="value" id="fuStatApproved">0</div></div>
+      <div class="fu-stat denied"><div class="label">Not Approved</div><div class="value" id="fuStatDenied">0</div></div>
+      <div class="fu-stat due"><div class="label">Follow-ups Due</div><div class="value" id="fuStatDue">0</div></div>
+      <div class="fu-stat sold"><div class="label">Sold 🔥</div><div class="value" id="fuStatSold">0</div></div>
+    </div>
+
+    <div class="fu-sold-section">
+      <div class="fu-sold-header" onclick="toggleSoldSection()">
+        <h2>💰 Sold Leads <span class="fu-count-badge" id="fuSoldCount">0</span></h2>
+        <div class="fu-sold-toggle" id="fuSoldToggle">▾ Show</div>
+      </div>
+      <div class="fu-sold-body" id="fuSoldBody">
+        <div id="fuSoldList"></div>
+      </div>
+    </div>
+
+    <div class="fu-controls">
+      <div class="field">
+        <label>District Manager</label>
+        <select id="fuDmFilter" onchange="onFuDmChange()">
+          <option value="">All DMs</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Store</label>
+        <select id="fuStoreFilter" onchange="renderFuLeads()">
+          <option value="">All Stores</option>
+        </select>
+      </div>
+      <div class="field" style="flex:1;">
+        <label>Search</label>
+        <input class="search" type="search" id="fuSearch" placeholder="Customer name, phone, account #, rep..." oninput="renderFuLeads()">
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="icon-btn" onclick="clearFuFilters()" style="padding: 9px 14px;">Clear</button>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="icon-btn" onclick="loadFuLeads()" style="padding: 9px 14px;">↻ Reload</button>
+      </div>
+    </div>
+
+    <div class="fu-view-tabs">
+      <button class="fu-view-tab active" data-view="active" onclick="setFuView('active')">Active Queue <span class="pill-num" id="fuTabActive">0</span></button>
+      <button class="fu-view-tab" data-view="due" onclick="setFuView('due')">Due Today <span class="pill-num" id="fuTabDue">0</span></button>
+      <button class="fu-view-tab" data-view="contacted" onclick="setFuView('contacted')">Contacted <span class="pill-num" id="fuTabContacted">0</span></button>
+      <button class="fu-view-tab" data-view="scheduled" onclick="setFuView('scheduled')">Scheduled Later <span class="pill-num" id="fuTabScheduled">0</span></button>
+      <button class="fu-view-tab" data-view="all" onclick="setFuView('all')">All Approved <span class="pill-num" id="fuTabAll">0</span></button>
+    </div>
+
+    <div class="fu-section">
+      <h2 id="fuListTitle">Active Queue <span class="fu-count-badge" id="fuListCount">0</span></h2>
+      <div class="fu-leads" id="fuLeadsList">
+        <div class="fu-empty">
+          <div class="spinner"></div>
+          <h2>Loading credit escalations...</h2>
+          <p>Fetching from Google Sheets</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1340,6 +1745,456 @@ function manualRefresh() {
 async function initApp() {
   await fetchAllData();
   startPolling();
+}
+
+/* =====================================================
+   TAB SWITCHING
+   ===================================================== */
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === tabId));
+  if (tabId === 'tab-followup' && !fuState.initialized) {
+    fuState.initialized = true;
+    initFollowUp();
+  }
+}
+
+/* =====================================================
+   CREDIT ESCALATION FOLLOW-UP TRACKER
+   ===================================================== */
+const FU_CONFIG = {
+  // Published Google Sheet (CSV) — written to by the two Zaps
+  SHEET_CSV: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTG0Gp38ba_zBP7jNlGg9GWGgzFsh6946OUVOl9RQp0kL9Amc0qQZg0hMbdw7veg7Y56qKv6tUSFjI7/pub?output=csv',
+  STATE_KEY: 'blufox_fu_state_v1',
+  POLL_MS: 60000
+};
+
+const FU_DM_TO_STORES = {
+  'Juan Carrillo':       ['Bourbonnais', 'Burbank', 'Dekalb', 'Evergreen Park', 'Frankfort', 'Tinley Park'],
+  'Jacob Cabrales':      ['Cicero', 'Elkhart', 'Hammond', 'Michigan City', 'Schererville', 'South Bend', 'Valparaiso'],
+  'Imaad Dhorajiwala':   ['Evanston', 'Glenview', 'Kildeer', 'Round Lake Beach', 'South Skokie', 'Uptown'],
+  'Matthew Brooks':      ['Greeneville', 'Johnson City', 'Oak Ridge', 'South Knoxville']
+};
+const FU_STORE_TO_DM = {};
+Object.entries(FU_DM_TO_STORES).forEach(([dm, stores]) => stores.forEach(s => FU_STORE_TO_DM[s] = dm));
+
+let fuState = {
+  initialized: false,
+  allLeads: [],
+  approvedLeads: [],
+  followState: loadFuState(),
+  view: 'active',
+  dm: '',
+  store: '',
+  search: '',
+  pollTimer: null
+};
+
+function initFollowUp() {
+  populateFuDmFilter();
+  populateFuStoreFilter('');
+  loadFuLeads();
+  // gentle background refresh while the tab is open
+  clearInterval(fuState.pollTimer);
+  fuState.pollTimer = setInterval(() => {
+    if (document.getElementById('tab-followup').classList.contains('active')) loadFuLeads();
+  }, FU_CONFIG.POLL_MS);
+}
+
+async function loadFuLeads() {
+  try {
+    const url = FU_CONFIG.SHEET_CSV + '&_=' + Date.now();
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const leads = parseFuCSV(text);
+    setFuLeads(leads);
+  } catch (err) {
+    console.warn('Could not fetch credit escalation leads:', err);
+    showToast('Could not load credit escalations: ' + err.message, 'error');
+  }
+}
+
+function parseFuCSV(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(field); rows.push(row); row = []; field = '';
+      } else field += c;
+    }
+  }
+  if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+  if (rows.length === 0) return [];
+  const headers = rows[0].map(h => h.trim());
+  return rows.slice(1)
+    .filter(r => r.some(v => v && v.trim() !== ''))
+    .map(r => {
+      const obj = {};
+      headers.forEach((h, idx) => obj[h] = (r[idx] || '').trim());
+      return obj;
+    });
+}
+
+function setFuLeads(leads) {
+  fuState.allLeads = leads.slice().sort((a, b) =>
+    new Date(b.respondedAt || b.submittedAt || 0) - new Date(a.respondedAt || a.submittedAt || 0)
+  );
+  fuState.approvedLeads = fuState.allLeads.filter(l => (l.creditStatus || '').toLowerCase() === 'approved');
+  renderFu();
+}
+
+function renderFu() {
+  renderFuStats();
+  renderFuViewTabs();
+  renderFuSold();
+  renderFuLeads();
+}
+
+function renderFuStats() {
+  const submitted = fuState.allLeads.length;
+  const approved = fuState.approvedLeads.length;
+  const denied = fuState.allLeads.filter(l => (l.creditStatus || '').toLowerCase() === 'denied').length;
+  const sold = fuState.approvedLeads.filter(l => (fuState.followState[l.id] || {}).sold).length;
+  const today = todayISO();
+  const due = fuState.approvedLeads.filter(l => {
+    const s = fuState.followState[l.id] || {};
+    if (s.sold) return false;
+    return s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today;
+  }).length;
+
+  document.getElementById('fuStatSubmitted').textContent = submitted;
+  document.getElementById('fuStatApproved').textContent = approved - sold;
+  document.getElementById('fuStatDenied').textContent = denied;
+  document.getElementById('fuStatDue').textContent = due;
+  document.getElementById('fuStatSold').textContent = sold;
+}
+
+function renderFuViewTabs() {
+  const today = todayISO();
+  const counts = { active: 0, due: 0, contacted: 0, scheduled: 0, all: 0 };
+  fuState.approvedLeads.forEach(l => {
+    const s = fuState.followState[l.id] || {};
+    if (s.sold) return;
+    counts.all++;
+    if (s.status === 'follow-up' && s.followUpDate && s.followUpDate > today) {
+      counts.scheduled++;
+    } else {
+      counts.active++;
+    }
+    if (s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today) counts.due++;
+    if (s.status === 'contacted') counts.contacted++;
+  });
+  document.getElementById('fuTabActive').textContent = counts.active;
+  document.getElementById('fuTabDue').textContent = counts.due;
+  document.getElementById('fuTabContacted').textContent = counts.contacted;
+  document.getElementById('fuTabScheduled').textContent = counts.scheduled;
+  document.getElementById('fuTabAll').textContent = counts.all;
+}
+
+function renderFuSold() {
+  const sold = fuState.approvedLeads
+    .filter(l => (fuState.followState[l.id] || {}).sold)
+    .sort((a, b) => (fuState.followState[b.id].soldAt || '').localeCompare(fuState.followState[a.id].soldAt || ''));
+  document.getElementById('fuSoldCount').textContent = sold.length;
+  const list = document.getElementById('fuSoldList');
+  if (sold.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);padding:18px 0;text-align:center;font-size:13px;">No sold deals yet — go close some! 🔥</div>';
+    return;
+  }
+  list.innerHTML = sold.map(l => {
+    const s = fuState.followState[l.id];
+    return `
+      <div class="fu-sold-row">
+        <div><strong>${escapeHtml(l.customerName)}</strong></div>
+        <div class="mono" style="font-family:'SF Mono',Consolas,monospace;color:var(--muted);">${escapeHtml(l.phone || '—')}</div>
+        <div>${escapeHtml(l.store || '—')}</div>
+        <div style="color:var(--muted);font-size:12px;">Sold ${formatFuDate(s.soldAt)}</div>
+        <button class="undo" onclick="undoFuSold('${escapeAttr(l.id)}')">Undo</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderFuLeads() {
+  const today = todayISO();
+  fuState.dm = document.getElementById('fuDmFilter').value;
+  fuState.store = document.getElementById('fuStoreFilter').value;
+  fuState.search = (document.getElementById('fuSearch').value || '').trim().toLowerCase();
+
+  let leads = fuState.approvedLeads.filter(l => !(fuState.followState[l.id] || {}).sold);
+
+  if (fuState.dm) {
+    const stores = new Set(FU_DM_TO_STORES[fuState.dm] || []);
+    leads = leads.filter(l => stores.has(l.store));
+  }
+  if (fuState.store) leads = leads.filter(l => l.store === fuState.store);
+  if (fuState.search) {
+    leads = leads.filter(l =>
+      (l.customerName || '').toLowerCase().includes(fuState.search) ||
+      (l.phone || '').toLowerCase().includes(fuState.search) ||
+      (l.accountNumber || '').toLowerCase().includes(fuState.search) ||
+      (l.rep || '').toLowerCase().includes(fuState.search)
+    );
+  }
+
+  const titles = {
+    active: 'Active Queue',
+    due: 'Follow-ups Due Today',
+    contacted: 'Customer Contacted',
+    scheduled: 'Scheduled Follow-ups',
+    all: 'All Approved Leads'
+  };
+
+  leads = leads.filter(l => {
+    const s = fuState.followState[l.id] || {};
+    const scheduled = s.status === 'follow-up' && s.followUpDate && s.followUpDate > today;
+    const due = s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today;
+    if (fuState.view === 'active') return !scheduled;
+    if (fuState.view === 'due') return due;
+    if (fuState.view === 'contacted') return s.status === 'contacted';
+    if (fuState.view === 'scheduled') return scheduled;
+    if (fuState.view === 'all') return true;
+    return true;
+  });
+
+  document.getElementById('fuListTitle').innerHTML = titles[fuState.view] + ' <span class="fu-count-badge" id="fuListCount">' + leads.length + '</span>';
+
+  const container = document.getElementById('fuLeadsList');
+  if (leads.length === 0) {
+    container.innerHTML = `<div class="fu-empty"><h2>Nothing here</h2><p>${fuState.view === 'all' ? 'No approved leads match your filters.' : 'No leads in this view right now.'}</p></div>`;
+    return;
+  }
+  container.innerHTML = leads.map(renderFuCard).join('');
+}
+
+function renderFuCard(l) {
+  const s = fuState.followState[l.id] || {};
+  const dm = FU_STORE_TO_DM[l.store] || '—';
+  const today = todayISO();
+  const isDue = s.status === 'follow-up' && s.followUpDate && s.followUpDate <= today;
+  const cardClass = ['fu-card', isDue ? 'due' : '', s.status === 'contacted' ? 'contacted' : ''].filter(Boolean).join(' ');
+  const statusCls = s.status === 'contacted' ? 'is-contacted' : (s.status === 'follow-up' ? 'is-followup' : (s.method ? 'is-set' : ''));
+  const methodCls = s.method ? 'is-set' : '';
+  const soldCls = s.sold ? 'is-sold' : '';
+  const showDate = s.status === 'follow-up';
+  const respText = stripHtml(l.creditTeamResponse || '(no response paragraph captured)');
+
+  let badges = '';
+  if (isDue) badges += '<span class="fu-badge due">⚡ Follow-up due</span> ';
+  if (s.status === 'contacted') badges += '<span class="fu-badge contacted">✓ Contacted</span>';
+
+  return `
+    <div class="${cardClass}" data-lead="${escapeAttr(l.id)}">
+      <div class="fu-card-head">
+        <div class="fu-field">
+          <span class="fu-field-label">Customer</span>
+          <span class="fu-field-value">${escapeHtml(l.customerName || '—')}</span>
+          ${badges}
+        </div>
+        <div class="fu-field">
+          <span class="fu-field-label">Phone</span>
+          <span class="fu-field-value mono">${escapeHtml(l.phone || '—')}</span>
+        </div>
+        <div class="fu-field">
+          <span class="fu-field-label">Account #</span>
+          <span class="fu-field-value mono acct">${escapeHtml(l.accountNumber || '—')}</span>
+        </div>
+        <div class="fu-field">
+          <span class="fu-field-label">Rep</span>
+          <span class="fu-field-value">${escapeHtml(l.rep || '—')}</span>
+        </div>
+        <div class="fu-store-tag" title="DM: ${escapeAttr(dm)}">${escapeHtml(l.store || '—')} · ${escapeHtml(dm)}</div>
+      </div>
+      <div class="fu-response">
+        <strong>Credit Team Response</strong>${escapeHtml(respText)}
+      </div>
+      <div class="fu-actions">
+        <div class="fu-action-group">
+          <label>Method</label>
+          <select class="${methodCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','method',this.value)">
+            <option value="">—</option>
+            <option value="Call" ${s.method === 'Call' ? 'selected' : ''}>📞 Call</option>
+            <option value="Text" ${s.method === 'Text' ? 'selected' : ''}>💬 Text</option>
+            <option value="Email" ${s.method === 'Email' ? 'selected' : ''}>✉️ Email</option>
+          </select>
+        </div>
+        <div class="fu-action-group">
+          <label>Status</label>
+          <select class="${statusCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','status',this.value)">
+            <option value="">—</option>
+            <option value="contacted" ${s.status === 'contacted' ? 'selected' : ''}>Customer Contacted</option>
+            <option value="follow-up" ${s.status === 'follow-up' ? 'selected' : ''}>Follow Up Needed</option>
+          </select>
+        </div>
+        <div class="fu-action-group followup-date" style="${showDate ? '' : 'opacity:0.45;'}">
+          <label>Follow-up Date</label>
+          <input type="date" value="${s.followUpDate || ''}" ${showDate ? '' : 'disabled'} onchange="onFuFieldChange('${escapeAttr(l.id)}','followUpDate',this.value)">
+        </div>
+        <div class="fu-action-group">
+          <label>Outcome</label>
+          <select class="${soldCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','sold',this.value)">
+            <option value="">—</option>
+            <option value="sold" ${s.sold ? 'selected' : ''}>💰 Sold</option>
+          </select>
+        </div>
+        <div class="fu-action-group" style="min-width:140px;">
+          <label>&nbsp;</label>
+          <div class="fu-save ${s.updatedAt ? 'saved' : ''}">${s.updatedAt ? 'Saved ' + formatFuRelative(s.updatedAt) : ''}</div>
+        </div>
+      </div>
+      <div class="fu-meta">
+        <span class="fu-meta-item">📅 Submitted ${formatFuDate(l.submittedAt)}</span>
+        ${l.respondedAt ? `<span class="fu-meta-item">✅ Approved ${formatFuDate(l.respondedAt)}</span>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function onFuFieldChange(id, field, value) {
+  const cur = fuState.followState[id] || {};
+  if (field === 'sold') {
+    if (value === 'sold') {
+      cur.sold = true;
+      cur.soldAt = new Date().toISOString();
+      showToast('💰 Marked as Sold!', 'success');
+    } else {
+      cur.sold = false;
+      delete cur.soldAt;
+    }
+  } else if (field === 'status') {
+    cur.status = value || null;
+    if (value !== 'follow-up') cur.followUpDate = null;
+  } else {
+    cur[field] = value || null;
+  }
+  cur.updatedAt = new Date().toISOString();
+  fuState.followState[id] = cur;
+  saveFuState();
+  renderFu();
+}
+
+function undoFuSold(id) {
+  const cur = fuState.followState[id] || {};
+  cur.sold = false;
+  delete cur.soldAt;
+  cur.updatedAt = new Date().toISOString();
+  fuState.followState[id] = cur;
+  saveFuState();
+  renderFu();
+  showToast('Lead returned to active queue', 'success');
+}
+
+function setFuView(view) {
+  fuState.view = view;
+  document.querySelectorAll('.fu-view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  renderFuLeads();
+}
+
+function populateFuDmFilter() {
+  const sel = document.getElementById('fuDmFilter');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All DMs</option>';
+  Object.keys(FU_DM_TO_STORES).sort().forEach(dm => {
+    const o = document.createElement('option');
+    o.value = dm; o.textContent = dm;
+    sel.appendChild(o);
+  });
+  sel.value = cur || '';
+}
+
+function populateFuStoreFilter(dm) {
+  const sel = document.getElementById('fuStoreFilter');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All Stores</option>';
+  const stores = dm ? (FU_DM_TO_STORES[dm] || []) : Object.keys(FU_STORE_TO_DM);
+  stores.sort().forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    sel.appendChild(o);
+  });
+  if (stores.includes(cur)) sel.value = cur;
+}
+
+function onFuDmChange() {
+  const dm = document.getElementById('fuDmFilter').value;
+  populateFuStoreFilter(dm);
+  renderFuLeads();
+}
+
+function clearFuFilters() {
+  document.getElementById('fuDmFilter').value = '';
+  document.getElementById('fuStoreFilter').value = '';
+  document.getElementById('fuSearch').value = '';
+  populateFuStoreFilter('');
+  renderFuLeads();
+}
+
+function toggleSoldSection() {
+  const body = document.getElementById('fuSoldBody');
+  body.classList.toggle('open');
+  document.getElementById('fuSoldToggle').textContent = body.classList.contains('open') ? '▴ Hide' : '▾ Show';
+}
+
+function loadFuState() {
+  try { return JSON.parse(localStorage.getItem(FU_CONFIG.STATE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function saveFuState() {
+  localStorage.setItem(FU_CONFIG.STATE_KEY, JSON.stringify(fuState.followState));
+}
+
+/* ----- helpers used only by the follow-up tab ----- */
+function todayISO() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+function formatFuDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function formatFuRelative(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return formatFuDate(iso);
+}
+function stripHtml(s) {
+  if (!s) return '';
+  let txt = String(s);
+  txt = txt.replace(/<style[\s\S]*?<\/style>/gi, '');
+  txt = txt.replace(/<script[\s\S]*?<\/script>/gi, '');
+  txt = txt.replace(/<\s*br\s*\/?>/gi, '\n').replace(/<\/\s*p\s*>/gi, '\n');
+  txt = txt.replace(/<[^>]+>/g, '');
+  txt = txt
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&[#a-z0-9]+;/gi, '');
+  return txt.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
 }
 </script>
 
