@@ -445,8 +445,10 @@
     "store": "Oak Ridge"
   },
   "2259713769": {
-    "status": "Closed",
-    "ts": "2026-05-02T20:57:01.989Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-11T17:49:38.742Z",
+    "dm": "Jacob Cabrales",
+    "store": "South Bend"
   },
   "2259850938": {
     "status": "Closed",
