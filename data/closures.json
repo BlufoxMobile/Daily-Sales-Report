@@ -1439,8 +1439,10 @@
     "store": "Kildeer"
   },
   "2301848021": {
-    "status": "Other",
-    "ts": "2026-05-02T22:10:09.557Z"
+    "status": "Closed",
+    "ts": "2026-05-11T17:55:12.027Z",
+    "dm": "Jacob Cabrales",
+    "store": "South Bend"
   },
   "2301851224": {
     "status": "Closed",
