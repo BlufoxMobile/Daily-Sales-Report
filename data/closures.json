@@ -234,8 +234,10 @@
     "store": "Frankfort"
   },
   "2249588688": {
-    "status": "Other",
-    "ts": "2026-05-02T18:44:19.800Z"
+    "status": "Cancelled Order",
+    "ts": "2026-05-11T20:39:27.707Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2250004944": {
     "status": "Closed",
