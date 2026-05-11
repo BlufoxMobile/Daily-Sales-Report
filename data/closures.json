@@ -222,8 +222,10 @@
     "store": "Elkhart"
   },
   "2248720820": {
-    "status": "Closed",
-    "ts": "2026-05-05T19:00:45.707Z"
+    "status": "Cancelled Order",
+    "ts": "2026-05-11T16:49:18.703Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2248916917": {
     "status": "Closed",
