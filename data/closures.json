@@ -2430,6 +2430,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-05-11"
   },
+  "2319782506": {
+    "status": "Closed",
+    "ts": "2026-05-11T18:51:37.907Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
+  },
   "2320102425": {
     "status": "Pending Install",
     "ts": "2026-05-11T17:43:34.293Z",
