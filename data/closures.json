@@ -2020,8 +2020,10 @@
     "ts": "2026-05-05T19:23:57.353Z"
   },
   "2313303669": {
-    "status": "Closed",
-    "ts": "2026-05-05T19:24:00.751Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-11T17:36:07.926Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2313314319": {
     "status": "Can Not Close",
