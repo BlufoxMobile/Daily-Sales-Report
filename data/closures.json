@@ -2850,11 +2850,10 @@
     "pendingUntil": "2026-05-12"
   },
   "1002276095612059": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T22:04:04.071Z",
+    "status": "Closed",
+    "ts": "2026-05-11T17:46:52.210Z",
     "dm": "Jacob Cabrales",
-    "store": "Michigan City",
-    "pendingUntil": "2026-05-10"
+    "store": "Michigan City"
   },
   "1002276467092054": {
     "status": "Closed",
