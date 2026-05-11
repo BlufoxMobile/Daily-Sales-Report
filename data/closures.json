@@ -2016,8 +2016,10 @@
     "store": "South Skokie"
   },
   "2313284784": {
-    "status": "Closed",
-    "ts": "2026-05-05T19:23:57.353Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-11T17:36:11.666Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2313303669": {
     "status": "Can Not Close",
