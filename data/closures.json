@@ -2379,6 +2379,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2318761961": {
+    "status": "Closed",
+    "ts": "2026-05-11T18:56:08.501Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
+  },
   "2318775768": {
     "status": "Closed",
     "ts": "2026-05-11T17:42:03.957Z",
@@ -2448,6 +2454,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-05-13"
+  },
+  "2320511360": {
+    "status": "Closed",
+    "ts": "2026-05-11T18:56:09.933Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   },
   "1001290369922103": {
     "status": "Pending Install",
