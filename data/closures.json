@@ -2363,10 +2363,11 @@
     "store": "Hammond"
   },
   "2320102425": {
-    "status": "Closed",
-    "ts": "2026-05-11T17:41:11.484Z",
+    "status": "Pending Install",
+    "ts": "2026-05-11T17:43:34.293Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond"
+    "store": "Hammond",
+    "pendingUntil": "2026-05-13"
   },
   "1001290369922103": {
     "status": "Pending Install",
