@@ -1942,8 +1942,10 @@
     "store": "South Skokie"
   },
   "2312815127": {
-    "status": "Closed",
-    "ts": "2026-05-05T19:25:23.610Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-11T17:36:18.046Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2312864240": {
     "status": "Pending Install",
