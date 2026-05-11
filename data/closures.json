@@ -451,8 +451,10 @@
     "store": "South Bend"
   },
   "2259850938": {
-    "status": "Closed",
-    "ts": "2026-05-02T20:57:00.901Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-11T17:49:41.757Z",
+    "dm": "Jacob Cabrales",
+    "store": "South Bend"
   },
   "2259857535": {
     "status": "Can Not Close",
