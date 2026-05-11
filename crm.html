@@ -707,6 +707,45 @@
     content: ''; width: 6px; height: 6px; background: var(--blue); border-radius: 50%;
   }
 
+
+  /* Sales intent & closeout */
+  .fu-intent {
+    padding: 6px 12px 4px;
+    background: rgba(59,130,246,0.06);
+    border-top: 1px solid rgba(59,130,246,0.12);
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+  }
+  .fu-intent-label { font-size: 0.7rem; color: #6b7280; margin-right: 4px; }
+  .fu-intent-chip {
+    font-size: 0.72rem; background: rgba(59,130,246,0.12);
+    color: #1d4ed8; border-radius: 10px; padding: 1px 8px;
+  }
+  .fu-closeout-section {
+    padding: 8px 12px 6px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+  .fu-closeout-header {
+    font-size: 0.7rem; font-weight: 600; color: #6b7280;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .fu-closeout-row {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;
+  }
+  .fu-closeout-group { display: flex; flex-direction: column; gap: 2px; }
+  .fu-closeout-group label { font-size: 0.68rem; color: #9ca3af; }
+  .fu-closeout-group select {
+    font-size: 0.78rem; padding: 2px 4px; border-radius: 4px;
+    border: 1px solid #d1d5db; background: #fff; min-width: 52px;
+  }
+  .fu-closeout-save {
+    font-size: 0.72rem; padding: 3px 10px; border-radius: 4px;
+    background: #2563eb; color: #fff; border: none; cursor: pointer;
+    margin-left: 4px; align-self: flex-end;
+  }
+  .fu-closeout-save:hover { background: #1d4ed8; }
+  .fu-closeout-save.saved { background: #10b981; cursor: default; }
+
   .fu-response {
     background: var(--card);
     border-left: 3px solid var(--green);
@@ -1210,6 +1249,8 @@ let state = {
   writeTimer: null,
   pollTimer: null
 };
+
+let fuCloseouts = { sha: null, data: {}, pending: {}, writeTimer: null };
 
 /* =====================================================
    PASSWORD GATE
@@ -1989,7 +2030,8 @@ const FU_CONFIG = {
   // Published Google Sheet (CSV) — written to by the two Zaps
   SHEET_CSV: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTG0Gp38ba_zBP7jNlGg9GWGgzFsh6946OUVOl9RQp0kL9Amc0qQZg0hMbdw7veg7Y56qKv6tUSFjI7/pub?output=csv',
   STATE_KEY: 'blufox_fu_state_v1',
-  POLL_MS: 60000
+  POLL_MS: 60000,
+  CLOSEOUTS_PATH: 'data/escalation-closeouts.json'
 };
 
 const FU_DM_TO_STORES = {
@@ -2072,6 +2114,7 @@ async function loadFuLeads() {
     const text = await res.text();
     const leads = parseFuCSV(text);
     setFuLeads(leads);
+    loadFuCloseouts();
   } catch (err) {
     console.warn('Could not fetch credit escalation leads:', err);
     showToast('Could not load credit escalations: ' + err.message, 'error');
@@ -2364,6 +2407,16 @@ function renderFuLeadCard(l) {
           <label>&nbsp;</label>
           <div class="fu-save ${s.updatedAt ? 'saved' : ''}">${s.updatedAt ? 'Saved ' + formatFuRelative(s.updatedAt) : ''}</div>
         </div>
+      </div>
+      <div class="fu-closeout-section">
+        <div class="fu-closeout-header">What closed?</div>
+        <div class="fu-closeout-row">
+          <div class="fu-closeout-group"><label>Lines added</label><select onchange="onFuFieldChange('${escapeAttr(l.id)}','salesClosedLines',this.value)">${makeQtyOpts(12, s.salesClosedLines||0)}</select></div>
+          <div class="fu-closeout-group"><label>Upgrades</label><select onchange="onFuFieldChange('${escapeAttr(l.id)}','salesClosedUpgrades',this.value)">${makeQtyOpts(12, s.salesClosedUpgrades||0)}</select></div>
+          <div class="fu-closeout-group"><label>Watches</label><select onchange="onFuFieldChange('${escapeAttr(l.id)}','salesClosedWatches',this.value)">${makeQtyOpts(10, s.salesClosedWatches||0)}</select></div>
+          <div class="fu-closeout-group"><label>Tablets</label><select onchange="onFuFieldChange('${escapeAttr(l.id)}','salesClosedTablets',this.value)">${makeQtyOpts(10, s.salesClosedTablets||0)}</select></div>
+          <button class="fu-closeout-save" data-id="${escapeAttr(l.id)}" onclick="saveFuCloseout('${escapeAttr(l.id)}')">${(s.salesClosedLines||s.salesClosedUpgrades||s.salesClosedWatches||s.salesClosedTablets) ? '✓ Saved' : 'Save'}</button>
+        </div>
       </div>`;
   } else if (isResubmit && !closed) {
     // Resubmit → two buttons. Cancel = dismiss from queue. Resubmit = open modal.
@@ -2399,6 +2452,15 @@ function renderFuLeadCard(l) {
       <div class="fu-response">
         <strong>Credit Team Response</strong>${escapeHtml(respText)}
       </div>
+      ${(function(){
+        var chips = [];
+        if (Number(l.salesAddLines)      > 0) chips.push('<span class="fu-intent-chip">+' + l.salesAddLines      + ' line'    + (l.salesAddLines > 1 ? 's' : '')      + '</span>');
+        if (Number(l.salesUpgradePhones) > 0) chips.push('<span class="fu-intent-chip">↑' + l.salesUpgradePhones + ' upgrade' + (l.salesUpgradePhones > 1 ? 's' : '') + '</span>');
+        if (Number(l.salesAddWatches)    > 0) chips.push('<span class="fu-intent-chip">+' + l.salesAddWatches    + ' watch'   + (l.salesAddWatches > 1 ? 'es' : '')    + '</span>');
+        if (Number(l.salesAddTablets)    > 0) chips.push('<span class="fu-intent-chip">+' + l.salesAddTablets    + ' tablet'  + (l.salesAddTablets > 1 ? 's' : '')     + '</span>');
+        if (!chips.length) return '';
+        return '<div class="fu-intent"><span class="fu-intent-label">Customer wants:</span>' + chips.join('') + '</div>';
+      })()}
       ${actionsHtml}
       <div class="fu-meta">
         <span class="fu-meta-item">📅 Submitted ${formatFuDate(l.submittedAt)}</span>
@@ -2508,6 +2570,8 @@ function onFuFieldChange(id, field, value) {
   } else if (field === 'status') {
     cur.status = value || null;
     if (value !== 'follow-up') cur.followUpDate = null;
+  } else if (['salesClosedLines','salesClosedUpgrades','salesClosedWatches','salesClosedTablets'].includes(field)) {
+    cur[field] = parseInt(value, 10) || 0;
   } else {
     cur[field] = value || null;
   }
@@ -2540,6 +2604,92 @@ function loadFuState() {
 }
 function saveFuState() {
   localStorage.setItem(FU_CONFIG.STATE_KEY, JSON.stringify(fuState.followState));
+}
+
+// ── Close-out helpers ──────────────────────────────────────
+
+function makeQtyOpts(max, cur) {
+  let s = '';
+  for (let i = 0; i <= max; i++) {
+    s += '<option value="' + i + '" ' + (Number(cur) === i ? 'selected' : '') + '>' + i + '</option>';
+  }
+  return s;
+}
+
+async function loadFuCloseouts() {
+  try {
+    const token = getToken();
+    if (!token) return;
+    const url = `https://api.github.com/repos/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/contents/${FU_CONFIG.CLOSEOUTS_PATH}`;
+    const res = await fetch(url, { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } });
+    if (res.status === 404) { fuCloseouts.data = {}; fuCloseouts.sha = null; return; }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    fuCloseouts.sha = json.sha;
+    const decoded = JSON.parse(atob(json.content.replace(/\n/g, '')));
+    fuCloseouts.data = decoded;
+    Object.entries(decoded).forEach(([id, vals]) => {
+      fuState.followState[id] = Object.assign(fuState.followState[id] || {}, vals);
+    });
+    renderFu();
+  } catch (err) {
+    console.warn('loadFuCloseouts error:', err);
+  }
+}
+
+function saveFuCloseout(id) {
+  const s = fuState.followState[id] || {};
+  const record = {
+    salesClosedLines:    Number(s.salesClosedLines    || 0),
+    salesClosedUpgrades: Number(s.salesClosedUpgrades || 0),
+    salesClosedWatches:  Number(s.salesClosedWatches  || 0),
+    salesClosedTablets:  Number(s.salesClosedTablets  || 0),
+    closedAt: new Date().toISOString()
+  };
+  fuCloseouts.data[id] = record;
+  fuCloseouts.pending[id] = record;
+  fuState.followState[id] = Object.assign(fuState.followState[id] || {}, record);
+  saveFuState();
+  const btn = document.querySelector('.fu-closeout-save[data-id="' + CSS.escape(id) + '"]');
+  if (btn) { btn.textContent = '✓ Saved'; btn.classList.add('saved'); }
+  clearTimeout(fuCloseouts.writeTimer);
+  fuCloseouts.writeTimer = setTimeout(flushFuCloseouts, CONFIG.WRITE_DEBOUNCE_MS || 1500);
+}
+
+async function flushFuCloseouts() {
+  if (Object.keys(fuCloseouts.pending).length === 0) return;
+  const token = getToken();
+  if (!token) { showToast('GitHub token unavailable — contact Jeff', 'error'); return; }
+  try {
+    const url = `https://api.github.com/repos/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/contents/${FU_CONFIG.CLOSEOUTS_PATH}`;
+    const getRes = await fetch(url, { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } });
+    let latestData = {};
+    if (getRes.ok) {
+      const j = await getRes.json();
+      fuCloseouts.sha = j.sha;
+      latestData = JSON.parse(atob(j.content.replace(/\n/g, '')));
+    }
+    const merged = Object.assign(latestData, fuCloseouts.pending);
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(merged, null, 2))));
+    const body = {
+      message: 'Update escalation closeouts [' + Object.keys(fuCloseouts.pending).length + ' records]',
+      content: b64,
+      branch: CONFIG.BRANCH
+    };
+    if (fuCloseouts.sha) body.sha = fuCloseouts.sha;
+    const putRes = await fetch(url, {
+      method: 'PUT',
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!putRes.ok) throw new Error('HTTP ' + putRes.status);
+    const putJson = await putRes.json();
+    fuCloseouts.sha = putJson.content.sha;
+    fuCloseouts.pending = {};
+  } catch (err) {
+    showToast('Error saving closeouts: ' + err.message, 'error');
+    console.error('flushFuCloseouts error:', err);
+  }
 }
 
 /* ----- helpers used only by the follow-up tab ----- */
