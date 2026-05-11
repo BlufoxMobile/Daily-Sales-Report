@@ -58,8 +58,10 @@
     "store": "Schererville"
   },
   "2243518312": {
-    "status": "Closed",
-    "ts": "2026-05-03T00:14:12.168Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-11T16:49:14.639Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2243550288": {
     "status": "Can Not Close",
