@@ -471,8 +471,10 @@
     "store": "Hammond"
   },
   "2261017051": {
-    "status": "Closed",
-    "ts": "2026-05-03T15:44:06.028Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-12T18:02:44.333Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   },
   "2261083476": {
     "status": "Can Not Close",
