@@ -687,8 +687,8 @@
     "store": "South Bend"
   },
   "2272819105": {
-    "status": "Closed",
-    "ts": "2026-05-05T21:35:10.362Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-12T20:44:08.030Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
