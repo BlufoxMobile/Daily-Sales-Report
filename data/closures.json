@@ -1704,6 +1704,13 @@
     "store": "Round Lake Beach",
     "pendingUntil": "2026-05-08"
   },
+  "2305219580": {
+    "status": "Pending Install",
+    "ts": "2026-05-12T23:32:30.988Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-05-19"
+  },
   "2305225052": {
     "status": "Closed",
     "ts": "2026-05-06T21:25:58.107Z",
