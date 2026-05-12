@@ -2541,6 +2541,13 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2324426971": {
+    "status": "Pending Install",
+    "ts": "2026-05-12T17:41:18.224Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb",
+    "pendingUntil": "2026-05-15"
+  },
   "2324588111": {
     "status": "Pending Install",
     "ts": "2026-05-12T15:18:25.355Z",
