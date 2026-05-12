@@ -522,6 +522,12 @@
     "status": "Closed",
     "ts": "2026-05-05T19:16:01.677Z"
   },
+  "2263662700": {
+    "status": "Can Not Close",
+    "ts": "2026-05-12T18:33:52.023Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2263930746": {
     "status": "Can Not Close",
     "ts": "2026-05-06T20:15:07.864Z",
