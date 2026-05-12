@@ -2860,6 +2860,12 @@
     "store": "Elkhart",
     "pendingUntil": "2026-05-13"
   },
+  "2324262460": {
+    "status": "Can Not Close",
+    "ts": "2026-05-12T21:48:05.734Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
+  },
   "2324280259": {
     "status": "Closed",
     "ts": "2026-05-12T19:30:16.002Z",
