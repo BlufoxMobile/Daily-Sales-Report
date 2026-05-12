@@ -1401,6 +1401,13 @@
     "status": "Closed",
     "ts": "2026-05-02T23:32:25.472Z"
   },
+  "2299229333": {
+    "status": "Pending Install",
+    "ts": "2026-05-12T23:30:00.365Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-05-19"
+  },
   "2299278135": {
     "status": "Closed",
     "ts": "2026-05-04T21:27:34.084Z",
