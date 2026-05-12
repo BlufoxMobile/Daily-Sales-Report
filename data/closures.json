@@ -2508,6 +2508,12 @@
     "store": "Elkhart",
     "pendingUntil": "2026-05-13"
   },
+  "2324315646": {
+    "status": "Can Not Close",
+    "ts": "2026-05-12T15:13:42.499Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
