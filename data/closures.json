@@ -2079,6 +2079,13 @@
     "store": "Evergreen Park",
     "pendingUntil": "2026-05-12"
   },
+  "2313000079": {
+    "status": "Pending Install",
+    "ts": "2026-05-12T23:32:39.075Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-05-19"
+  },
   "2313085673": {
     "status": "Closed",
     "ts": "2026-05-05T20:23:15.118Z"
