@@ -3348,5 +3348,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park",
     "pendingUntil": "2026-05-19"
+  },
+  "1002277242312056": {
+    "status": "Pending Install",
+    "ts": "2026-05-12T19:27:31.929Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-05-15"
   }
 }
