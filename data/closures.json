@@ -1877,11 +1877,10 @@
     "store": "Glenview"
   },
   "2311037892": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T21:14:47.519Z",
+    "status": "Closed",
+    "ts": "2026-05-12T19:36:53.739Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-05-12"
+    "store": "Kildeer"
   },
   "2311065059": {
     "status": "Pending Install",
