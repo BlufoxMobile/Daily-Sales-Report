@@ -2860,6 +2860,13 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2324303492": {
+    "status": "Pending Install",
+    "ts": "2026-05-12T21:14:29.594Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-05-21"
+  },
   "2324315646": {
     "status": "Can Not Close",
     "ts": "2026-05-12T15:13:42.499Z",
