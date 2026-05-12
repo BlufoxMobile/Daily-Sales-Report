@@ -2709,6 +2709,12 @@
     "store": "Frankfort",
     "pendingUntil": "2026-05-13"
   },
+  "2323469892": {
+    "status": "Closed",
+    "ts": "2026-05-12T19:35:04.458Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
+  },
   "2323753644": {
     "status": "Pending Install",
     "ts": "2026-05-12T17:06:17.183Z",
