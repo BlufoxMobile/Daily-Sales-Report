@@ -1,0 +1,69 @@
+{
+  "updatedAt": "2026-05-13T03:47:07.281Z",
+  "stores": [
+    "Bourbonnais Xfinity Store",
+    "Burbank Xfinity Store",
+    "Calumet City Xfinity Store",
+    "Cicero Xfinity Store",
+    "Dekalb Xfinity Store",
+    "Elkhart Xfinity Store",
+    "Evanston Xfinity Store",
+    "Evergreen Park Xfinity Store",
+    "Frankfort Xfinity Store",
+    "Glenview Xfinity Store",
+    "Greeneville Xfinity Store",
+    "Hammond Xfinity Store",
+    "Johnson City Xfinity Store",
+    "Kildeer Xfinity Store",
+    "Michigan City Xfinity Store",
+    "Oak Ridge Xfinity Store",
+    "Round Lake Beach Xfinity Store",
+    "Schererville Xfinity Store",
+    "Skokie Xfinity Store",
+    "South Bend Xfinity Store",
+    "South Knoxville Xfinity Store",
+    "Tinley Park Xfinity Store",
+    "Uptown Xfinity Store",
+    "Valparaiso Xfinity Store"
+  ],
+  "managers": [
+    "sOrozco@blufoxmobile.com",
+    "ZSalazar@blufoxmobile.com",
+    "fSalazar@blufoxmobile.com",
+    "ZMitchell@blufoxmobile.com",
+    "GWilliams@blufoxmobile.com",
+    "juCarrillo@blufoxmobile.com",
+    "tChowdhury@blufoxmobile.com",
+    "jTrentham@blufoxmobile.com",
+    "ABell@blufoxmobile.com",
+    "vHuerto@blufoxmobile.com",
+    "maRodriguez@blufoxmobile.com",
+    "CCrooks@blufoxmobile.com",
+    "zSpradling@blufoxmobile.com",
+    "ISolis@blufoxmobile.com",
+    "miJackson@blufoxmobile.com",
+    "dRegan@blufoxmobile.com",
+    "kKirkland@blufoxmobile.com",
+    "IDhorajiwala@blufoxmobile.com",
+    "OsGarcia@blufoxmobile.com",
+    "HDodge@blufoxmobile.com",
+    "EWashington@blufoxmobile.com"
+  ],
+  "dms": [
+    "jcabrales@blufoxmobile.com",
+    "IDhorajiwala@blufoxmobile.com",
+    "mbrooks@blufoxmobile.com",
+    "juCarrillo@blufoxmobile.com",
+    "jbilbrey@blufoxmobile.com"
+  ],
+  "storeManagers": {
+    "Burbank Xfinity Store": "ZSalazar@blufoxmobile.com",
+    "Cicero Xfinity Store": "fSalazar@blufoxmobile.com"
+  },
+  "storeDMs": {
+    "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
+    "Burbank Xfinity Store": "juCarrillo@blufoxmobile.com",
+    "Calumet City Xfinity Store": "juCarrillo@blufoxmobile.com",
+    "Cicero Xfinity Store": "jcabrales@blufoxmobile.com"
+  }
+}
