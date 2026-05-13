@@ -3228,11 +3228,10 @@
     "store": "Kildeer"
   },
   "1002276122392055": {
-    "status": "Pending Install",
-    "ts": "2026-05-08T22:36:15.747Z",
+    "status": "Closed",
+    "ts": "2026-05-13T19:45:56.654Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-05-12"
+    "store": "Evanston"
   },
   "1002273253222052": {
     "status": "Closed",
