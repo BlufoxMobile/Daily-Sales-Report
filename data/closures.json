@@ -3035,11 +3035,10 @@
     "store": "Valparaiso"
   },
   "1002269976482056": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T15:58:30.194Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-13T17:29:32.914Z",
     "dm": "Jacob Cabrales",
-    "store": "Valparaiso",
-    "pendingUntil": "2026-05-07"
+    "store": "Valparaiso"
   },
   "1002273771082053": {
     "status": "Pending Install",
