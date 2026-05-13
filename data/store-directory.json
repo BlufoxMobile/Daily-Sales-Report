@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-13T03:55:19.199Z",
+  "updatedAt": "2026-05-13T15:29:18.940Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -107,5 +107,29 @@
     "Tinley Park Xfinity Store": "juCarrillo@blufoxmobile.com",
     "Uptown Xfinity Store": "IDhorajiwala@blufoxmobile.com",
     "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com"
+  },
+  "storeManagerNames": {
+    "Burbank Xfinity Store": "Zuri Salazar",
+    "Calumet City Xfinity Store": "Eric Reyes",
+    "Cicero Xfinity Store": "Francisco Salazar",
+    "Dekalb Xfinity Store": "ZQ Mitchell",
+    "Elkhart Xfinity Store": "DJ Regan",
+    "Evergreen Park Xfinity Store": "Michael Rivera",
+    "Evanston Xfinity Store": "Jonathan Gabbara",
+    "Frankfort Xfinity Store": "Frankie Scalfano",
+    "Glenview Xfinity Store": "Tanzim Chowdhury",
+    "Greeneville Xfinity Store": "Josh Trentham",
+    "Hammond Xfinity Store": "Alexis Bell",
+    "Johnson City Xfinity Store": "VG Huerto",
+    "Michigan City Xfinity Store": "Collin Crooks",
+    "Kildeer Xfinity Store": "Gavin Williams",
+    "Oak Ridge Xfinity Store": "Kayla Kirkland",
+    "Schererville Xfinity Store": "Michael Jackson",
+    "Round Lake Beach Xfinity Store": "Irvin Solis",
+    "Skokie Xfinity Store": "Ozzie Garcia",
+    "Valparaiso Xfinity Store": "Emari Washington",
+    "Uptown Xfinity Store": "Hunter Dodge",
+    "Tinley Park Xfinity Store": "Sebas Orozco",
+    "South Knoxville Xfinity Store": "Zoe Spradling"
   }
 }
