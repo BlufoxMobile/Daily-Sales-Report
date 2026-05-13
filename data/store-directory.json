@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-13T03:47:38.480Z",
+  "updatedAt": "2026-05-13T03:48:51.190Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -59,12 +59,18 @@
   ],
   "storeManagers": {
     "Burbank Xfinity Store": "ZSalazar@blufoxmobile.com",
-    "Cicero Xfinity Store": "fSalazar@blufoxmobile.com"
+    "Cicero Xfinity Store": "fSalazar@blufoxmobile.com",
+    "Calumet City Xfinity Store": "ereyes@blufoxmobile.com",
+    "Dekalb Xfinity Store": "ZMitchell@blufoxmobile.com",
+    "Elkhart Xfinity Store": "dRegan@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
     "Burbank Xfinity Store": "juCarrillo@blufoxmobile.com",
     "Calumet City Xfinity Store": "juCarrillo@blufoxmobile.com",
-    "Cicero Xfinity Store": "jcabrales@blufoxmobile.com"
+    "Cicero Xfinity Store": "jcabrales@blufoxmobile.com",
+    "Dekalb Xfinity Store": "juCarrillo@blufoxmobile.com",
+    "Elkhart Xfinity Store": "jcabrales@blufoxmobile.com",
+    "Evanston Xfinity Store": "IDhorajiwala@blufoxmobile.com"
   }
 }
