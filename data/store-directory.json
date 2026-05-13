@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-13T03:50:46.274Z",
+  "updatedAt": "2026-05-13T03:55:19.199Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -66,7 +66,22 @@
     "Dekalb Xfinity Store": "ZMitchell@blufoxmobile.com",
     "Elkhart Xfinity Store": "dRegan@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "mRivera@blufoxmobile.com",
-    "Evanston Xfinity Store": "jGabbara@blufoxmobile.com"
+    "Evanston Xfinity Store": "jGabbara@blufoxmobile.com",
+    "Frankfort Xfinity Store": "FPedraza-Scalfano@blufoxmobile.com",
+    "Glenview Xfinity Store": "tChowdhury@blufoxmobile.com",
+    "Greeneville Xfinity Store": "jTrentham@blufoxmobile.com",
+    "Hammond Xfinity Store": "ABell@blufoxmobile.com",
+    "Johnson City Xfinity Store": "vHuerto@blufoxmobile.com",
+    "Kildeer Xfinity Store": "GWilliams@blufoxmobile.com",
+    "Michigan City Xfinity Store": "CCrooks@blufoxmobile.com",
+    "Oak Ridge Xfinity Store": "kKirkland@blufoxmobile.com",
+    "Round Lake Beach Xfinity Store": "ISolis@blufoxmobile.com",
+    "Schererville Xfinity Store": "miJackson@blufoxmobile.com",
+    "Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
+    "South Knoxville Xfinity Store": "zSpradling@blufoxmobile.com",
+    "Tinley Park Xfinity Store": "sOrozco@blufoxmobile.com",
+    "Uptown Xfinity Store": "HDodge@blufoxmobile.com",
+    "Valparaiso Xfinity Store": "EWashington@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -76,6 +91,21 @@
     "Dekalb Xfinity Store": "juCarrillo@blufoxmobile.com",
     "Elkhart Xfinity Store": "jcabrales@blufoxmobile.com",
     "Evanston Xfinity Store": "IDhorajiwala@blufoxmobile.com",
-    "Frankfort Xfinity Store": "juCarrillo@blufoxmobile.com"
+    "Frankfort Xfinity Store": "juCarrillo@blufoxmobile.com",
+    "Glenview Xfinity Store": "IDhorajiwala@blufoxmobile.com",
+    "Greeneville Xfinity Store": "mbrooks@blufoxmobile.com",
+    "Hammond Xfinity Store": "jcabrales@blufoxmobile.com",
+    "Johnson City Xfinity Store": "mbrooks@blufoxmobile.com",
+    "Kildeer Xfinity Store": "IDhorajiwala@blufoxmobile.com",
+    "Michigan City Xfinity Store": "jcabrales@blufoxmobile.com",
+    "Oak Ridge Xfinity Store": "mbrooks@blufoxmobile.com",
+    "Round Lake Beach Xfinity Store": "IDhorajiwala@blufoxmobile.com",
+    "Schererville Xfinity Store": "jcabrales@blufoxmobile.com",
+    "Skokie Xfinity Store": "IDhorajiwala@blufoxmobile.com",
+    "South Bend Xfinity Store": "jcabrales@blufoxmobile.com",
+    "South Knoxville Xfinity Store": "mbrooks@blufoxmobile.com",
+    "Tinley Park Xfinity Store": "juCarrillo@blufoxmobile.com",
+    "Uptown Xfinity Store": "IDhorajiwala@blufoxmobile.com",
+    "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com"
   }
 }
