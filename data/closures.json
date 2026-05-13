@@ -3030,6 +3030,12 @@
     "store": "Elkhart",
     "pendingUntil": "2026-05-22"
   },
+  "2325037552": {
+    "status": "Can Not Close",
+    "ts": "2026-05-13T19:45:37.136Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2326053795": {
     "status": "Closed",
     "ts": "2026-05-13T19:45:23.980Z",
