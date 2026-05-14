@@ -22,6 +22,173 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
 
+  /* === DAY-OF-WEEK ACCENT THEMING ===
+     applyDayColor() rewrites these CSS variables every time the page renders
+     so the accent color changes each day of the week. Defaults below match
+     the original orange so nothing breaks if the script never runs. */
+  :root {
+    --day-accent: #e67e22;
+    --day-accent2: #f39c12;
+    --day-glow: rgba(230,126,34,0.55);
+    --day-name: 'DAY';
+  }
+  /* Override every place the original hardcoded #e67e22 appeared so the
+     day color flows through the whole UI. */
+  .header { border-bottom-color: var(--day-accent) !important; }
+  .logo-circle { border-color: var(--day-accent) !important; }
+  .logo-text { color: var(--day-accent) !important; }
+  .brand-title .highlight { color: var(--day-accent) !important; text-shadow:0 0 14px var(--day-glow); }
+  .header-center-title { color: var(--day-accent) !important; text-shadow:0 0 18px var(--day-glow); }
+  .progress-fill, .countdown-fill { background:linear-gradient(90deg,var(--day-accent),var(--day-accent2)) !important; }
+  .slide-label b, .slide-type { color: var(--day-accent) !important; }
+  .day-badge {
+    display:flex; align-items:center; gap:7px;
+    background:rgba(0,0,0,0.4); border:1.5px solid var(--day-accent);
+    border-radius:20px; padding:5px 14px;
+    font-size:12px; font-weight:800; letter-spacing:2px;
+    color:var(--day-accent); text-transform:uppercase;
+    box-shadow:0 0 14px var(--day-glow);
+  }
+  .day-badge .day-dot {
+    width:9px; height:9px; border-radius:50%;
+    background:var(--day-accent); box-shadow:0 0 10px var(--day-accent);
+  }
+
+  /* === DISTRICT FILTER TABS === */
+  .district-bar {
+    display:flex; align-items:center; gap:8px;
+    padding:8px 28px; background:#070d18;
+    border-bottom:1px solid #14213a;
+    flex-wrap:wrap;
+  }
+  .district-bar-label {
+    font-size:11px; letter-spacing:3px; color:#8899aa;
+    text-transform:uppercase; font-weight:700;
+    margin-right:6px;
+  }
+  .district-tab {
+    cursor:pointer; padding:6px 16px; border-radius:6px;
+    font-family:'Inter',sans-serif; font-size:12px;
+    font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    color:#cdd6e0; background:rgba(255,255,255,0.04);
+    border:1.5px solid #1f2d4a; transition:all 0.18s ease;
+    user-select:none;
+  }
+  .district-tab:hover {
+    background:rgba(255,255,255,0.08);
+    border-color:var(--day-accent); color:#fff;
+  }
+  .district-tab.active {
+    background:var(--day-accent); border-color:var(--day-accent);
+    color:#0a0f1c; box-shadow:0 0 16px var(--day-glow);
+  }
+  .district-tab .district-count {
+    display:inline-block; margin-left:6px; padding:1px 6px;
+    border-radius:10px; background:rgba(0,0,0,0.25);
+    font-size:10px; font-weight:800;
+  }
+  .district-tab.active .district-count {
+    background:rgba(0,0,0,0.35); color:#0a0f1c;
+  }
+
+  /* Store picker dropdown — sits beside the district tabs */
+  .store-picker-wrap {
+    margin-left:auto; display:flex; align-items:center; gap:8px;
+  }
+  .store-picker-label {
+    font-size:11px; letter-spacing:3px; color:#8899aa;
+    text-transform:uppercase; font-weight:700;
+  }
+  .store-picker {
+    background:rgba(255,255,255,0.04);
+    border:1.5px solid #1f2d4a;
+    color:#cdd6e0;
+    border-radius:6px;
+    padding:6px 30px 6px 12px;
+    font-family:'Inter',sans-serif;
+    font-size:12px; font-weight:700; letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+    appearance:none;
+    -webkit-appearance:none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--day-accent) 50%),
+                      linear-gradient(135deg, var(--day-accent) 50%, transparent 50%);
+    background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    transition: all 0.18s ease;
+  }
+  .store-picker:hover, .store-picker:focus {
+    border-color:var(--day-accent); color:#fff; outline:none;
+  }
+  .store-picker.has-selection {
+    background-color:var(--day-accent); color:#0a0f1c; border-color:var(--day-accent);
+    background-image: linear-gradient(45deg, transparent 50%, #0a0f1c 50%),
+                      linear-gradient(135deg, #0a0f1c 50%, transparent 50%);
+  }
+  .store-picker option { background:#0c1a2e; color:#fff; }
+
+  /* === YESTERDAY'S CONVERSION SLIDE === */
+  .yc-wrap { display:flex; flex-direction:column; height:100%; gap:12px; }
+  .yc-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 4px;
+  }
+  .yc-title {
+    font-size:22px; font-weight:900; color:var(--day-accent);
+    letter-spacing:2px; text-transform:uppercase;
+  }
+  .yc-subtitle { font-size:13px; color:#8899aa; letter-spacing:1.5px; }
+  .yc-kpis {
+    display:grid; grid-template-columns:repeat(5,1fr); gap:10px;
+  }
+  .yc-kpi {
+    background:linear-gradient(180deg,#0d1a2e,#0c1525);
+    border:1px solid #1a2744; border-radius:8px;
+    padding:10px 14px;
+    position:relative; overflow:hidden;
+  }
+  .yc-kpi::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:var(--day-accent); opacity:0.7;
+  }
+  .yc-kpi-l { font-size:10px; color:#8899aa; letter-spacing:2px; font-weight:700; text-transform:uppercase; margin-bottom:5px; }
+  .yc-kpi-v { font-size:24px; font-weight:900; line-height:1; color:#fff; }
+  .yc-kpi-v.good { color:#2ecc40; }
+  .yc-kpi-v.warn { color:#f39c12; }
+  .yc-kpi-v.bad  { color:#e74c3c; }
+  .yc-table {
+    flex:1; overflow:hidden;
+    background:#0c1525; border:1px solid #1a2744; border-radius:10px;
+  }
+  .yc-table table { width:100%; border-collapse:collapse; }
+  .yc-table th {
+    text-align:left; padding:9px 10px; font-size:11px;
+    color:#8899aa; letter-spacing:1.5px; text-transform:uppercase;
+    border-bottom:1px solid #1a2744; background:#0a1525;
+    font-weight:700;
+  }
+  .yc-table th.num, .yc-table td.num { text-align:right; }
+  .yc-table td {
+    padding:8px 10px; font-size:14px; color:#cdd6e0;
+    border-bottom:1px solid #14213a;
+  }
+  .yc-table tr:last-child td { border-bottom:none; }
+  .yc-table tr.total td {
+    background:rgba(255,255,255,0.03);
+    color:#fff; font-weight:800;
+    border-top:2px solid var(--day-accent);
+  }
+  .yc-pill {
+    display:inline-block; padding:2px 9px; border-radius:10px;
+    font-weight:800; font-size:13px;
+  }
+  .yc-pill.good { background:rgba(46,204,64,0.15); color:#2ecc40; }
+  .yc-pill.warn { background:rgba(243,156,18,0.15); color:#f39c12; }
+  .yc-pill.bad  { background:rgba(231,76,60,0.15); color:#e74c3c; }
+  .yc-pill.muted{ background:rgba(255,255,255,0.06); color:#8899aa; }
+  .yc-empty { padding:30px; text-align:center; color:#8899aa; font-size:14px; }
+
   /* -- Header -- */
   .header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,#0d1526 0%,#0a1120 100%); border-bottom:3px solid #e67e22; }
   .header-left { display:flex; align-items:center; gap:16px; }
@@ -182,10 +349,53 @@ const CONFIG = {
   REFRESH_INTERVAL: 1800000, // 30 minutes data refresh
   STORE_CARDS_PER_PAGE: 6,
   REPS_PER_PAGE: 14,
+  PROMO_EVERY_N: 4,                      // insert a promo slide after every N content slides
+  // Yesterday's Conversion data sources (mirror Yesterday's-Conversion repo)
+  ZERO_SHEET: 'Zero',                    // tab in Sales Report.xlsx with traffic+MCR
+  TSHEET_API_URL: 'https://script.google.com/macros/s/AKfycbyQaa1yvggLJuw5dcme74vwAW3hSB3BvzCK40IhLThy-F8KZDFOF6gcyl8psNMd3yD-Cg/exec',
+};
+
+// === DAY-OF-WEEK COLOR PALETTE ===
+// Bold rainbow that shifts the accent color so the team can tell at a glance
+// what day it is on the TV. Sunday = pink, Monday = red, ... Saturday = purple.
+const DAY_COLORS = {
+  0: { name: 'SUNDAY',    primary: '#ff4d8b', secondary: '#ff80a8' }, // pink
+  1: { name: 'MONDAY',    primary: '#ff3333', secondary: '#ff6666' }, // red
+  2: { name: 'TUESDAY',   primary: '#ff8800', secondary: '#ffa64d' }, // orange
+  3: { name: 'WEDNESDAY', primary: '#ffc400', secondary: '#ffd966' }, // yellow
+  4: { name: 'THURSDAY',  primary: '#1ed760', secondary: '#4dffb0' }, // green
+  5: { name: 'FRIDAY',    primary: '#2979ff', secondary: '#6aadff' }, // blue
+  6: { name: 'SATURDAY',  primary: '#a855f7', secondary: '#c084fc' }, // purple
+};
+
+// === DISTRICTS ===
+// Stores are mapped to a District Manager in the source spreadsheet's "DM"
+// column. We group them into geographic districts based on those assignments.
+// `dmMatch` is a list of substrings; a store belongs to the district if its
+// `dm` field contains any of them (case-insensitive). `storeMatch` is an
+// optional safety-net list of store-name substrings — used when a brand-new
+// store hasn't been assigned a DM in the spreadsheet yet. Rename labels
+// freely — the matching logic only depends on `dmMatch` / `storeMatch`.
+const DISTRICTS = [
+  { key: 'all',   label: 'All Stores',     dmMatch: null },
+  { key: 'north', label: 'North Chicago',  dmMatch: ['dhorajiwala'] },     // Imaad Dhorajiwala: Glenview, Skokie, Uptown, Evanston, Kildeer, Round Lake Beach
+  { key: 'south', label: 'South Chicago',  dmMatch: ['carrillo'],
+    storeMatch: ['calumet city'] },                                        // Juan Carrillo: Burbank, Frankfort, Tinley Park, Bourbonnais, Evergreen Park, Dekalb, Calumet City (DM blank in spreadsheet)
+  { key: 'nwi',   label: 'NW Indiana',     dmMatch: ['cabrales'] },        // Jacob Cabrales: Hammond, Valparaiso, Cicero, Schererville, Michigan City, Elkhart, South Bend
+  { key: 'tn',    label: 'Tennessee',      dmMatch: ['brooks'] },          // Matthew Brooks: Greeneville, South Knoxville, Johnson City, Oak Ridge
+];
+
+// Maps a store name (as it appears in Store Rank) to the name used in the
+// T-Sheets system, when they differ. Mirrors the Yesterday's-Conversion repo.
+const TSHEET_NAME_BY_STORE = {
+  'South Skokie': 'Skokie Xfinity Store',
 };
 
 let state = {
   stores: [],
+  currentDistrict: 'all',
+  currentStore: 'all',                   // 'all' or a specific store name
+  yesterday: { rows: {}, tsheets: {}, date: null, loaded: false, error: null },
   reps: [],
   promos: null,
   currentSlide: 0,
@@ -197,6 +407,205 @@ let state = {
   lastRefresh: null,
   slides: [],
 };
+
+// === DAY COLOR + DISTRICT HELPERS ===
+function applyDayColor() {
+  const day = DAY_COLORS[new Date().getDay()];
+  const root = document.documentElement;
+  root.style.setProperty('--day-accent', day.primary);
+  root.style.setProperty('--day-accent2', day.secondary);
+  // Build a glow color from the primary by appending an alpha channel.
+  const hex = day.primary.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  root.style.setProperty('--day-glow', `rgba(${r},${g},${b},0.55)`);
+  root.style.setProperty('--day-name', `'${day.name}'`);
+}
+// Reapply at midnight so a long-running TV display picks up the new color
+// without needing a manual reload.
+function scheduleDayColorAtMidnight() {
+  const now = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+  const ms = tomorrow - now;
+  setTimeout(() => { applyDayColor(); render(); scheduleDayColorAtMidnight(); }, ms);
+}
+
+function getDayInfo() {
+  return DAY_COLORS[new Date().getDay()];
+}
+
+function getActiveDistrict() {
+  return DISTRICTS.find(d => d.key === state.currentDistrict) || DISTRICTS[0];
+}
+
+function storeMatchesDistrict(store, dist) {
+  if (!dist || !dist.dmMatch) return true;
+  const dm = String(store.dm || '').toLowerCase();
+  if (dist.dmMatch.some(m => dm.includes(m))) return true;
+  // Fallback: also match by store name when configured (catches new stores
+  // whose DM column hasn't been filled in yet, e.g. Calumet City).
+  if (dist.storeMatch && dist.storeMatch.length) {
+    const name = String(store.name || '').toLowerCase();
+    if (dist.storeMatch.some(m => name.includes(m))) return true;
+  }
+  return false;
+}
+
+function filteredStores() {
+  const dist = getActiveDistrict();
+  if (!dist || !dist.dmMatch) return state.stores;
+  return state.stores.filter(s => storeMatchesDistrict(s, dist));
+}
+
+function districtCount(distKey) {
+  const dist = DISTRICTS.find(d => d.key === distKey);
+  if (!dist) return 0;
+  if (!dist.dmMatch) return state.stores.length;
+  return state.stores.filter(s => storeMatchesDistrict(s, dist)).length;
+}
+
+function setDistrict(key) {
+  if (state.currentDistrict === key) return;
+  state.currentDistrict = key;
+  // Switching districts always clears the per-store filter so it doesn't
+  // confusingly retain a store from a different district.
+  state.currentStore = 'all';
+  // Rebuild the slide list because the # of stores changed.
+  buildSlides();
+  state.currentSlide = 0;
+  render();
+  // Reset the auto-advance timer so the next tick starts fresh on the new view.
+  if (state.slideTimer) clearInterval(state.slideTimer);
+  state.slideTimer = setInterval(() => {
+    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
+    render();
+    startCountdown();
+  }, CONFIG.SLIDE_INTERVAL);
+  startCountdown();
+}
+
+// Per-store selector: picking a store also auto-snaps the district to whichever
+// one contains that store, so the slideshow shows: that store + its district + promo every N.
+function setStore(name) {
+  if (state.currentStore === name) return;
+  state.currentStore = name;
+  if (name && name !== 'all') {
+    const dist = findDistrictForStore(name);
+    if (dist) state.currentDistrict = dist.key;
+  }
+  buildSlides();
+  state.currentSlide = 0;
+  render();
+  if (state.slideTimer) clearInterval(state.slideTimer);
+  state.slideTimer = setInterval(() => {
+    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
+    render();
+    startCountdown();
+  }, CONFIG.SLIDE_INTERVAL);
+  startCountdown();
+}
+
+function findDistrictForStore(storeName) {
+  const store = state.stores.find(s => s.name.toLowerCase() === String(storeName).toLowerCase());
+  if (!store) return null;
+  for (const d of DISTRICTS) {
+    if (d.key === 'all') continue;
+    if (storeMatchesDistrict(store, d)) return d;
+  }
+  return null;
+}
+
+// === YESTERDAY'S CONVERSION LOADER ===
+// Pulls the "Zero" tab from the same Sales Report workbook (mobile traffic +
+// MCR per store) and the T-Sheets daily counts from a Google Apps Script.
+function parseZeroSheet(wb) {
+  const sheet = wb.Sheets[CONFIG.ZERO_SHEET];
+  if (!sheet) return {};
+  const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(aoa.length, 10); i++) {
+    if (aoa[i] && aoa[i][0] && String(aoa[i][0]).trim().toLowerCase() === 'store name') {
+      headerIdx = i; break;
+    }
+  }
+  if (headerIdx === -1) return {};
+  const out = {};
+  for (let i = headerIdx + 1; i < aoa.length; i++) {
+    const r = aoa[i];
+    if (!r || !r[0]) continue;
+    const name = String(r[0]).trim();
+    const mobile  = Number(r[2]) || 0;
+    const mcrRaw  = r[7];
+    const traffic = Number(r[8]) || 0;
+    const mcr = (typeof mcrRaw === 'number') ? (mcrRaw <= 1 ? mcrRaw * 100 : mcrRaw) : null;
+    out[name] = { store: name, traffic, mobile, mcr };
+  }
+  return out;
+}
+
+function yesterdayISO() {
+  const d = new Date(); d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+async function loadTSheetCounts() {
+  // The Apps Script returns { submissions: [{store, timestamp, ...}] }.
+  // Group by day, prefer yesterday, fall back to the most recent day with
+  // a healthy submission count (>= 30) so a quiet weekend doesn't break things.
+  const url = CONFIG.TSHEET_API_URL + '?t=' + Date.now();
+  let resp;
+  try { resp = await fetch(url, { method: 'GET' }); }
+  catch (e) { return { counts: {}, date: null, ok: false }; }
+  if (!resp.ok) return { counts: {}, date: null, ok: false };
+  const data = await resp.json().catch(() => null);
+  const subs = (data && data.submissions) || [];
+  if (!subs.length) return { counts: {}, date: null, ok: false };
+  const byDate = {};
+  for (const s of subs) {
+    const ts = s.timestamp; if (!ts) continue;
+    const day = String(ts).slice(0, 10);
+    (byDate[day] = byDate[day] || []).push(s);
+  }
+  const yISO = yesterdayISO();
+  let useDate = byDate[yISO] ? yISO : null;
+  if (!useDate) {
+    const dates = Object.keys(byDate).sort();
+    for (let i = dates.length - 1; i >= 0; i--) {
+      if (byDate[dates[i]].length >= 30) { useDate = dates[i]; break; }
+    }
+    if (!useDate && dates.length) useDate = dates[dates.length - 1];
+  }
+  const raw = {};
+  for (const s of byDate[useDate] || []) {
+    if (!s.store) continue;
+    raw[s.store] = (raw[s.store] || 0) + 1;
+  }
+  // Re-key into our store names.
+  const counts = {};
+  for (const s of state.stores) {
+    const tname = TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store');
+    counts[s.name] = raw[tname] || 0;
+  }
+  return { counts, date: useDate, ok: true };
+}
+
+async function loadYesterday(wb) {
+  try {
+    const rows = parseZeroSheet(wb);
+    let tsheets = { counts: {}, date: null, ok: false };
+    try { tsheets = await loadTSheetCounts(); } catch (e) { /* T-Sheets is optional */ }
+    state.yesterday = {
+      rows,
+      tsheets: tsheets.counts || {},
+      date: tsheets.date,
+      loaded: true,
+      error: null,
+    };
+  } catch (err) {
+    state.yesterday = { rows: {}, tsheets: {}, date: null, loaded: false, error: String(err) };
+  }
+}
 
 // -- DATA LOADING --
 async function loadData() {
@@ -212,6 +621,9 @@ async function loadData() {
     const buf = await resp.arrayBuffer();
     const wb = XLSX.read(buf, { type: 'array' });
     parseWorkbook(wb);
+    // Pull the Yesterday's Conversion data (Zero tab + T-Sheets API).
+    // Awaited so the first render has the data, but a failure is non-fatal.
+    await loadYesterday(wb);
 
     // Always set promo URL -- img onerror handler hides it if missing
     state.promos = CONFIG.PROMO_URL;
@@ -247,6 +659,7 @@ async function loadLocalFile(e) {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: 'array' });
   parseWorkbook(wb);
+  await loadYesterday(wb);
   state.lastRefresh = new Date();
   buildSlides();
   render();
@@ -389,31 +802,70 @@ function parseWorkbook(wb) {
 function buildSlides() {
   state.slides = [];
 
-  // Store overview pages
-  const storePages = Math.ceil(state.stores.length / CONFIG.STORE_CARDS_PER_PAGE);
+  // Apply the currently-selected district filter so only the right stores
+  // appear in the overview pages and the per-store detail slides.
+  const visibleStores = filteredStores();
+
+  // If a single store is selected, surface that store's detail FIRST so it
+  // shows up immediately when the team's TV opens to "their" view. The rest
+  // of the district still rotates through afterwards.
+  let primaryStore = null;
+  if (state.currentStore && state.currentStore !== 'all') {
+    primaryStore = visibleStores.find(s => s.name.toLowerCase() === state.currentStore.toLowerCase());
+    if (primaryStore) {
+      state.slides.push({
+        type: 'store-detail', store: primaryStore,
+        label: 'YOUR STORE — #' + primaryStore.rank + ' ' + primaryStore.name,
+      });
+    }
+  }
+
+  // Store overview pages (filtered to the active district)
+  const storePages = Math.max(1, Math.ceil(visibleStores.length / CONFIG.STORE_CARDS_PER_PAGE));
   for (let i = 0; i < storePages; i++) {
     const label = storePages > 1 ? 'Overview (Pg ' + (i+1) + ')' : 'Store Overview';
     state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
   }
 
-  // Individual store detail slides
-  for (const store of state.stores) {
-    state.slides.push({ type: 'store-detail', store: store, label: '#' + store.rank + ' ' + store.name });
+  // Yesterday's Conversion rollup — one slide per active scope (a district when
+  // filtered, otherwise one per district). Shows traffic / mobile / MCR / T-Charts
+  // pulled from the Sales Report's Zero tab + the T-Sheets API.
+  const districtsToShow = state.currentDistrict === 'all'
+    ? DISTRICTS.filter(d => d.key !== 'all')
+    : DISTRICTS.filter(d => d.key === state.currentDistrict);
+  for (const dist of districtsToShow) {
+    const distStores = state.stores.filter(s => storeMatchesDistrict(s, dist));
+    if (!distStores.length) continue;
+    state.slides.push({
+      type: 'yesterday', title: "YESTERDAY'S CONVERSION",
+      district: dist, stores: distStores,
+      label: "Yesterday — " + dist.label,
+    });
   }
 
-  // Insert promo slides every 4 slides
-  var promoSlide = { type: 'promos', title: 'DAILY PROMOTIONS', label: 'Promotions' };
-  var tempSlides = [];
-  for (var si = 0; si < state.slides.length; si++) {
-    tempSlides.push(state.slides[si]);
-    if ((si + 1) % 4 === 0) {
-      tempSlides.push(promoSlide);
-    }
+  // Individual store detail slides for everyone else in the district
+  // (skip the primaryStore — already shown above).
+  for (const store of visibleStores) {
+    if (primaryStore && store.name === primaryStore.name) continue;
+    state.slides.push({
+      type: 'store-detail', store: store,
+      label: '#' + store.rank + ' ' + store.name,
+    });
   }
-  if (tempSlides.length === 0 || tempSlides[tempSlides.length - 1].type !== 'promos') {
-    tempSlides.push(promoSlide);
+
+  // Force a promo slide every N content slides regardless of selection.
+  const promoSlide = { type: 'promos', title: 'DAILY PROMOTIONS', label: 'Promotions' };
+  const N = CONFIG.PROMO_EVERY_N || 4;
+  const interleaved = [];
+  for (let si = 0; si < state.slides.length; si++) {
+    interleaved.push(state.slides[si]);
+    if ((si + 1) % N === 0) interleaved.push(promoSlide);
   }
-  state.slides = tempSlides;
+  // Always end on a promo so a short slide list (e.g. one store) still shows promos.
+  if (interleaved.length === 0 || interleaved[interleaved.length - 1].type !== 'promos') {
+    interleaved.push(promoSlide);
+  }
+  state.slides = interleaved;
 
   state.totalSlides = state.slides.length;
   state.currentSlide = 0;
@@ -429,8 +881,10 @@ function render() {
 
   if (slide.type === 'stores') {
     slideTitle = 'STORE OVERVIEW';
+    // Always slice from the filtered list so the active district shows only its stores.
+    const visibleStores = filteredStores();
     const start = slide.page * CONFIG.STORE_CARDS_PER_PAGE;
-    const pageStores = state.stores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
+    const pageStores = visibleStores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
     slideContent = renderStoreGrid(pageStores);
   } else if (slide.type === 'store-detail') {
     slideTitle = slide.store.name.toUpperCase() + ' - DETAIL';
@@ -438,11 +892,39 @@ function render() {
   } else if (slide.type === 'promos') {
     slideTitle = 'DAILY PROMOTIONS';
     slideContent = renderPromos();
+  } else if (slide.type === 'yesterday') {
+    slideTitle = "YESTERDAY'S CONVERSION — " + slide.district.label.toUpperCase();
+    slideContent = renderYesterday(slide.district, slide.stores);
   }
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',hour12:true});
+  const dayInfo = getDayInfo();
+
+  // Build district tabs HTML (one per entry in DISTRICTS).
+  const activeDist = state.currentDistrict;
+  const districtTabsHtml = DISTRICTS.map(d => {
+    const cnt = districtCount(d.key);
+    const isActive = d.key === activeDist;
+    return `<div class="district-tab${isActive ? ' active' : ''}" onclick="setDistrict('${d.key}')">${d.label}<span class="district-count">${cnt}</span></div>`;
+  }).join('');
+
+  // Build the per-store dropdown — sorted alphabetically so anyone can find
+  // their store quickly. Picking one auto-snaps the district filter too.
+  const sortedStores = state.stores.slice().sort((a,b) => a.name.localeCompare(b.name));
+  const activeStore = state.currentStore || 'all';
+  const storeOptions = ['<option value="all">All Stores in District</option>']
+    .concat(sortedStores.map(s =>
+      `<option value="${s.name}"${s.name === activeStore ? ' selected' : ''}>${s.name}</option>`
+    )).join('');
+  const storeSelectorHtml = `
+    <div class="store-picker-wrap">
+      <span class="store-picker-label">My Store</span>
+      <select class="store-picker${activeStore !== 'all' ? ' has-selection' : ''}" onchange="setStore(this.value)">
+        ${storeOptions}
+      </select>
+    </div>`;
 
   app.innerHTML = `
     <div class="header">
@@ -458,9 +940,17 @@ function render() {
         <div class="header-center-title">${slideTitle}</div>
       </div>
       <div class="header-right">
-        <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+          <div class="day-badge" title="Accent color rotates daily"><div class="day-dot"></div>${dayInfo.name}</div>
+        </div>
         <div class="datetime">${dateStr} | ${timeStr}</div>
       </div>
+    </div>
+    <div class="district-bar">
+      <span class="district-bar-label">District</span>
+      ${districtTabsHtml}
+      ${storeSelectorHtml}
     </div>
     <div class="progress-bar">
       <select class="slide-select" id="slideSelect" onchange="goSlide(parseInt(this.value))">
@@ -606,6 +1096,97 @@ function renderStoreDetail(s) {
     </div>`;
 }
 
+// === YESTERDAY'S CONVERSION RENDERER ===
+function renderYesterday(district, distStores) {
+  const y = state.yesterday;
+  if (!y || (!y.loaded && !y.error)) {
+    return '<div class="yc-wrap"><div class="yc-empty">Loading yesterday\'s data…</div></div>';
+  }
+  // Build per-store rows for this district by joining the Zero-tab data and
+  // T-Sheet counts onto our store list.
+  const rows = distStores.map(s => {
+    // The Zero tab keys stores by short name (e.g. "Burbank") same as state.stores.
+    const z = y.rows[s.name] || {};
+    const traffic = z.traffic || 0;
+    const mobile  = z.mobile  || 0;
+    const mcr     = (z.mcr != null) ? z.mcr : null;
+    const tcharts = (y.tsheets && y.tsheets[s.name]) || 0;
+    const tpct    = traffic > 0 ? (tcharts / traffic) * 100 : null;
+    return { store: s.name, traffic, mobile, mcr, tcharts, tpct };
+  });
+  // Sort by MCR descending (best at the top)
+  rows.sort((a, b) => (b.mcr ?? -1) - (a.mcr ?? -1));
+
+  // Totals
+  let tTraffic = 0, tMobile = 0, tCharts = 0;
+  for (const r of rows) { tTraffic += r.traffic; tMobile += r.mobile; tCharts += r.tcharts; }
+  const tMcr  = tTraffic > 0 ? (tMobile  / tTraffic) * 100 : null;
+  const tTPct = tTraffic > 0 ? (tCharts  / tTraffic) * 100 : null;
+
+  const pctClass = (p, type) => {
+    if (p == null || isNaN(p)) return 'muted';
+    if (type === 'tpct') return p > 20 ? 'good' : p >= 15 ? 'warn' : 'bad';
+    return p > 7 ? 'good' : p >= 6 ? 'warn' : 'bad';
+  };
+  const pctText = p => (p == null || isNaN(p)) ? '—' : p.toFixed(1) + '%';
+
+  const dateLabel = y.date
+    ? new Date(y.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })
+    : 'Yesterday';
+
+  const tbody = rows.map((r, i) => `
+    <tr>
+      <td style="color:var(--day-accent);font-weight:800;width:36px;">${i + 1}</td>
+      <td style="font-weight:700;color:#fff;">${r.store}</td>
+      <td class="num">${r.traffic.toLocaleString()}</td>
+      <td class="num">${r.mobile.toLocaleString()}</td>
+      <td class="num"><span class="yc-pill ${pctClass(r.mcr, 'mcr')}">${pctText(r.mcr)}</span></td>
+      <td class="num">${r.tcharts.toLocaleString()}</td>
+      <td class="num"><span class="yc-pill ${pctClass(r.tpct, 'tpct')}">${pctText(r.tpct)}</span></td>
+    </tr>`).join('');
+
+  const totalRow = `
+    <tr class="total">
+      <td></td>
+      <td>${district.label.toUpperCase()} TOTAL</td>
+      <td class="num">${tTraffic.toLocaleString()}</td>
+      <td class="num">${tMobile.toLocaleString()}</td>
+      <td class="num"><span class="yc-pill ${pctClass(tMcr, 'mcr')}">${pctText(tMcr)}</span></td>
+      <td class="num">${tCharts.toLocaleString()}</td>
+      <td class="num"><span class="yc-pill ${pctClass(tTPct, 'tpct')}">${pctText(tTPct)}</span></td>
+    </tr>`;
+
+  return `
+    <div class="yc-wrap">
+      <div class="yc-header">
+        <div>
+          <div class="yc-title">${district.label}</div>
+          <div class="yc-subtitle">${dateLabel} · MCR &amp; T-Chart % by store</div>
+        </div>
+      </div>
+      <div class="yc-kpis">
+        <div class="yc-kpi"><div class="yc-kpi-l">Traffic</div><div class="yc-kpi-v">${tTraffic.toLocaleString()}</div></div>
+        <div class="yc-kpi"><div class="yc-kpi-l">Mobile</div><div class="yc-kpi-v">${tMobile.toLocaleString()}</div></div>
+        <div class="yc-kpi"><div class="yc-kpi-l">MCR</div><div class="yc-kpi-v ${pctClass(tMcr,'mcr')}">${pctText(tMcr)}</div></div>
+        <div class="yc-kpi"><div class="yc-kpi-l">T-Charts</div><div class="yc-kpi-v">${tCharts.toLocaleString()}</div></div>
+        <div class="yc-kpi"><div class="yc-kpi-l">T-Chart %</div><div class="yc-kpi-v ${pctClass(tTPct,'tpct')}">${pctText(tTPct)}</div></div>
+      </div>
+      <div class="yc-table">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Store</th>
+            <th class="num">Traffic</th>
+            <th class="num">Mobile</th>
+            <th class="num">MCR</th>
+            <th class="num">T-Charts</th>
+            <th class="num">T-Chart %</th>
+          </tr></thead>
+          <tbody>${tbody}${totalRow}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
 function renderPromos() {
   if (state.promos) {
     const cacheBust = '?t=' + Math.floor(Date.now() / 300000);
@@ -678,6 +1259,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 // -- INIT --
+applyDayColor();
+scheduleDayColorAtMidnight();
 loadData();
 </script>
 </body>
