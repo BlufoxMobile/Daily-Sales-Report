@@ -3098,8 +3098,8 @@
     "pendingUntil": "2026-05-26"
   },
   "2325696936": {
-    "status": "Cancelled Order",
-    "ts": "2026-05-14T21:28:10.848Z",
+    "status": "Closed",
+    "ts": "2026-05-14T21:28:13.799Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
