@@ -3850,5 +3850,11 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge",
     "pendingUntil": "2026-05-26"
+  },
+  "1002278282292059": {
+    "status": "Closed",
+    "ts": "2026-05-14T17:56:32.735Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
   }
 }
