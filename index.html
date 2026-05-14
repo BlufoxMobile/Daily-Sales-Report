@@ -22,16 +22,45 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
 
-  /* === DAY-OF-WEEK ACCENT THEMING ===
-     applyDayColor() rewrites these CSS variables every time the page renders
-     so the accent color changes each day of the week. Defaults below match
-     the original orange so nothing breaks if the script never runs. */
+  /* === DAY-OF-WEEK FULL THEMING ===
+     applyDayColor() rewrites every variable below at page load (and at midnight)
+     so BOTH the accent color AND the entire dark-background palette swap each
+     day. Defaults below match the original blue so nothing breaks if the script
+     never runs. */
   :root {
+    /* Accent (highlights, borders, badges) */
     --day-accent: #e67e22;
     --day-accent2: #f39c12;
     --day-glow: rgba(230,126,34,0.55);
     --day-name: 'DAY';
+    /* Tinted dark surfaces (body, cards, headers) — these replace the hardcoded
+       navy blues so the whole page reads as the day's color family. */
+    --day-bg:    #080e1a;   /* body */
+    --day-bg-2:  #0d1526;   /* header / progress bar dark */
+    --day-bg-3:  #0c1a2e;   /* card surface */
+    --day-bg-4:  #0a1525;   /* card surface alt */
+    --day-line:  #1a2744;   /* subtle borders */
+    --day-line-2:#1a3050;   /* stronger borders */
+    --day-line-3:#14213a;   /* faint dividers */
   }
+  /* Tint the whole page surface with the day color */
+  body { background: var(--day-bg) !important; }
+  .header { background: linear-gradient(180deg, var(--day-bg-2) 0%, var(--day-bg) 100%) !important; }
+  .logo-circle { background: var(--day-line) !important; }
+  .progress-bar { background: var(--day-bg) !important; }
+  .progress-track { background: var(--day-line) !important; }
+  .dot-nav span { background: var(--day-line) !important; }
+  .store-card { background: linear-gradient(135deg, var(--day-bg-3) 0%, var(--day-bg-4) 100%) !important; border-color: var(--day-line-2) !important; }
+  /* District bar overrides the local hardcoded #070d18 we set earlier */
+  .district-bar { background: var(--day-bg) !important; border-bottom-color: var(--day-line-3) !important; }
+  /* Yesterday slide surfaces */
+  .yc-table { background: var(--day-bg-3) !important; border-color: var(--day-line) !important; }
+  .yc-kpi { background: linear-gradient(180deg, var(--day-bg-3), var(--day-bg-4)) !important; border-color: var(--day-line) !important; }
+  .yc-table th { background: var(--day-bg-2) !important; border-bottom-color: var(--day-line) !important; }
+  .yc-table td { border-bottom-color: var(--day-line-3) !important; }
+  /* District-tab borders pick up the day line color */
+  .district-tab { border-color: var(--day-line-2); }
+
   /* Override every place the original hardcoded #e67e22 appeared so the
      day color flows through the whole UI. */
   .header { border-bottom-color: var(--day-accent) !important; }
@@ -126,7 +155,7 @@
     background-image: linear-gradient(45deg, transparent 50%, #0a0f1c 50%),
                       linear-gradient(135deg, #0a0f1c 50%, transparent 50%);
   }
-  .store-picker option { background:#0c1a2e; color:#fff; }
+  .store-picker option { background:var(--day-bg-3); color:#fff; }
 
   /* === YESTERDAY'S CONVERSION SLIDE === */
   .yc-wrap { display:flex; flex-direction:column; height:100%; gap:12px; }
@@ -143,8 +172,8 @@
     display:grid; grid-template-columns:repeat(5,1fr); gap:10px;
   }
   .yc-kpi {
-    background:linear-gradient(180deg,#0d1a2e,#0c1525);
-    border:1px solid #1a2744; border-radius:8px;
+    background:linear-gradient(180deg,var(--day-bg-3),var(--day-bg-4));
+    border:1px solid var(--day-line); border-radius:8px;
     padding:10px 14px;
     position:relative; overflow:hidden;
   }
@@ -159,13 +188,13 @@
   .yc-kpi-v.bad  { color:#e74c3c; }
   .yc-table {
     flex:1; overflow:hidden;
-    background:#0c1525; border:1px solid #1a2744; border-radius:10px;
+    background:var(--day-bg-4); border:1px solid var(--day-line); border-radius:10px;
   }
   .yc-table table { width:100%; border-collapse:collapse; }
   .yc-table th {
     text-align:left; padding:9px 10px; font-size:11px;
     color:#8899aa; letter-spacing:1.5px; text-transform:uppercase;
-    border-bottom:1px solid #1a2744; background:#0a1525;
+    border-bottom:1px solid var(--day-line); background:var(--day-bg-4);
     font-weight:700;
   }
   .yc-table th.num, .yc-table td.num { text-align:right; }
@@ -190,9 +219,9 @@
   .yc-empty { padding:30px; text-align:center; color:#8899aa; font-size:14px; }
 
   /* -- Header -- */
-  .header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,#0d1526 0%,#0a1120 100%); border-bottom:3px solid #e67e22; }
+  .header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,var(--day-bg-2) 0%,var(--day-bg) 100%); border-bottom:3px solid #e67e22; }
   .header-left { display:flex; align-items:center; gap:16px; }
-  .logo-circle { width:56px; height:56px; border-radius:50%; background:#1a2744; display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
+  .logo-circle { width:56px; height:56px; border-radius:50%; background:var(--day-line); display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
   .logo-circle img { width:100%; height:100%; object-fit:cover; }
   .logo-text { font-size:11px; color:#e67e22; font-weight:800; letter-spacing:1.5px; }
   .brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
@@ -211,11 +240,11 @@
   .progress-bar { display:flex; align-items:center; gap:10px; padding:6px 28px; background:#0a1120; }
   .slide-label { font-size:14px; color:#8899aa; min-width:100px; }
   .slide-label b { color:#e67e22; }
-  .progress-track { flex:1; height:4px; background:#1a2744; border-radius:2px; overflow:hidden; }
+  .progress-track { flex:1; height:4px; background:var(--day-line); border-radius:2px; overflow:hidden; }
   .progress-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.5s ease; }
   .slide-type { font-size:11px; color:#e67e22; letter-spacing:2px; font-weight:700; display:flex; align-items:center; gap:8px; }
   .dot-nav { display:flex; gap:4px; }
-  .dot-nav span { width:7px; height:7px; border-radius:50%; background:#1a2744; cursor:pointer; transition:background 0.3s; }
+  .dot-nav span { width:7px; height:7px; border-radius:50%; background:var(--day-line); cursor:pointer; transition:background 0.3s; }
   .dot-nav span.active { background:#e67e22; }
 
   /* -- Slide Container -- */
@@ -223,7 +252,7 @@
 
   /* -- Store Grid -- */
   .store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
-  .store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
+  .store-card { background:linear-gradient(135deg,var(--day-bg-3) 0%,var(--day-bg-4) 100%); border:1px solid var(--day-line-2); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
   .store-card:hover { border-color:#e67e22; }
   .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
   .store-rank { font-size:16px; font-weight:900; color:#e67e22; opacity:0.7; }
@@ -244,8 +273,8 @@
 
   /* -- Rep Grid -- */
   .rep-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; height:100%; align-content:start; }
-  .rep-header-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:#0d1a2e; border-radius:8px; font-size:11px; font-weight:700; color:#8899aa; letter-spacing:1px; }
-  .rep-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:#0c1525; border-radius:6px; border:1px solid #1a2540; font-size:13px; align-items:center; }
+  .rep-header-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:var(--day-bg-2); border-radius:8px; font-size:11px; font-weight:700; color:#8899aa; letter-spacing:1px; }
+  .rep-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:var(--day-bg-4); border-radius:6px; border:1px solid var(--day-line); font-size:13px; align-items:center; }
   .rep-rank { color:#e67e22; font-weight:800; }
   .rep-name { font-weight:700; }
   .rep-store { color:#8899aa; font-size:11px; }
@@ -255,12 +284,12 @@
   .promo-slide { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:20px; }
   .promo-title { font-size:42px; font-weight:900; letter-spacing:3px; color:#e67e22; }
   .promo-content { font-size:24px; color:#ccc; text-align:center; max-width:800px; line-height:1.8; }
-  .promo-badge { background:#1a2744; border:2px solid #e67e22; border-radius:12px; padding:20px 40px; }
+  .promo-badge { background:var(--day-line); border:2px solid #e67e22; border-radius:12px; padding:20px 40px; }
   .promo-empty { color:#5a7a9a; font-size:16px; font-style:italic; }
 
   /* -- Loading / Error -- */
   .loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:16px; }
-  .spinner { width:48px; height:48px; border:4px solid #1a2744; border-top-color:#e67e22; border-radius:50%; animation:spin 1s linear infinite; }
+  .spinner { width:48px; height:48px; border:4px solid var(--day-line); border-top-color:#e67e22; border-radius:50%; animation:spin 1s linear infinite; }
   @keyframes spin { to{transform:rotate(360deg);} }
   .loading-text { color:#8899aa; font-size:14px; }
   .error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
@@ -268,14 +297,14 @@
 
   /* -- Summary Bar -- */
   .summary-bar { grid-column:1/-1; display:flex; gap:20px; }
-  .summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:24px 30px; text-align:center; }
+  .summary-card { flex:1; background:linear-gradient(135deg,var(--day-bg-3),var(--day-bg-4)); border:1px solid var(--day-line-2); border-radius:10px; padding:24px 30px; text-align:center; }
   .summary-label { font-size:26px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
   .summary-value { font-size:56px; font-weight:900; color:#e67e22; margin-top:6px; }
   .summary-sub { font-size:20px; color:#5a7a9a; margin-top:6px; }
 
   /* -- Slide Dropdown -- */
-  .slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:14px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
-  .slide-select option { background:#0d1a2e; color:#fff; }
+  .slide-select { background:var(--day-bg-2); border:1px solid #2a3a5a; color:#e67e22; font-size:14px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
+  .slide-select option { background:var(--day-bg-2); color:#fff; }
   .slide-select:focus { border-color:#e67e22; }
 
   /* -- Countdown bar -- */
@@ -356,16 +385,32 @@ const CONFIG = {
 };
 
 // === DAY-OF-WEEK COLOR PALETTE ===
-// Bold rainbow that shifts the accent color so the team can tell at a glance
-// what day it is on the TV. Sunday = pink, Monday = red, ... Saturday = purple.
+// Each day swaps BOTH the bright accent and the dark surface palette so the
+// whole TV display feels different from yesterday — not just the accent.
+// `bg/bg2/bg3/bg4` are the dark surface tints (body, header, cards) and
+// `line/line2/line3` are the matching tinted borders.
 const DAY_COLORS = {
-  0: { name: 'SUNDAY',    primary: '#ff4d8b', secondary: '#ff80a8' }, // pink
-  1: { name: 'MONDAY',    primary: '#ff3333', secondary: '#ff6666' }, // red
-  2: { name: 'TUESDAY',   primary: '#ff8800', secondary: '#ffa64d' }, // orange
-  3: { name: 'WEDNESDAY', primary: '#ffc400', secondary: '#ffd966' }, // yellow
-  4: { name: 'THURSDAY',  primary: '#1ed760', secondary: '#4dffb0' }, // green
-  5: { name: 'FRIDAY',    primary: '#2979ff', secondary: '#6aadff' }, // blue
-  6: { name: 'SATURDAY',  primary: '#a855f7', secondary: '#c084fc' }, // purple
+  0: { name: 'SUNDAY',    primary: '#ff4d8b', secondary: '#ff80a8',
+       bg:'#1a0a12', bg2:'#26121b', bg3:'#33182a', bg4:'#220f1d',
+       line:'#3d1d2c', line2:'#4d2638', line3:'#26121b' },
+  1: { name: 'MONDAY',    primary: '#ff3333', secondary: '#ff6666',
+       bg:'#1a0808', bg2:'#260e0e', bg3:'#331818', bg4:'#220e0e',
+       line:'#3d1d1d', line2:'#4d2828', line3:'#260e0e' },
+  2: { name: 'TUESDAY',   primary: '#ff8800', secondary: '#ffa64d',
+       bg:'#1a0d00', bg2:'#261408', bg3:'#33200a', bg4:'#221408',
+       line:'#3d2510', line2:'#4d3015', line3:'#261408' },
+  3: { name: 'WEDNESDAY', primary: '#ffc400', secondary: '#ffd966',
+       bg:'#1a1500', bg2:'#26200a', bg3:'#332b0f', bg4:'#22200a',
+       line:'#3d340f', line2:'#4d4015', line3:'#26200a' },
+  4: { name: 'THURSDAY',  primary: '#1ed760', secondary: '#4dffb0',
+       bg:'#051a0e', bg2:'#082617', bg3:'#0a3320', bg4:'#082217',
+       line:'#0d3d28', line2:'#114d33', line3:'#082617' },
+  5: { name: 'FRIDAY',    primary: '#2979ff', secondary: '#6aadff',
+       bg:'#080e1a', bg2:'#0d1526', bg3:'#0c1a2e', bg4:'#0a1525',
+       line:'#1a2744', line2:'#1a3050', line3:'#14213a' },
+  6: { name: 'SATURDAY',  primary: '#a855f7', secondary: '#c084fc',
+       bg:'#110a1a', bg2:'#1a1226', bg3:'#221a33', bg4:'#170f22',
+       line:'#2e2240', line2:'#3d2d52', line3:'#1a1226' },
 };
 
 // === DISTRICTS ===
@@ -414,6 +459,14 @@ function applyDayColor() {
   const root = document.documentElement;
   root.style.setProperty('--day-accent', day.primary);
   root.style.setProperty('--day-accent2', day.secondary);
+  // Tinted dark surface palette so the entire UI shifts each day, not just the accent.
+  root.style.setProperty('--day-bg',     day.bg);
+  root.style.setProperty('--day-bg-2',   day.bg2);
+  root.style.setProperty('--day-bg-3',   day.bg3);
+  root.style.setProperty('--day-bg-4',   day.bg4);
+  root.style.setProperty('--day-line',   day.line);
+  root.style.setProperty('--day-line-2', day.line2);
+  root.style.setProperty('--day-line-3', day.line3);
   // Build a glow color from the primary by appending an alpha channel.
   const hex = day.primary.replace('#', '');
   const r = parseInt(hex.substring(0, 2), 16);
@@ -998,7 +1051,7 @@ function renderStoreGrid(stores) {
   }
   // Fill empty cards
   for (let i = stores.length; i < CONFIG.STORE_CARDS_PER_PAGE; i++) {
-    html += '<div class="store-card" style="opacity:0.15;border:1px dashed #1a3050;"></div>';
+    html += '<div class="store-card" style="opacity:0.15;border:1px dashed var(--day-line-2);"></div>';
   }
   html += '</div>';
   return html;
@@ -1023,7 +1076,7 @@ function renderStoreDetail(s) {
           <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PREM%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:18px;padding:12px 10px;background:#0c1525;border-radius:6px;margin-bottom:4px;border:1px solid #1a2540;align-items:center;">
+          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:18px;padding:12px 10px;background:var(--day-bg-4);border-radius:6px;margin-bottom:4px;border:1px solid var(--day-line);align-items:center;">
             <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
             <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
             <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
@@ -1043,7 +1096,7 @@ function renderStoreDetail(s) {
       <!-- Left column -->
       <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
         <!-- Store Header -->
-        <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:20px 24px;">
+        <div style="background:linear-gradient(135deg,var(--day-bg-3),var(--day-bg-4));border:1px solid var(--day-line-2);border-radius:12px;padding:20px 24px;">
           <div style="display:flex;justify-content:space-between;align-items:start;">
             <div>
               <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
@@ -1058,19 +1111,19 @@ function renderStoreDetail(s) {
         </div>
         <!-- Devices + RGU Row -->
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
-          <div style="background:#0c1a2e;border:1px solid #e67e22;border-radius:10px;padding:16px;text-align:center;">
+          <div style="background:var(--day-bg-3);border:1px solid #e67e22;border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:16px;color:#e67e22;letter-spacing:1px;font-weight:700;">TOTAL RGU</div>
             <div style="font-size:34px;font-weight:900;margin-top:6px;color:#e67e22;">${s.newRGU}</div>
           </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
+          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">MOBILE</div>
             <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
           </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
+          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">TABLET</div>
             <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
           </div>
-          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:16px;text-align:center;">
+          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
             <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">WATCHES</div>
             <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
           </div>
@@ -1194,7 +1247,7 @@ function renderPromos() {
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
       <div style="font-size:13px;font-weight:700;letter-spacing:3px;color:#e67e22;text-transform:uppercase;">XM Daily Promotion Card</div>
       <img src="${state.promos}${cacheBust}"
-           style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid #1a3050;box-shadow:0 0 40px #e67e2222;"
+           style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid var(--day-line-2);box-shadow:0 0 40px #e67e2222;"
            alt="Daily Promotion Card"
            onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
       <div style="display:none;color:#5a7a9a;font-size:15px;font-style:italic;">Promo card image could not be loaded.</div>
