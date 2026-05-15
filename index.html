@@ -762,7 +762,12 @@ function parseWorkbook(wb) {
   const iFiscalCR = headers.findIndex(h => h.toLowerCase().includes('fiscal close rate'));
   const iNonTrad = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
   const iGig = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%') && h.toLowerCase().includes('pts'));
-  const iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
+  // The company renamed "Premium" to "Plus", so the column header is now
+  // "Mobile Plus Mix (%)" (Store Rank column BT). Old "premium mix" header
+  // is kept as a fallback in case an older spreadsheet is uploaded.
+  let iPremium = headers.findIndex(h => h.toLowerCase().includes('mobile plus mix'));
+  if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('plus mix'));
+  if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
   const iNewToUpg = headers.findIndex(h => h.toUpperCase().includes('NEW TO UPGR'));
   const iAccDev = headers.findIndex(h => h.toLowerCase().includes('accessory') && h.toLowerCase().includes('device') && h.toLowerCase().includes('net'));
   const iNPS = headers.findIndex(h => h.toLowerCase().includes('fiscal nps') && !h.toLowerCase().includes('last'));
@@ -814,7 +819,13 @@ function parseWorkbook(wb) {
         riLoc=rc('location'), riDM=rc('dm'),
         riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
         riMobile=rc('mobile mtd'),
-        riPremium=rh.findIndex(h=>h.includes('Premium Mix')),
+        // Same rename: column U on Rep Rank is now "Mobile Plus Mix (%)".
+        riPremium=(function(){
+          let ix=rh.findIndex(h=>h && h.toLowerCase().includes('mobile plus mix'));
+          if(ix<0) ix=rh.findIndex(h=>h && h.toLowerCase().includes('plus mix'));
+          if(ix<0) ix=rh.findIndex(h=>h && h.includes('Premium Mix'));
+          return ix;
+        })(),
         riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
         riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
         const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
@@ -1052,7 +1063,7 @@ function renderStoreGrid(stores) {
           ${m('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
           ${m('NON-TRAD', pct(s.nonTrad), 'blue')}
           ${m('GIG %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${m('PREMIUM', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
+          ${m('PLUS', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
           ${m('NEW->UPG', pct(s.newToUpg), 'blue')}
           ${m('ACCESS', '$'+Math.round(s.accPerDev), 'blue')}
           ${m('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
@@ -1075,7 +1086,8 @@ function renderStoreDetail(s) {
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
-  storeReps.sort((a, b) => b.gp - a.gp);
+  // Sort reps by their company-wide rank (Column A on Rep Rank), best first.
+  storeReps.sort((a, b) => (a.rank || 9999) - (b.rank || 9999));
 
   let repHtml = '';
   if (storeReps.length) {
@@ -1083,7 +1095,7 @@ function renderStoreDetail(s) {
       <div style="margin-top:14px;">
         <div style="font-size:20px;font-weight:800;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
         <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:15px;color:#8899aa;padding:8px 10px;font-weight:700;letter-spacing:0.5px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PREM%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
+          <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PLUS%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
         </div>
         ${storeReps.map(r => `
           <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:18px;padding:12px 10px;background:var(--day-bg-4);border-radius:6px;margin-bottom:4px;border:1px solid var(--day-line);align-items:center;">
@@ -1145,7 +1157,7 @@ function renderStoreDetail(s) {
           ${tile('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
           ${tile('NON-TRAD', pct(s.nonTrad), 'blue')}
           ${tile('GIG PLANS %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${tile('PREMIUM MIX', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
+          ${tile('PLUS MIX', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
           ${tile('NEW->UPGRADE', pct(s.newToUpg), 'blue')}
           ${tile('ACCESSORIES', '$'+Math.round(s.accPerDev), 'blue')}
           ${tile('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
