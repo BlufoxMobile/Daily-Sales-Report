@@ -3171,6 +3171,12 @@
     "store": "Hammond",
     "pendingUntil": "2026-05-18"
   },
+  "2330079196": {
+    "status": "Closed",
+    "ts": "2026-05-16T23:17:20.004Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
