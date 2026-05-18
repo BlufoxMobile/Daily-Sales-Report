@@ -773,14 +773,14 @@
     "store": "Round Lake Beach"
   },
   "2276192001": {
-    "status": "Closed",
-    "ts": "2026-05-12T19:08:56.616Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-18T20:03:14.664Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
   "2276216129": {
-    "status": "Closed",
-    "ts": "2026-05-12T19:08:54.906Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-18T20:03:13.287Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
