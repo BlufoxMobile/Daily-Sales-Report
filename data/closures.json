@@ -3206,6 +3206,13 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2326699162": {
+    "status": "Pending Install",
+    "ts": "2026-05-18T21:02:34.008Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-05-25"
+  },
   "2326713454": {
     "status": "Pending Install",
     "ts": "2026-05-15T16:05:01.128Z",
