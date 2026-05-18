@@ -1381,8 +1381,10 @@
     "store": "Kildeer"
   },
   "2298223629": {
-    "status": "Closed",
-    "ts": "2026-05-02T18:49:32.216Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-18T19:39:17.996Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2298471449": {
     "status": "Closed",
