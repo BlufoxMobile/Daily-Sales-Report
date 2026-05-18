@@ -463,6 +463,38 @@ let state = {
   slides: [],
 };
 
+// === PERSISTED FILTER STATE ===
+// Save the active district and store to localStorage so the TV keeps showing
+// the selected view through data refreshes, browser cache reloads, and
+// re-deploys. The user has to actively pick a different district (or "All
+// Stores") to switch — daily data updates won't unstick their choice.
+const FILTER_STORAGE_KEY = 'c3-slides-filter-v1';
+
+function savePersistedFilters() {
+  try {
+    localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({
+      district: state.currentDistrict,
+      store: state.currentStore,
+    }));
+  } catch (e) { /* localStorage may be unavailable; not fatal */ }
+}
+
+function loadPersistedFilters() {
+  try {
+    const raw = localStorage.getItem(FILTER_STORAGE_KEY);
+    if (!raw) return;
+    const v = JSON.parse(raw);
+    // Only apply the saved district if it still exists in our DISTRICTS list.
+    if (v.district && DISTRICTS.some(d => d.key === v.district)) {
+      state.currentDistrict = v.district;
+    }
+    // Only apply the saved store if it's still a valid store name. We can't
+    // verify against state.stores here (loaded later), so we keep the string
+    // as-is and let buildSlides fall back gracefully if the store vanished.
+    if (v.store) state.currentStore = v.store;
+  } catch (e) { /* corrupt JSON; ignore */ }
+}
+
 // === DAY COLOR + DISTRICT HELPERS ===
 function applyDayColor() {
   const day = DAY_COLORS[new Date().getDay()];
@@ -534,6 +566,7 @@ function setDistrict(key) {
   // Switching districts always clears the per-store filter so it doesn't
   // confusingly retain a store from a different district.
   state.currentStore = 'all';
+  savePersistedFilters();
   // Rebuild the slide list because the # of stores changed.
   buildSlides();
   state.currentSlide = 0;
@@ -557,6 +590,7 @@ function setStore(name) {
     const dist = findDistrictForStore(name);
     if (dist) state.currentDistrict = dist.key;
   }
+  savePersistedFilters();
   buildSlides();
   state.currentSlide = 0;
   render();
@@ -1334,6 +1368,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // -- INIT --
+loadPersistedFilters();
 applyDayColor();
 scheduleDayColorAtMidnight();
 loadData();
