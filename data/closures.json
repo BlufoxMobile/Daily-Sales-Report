@@ -3263,6 +3263,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2328544249": {
+    "status": "Pending Install",
+    "ts": "2026-05-18T20:15:47.772Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park",
+    "pendingUntil": "2026-05-20"
+  },
   "2328597426": {
     "status": "Closed",
     "ts": "2026-05-18T15:11:02.577Z",
