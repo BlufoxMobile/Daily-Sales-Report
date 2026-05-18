@@ -4254,5 +4254,11 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-05-25"
+  },
+  "1002278346712050": {
+    "status": "Can Not Close",
+    "ts": "2026-05-18T20:03:33.143Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   }
 }
