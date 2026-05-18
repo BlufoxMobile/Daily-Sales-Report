@@ -567,8 +567,10 @@
     "store": "Frankfort"
   },
   "2265059686": {
-    "status": "Closed",
-    "ts": "2026-05-03T00:11:19.042Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-18T19:38:44.247Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2265066654": {
     "status": "Closed",
