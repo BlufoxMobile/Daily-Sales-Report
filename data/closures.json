@@ -2992,6 +2992,12 @@
     "store": "Dekalb",
     "pendingUntil": "2026-05-15"
   },
+  "2323799710": {
+    "status": "Can Not Close",
+    "ts": "2026-05-18T20:13:58.512Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2323857173": {
     "status": "Pending Install",
     "ts": "2026-05-12T17:08:14.610Z",
