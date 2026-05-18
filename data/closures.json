@@ -3262,8 +3262,10 @@
     "store": "Elkhart"
   },
   "1002269314232056": {
-    "status": "Pending Install",
-    "ts": "2026-05-02T17:44:14.990Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-18T15:18:48.251Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "1001291887322107": {
     "status": "Pending Install",
