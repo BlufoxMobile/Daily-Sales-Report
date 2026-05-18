@@ -587,8 +587,10 @@
     "store": "Round Lake Beach"
   },
   "2265486992": {
-    "status": "Closed",
-    "ts": "2026-05-05T20:00:40.611Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-18T19:39:29.776Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2265732970": {
     "status": "Can Not Close",
