@@ -3336,6 +3336,12 @@
     "store": "Frankfort",
     "pendingUntil": "2026-05-19"
   },
+  "2329768622": {
+    "status": "Closed",
+    "ts": "2026-05-18T20:25:46.086Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2329919529": {
     "status": "Pending Install",
     "ts": "2026-05-18T19:33:08.461Z",
@@ -3362,6 +3368,18 @@
     "ts": "2026-05-18T16:29:39.344Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond"
+  },
+  "2330216938": {
+    "status": "Closed",
+    "ts": "2026-05-18T20:25:44.997Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
+  "2330251104": {
+    "status": "Closed",
+    "ts": "2026-05-18T20:25:43.717Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   },
   "2331036821": {
     "status": "Closed",
