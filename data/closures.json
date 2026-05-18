@@ -3977,5 +3977,11 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart",
     "pendingUntil": "2026-05-20"
+  },
+  "1001350065932119": {
+    "status": "Can Not Close",
+    "ts": "2026-05-18T15:17:14.891Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
