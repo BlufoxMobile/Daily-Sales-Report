@@ -539,8 +539,10 @@
     "store": "Evergreen Park"
   },
   "2263643292": {
-    "status": "Closed",
-    "ts": "2026-05-05T19:16:01.677Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-18T19:38:48.682Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2263662700": {
     "status": "Can Not Close",
