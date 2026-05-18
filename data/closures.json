@@ -4079,5 +4079,12 @@
     "dm": "Jacob Cabrales",
     "store": "South Bend",
     "pendingUntil": "2026-05-20"
+  },
+  "1002279138512054": {
+    "status": "Pending Install",
+    "ts": "2026-05-18T17:50:23.053Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-05-19"
   }
 }
