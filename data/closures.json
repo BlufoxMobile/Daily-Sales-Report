@@ -3252,11 +3252,35 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2331036821": {
+    "status": "Closed",
+    "ts": "2026-05-18T18:49:26.346Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "2331468823": {
     "status": "Can Not Close",
     "ts": "2026-05-18T16:42:57.089Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
+  },
+  "2331547681": {
+    "status": "Closed",
+    "ts": "2026-05-18T18:49:27.641Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
+  "2331658536": {
+    "status": "Closed",
+    "ts": "2026-05-18T18:49:28.975Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
+  "2331664964": {
+    "status": "Closed",
+    "ts": "2026-05-18T18:49:30.258Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
   },
   "1001290369922103": {
     "status": "Pending Install",
