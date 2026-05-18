@@ -4315,5 +4315,12 @@
     "ts": "2026-05-18T20:41:05.947Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
+  },
+  "1001294542612102": {
+    "status": "Pending Install",
+    "ts": "2026-05-18T20:52:38.211Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville",
+    "pendingUntil": "2026-05-25"
   }
 }
