@@ -3264,6 +3264,12 @@
     "store": "Frankfort",
     "pendingUntil": "2026-05-20"
   },
+  "2329653767": {
+    "status": "Can Not Close",
+    "ts": "2026-05-18T19:31:26.751Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2329999406": {
     "status": "Pending Install",
     "ts": "2026-05-16T23:15:34.660Z",
