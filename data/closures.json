@@ -436,8 +436,10 @@
     "store": "Dekalb"
   },
   "2258684198": {
-    "status": "Closed",
-    "ts": "2026-05-05T19:13:22.906Z"
+    "status": "Can Not Close",
+    "ts": "2026-05-18T19:38:37.815Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2258893763": {
     "status": "Can Not Close",
