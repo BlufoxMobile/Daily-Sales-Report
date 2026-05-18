@@ -2082,11 +2082,10 @@
     "ts": "2026-05-03T16:00:26.461Z"
   },
   "2312873800": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T16:10:00.006Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-18T16:00:09.977Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-05-15"
+    "store": "Cicero"
   },
   "2312890902": {
     "status": "Closed",
