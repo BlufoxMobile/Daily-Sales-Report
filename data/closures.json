@@ -3498,11 +3498,10 @@
     "store": "Elkhart"
   },
   "1002276253452058": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T16:09:48.287Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-18T16:00:01.553Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-05-12"
+    "store": "Cicero"
   },
   "1002276506872052": {
     "status": "Closed",
