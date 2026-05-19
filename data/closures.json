@@ -3372,6 +3372,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2328464579": {
+    "status": "Pending Install",
+    "ts": "2026-05-19T22:18:58.553Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-05-31"
+  },
   "2328544249": {
     "status": "Pending Install",
     "ts": "2026-05-18T20:15:47.772Z",
