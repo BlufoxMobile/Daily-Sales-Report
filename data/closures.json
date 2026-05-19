@@ -3476,6 +3476,12 @@
     "store": "Frankfort",
     "pendingUntil": "2026-05-19"
   },
+  "2329767217": {
+    "status": "Closed",
+    "ts": "2026-05-19T22:22:55.620Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2329768622": {
     "status": "Closed",
     "ts": "2026-05-18T20:25:46.086Z",
@@ -3488,6 +3494,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-05-19"
+  },
+  "2329928523": {
+    "status": "Closed",
+    "ts": "2026-05-19T22:22:54.425Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2329999406": {
     "status": "Pending Install",
