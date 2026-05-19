@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-18T14:32:48.469Z",
+  "updatedAt": "2026-05-19T01:18:31.517Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -38,6 +38,7 @@
     "HDodge@blufoxmobile.com",
     "IDhorajiwala@blufoxmobile.com",
     "ISolis@blufoxmobile.com",
+    "jbilbrey@blufoxmobile.com",
     "jGabbara@blufoxmobile.com",
     "jTrentham@blufoxmobile.com",
     "juCarrillo@blufoxmobile.com",
@@ -81,7 +82,9 @@
     "South Knoxville Xfinity Store": "zSpradling@blufoxmobile.com",
     "Tinley Park Xfinity Store": "sOrozco@blufoxmobile.com",
     "Uptown Xfinity Store": "HDodge@blufoxmobile.com",
-    "Valparaiso Xfinity Store": "EWashington@blufoxmobile.com"
+    "Valparaiso Xfinity Store": "EWashington@blufoxmobile.com",
+    "Bourbonnais Xfinity Store": "jbilbrey@blufoxmobile.com",
+    "South Bend Xfinity Store": "jbilbrey@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -106,7 +109,8 @@
     "South Knoxville Xfinity Store": "mbrooks@blufoxmobile.com",
     "Tinley Park Xfinity Store": "juCarrillo@blufoxmobile.com",
     "Uptown Xfinity Store": "IDhorajiwala@blufoxmobile.com",
-    "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com"
+    "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com",
+    "Evergreen Park Xfinity Store": "juCarrillo@blufoxmobile.com"
   },
   "storeManagerNames": {
     "Burbank Xfinity Store": "Zuri Salazar",
@@ -130,6 +134,8 @@
     "Valparaiso Xfinity Store": "Emari Washington",
     "Uptown Xfinity Store": "Hunter Dodge",
     "Tinley Park Xfinity Store": "Sebas Orozco",
-    "South Knoxville Xfinity Store": "Zoe Spradling"
+    "South Knoxville Xfinity Store": "Zoe Spradling",
+    "Bourbonnais Xfinity Store": "Vacant Position",
+    "South Bend Xfinity Store": "Vacant Position"
   }
 }
