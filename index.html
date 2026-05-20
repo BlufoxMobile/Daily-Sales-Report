@@ -5,370 +5,108 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cook County Cooks - Daily Sales Report</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style></style>
-</head>
-<body>
-<div id="app">
-  <div class="loading-screen" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading Sales Report...</div>
-    <div class="error-text" id="errorMsg" style="display:none"></div>
-    <button class="retry-btn" id="retryBtn" style="display:none" onclick="loadData()">Retry</button>
-  </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
 
-  /* === DAY-OF-WEEK FULL THEMING ===
-     applyDayColor() rewrites every variable below at page load (and at midnight)
-     so BOTH the accent color AND the entire dark-background palette swap each
-     day. Defaults below match the original blue so nothing breaks if the script
-     never runs. */
-  :root {
-    /* Accent (highlights, borders, badges) */
-    --day-accent: #e67e22;
-    --day-accent2: #f39c12;
-    --day-glow: rgba(230,126,34,0.55);
-    --day-name: 'DAY';
-    /* Tinted dark surfaces (body, cards, headers) — these replace the hardcoded
-       navy blues so the whole page reads as the day's color family. */
-    --day-bg:    #080e1a;   /* body */
-    --day-bg-2:  #0d1526;   /* header / progress bar dark */
-    --day-bg-3:  #0c1a2e;   /* card surface */
-    --day-bg-4:  #0a1525;   /* card surface alt */
-    --day-line:  #1a2744;   /* subtle borders */
-    --day-line-2:#1a3050;   /* stronger borders */
-    --day-line-3:#14213a;   /* faint dividers */
-  }
-  /* Tint the whole page surface with the day color */
-  body { background: var(--day-bg) !important; }
-  .header { background: linear-gradient(180deg, var(--day-bg-2) 0%, var(--day-bg) 100%) !important; }
-  .logo-circle { background: var(--day-line) !important; }
-  .progress-bar { background: var(--day-bg) !important; }
-  .progress-track { background: var(--day-line) !important; }
-  .dot-nav span { background: var(--day-line) !important; }
-  .store-card { background: linear-gradient(135deg, var(--day-bg-3) 0%, var(--day-bg-4) 100%) !important; border-color: var(--day-line-2) !important; }
-  /* District bar overrides the local hardcoded #070d18 we set earlier */
-  .district-bar { background: var(--day-bg) !important; border-bottom-color: var(--day-line-3) !important; }
-  /* Yesterday slide surfaces */
-  .yc-table { background: var(--day-bg-3) !important; border-color: var(--day-line) !important; }
-  .yc-kpi { background: linear-gradient(180deg, var(--day-bg-3), var(--day-bg-4)) !important; border-color: var(--day-line) !important; }
-  .yc-table th { background: var(--day-bg-2) !important; border-bottom-color: var(--day-line) !important; }
-  .yc-table td { border-bottom-color: var(--day-line-3) !important; }
-  /* District-tab borders pick up the day line color */
-  .district-tab { border-color: var(--day-line-2); }
+/* -- Header -- */
+.header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,#0d1526 0%,#0a1120 100%); border-bottom:3px solid #e67e22; }
+.header-left { display:flex; align-items:center; gap:16px; }
+.logo-circle { width:56px; height:56px; border-radius:50%; background:#1a2744; display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
+.logo-circle img { width:100%; height:100%; object-fit:cover; }
+.brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
+.brand-title .highlight { color:#e67e22; }
+.brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
+.header-center { text-align:center; }
+.header-center-sub { font-size:10px; color:#8899aa; letter-spacing:3px; }
+.header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:6px; }
+.header-right { text-align:right; display:flex; align-items:center; gap:14px; }
+.live-badge { display:flex; align-items:center; gap:6px; background:#0d2a0d; border:1px solid #2ecc40; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; color:#2ecc40; letter-spacing:1px; }
+.live-dot { width:8px; height:8px; border-radius:50%; background:#2ecc40; animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.datetime { font-size:12px; color:#8899aa; margin-top:6px; }
 
-  /* Override every place the original hardcoded #e67e22 appeared so the
-     day color flows through the whole UI. */
-  .header { border-bottom-color: var(--day-accent) !important; }
-  .logo-circle { border-color: var(--day-accent) !important; }
-  .logo-text { color: var(--day-accent) !important; }
-  .brand-title .highlight { color: var(--day-accent) !important; text-shadow:0 0 14px var(--day-glow); }
-  .header-center-title { color: var(--day-accent) !important; text-shadow:0 0 18px var(--day-glow); }
-  .progress-fill, .countdown-fill { background:linear-gradient(90deg,var(--day-accent),var(--day-accent2)) !important; }
-  .slide-label b, .slide-type { color: var(--day-accent) !important; }
-  .day-badge {
-    display:flex; align-items:center; gap:7px;
-    background:rgba(0,0,0,0.4); border:1.5px solid var(--day-accent);
-    border-radius:20px; padding:5px 14px;
-    font-size:12px; font-weight:800; letter-spacing:2px;
-    color:var(--day-accent); text-transform:uppercase;
-    box-shadow:0 0 14px var(--day-glow);
-  }
-  .day-badge .day-dot {
-    width:9px; height:9px; border-radius:50%;
-    background:var(--day-accent); box-shadow:0 0 10px var(--day-accent);
-  }
+/* -- Slide Progress -- */
+.progress-bar { display:flex; align-items:center; gap:10px; padding:6px 28px; background:#0a1120; }
+.progress-track { flex:1; height:4px; background:#1a2744; border-radius:2px; overflow:hidden; }
+.slide-type { font-size:11px; color:#e67e22; letter-spacing:2px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.dot-nav { display:flex; gap:4px; }
+.dot-nav span { width:7px; height:7px; border-radius:50%; background:#1a2744; cursor:pointer; transition:background 0.3s; }
+.dot-nav span.active { background:#e67e22; }
+.slide-select { background:#0d1a2e; border:1px solid #2a3a5a; color:#e67e22; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
+.slide-select option { background:#0d1a2e; color:#fff; }
+.slide-select:focus { border-color:#e67e22; }
+.countdown-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.1s linear; }
 
-  /* === DISTRICT FILTER TABS === */
-  .district-bar {
-    display:flex; align-items:center; gap:8px;
-    padding:8px 28px; background:#070d18;
-    border-bottom:1px solid #14213a;
-    flex-wrap:wrap;
-  }
-  .district-bar-label {
-    font-size:11px; letter-spacing:3px; color:#8899aa;
-    text-transform:uppercase; font-weight:700;
-    margin-right:6px;
-  }
-  .district-tab {
-    cursor:pointer; padding:6px 16px; border-radius:6px;
-    font-family:'Inter',sans-serif; font-size:12px;
-    font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
-    color:#cdd6e0; background:rgba(255,255,255,0.04);
-    border:1.5px solid #1f2d4a; transition:all 0.18s ease;
-    user-select:none;
-  }
-  .district-tab:hover {
-    background:rgba(255,255,255,0.08);
-    border-color:var(--day-accent); color:#fff;
-  }
-  .district-tab.active {
-    background:var(--day-accent); border-color:var(--day-accent);
-    color:#0a0f1c; box-shadow:0 0 16px var(--day-glow);
-  }
-  .district-tab .district-count {
-    display:inline-block; margin-left:6px; padding:1px 6px;
-    border-radius:10px; background:rgba(0,0,0,0.25);
-    font-size:10px; font-weight:800;
-  }
-  .district-tab.active .district-count {
-    background:rgba(0,0,0,0.35); color:#0a0f1c;
-  }
+/* -- Slide Container -- */
+.slide-container { height:calc(100vh - 100px); padding:8px 20px; overflow:hidden; }
 
-  /* Store picker dropdown — sits beside the district tabs */
-  .store-picker-wrap {
-    margin-left:auto; display:flex; align-items:center; gap:8px;
-  }
-  .store-picker-label {
-    font-size:11px; letter-spacing:3px; color:#8899aa;
-    text-transform:uppercase; font-weight:700;
-  }
-  .store-picker {
-    background:rgba(255,255,255,0.04);
-    border:1.5px solid #1f2d4a;
-    color:#cdd6e0;
-    border-radius:6px;
-    padding:6px 30px 6px 12px;
-    font-family:'Inter',sans-serif;
-    font-size:12px; font-weight:700; letter-spacing:1px;
-    text-transform:uppercase;
-    cursor:pointer;
-    appearance:none;
-    -webkit-appearance:none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--day-accent) 50%),
-                      linear-gradient(135deg, var(--day-accent) 50%, transparent 50%);
-    background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
-    transition: all 0.18s ease;
-  }
-  .store-picker:hover, .store-picker:focus {
-    border-color:var(--day-accent); color:#fff; outline:none;
-  }
-  .store-picker.has-selection {
-    background-color:var(--day-accent); color:#0a0f1c; border-color:var(--day-accent);
-    background-image: linear-gradient(45deg, transparent 50%, #0a0f1c 50%),
-                      linear-gradient(135deg, #0a0f1c 50%, transparent 50%);
-  }
-  .store-picker option { background:var(--day-bg-3); color:#fff; }
+/* -- Store Grid (Overview) -- */
+.store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
+.store-card { background:linear-gradient(135deg,#0c1a2e 0%,#0a1525 100%); border:1px solid #1a3050; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; position:relative; overflow:hidden; transition:border-color 0.3s; }
+.store-card:hover { border-color:#e67e22; }
+.store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
 
-  /* === YESTERDAY'S CONVERSION SLIDE ===
-     Sized for a 43" TV at typical viewing distance (8–10 ft). Text is bumped
-     well past the rest of the deck because this is the slide salespeople
-     will squint at most. The KPI strip and the table are both centered with
-     the same max-width, mirroring the original Yesterday's-Conversion repo. */
-  .yc-wrap { display:flex; flex-direction:column; height:100%; gap:18px; align-items:center; }
-  .yc-header {
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:6px 4px; text-align:center;
-  }
-  .yc-title {
-    font-size:36px; font-weight:900; color:var(--day-accent);
-    letter-spacing:2.5px; text-transform:uppercase;
-    text-shadow:0 0 22px var(--day-glow); line-height:1;
-  }
-  .yc-subtitle { font-size:18px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
-  .yc-kpis {
-    display:grid; grid-template-columns:repeat(5,1fr); gap:14px;
-    max-width:1180px; width:100%;
-  }
-  .yc-kpi {
-    background:linear-gradient(180deg,var(--day-bg-3),var(--day-bg-4));
-    border:1px solid var(--day-line); border-radius:10px;
-    padding:14px 18px;
-    position:relative; overflow:hidden;
-    text-align:center;
-  }
-  .yc-kpi::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:3px;
-    background:var(--day-accent); opacity:0.75;
-  }
-  .yc-kpi-l { font-size:13px; color:#8899aa; letter-spacing:2.5px; font-weight:700; text-transform:uppercase; margin-bottom:8px; }
-  .yc-kpi-v { font-size:36px; font-weight:900; line-height:1; color:#fff; }
-  .yc-kpi-v.good { color:#2ecc40; }
-  .yc-kpi-v.warn { color:#f39c12; }
-  .yc-kpi-v.bad  { color:#e74c3c; }
-  /* Centered table card */
-  .yc-table {
-    flex:1; overflow:hidden;
-    background:var(--day-bg-3); border:1px solid var(--day-line); border-radius:14px;
-    max-width:1180px; width:100%;
-  }
-  .yc-table table { width:100%; border-collapse:collapse; }
-  .yc-table th {
-    text-align:left; padding:18px 22px; font-size:15px;
-    color:#8899aa; letter-spacing:2px; text-transform:uppercase;
-    border-bottom:1px solid var(--day-line); background:var(--day-bg-4);
-    font-weight:700;
-  }
-  .yc-table th.num, .yc-table td.num { text-align:right; }
-  .yc-table td {
-    padding:16px 22px; font-size:21px; color:#cdd6e0;
-    border-bottom:1px solid var(--day-line-3);
-  }
-  .yc-table tr:last-child td { border-bottom:none; }
-  .yc-table tr.total td {
-    background:rgba(255,255,255,0.04);
-    color:#fff; font-weight:800; font-size:22px;
-    border-top:2px solid var(--day-accent);
-    padding:18px 22px;
-  }
-  .yc-pill {
-    display:inline-block; padding:5px 14px; border-radius:14px;
-    font-weight:800; font-size:19px; min-width:78px; text-align:center;
-  }
-  .yc-pill.good { background:rgba(46,204,64,0.15); color:#2ecc40; }
-  .yc-pill.warn { background:rgba(243,156,18,0.15); color:#f39c12; }
-  .yc-pill.bad  { background:rgba(231,76,60,0.15); color:#e74c3c; }
-  .yc-pill.muted{ background:rgba(255,255,255,0.06); color:#8899aa; }
-  .yc-empty { padding:30px; text-align:center; color:#8899aa; font-size:14px; }
+/* -- Metric Boxes -- */
+.metric { flex:1; text-align:center; border-radius:6px; padding:5px 2px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.metric-label { font-weight:700; letter-spacing:1px; color:#ffffff88; }
+.metric-value { font-weight:800; }
+.metric.green { background:#0d2a1a; color:#2ecc40; }
+.metric.yellow { background:#2a2a0d; color:#f1c40f; }
+.metric.red { background:#2a0d0d; color:#e74c3c; }
+.metric.blue { background:#0d1a2a; color:#3498db; }
 
-  /* -- Header -- */
-  .header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,var(--day-bg-2) 0%,var(--day-bg) 100%); border-bottom:3px solid #e67e22; }
-  .header-left { display:flex; align-items:center; gap:16px; }
-  .logo-circle { width:56px; height:56px; border-radius:50%; background:var(--day-line); display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
-  .logo-circle img { width:100%; height:100%; object-fit:cover; }
-  .logo-text { font-size:11px; color:#e67e22; font-weight:800; letter-spacing:1.5px; }
-  .brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
-  .brand-title .highlight { color:#e67e22; }
-  .brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
-  .header-center { text-align:center; }
-  .header-center-sub { font-size:11px; color:#8899aa; letter-spacing:3px; }
-  .header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:6px; }
-  .header-right { text-align:right; display:flex; align-items:center; gap:14px; }
-  .live-badge { display:flex; align-items:center; gap:6px; background:#0d2a0d; border:1px solid #2ecc40; border-radius:20px; padding:6px 16px; font-size:14px; font-weight:700; color:#2ecc40; letter-spacing:1px; }
-  .live-dot { width:8px; height:8px; border-radius:50%; background:#2ecc40; animation:pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-  .datetime { font-size:14px; color:#8899aa; margin-top:6px; }
+/* -- Rep Grid -- */
+.rep-grid { display:grid; gap:0; height:100%; align-content:start; overflow:hidden; }
 
-  /* -- Slide Progress -- */
-  .progress-bar { display:flex; align-items:center; gap:10px; padding:6px 28px; background:#0a1120; }
-  .slide-label { font-size:14px; color:#8899aa; min-width:100px; }
-  .slide-label b { color:#e67e22; }
-  .progress-track { flex:1; height:4px; background:var(--day-line); border-radius:2px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.5s ease; }
-  .slide-type { font-size:11px; color:#e67e22; letter-spacing:2px; font-weight:700; display:flex; align-items:center; gap:8px; }
-  .dot-nav { display:flex; gap:4px; }
-  .dot-nav span { width:7px; height:7px; border-radius:50%; background:var(--day-line); cursor:pointer; transition:background 0.3s; }
-  .dot-nav span.active { background:#e67e22; }
+/* -- Promo Slide -- */
+.promo-slide { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:20px; }
+.promo-title { font-size:32px; font-weight:900; letter-spacing:3px; color:#e67e22; }
+.promo-badge { background:#1a2744; border:2px solid #e67e22; border-radius:12px; padding:20px 40px; }
+.promo-empty { color:#5a7a9a; font-size:16px; font-style:italic; }
 
-  /* -- Slide Container -- */
-  .slide-container { height:calc(100vh - 100px); padding:8px 20px; overflow:hidden; }
+/* -- Loading / Error -- */
+.loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:16px; }
+.spinner { width:48px; height:48px; border:4px solid #1a2744; border-top-color:#e67e22; border-radius:50%; animation:spin 1s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg);} }
+.loading-text { color:#8899aa; font-size:14px; }
+.error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
+.retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
 
-  /* -- Store Grid -- */
-  .store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
-  .store-card { background:linear-gradient(135deg,var(--day-bg-3) 0%,var(--day-bg-4) 100%); border:1px solid var(--day-line-2); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
-  .store-card:hover { border-color:#e67e22; }
-  .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
-  .store-rank { font-size:16px; font-weight:900; color:#e67e22; opacity:0.7; }
-  .store-name { font-size:17px; font-weight:800; color:#fff; margin-top:1px; }
-  .store-gp { font-size:30px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .store-gp-sub { font-size:12px; color:#5a7a9a; margin-top:6px; }
-  .store-gp-sub .green { color:#2ecc40; }
-  .store-gp-sub .red { color:#e74c3c; }
+/* -- Summary Bar -- */
+.summary-bar { grid-column:1/-1; display:flex; gap:20px; }
+.summary-card { flex:1; background:linear-gradient(135deg,#0c1a2e,#0a1525); border:1px solid #1a3050; border-radius:10px; padding:24px 30px; text-align:center; }
+.summary-label { font-size:20px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
+.summary-value { font-size:44px; font-weight:900; color:#e67e22; margin-top:6px; }
+.summary-sub { font-size:16px; color:#5a7a9a; margin-top:6px; }
 
-  .store-metrics { display:flex; gap:6px; margin-top:auto; }
-  .metric { flex:1; text-align:center; border-radius:6px; padding:5px 2px; }
-  .metric-label { font-size:14px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
-  .metric-value { font-size:18px; font-weight:800; }
-  .metric.green { background:#0d2a1a; color:#2ecc40; }
-  .metric.yellow { background:#2a2a0d; color:#f1c40f; }
-  .metric.red { background:#2a0d0d; color:#e74c3c; }
-  .metric.blue { background:#0d1a2a; color:#3498db; }
-
-  /* -- Rep Grid -- */
-  .rep-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; height:100%; align-content:start; }
-  .rep-header-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:var(--day-bg-2); border-radius:8px; font-size:11px; font-weight:700; color:#8899aa; letter-spacing:1px; }
-  .rep-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:var(--day-bg-4); border-radius:6px; border:1px solid var(--day-line); font-size:13px; align-items:center; }
-  .rep-rank { color:#e67e22; font-weight:800; }
-  .rep-name { font-weight:700; }
-  .rep-store { color:#8899aa; font-size:11px; }
-  .rep-val { text-align:center; font-weight:700; }
-
-  /* -- Promo Slide -- */
-  .promo-slide { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:20px; }
-  .promo-title { font-size:42px; font-weight:900; letter-spacing:3px; color:#e67e22; }
-  .promo-content { font-size:24px; color:#ccc; text-align:center; max-width:800px; line-height:1.8; }
-  .promo-badge { background:var(--day-line); border:2px solid #e67e22; border-radius:12px; padding:20px 40px; }
-  .promo-empty { color:#5a7a9a; font-size:16px; font-style:italic; }
-
-  /* -- Loading / Error -- */
-  .loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:16px; }
-  .spinner { width:48px; height:48px; border:4px solid var(--day-line); border-top-color:#e67e22; border-radius:50%; animation:spin 1s linear infinite; }
-  @keyframes spin { to{transform:rotate(360deg);} }
-  .loading-text { color:#8899aa; font-size:14px; }
-  .error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
-  .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
-
-  /* -- Summary Bar -- */
-  .summary-bar { grid-column:1/-1; display:flex; gap:20px; }
-  .summary-card { flex:1; background:linear-gradient(135deg,var(--day-bg-3),var(--day-bg-4)); border:1px solid var(--day-line-2); border-radius:10px; padding:24px 30px; text-align:center; }
-  .summary-label { font-size:26px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
-  .summary-value { font-size:56px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .summary-sub { font-size:20px; color:#5a7a9a; margin-top:6px; }
-
-  /* -- Slide Dropdown -- */
-  .slide-select { background:var(--day-bg-2); border:1px solid #2a3a5a; color:#e67e22; font-size:14px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
-  .slide-select option { background:var(--day-bg-2); color:#fff; }
-  .slide-select:focus { border-color:#e67e22; }
-
-  /* -- Countdown bar -- */
-  .countdown-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.1s linear; }
-
-
-  /* -- Auto-scale for large screens / TVs -- */
-  @media (min-width:1600px) {
-    .metric-label { font-size:max(14px, 0.9vw) !important; }
-    .metric-value { font-size:max(18px, 1.2vw) !important; }
-    .store-name { font-size:max(17px, 1.1vw); }
-    .store-gp { font-size:max(30px, 1.8vw); }
-    .store-gp-sub { font-size:max(12px, 0.75vw); }
-    .summary-value { font-size:max(28px, 2.5vw); }
-    .summary-label { font-size:max(14px, 1vw); }
-    .summary-sub { font-size:max(11px, 0.7vw); }
-  }
-
-  /* -- Mobile responsive -- */
-  @media (max-width:900px) {
-    .header-center { display:none; }
-    .store-grid { grid-template-columns:repeat(2,1fr); grid-template-rows:auto; overflow-y:auto; }
-    .rep-header-row, .rep-row { grid-template-columns:40px 1fr 90px 70px 70px; font-size:11px; padding:6px 8px; }
-    .rep-header-row > *:nth-child(n+6), .rep-row > *:nth-child(n+6) { display:none; }
-  }
-  @media (max-width:600px) {
-    .header { padding:6px 10px; }
-    .logo-circle { width:38px; height:38px; }
-    .brand-title { font-size:15px; }
-    .brand-sub { font-size:9px; letter-spacing:1px; }
-    .live-badge { padding:4px 8px; font-size:10px; }
-    .datetime { font-size:10px; }
-    .slide-container { height:calc(100vh - 88px); padding:4px 8px; overflow-y:auto; }
-    .progress-bar { padding:4px 10px; gap:6px; }
-    .slide-label { font-size:10px; min-width:60px; }
-    .slide-select { max-width:130px; font-size:11px; padding:3px 6px; }
-    .store-grid { grid-template-columns:1fr 1fr; gap:6px; }
-    .store-card { padding:10px 10px; }
-    .store-gp { font-size:20px; }
-    .store-name { font-size:13px; }
-    .metric-value { font-size:12px; }
-    .metric-label { font-size:7px; }
-    .dot-nav { display:none; }
-    .rep-header-row, .rep-row { grid-template-columns:32px 1fr 70px 60px; font-size:10px; }
-    .rep-header-row > *:nth-child(n+5), .rep-row > *:nth-child(n+5) { display:none; }
-  }
-  @media (max-width:400px) {
-    .store-grid { grid-template-columns:1fr; }
-    .header-right .live-badge { display:none; }
-  }
+/* -- Mobile responsive -- */
+@media (max-width:900px) {
+  .header-center { display:none; }
+  .store-grid { grid-template-columns:repeat(2,1fr); grid-template-rows:auto; overflow-y:auto; }
+}
+@media (max-width:600px) {
+  .header { padding:6px 10px; }
+  .logo-circle { width:38px; height:38px; }
+  .brand-title { font-size:15px; }
+  .brand-sub { font-size:9px; letter-spacing:1px; }
+  .live-badge { padding:4px 8px; font-size:10px; }
+  .datetime { font-size:10px; }
+  .slide-container { height:calc(100vh - 88px); padding:4px 8px; overflow-y:auto; }
+  .progress-bar { padding:4px 10px; gap:6px; }
+  .slide-select { max-width:130px; font-size:11px; padding:3px 6px; }
+  .store-grid { grid-template-columns:1fr 1fr; gap:6px; }
+  .store-card { padding:10px 10px; }
+  .dot-nav { display:none; }
+}
+@media (max-width:400px) {
+  .store-grid { grid-template-columns:1fr; }
+  .header-right .live-badge { display:none; }
+}
 </style>
 </head>
 <body>
-
 <div id="app">
   <div class="loading-screen" id="loading">
     <div class="spinner"></div>
@@ -377,340 +115,44 @@
     <button class="retry-btn" id="retryBtn" style="display:none" onclick="loadData()">Retry</button>
   </div>
 </div>
-
 <script>
-// -- CONFIG --
+// ========== CONFIG ==========
 const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
   EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
   PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
-  SLIDE_INTERVAL: 15000,     // 15 seconds per slide
-  REFRESH_INTERVAL: 1800000, // 30 minutes data refresh
+  SLIDE_INTERVAL: 15000,
+  REFRESH_INTERVAL: 1800000,
   STORE_CARDS_PER_PAGE: 6,
   REPS_PER_PAGE: 14,
-  PROMO_EVERY_N: 4,                      // insert a promo slide after every N content slides
-  // Yesterday's Conversion data sources (mirror Yesterday's-Conversion repo)
-  ZERO_SHEET: 'Zero',                    // tab in Sales Report.xlsx with traffic+MCR
-  TSHEET_API_URL: 'https://script.google.com/macros/s/AKfycbyQaa1yvggLJuw5dcme74vwAW3hSB3BvzCK40IhLThy-F8KZDFOF6gcyl8psNMd3yD-Cg/exec',
-};
-
-// === DAY-OF-WEEK COLOR PALETTE ===
-// Each day swaps BOTH the bright accent and the dark surface palette so the
-// whole TV display feels different from yesterday — not just the accent.
-// `bg/bg2/bg3/bg4` are the dark surface tints (body, header, cards) and
-// `line/line2/line3` are the matching tinted borders.
-const DAY_COLORS = {
-  0: { name: 'SUNDAY',    primary: '#ff4d8b', secondary: '#ff80a8',
-       bg:'#1a0a12', bg2:'#26121b', bg3:'#33182a', bg4:'#220f1d',
-       line:'#3d1d2c', line2:'#4d2638', line3:'#26121b' },
-  1: { name: 'MONDAY',    primary: '#ff3333', secondary: '#ff6666',
-       bg:'#1a0808', bg2:'#260e0e', bg3:'#331818', bg4:'#220e0e',
-       line:'#3d1d1d', line2:'#4d2828', line3:'#260e0e' },
-  2: { name: 'TUESDAY',   primary: '#ff8800', secondary: '#ffa64d',
-       bg:'#1a0d00', bg2:'#261408', bg3:'#33200a', bg4:'#221408',
-       line:'#3d2510', line2:'#4d3015', line3:'#261408' },
-  3: { name: 'WEDNESDAY', primary: '#ffc400', secondary: '#ffd966',
-       bg:'#1a1500', bg2:'#26200a', bg3:'#332b0f', bg4:'#22200a',
-       line:'#3d340f', line2:'#4d4015', line3:'#26200a' },
-  4: { name: 'THURSDAY',  primary: '#1ed760', secondary: '#4dffb0',
-       bg:'#051a0e', bg2:'#082617', bg3:'#0a3320', bg4:'#082217',
-       line:'#0d3d28', line2:'#114d33', line3:'#082617' },
-  5: { name: 'FRIDAY',    primary: '#2979ff', secondary: '#6aadff',
-       bg:'#080e1a', bg2:'#0d1526', bg3:'#0c1a2e', bg4:'#0a1525',
-       line:'#1a2744', line2:'#1a3050', line3:'#14213a' },
-  6: { name: 'SATURDAY',  primary: '#a855f7', secondary: '#c084fc',
-       bg:'#110a1a', bg2:'#1a1226', bg3:'#221a33', bg4:'#170f22',
-       line:'#2e2240', line2:'#3d2d52', line3:'#1a1226' },
-};
-
-// === DISTRICTS ===
-// Stores are mapped to a District Manager in the source spreadsheet's "DM"
-// column. We group them into geographic districts based on those assignments.
-// `dmMatch` is a list of substrings; a store belongs to the district if its
-// `dm` field contains any of them (case-insensitive). `storeMatch` is an
-// optional safety-net list of store-name substrings — used when a brand-new
-// store hasn't been assigned a DM in the spreadsheet yet. Rename labels
-// freely — the matching logic only depends on `dmMatch` / `storeMatch`.
-const DISTRICTS = [
-  { key: 'all',   label: 'All Stores',     dmMatch: null },
-  { key: 'north', label: 'North Chicago',  dmMatch: ['dhorajiwala'] },     // Imaad Dhorajiwala: Glenview, Skokie, Uptown, Evanston, Kildeer, Round Lake Beach
-  { key: 'south', label: 'South Chicago',  dmMatch: ['carrillo'],
-    storeMatch: ['calumet city'] },                                        // Juan Carrillo: Burbank, Frankfort, Tinley Park, Bourbonnais, Evergreen Park, Dekalb, Calumet City (DM blank in spreadsheet)
-  { key: 'nwi',   label: 'NW Indiana',     dmMatch: ['cabrales'] },        // Jacob Cabrales: Hammond, Valparaiso, Cicero, Schererville, Michigan City, Elkhart, South Bend
-  { key: 'tn',    label: 'Tennessee',      dmMatch: ['brooks'] },          // Matthew Brooks: Greeneville, South Knoxville, Johnson City, Oak Ridge
-];
-
-// Maps a store name (as it appears in Store Rank) to the name used in the
-// T-Sheets system, when they differ. Mirrors the Yesterday's-Conversion repo.
-const TSHEET_NAME_BY_STORE = {
-  'South Skokie': 'Skokie Xfinity Store',
+  RAISE_REPS_PER_PAGE: 16,
+  PROMO_EVERY: 4,
 };
 
 let state = {
-  stores: [],
-  currentDistrict: 'all',
-  currentStore: 'all',                   // 'all' or a specific store name
-  yesterday: { rows: {}, tsheets: {}, date: null, loaded: false, error: null },
-  reps: [],
-  promos: null,
-  currentSlide: 0,
-  totalSlides: 0,
-  slideTimer: null,
-  refreshTimer: null,
-  countdownTimer: null,
-  countdownStart: null,
-  lastRefresh: null,
-  slides: [],
+  stores: [], reps: [], promos: null,
+  raiseMonths: [], raiseDistricts: {},
+  districts: [], regions: [],
+  currentSlide: 0, totalSlides: 0,
+  slideTimer: null, refreshTimer: null,
+  countdownTimer: null, countdownStart: null,
+  lastRefresh: null, slides: [],
 };
 
-// === PERSISTED FILTER STATE ===
-// Save the active district and store to localStorage so the TV keeps showing
-// the selected view through data refreshes, browser cache reloads, and
-// re-deploys. The user has to actively pick a different district (or "All
-// Stores") to switch — daily data updates won't unstick their choice.
-const FILTER_STORAGE_KEY = 'c3-slides-filter-v1';
+// ========== HELPERS ==========
+const fmt = {
+  dollar: v => v != null && v !== 0 ? '$' + Math.round(Math.abs(v)).toLocaleString() : '--',
+  signDollar: v => v != null && v !== 0 ? (v >= 0 ? '+$' : '-$') + Math.round(Math.abs(v)).toLocaleString() : '--',
+  pct: v => v != null && v !== 0 ? (v * 100).toFixed(1) + '%' : '--',
+  num: v => v != null && v !== 0 ? v : '--',
+};
 
-function savePersistedFilters() {
-  try {
-    localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({
-      district: state.currentDistrict,
-      store: state.currentStore,
-    }));
-  } catch (e) { /* localStorage may be unavailable; not fatal */ }
-}
-
-function loadPersistedFilters() {
-  try {
-    const raw = localStorage.getItem(FILTER_STORAGE_KEY);
-    if (!raw) return;
-    const v = JSON.parse(raw);
-    // Only apply the saved district if it still exists in our DISTRICTS list.
-    if (v.district && DISTRICTS.some(d => d.key === v.district)) {
-      state.currentDistrict = v.district;
-    }
-    // Only apply the saved store if it's still a valid store name. We can't
-    // verify against state.stores here (loaded later), so we keep the string
-    // as-is and let buildSlides fall back gracefully if the store vanished.
-    if (v.store) state.currentStore = v.store;
-  } catch (e) { /* corrupt JSON; ignore */ }
-}
-
-// === DAY COLOR + DISTRICT HELPERS ===
-function applyDayColor() {
-  const day = DAY_COLORS[new Date().getDay()];
-  const root = document.documentElement;
-  root.style.setProperty('--day-accent', day.primary);
-  root.style.setProperty('--day-accent2', day.secondary);
-  // Tinted dark surface palette so the entire UI shifts each day, not just the accent.
-  root.style.setProperty('--day-bg',     day.bg);
-  root.style.setProperty('--day-bg-2',   day.bg2);
-  root.style.setProperty('--day-bg-3',   day.bg3);
-  root.style.setProperty('--day-bg-4',   day.bg4);
-  root.style.setProperty('--day-line',   day.line);
-  root.style.setProperty('--day-line-2', day.line2);
-  root.style.setProperty('--day-line-3', day.line3);
-  // Build a glow color from the primary by appending an alpha channel.
-  const hex = day.primary.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  root.style.setProperty('--day-glow', `rgba(${r},${g},${b},0.55)`);
-  root.style.setProperty('--day-name', `'${day.name}'`);
-}
-// Reapply at midnight so a long-running TV display picks up the new color
-// without needing a manual reload.
-function scheduleDayColorAtMidnight() {
-  const now = new Date();
-  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
-  const ms = tomorrow - now;
-  setTimeout(() => { applyDayColor(); render(); scheduleDayColorAtMidnight(); }, ms);
-}
-
-function getDayInfo() {
-  return DAY_COLORS[new Date().getDay()];
-}
-
-function getActiveDistrict() {
-  return DISTRICTS.find(d => d.key === state.currentDistrict) || DISTRICTS[0];
-}
-
-function storeMatchesDistrict(store, dist) {
-  if (!dist || !dist.dmMatch) return true;
-  const dm = String(store.dm || '').toLowerCase();
-  if (dist.dmMatch.some(m => dm.includes(m))) return true;
-  // Fallback: also match by store name when configured (catches new stores
-  // whose DM column hasn't been filled in yet, e.g. Calumet City).
-  if (dist.storeMatch && dist.storeMatch.length) {
-    const name = String(store.name || '').toLowerCase();
-    if (dist.storeMatch.some(m => name.includes(m))) return true;
-  }
-  return false;
-}
-
-function filteredStores() {
-  const dist = getActiveDistrict();
-  if (!dist || !dist.dmMatch) return state.stores;
-  return state.stores.filter(s => storeMatchesDistrict(s, dist));
-}
-
-function districtCount(distKey) {
-  const dist = DISTRICTS.find(d => d.key === distKey);
-  if (!dist) return 0;
-  if (!dist.dmMatch) return state.stores.length;
-  return state.stores.filter(s => storeMatchesDistrict(s, dist)).length;
-}
-
-function setDistrict(key) {
-  if (state.currentDistrict === key) return;
-  state.currentDistrict = key;
-  // Switching districts always clears the per-store filter so it doesn't
-  // confusingly retain a store from a different district.
-  state.currentStore = 'all';
-  savePersistedFilters();
-  // Rebuild the slide list because the # of stores changed.
-  buildSlides();
-  state.currentSlide = 0;
-  render();
-  // Reset the auto-advance timer so the next tick starts fresh on the new view.
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
-}
-
-// Per-store selector: picking a store also auto-snaps the district to whichever
-// one contains that store, so the slideshow shows: that store + its district + promo every N.
-function setStore(name) {
-  if (state.currentStore === name) return;
-  state.currentStore = name;
-  if (name && name !== 'all') {
-    const dist = findDistrictForStore(name);
-    if (dist) state.currentDistrict = dist.key;
-  }
-  savePersistedFilters();
-  buildSlides();
-  state.currentSlide = 0;
-  render();
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
-}
-
-function findDistrictForStore(storeName) {
-  const store = state.stores.find(s => s.name.toLowerCase() === String(storeName).toLowerCase());
-  if (!store) return null;
-  for (const d of DISTRICTS) {
-    if (d.key === 'all') continue;
-    if (storeMatchesDistrict(store, d)) return d;
-  }
-  return null;
-}
-
-// === YESTERDAY'S CONVERSION LOADER ===
-// Pulls the "Zero" tab from the same Sales Report workbook (mobile traffic +
-// MCR per store) and the T-Sheets daily counts from a Google Apps Script.
-function parseZeroSheet(wb) {
-  const sheet = wb.Sheets[CONFIG.ZERO_SHEET];
-  if (!sheet) return {};
-  const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
-  let headerIdx = -1;
-  for (let i = 0; i < Math.min(aoa.length, 10); i++) {
-    if (aoa[i] && aoa[i][0] && String(aoa[i][0]).trim().toLowerCase() === 'store name') {
-      headerIdx = i; break;
-    }
-  }
-  if (headerIdx === -1) return {};
-  const out = {};
-  for (let i = headerIdx + 1; i < aoa.length; i++) {
-    const r = aoa[i];
-    if (!r || !r[0]) continue;
-    const name = String(r[0]).trim();
-    const mobile  = Number(r[2]) || 0;
-    const mcrRaw  = r[7];
-    const traffic = Number(r[8]) || 0;
-    const mcr = (typeof mcrRaw === 'number') ? (mcrRaw <= 1 ? mcrRaw * 100 : mcrRaw) : null;
-    out[name] = { store: name, traffic, mobile, mcr };
-  }
-  return out;
-}
-
-function yesterdayISO() {
-  const d = new Date(); d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0, 10);
-}
-
-async function loadTSheetCounts() {
-  // The Apps Script returns { submissions: [{store, timestamp, ...}] }.
-  // Group by day, prefer yesterday, fall back to the most recent day with
-  // a healthy submission count (>= 30) so a quiet weekend doesn't break things.
-  const url = CONFIG.TSHEET_API_URL + '?t=' + Date.now();
-  let resp;
-  try { resp = await fetch(url, { method: 'GET' }); }
-  catch (e) { return { counts: {}, date: null, ok: false }; }
-  if (!resp.ok) return { counts: {}, date: null, ok: false };
-  const data = await resp.json().catch(() => null);
-  const subs = (data && data.submissions) || [];
-  if (!subs.length) return { counts: {}, date: null, ok: false };
-  const byDate = {};
-  for (const s of subs) {
-    const ts = s.timestamp; if (!ts) continue;
-    const day = String(ts).slice(0, 10);
-    (byDate[day] = byDate[day] || []).push(s);
-  }
-  const yISO = yesterdayISO();
-  let useDate = byDate[yISO] ? yISO : null;
-  if (!useDate) {
-    const dates = Object.keys(byDate).sort();
-    for (let i = dates.length - 1; i >= 0; i--) {
-      if (byDate[dates[i]].length >= 30) { useDate = dates[i]; break; }
-    }
-    if (!useDate && dates.length) useDate = dates[dates.length - 1];
-  }
-  const raw = {};
-  for (const s of byDate[useDate] || []) {
-    if (!s.store) continue;
-    raw[s.store] = (raw[s.store] || 0) + 1;
-  }
-  // Re-key into our store names.
-  const counts = {};
-  for (const s of state.stores) {
-    const tname = TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store');
-    counts[s.name] = raw[tname] || 0;
-  }
-  return { counts, date: useDate, ok: true };
-}
-
-async function loadYesterday(wb) {
-  try {
-    const rows = parseZeroSheet(wb);
-    let tsheets = { counts: {}, date: null, ok: false };
-    try { tsheets = await loadTSheetCounts(); } catch (e) { /* T-Sheets is optional */ }
-    state.yesterday = {
-      rows,
-      tsheets: tsheets.counts || {},
-      date: tsheets.date,
-      loaded: true,
-      error: null,
-    };
-  } catch (err) {
-    state.yesterday = { rows: {}, tsheets: {}, date: null, loaded: false, error: String(err) };
-  }
-}
-
-// -- DATA LOADING --
+// ========== DATA LOADING ==========
 async function loadData() {
   const loading = document.getElementById('loading');
   const errorMsg = document.getElementById('errorMsg');
   const retryBtn = document.getElementById('retryBtn');
   if (loading) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; }
-
   try {
     const cacheBust = '?t=' + Date.now();
     const resp = await fetch(CONFIG.EXCEL_URL + cacheBust);
@@ -718,13 +160,7 @@ async function loadData() {
     const buf = await resp.arrayBuffer();
     const wb = XLSX.read(buf, { type: 'array' });
     parseWorkbook(wb);
-    // Pull the Yesterday's Conversion data (Zero tab + T-Sheets API).
-    // Awaited so the first render has the data, but a failure is non-fatal.
-    await loadYesterday(wb);
-
-    // Always set promo URL -- img onerror handler hides it if missing
     state.promos = CONFIG.PROMO_URL;
-
     state.lastRefresh = new Date();
     buildSlides();
     render();
@@ -732,17 +168,13 @@ async function loadData() {
   } catch(err) {
     console.error(err);
     if (loading) { errorMsg.textContent = err.message; errorMsg.style.display = 'block'; retryBtn.style.display = 'block'; }
-
-    // Try loading from local file input as fallback
     if (!state.stores.length) showLocalFallback();
   }
 }
 
 function showLocalFallback() {
   const loading = document.getElementById('loading');
-  if (!loading) return;
-  const existing = document.getElementById('localUpload');
-  if (existing) return;
+  if (!loading || document.getElementById('localUpload')) return;
   const div = document.createElement('div');
   div.id = 'localUpload';
   div.style.cssText = 'margin-top:16px;text-align:center;';
@@ -756,19 +188,18 @@ async function loadLocalFile(e) {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: 'array' });
   parseWorkbook(wb);
-  await loadYesterday(wb);
   state.lastRefresh = new Date();
   buildSlides();
   render();
   startSlideshow();
 }
 
-// -- PARSING --
+// ========== PARSING ==========
 function parseWorkbook(wb) {
-  // Parse Store Rank
+  // ---- Store Rank ----
   const ws = wb.Sheets['Store Rank'];
   if (!ws) return;
-  const data = XLSX.utils.sheet_to_json(ws, { header:1, defval:null });
+  const data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
 
   let headerRow = -1;
   for (let i = 0; i < Math.min(15, data.length); i++) {
@@ -781,27 +212,25 @@ function parseWorkbook(wb) {
 
   const headers = data[headerRow].map(h => h ? String(h).trim() : '');
   const col = (name) => headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+  const colExact = (name) => headers.findIndex(h => h === name);
 
-  const iRank=col('Rank'), iRegion=col('Region'), iStore=col('Store'), iEsop=col('ESOP'),
-    iRSD=col('RSD'), iDM=col('DM'), iSM=col('SM'), iGP=col('GP $'),
-    iLastGP=headers.findIndex(h=>h.includes('Last Month GP $')),
-    iTarget=col('Net Target GP'), iVarTarget=col('Var Target GP'),
-    iGPDay=col('GP $ per Day'), iDailyBal=col('Daily Bal'),
-    iMobileMTD=col('Mobile MTD'), iNewMob=headers.findIndex(h=>h.includes('New Mobile')),
-    iMobTrend=col('Mobile Trend'), iHSI=col('HSI'), iNewRGU=col('NEW RGU'),
-    iScore=col('Total Score'), iVideo=col('Video attach');
+  const iRank = col('Rank'), iRegion = col('Region'), iStore = col('Store'), iEsop = col('ESOP'),
+    iRSD = col('RSD'), iDM = col('DM'), iSM = col('SM'),
+    iGP = col('GP $'),
+    iLastGP = headers.findIndex(h => h.includes('Last Month GP $')),
+    iTarget = col('Net Target GP'), iVarTarget = col('Var Target GP'),
+    iGPDay = col('GP $ per Day'), iDailyBal = col('Daily Bal'),
+    iMobileMTD = col('Mobile MTD'),
+    iNewMob = headers.findIndex(h => h.includes('New Mobile')),
+    iMobTrend = col('Mobile Trend'), iHSI = col('HSI'), iNewRGU = col('NEW RGU'),
+    iScore = col('Total Score'), iVideo = col('Video attach');
 
-  const iGPTrend = headers.findIndex(h => h === 'GP $ Trend');
+  const iGPTrend = colExact('GP $ Trend');
   const iMobileCR = headers.findIndex(h => h.toLowerCase().includes('mobile close rate'));
   const iFiscalCR = headers.findIndex(h => h.toLowerCase().includes('fiscal close rate'));
   const iNonTrad = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
   const iGig = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%') && h.toLowerCase().includes('pts'));
-  // The company renamed "Premium" to "Plus", so the column header is now
-  // "Mobile Plus Mix (%)" (Store Rank column BT). Old "premium mix" header
-  // is kept as a fallback in case an older spreadsheet is uploaded.
-  let iPremium = headers.findIndex(h => h.toLowerCase().includes('mobile plus mix'));
-  if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('plus mix'));
-  if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
+  const iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
   const iNewToUpg = headers.findIndex(h => h.toUpperCase().includes('NEW TO UPGR'));
   const iAccDev = headers.findIndex(h => h.toLowerCase().includes('accessory') && h.toLowerCase().includes('device') && h.toLowerCase().includes('net'));
   const iNPS = headers.findIndex(h => h.toLowerCase().includes('fiscal nps') && !h.toLowerCase().includes('last'));
@@ -836,208 +265,287 @@ function parseWorkbook(wb) {
   }
   state.stores.sort((a, b) => a.rank - b.rank);
 
-  // Parse Rep Rank
+  // ---- Rep Rank ----
   const repWs = wb.Sheets['Rep Rank'];
-  if (repWs) {
-    const repData = XLSX.utils.sheet_to_json(repWs, { header:1, defval:null });
-    let repHeader = -1;
-    for (let i = 0; i < 15; i++) {
-      if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') &&
-          repData[i].some(c => c && String(c).includes('Employee'))) { repHeader = i; break; }
-    }
-    if (repHeader >= 0) {
-      const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
-      const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+  if (!repWs) return;
 
-      const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'),
-        riLoc=rc('location'), riDM=rc('dm'),
-        riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
-        riMobile=rc('mobile mtd'),
-        // Same rename: column U on Rep Rank is now "Mobile Plus Mix (%)".
-        riPremium=(function(){
-          let ix=rh.findIndex(h=>h && h.toLowerCase().includes('mobile plus mix'));
-          if(ix<0) ix=rh.findIndex(h=>h && h.toLowerCase().includes('plus mix'));
-          if(ix<0) ix=rh.findIndex(h=>h && h.includes('Premium Mix'));
-          return ix;
-        })(),
-        riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
-        riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
-        const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
-        const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
-        const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
-        const riWatches=rh.findIndex(h=>h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
-        const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
-        const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
-
-      // New columns for rep breakdown
-      const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
-      const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
-      const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
-
-      const jeffStoreNames = state.stores.map(s => s.name.toLowerCase());
-      state.reps = [];
-      for (let i = repHeader + 1; i < repData.length; i++) {
-        const row = repData[i];
-        if (!row || !row[riRank]) break;
-        const loc = String(row[riLoc] || '').toLowerCase();
-        if (!jeffStoreNames.includes(loc)) continue;
-        state.reps.push({
-          rank: row[riRank], name: row[riName] || '', title: row[riTitle] || '',
-          store: row[riLoc] || '', dm: row[riDM] || '',
-          gp: Number(riGP >= 0 ? row[riGP] : 0) || 0,
-          mobile: Number(row[riMobile]) || 0,
-          premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
-          nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
-          gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
-          gigPct: riGigPct>=0 ? parseFloat(row[riGigPct])||0 : 0,
-          tabletMTD: riTablet>=0 ? parseInt(row[riTablet])||0 : 0,
-          watchesMTD: riWatch>=0 ? parseInt(row[riWatch])||0 : 0,
-          newToUpg: riNewToUpg>=0 ? parseFloat(row[riNewToUpg])||0 : 0,
-          accPerMobile: riAcc>=0 ? parseFloat(row[riAcc])||0 : 0,
-          gigPct: riGig >= 0 ? Number(row[riGig]) || 0 : 0,
-          tabletMTD: riTablet >= 0 ? Number(row[riTablet]) || 0 : 0,
-          watchesMTD: riWatches >= 0 ? Number(row[riWatches]) || 0 : 0,
-          accPerMobile: riAccMobile >= 0 ? Number(row[riAccMobile]) || 0 : 0,
-          blendedWage: riBlendedWage >= 0 ? Number(row[riBlendedWage]) || 0 : 0,
-        });
-      }
-      state.reps.sort((a, b) => a.rank - b.rank);
-    }
+  const repData = XLSX.utils.sheet_to_json(repWs, { header: 1, defval: null });
+  let repHeader = -1;
+  for (let i = 0; i < 15; i++) {
+    if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') &&
+        repData[i].some(c => c && String(c).includes('Employee'))) { repHeader = i; break; }
   }
-}
+  if (repHeader < 0) return;
 
-// -- SLIDE BUILDING --
-function buildSlides() {
-  state.slides = [];
+  const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
+  const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
 
-  // Apply the currently-selected district filter so only the right stores
-  // appear in the overview pages and the per-store detail slides.
-  const visibleStores = filteredStores();
+  const riRank = rc('rank'), riName = rc('employee'), riTitle = rc('title'),
+    riLoc = rc('location'), riDM = rc('dm'),
+    riGP = rh.findIndex(h => h.startsWith('GP $') || h.startsWith('GP\n')),
+    riMobile = rc('mobile mtd'),
+    riPremium = rh.findIndex(h => h.includes('Premium Mix')),
+    riNPS = rh.findIndex(h => h.includes('Fiscal NPS') && !h.includes('Last')),
+    riGPHR = rh.findIndex(h => h.includes('GP/ HR') || h.includes('GP/HR'));
 
-  // If a single store is selected, surface that store's detail FIRST so it
-  // shows up immediately when the team's TV opens to "their" view. The rest
-  // of the district still rotates through afterwards.
-  let primaryStore = null;
-  if (state.currentStore && state.currentStore !== 'all') {
-    primaryStore = visibleStores.find(s => s.name.toLowerCase() === state.currentStore.toLowerCase());
-    if (primaryStore) {
-      state.slides.push({
-        type: 'store-detail', store: primaryStore,
-        label: 'YOUR STORE — #' + primaryStore.rank + ' ' + primaryStore.name,
+  const riGig = rh.findIndex(h => h && h.toLowerCase().includes('gig') && h.includes('%'));
+  const riTablet = rh.findIndex(h => h && h.toLowerCase().includes('tablet'));
+  const riWatches = rh.findIndex(h => h && h.toLowerCase().includes('watch'));
+  const riNewToUpg = rh.findIndex(h => h && h.toLowerCase().includes('new') && h.toLowerCase().includes('upg'));
+  const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
+  const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
+
+  const jeffStoreNames = state.stores.map(s => s.name.toLowerCase());
+  state.reps = [];
+  for (let i = repHeader + 1; i < repData.length; i++) {
+    const row = repData[i];
+    if (!row || !row[riRank]) break;
+    const loc = String(row[riLoc] || '').toLowerCase();
+    if (!jeffStoreNames.includes(loc)) continue;
+    state.reps.push({
+      rank: row[riRank],
+      name: row[riName] || '',
+      title: row[riTitle] || '',
+      store: row[riLoc] || '',
+      dm: row[riDM] || '',
+      gp: riGP >= 0 ? Number(row[riGP]) || 0 : 0,
+      mobile: Number(row[riMobile]) || 0,
+      premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
+      nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
+      gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
+      gigPct: riGig >= 0 ? Number(row[riGig]) || 0 : 0,
+      tabletMTD: riTablet >= 0 ? Number(row[riTablet]) || 0 : 0,
+      watchesMTD: riWatches >= 0 ? Number(row[riWatches]) || 0 : 0,
+      newToUpg: riNewToUpg >= 0 ? Number(row[riNewToUpg]) || 0 : 0,
+      accPerMobile: riAccMobile >= 0 ? Number(row[riAccMobile]) || 0 : 0,
+      blendedWage: riBlendedWage >= 0 ? Number(row[riBlendedWage]) || 0 : 0,
+    });
+  }
+  state.reps.sort((a, b) => a.rank - b.rank);
+
+  // ---- Raise Program ----
+  const raiseWs = wb.Sheets['Raise Program'];
+  if (raiseWs) {
+    const raiseData = XLSX.utils.sheet_to_json(raiseWs, { header: 1, defval: null });
+    const raiseHeaders = raiseData[0] ? raiseData[0].map(h => h ? String(h).trim() : '') : [];
+    // Months are columns E onward (index 4+), excluding 'Grand Total'
+    const monthCols = [];
+    for (let c = 4; c < raiseHeaders.length; c++) {
+      const h = raiseHeaders[c];
+      if (h && h !== 'Grand Total') monthCols.push({ index: c, name: h });
+    }
+    const grandTotalCol = raiseHeaders.findIndex(h => h === 'Grand Total');
+
+    state.raiseMonths = monthCols.map(m => m.name);
+    state.raiseDistricts = {};
+
+    for (let i = 1; i < raiseData.length; i++) {
+      const row = raiseData[i];
+      if (!row || !row[0]) continue;
+      const rd = row[3];
+      if (!rd || !String(rd).includes('Bilbrey')) continue;
+      const dm = row[2];
+      if (!dm || dm === 0 || String(dm).trim() === '0') continue;
+      const dmName = String(dm).trim();
+
+      if (!state.raiseDistricts[dmName]) state.raiseDistricts[dmName] = [];
+
+      const months = {};
+      for (const mc of monthCols) {
+        let val = row[mc.index];
+        if (typeof val === 'string') val = 0;
+        months[mc.name] = Number(val) || 0;
+      }
+      let grandTotal = grandTotalCol >= 0 ? row[grandTotalCol] : 0;
+      if (typeof grandTotal === 'string') grandTotal = 0;
+      grandTotal = Number(grandTotal) || 0;
+
+      state.raiseDistricts[dmName].push({
+        name: String(row[0]).trim(),
+        store: row[1] ? String(row[1]).trim() : '',
+        months,
+        grandTotal,
+        raisesEarned: Math.floor(grandTotal / 65000),
+        raiseAmount: Math.floor(grandTotal / 65000) * 0.50,
       });
     }
+    // Sort each district by grand total descending
+    for (const dm of Object.keys(state.raiseDistricts)) {
+      state.raiseDistricts[dm].sort((a, b) => b.grandTotal - a.grandTotal);
+    }
   }
 
-  // Store overview pages (filtered to the active district)
-  const storePages = Math.max(1, Math.ceil(visibleStores.length / CONFIG.STORE_CARDS_PER_PAGE));
-  for (let i = 0; i < storePages; i++) {
-    const label = storePages > 1 ? 'Overview (Pg ' + (i+1) + ')' : 'Store Overview';
-    state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
-  }
+  // ---- District Rank ----
+  parseRankSheet(wb, 'District Rank', 'districts', 'DM');
 
-  // Yesterday's Conversion rollup — one slide per active scope (a district when
-  // filtered, otherwise one per district). Shows traffic / mobile / MCR / T-Charts
-  // pulled from the Sales Report's Zero tab + the T-Sheets API.
-  const districtsToShow = state.currentDistrict === 'all'
-    ? DISTRICTS.filter(d => d.key !== 'all')
-    : DISTRICTS.filter(d => d.key === state.currentDistrict);
-  for (const dist of districtsToShow) {
-    const distStores = state.stores.filter(s => storeMatchesDistrict(s, dist));
-    if (!distStores.length) continue;
-    state.slides.push({
-      type: 'yesterday', title: "YESTERDAY'S CONVERSION",
-      district: dist, stores: distStores,
-      label: "Yesterday — " + dist.label,
+  // ---- Region Rank ----
+  parseRankSheet(wb, 'Region Rank', 'regions', 'Region');
+}
+
+function parseRankSheet(wb, sheetName, stateKey, nameLabel) {
+  const ws = wb.Sheets[sheetName];
+  if (!ws) return;
+  const data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+
+  // Header row is row 3 (index 2)
+  let headerRow = -1;
+  for (let i = 0; i < Math.min(10, data.length); i++) {
+    const row = data[i];
+    if (row && row.some(c => c && String(c).trim() === 'Rank')) { headerRow = i; break; }
+  }
+  if (headerRow < 0) return;
+
+  const headers = data[headerRow].map(h => h ? String(h).trim() : '');
+  const col = (name) => headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+  const colStartsWith = (name) => headers.findIndex(h => h.startsWith(name));
+
+  const iRank = col('Rank');
+  const iName = 1; // Column B is always the name (DM or Region)
+  const iGPTrend = colStartsWith('Avg GP Trend');
+  const iMobileCR = headers.findIndex(h => h.startsWith('Mobile CR') && !h.includes('Last'));
+  const iNonTrad = headers.findIndex(h => h.startsWith('Non Traditional CR') && !h.includes('Last'));
+  const iGigPct = headers.findIndex(h => h.includes('GIG') && h.includes('%') && h.includes('Pts'));
+  const iMobileMTD = col('Mobile MTD');
+  const iTabletMTD = col('Tablet MTD');
+  const iWatchesMTD = col('Watches MTD');
+  const iMobilePlus = headers.findIndex(h => h.startsWith('Mobile Plus Mix'));
+  const iNewToUpg = headers.findIndex(h => h.includes('NEW TO UPGR'));
+  const iAccessory = headers.findIndex(h => h.startsWith('Net Accessory Per Device'));
+  const iNPS = headers.findIndex(h => h.startsWith('NPS%') && !h.includes('Last'));
+  const iTTL = headers.findIndex(h => h === 'TTL Score');
+  const iStoreCount = col('Store Count');
+  const iHSI = col('HSI');
+  const iFiscalCR = headers.findIndex(h => h.startsWith('CR '));
+
+  state[stateKey] = [];
+  for (let i = headerRow + 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row || row[iRank] == null) break;
+    state[stateKey].push({
+      rank: Number(row[iRank]) || 0,
+      name: String(row[iName] || '').trim(),
+      gpTrend: Number(row[iGPTrend]) || 0,
+      fiscalCR: Number(row[iFiscalCR]) || 0,
+      mobileCR: Number(row[iMobileCR]) || 0,
+      nonTrad: Number(row[iNonTrad]) || 0,
+      gigPct: Number(row[iGigPct]) || 0,
+      mobileMTD: Number(row[iMobileMTD]) || 0,
+      tabletMTD: Number(row[iTabletMTD]) || 0,
+      watchesMTD: Number(row[iWatchesMTD]) || 0,
+      mobilePlus: Number(row[iMobilePlus]) || 0,
+      newToUpg: Number(row[iNewToUpg]) || 0,
+      accessory: Number(row[iAccessory]) || 0,
+      nps: Number(row[iNPS]) || 0,
+      totalScore: Number(row[iTTL]) || 0,
+      storeCount: Number(row[iStoreCount]) || 0,
+      hsi: Number(row[iHSI]) || 0,
     });
   }
-
-  // Individual store detail slides for everyone else in the district
-  // (skip the primaryStore — already shown above).
-  for (const store of visibleStores) {
-    if (primaryStore && store.name === primaryStore.name) continue;
-    state.slides.push({
-      type: 'store-detail', store: store,
-      label: '#' + store.rank + ' ' + store.name,
-    });
-  }
-
-  // Force a promo slide every N content slides regardless of selection.
+  state[stateKey].sort((a, b) => a.rank - b.rank);
+}
+function buildSlides() {
+  state.slides = [];
   const promoSlide = { type: 'promos', title: 'DAILY PROMOTIONS', label: 'Promotions' };
-  const N = CONFIG.PROMO_EVERY_N || 4;
-  const interleaved = [];
-  for (let si = 0; si < state.slides.length; si++) {
-    interleaved.push(state.slides[si]);
-    if ((si + 1) % N === 0) interleaved.push(promoSlide);
+  let contentSlides = [];
+
+  // Store overview pages (6 per page)
+  const storePages = Math.ceil(state.stores.length / CONFIG.STORE_CARDS_PER_PAGE);
+  for (let i = 0; i < storePages; i++) {
+    const label = storePages > 1 ? 'Overview (Pg ' + (i + 1) + ')' : 'Store Overview';
+    contentSlides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
   }
-  // Always end on a promo so a short slide list (e.g. one store) still shows promos.
-  if (interleaved.length === 0 || interleaved[interleaved.length - 1].type !== 'promos') {
-    interleaved.push(promoSlide);
+
+  // Individual store detail slides
+  for (const store of state.stores) {
+    contentSlides.push({ type: 'store-detail', store, label: '#' + store.rank + ' ' + store.name });
   }
-  state.slides = interleaved;
+
+  // Rep breakdown pages
+  if (state.reps.length > 0) {
+    const repPages = Math.ceil(state.reps.length / CONFIG.REPS_PER_PAGE);
+    for (let i = 0; i < repPages; i++) {
+      const label = repPages > 1 ? 'Rep Breakdown (Pg ' + (i + 1) + ')' : 'Rep Breakdown';
+      contentSlides.push({ type: 'reps', title: 'REP BREAKDOWN', page: i, label });
+    }
+  }
+
+  // Raise Program slides (one or more per district)
+  const districtNames = Object.keys(state.raiseDistricts).sort();
+  for (const dm of districtNames) {
+    const reps = state.raiseDistricts[dm];
+    const pages = Math.ceil(reps.length / CONFIG.RAISE_REPS_PER_PAGE);
+    for (let p = 0; p < pages; p++) {
+      const label = pages > 1
+        ? 'Raise: ' + dm.split(' ')[0] + ' (Pg ' + (p + 1) + ')'
+        : 'Raise: ' + dm.split(' ')[0];
+      contentSlides.push({ type: 'raise', title: 'RAISE PROGRAM', dm, page: p, label });
+    }
+  }
+
+  // District Rank slide
+  if (state.districts.length > 0) {
+    contentSlides.push({ type: 'district-rank', title: 'DISTRICT RANKINGS', label: 'District Rankings' });
+  }
+
+  // Region Rank slide
+  if (state.regions.length > 0) {
+    contentSlides.push({ type: 'region-rank', title: 'REGION RANKINGS', label: 'Region Rankings' });
+  }
+
+  // Interleave promo card
+  for (let i = 0; i < contentSlides.length; i++) {
+    state.slides.push(contentSlides[i]);
+    if ((i + 1) % CONFIG.PROMO_EVERY === 0) {
+      state.slides.push(Object.assign({}, promoSlide));
+    }
+  }
+  if (!state.slides.length || state.slides[state.slides.length - 1].type !== 'promos') {
+    state.slides.push(Object.assign({}, promoSlide));
+  }
 
   state.totalSlides = state.slides.length;
   state.currentSlide = 0;
 }
 
-// -- RENDERING --
+// ========== RENDERING ==========
 function render() {
   const app = document.getElementById('app');
   const slide = state.slides[state.currentSlide] || state.slides[0];
-
-  let slideContent = '';
-  let slideTitle = slide.title || '';
+  let slideContent = '', slideTitle = slide.title || '';
 
   if (slide.type === 'stores') {
     slideTitle = 'STORE OVERVIEW';
-    // Always slice from the filtered list so the active district shows only its stores.
-    const visibleStores = filteredStores();
     const start = slide.page * CONFIG.STORE_CARDS_PER_PAGE;
-    const pageStores = visibleStores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
+    const pageStores = state.stores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
     slideContent = renderStoreGrid(pageStores);
   } else if (slide.type === 'store-detail') {
     slideTitle = slide.store.name.toUpperCase() + ' - DETAIL';
     slideContent = renderStoreDetail(slide.store);
+  } else if (slide.type === 'reps') {
+    slideTitle = 'REP BREAKDOWN';
+    slideContent = renderRepBreakdown(slide.page);
   } else if (slide.type === 'promos') {
     slideTitle = 'DAILY PROMOTIONS';
     slideContent = renderPromos();
-  } else if (slide.type === 'yesterday') {
-    slideTitle = "YESTERDAY'S CONVERSION — " + slide.district.label.toUpperCase();
-    slideContent = renderYesterday(slide.district, slide.stores);
+  } else if (slide.type === 'raise') {
+    slideTitle = 'RAISE PROGRAM - ' + slide.dm.toUpperCase();
+    slideContent = renderRaiseProgram(slide.dm, slide.page);
+  } else if (slide.type === 'district-rank') {
+    slideTitle = 'DISTRICT RANKINGS';
+    slideContent = renderRankTable(state.districts, 'DISTRICT', 'DM');
+  } else if (slide.type === 'region-rank') {
+    slideTitle = 'REGION RANKINGS';
+    slideContent = renderRankTable(state.regions, 'REGION', 'Region');
   }
 
   const now = new Date();
-  const dateStr = now.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
-  const timeStr = now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',hour12:true});
-  const dayInfo = getDayInfo();
-
-  // Build district tabs HTML (one per entry in DISTRICTS).
-  const activeDist = state.currentDistrict;
-  const districtTabsHtml = DISTRICTS.map(d => {
-    const cnt = districtCount(d.key);
-    const isActive = d.key === activeDist;
-    return `<div class="district-tab${isActive ? ' active' : ''}" onclick="setDistrict('${d.key}')">${d.label}<span class="district-count">${cnt}</span></div>`;
-  }).join('');
-
-  // Build the per-store dropdown — sorted alphabetically so anyone can find
-  // their store quickly. Picking one auto-snaps the district filter too.
-  const sortedStores = state.stores.slice().sort((a,b) => a.name.localeCompare(b.name));
-  const activeStore = state.currentStore || 'all';
-  const storeOptions = ['<option value="all">All Stores in District</option>']
-    .concat(sortedStores.map(s =>
-      `<option value="${s.name}"${s.name === activeStore ? ' selected' : ''}>${s.name}</option>`
-    )).join('');
-  const storeSelectorHtml = `
-    <div class="store-picker-wrap">
-      <span class="store-picker-label">My Store</span>
-      <select class="store-picker${activeStore !== 'all' ? ' has-selection' : ''}" onchange="setStore(this.value)">
-        ${storeOptions}
-      </select>
-    </div>`;
+  const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
   app.innerHTML = `
     <div class="header">
       <div class="header-left">
-        <div class="logo-circle"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABQAFADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABAUCAwYAAQf/xAA3EAACAgEDAgQDBgILAAAAAAABAgMEEQAFIRIxE0FhcQYiURQyQoGRoSNSJDM0U2JyhLGywdH/xAAZAQADAQEBAAAAAAAAAAAAAAABAgMEAAX/xAAnEQACAgEDAgYDAQAAAAAAAAABAgARAxIhMRPwFEJRgbHRI2Ghwf/aAAwDAQACEQMRAD8A+eHXmuOidsijn3OtDMvVHJKqsM5yCfroToZs2yzbpIiokjmQkRxx4DPj7zEnhVHHJ8+ANbLY/gcB5TdiasI2wC3RK78dwcFVXy4GT541nds3W5t9qCztsVdWSv4bQKxJKkl+zd+T5aNrfEu8X7omO4/Zh1lVQpnp7Z44H5HVBhdpJs6r32Y+k+BI5LM4WSqVwDEZKoJbOeG6SPPzAH7awG57d9mCzRI6I5AMT8lCwJGD+JTg4Pfjka+h7tU3XZtts7mm9tbVynimSMLlCQvyspPSMHyHHOOdZC7ucthmdXESS/ceNOlmCIQAueUQDgeZycnnU0UsaEozhRZmckjkhkMcsbRuO6sMEflqOjN16m3WdeWYME9yAB/1phY2StXqzM9wmeCIPLGFHBPbSPlVKB85VMTOCR5RHrtMd2rQQpWkqpiN1ILCQOCw8vfGM+XOl2ijBhYiupU0Zx1OCUwTxzLy0bhx+RzqB1dSqvcsrBG6KzZwXOM48h9T9AO+miw+7AEvo0b9KB8K4OPlPzI2fVT+2mUsVJJVkt+F4rAAlhwT9fTXbXRXcZYKdZXnNbIyy9JPOcN5KoPIB55J47ac7v8ADW7LWJiiEvynPhuSDkeYHPHtrdhZVS2qzwJ52cM2QBbocmLWp12haIKVRxghGKgj2BxoKxHG9+AEqyRIRIyn7qjlhjy+UH9dXQVJYZJIw8oi8LpQOQeg+Y4+h7emiNm2ae1Rkli8CIU/69bExUHhg3P4chu/bgd9PmYaL01cTAv5K1aq/wBmagsLJuqWbPCtP4j+mWydM90gjjs2788quJW/oyo+eo8fMfQaFm2yJbFGOGSXptnIDgZVM4z1Dg8AnsO3bnXsm4VVeRDt9UxJwg8IZx6sMH88nXktjtgwM9lclKVIgNq3NbdWmI+VelQqhQB6Aap0w3SCCNIZYYvBLllaMMSOOnkZyRySO/4dL9UAAFCTJJNmcdXU3gjuRSWo2khRgzIuMtjy59dVHV1KBZ58SsVhjUySsO4Ud8ep4A9SNGCN3sypQO4QXLHVNOQEliQmVu7HIPlkd/bTqp8a+JQWDdPGZM4JgdonHsw74+mllAN4TXbCJHlf4aAcRRjsB6f79z31StijZlkWToXrODngOMZB9D662DCdA1nnyMwNmGs6F45Imso26Nqv02a9jdYRwl2sC0wH8sqA5DD+bkHWVV22zxLsFy0kfVJAhEYjeZe3STk8+ZP4cfUjAElWsLpEFxUgKkswf7h+h9NEQS1Y45a6OjqM9SM2EmUfX6MOcMOeNROJuL/vxLrlQbgc/r5nkV1jQkm5jOWixEMdC9IKqPov3ifr550up12s2OQ5UfMxVC37aYGBDQMVNZ5q/UzmQqEbnpwAPPAHJ7cnGqapgpzPHOXye5BKOmPTsf10EXcahQjO+x0GzPd26Xq15OvqZXkjBAI6xnqJx5EM5B9vTSzR+89cdmOrLnxIIx1k9y7fOx9uccccaA1M1e0qLA3np1othoVWpzTX+v7KkBs2eg4Z0DdMcYPl1MCfyGs6dafZLlWTb5a1irPbikhjjmhrnEuY3LKQPNWzgkcjSmGHLte02PEjgsWpK9kOlMCY4Bji6ndsjkdWFx76M2vYNrksCBKkRlpu9eSWUllsP4OWJU8fK7LjHppVDcu3alyOwtbb4kZoxIiYaIEjMS84xkLk9/LzOuuS7nYvWIJr8SxCtizIsIVV6iGJ4/ESoJPfjUWzrZBPEquBqsDmQotRk3FyaIWlsdaSXw5VxJPICB/E93I48gMaPkqbdubLLZ2vwJLULrDGi+EIBHH1NIQO/U7ADPlpes26D4lmsPYg6vAX7RMYQY5I8DllPcnAPPmM6kJdwL2qs+4yywNH9r8VEHiMWIIAPfBYA47ZA1xzJ6xhgf0h8Xw5TtV7USyyrYjkmhhlaU5eQdCqp8sdXXxor7PtEbtSh2asTNuopdcxZ+ygsRjBAHHGeedJ55d7svGJdwU2iySzIUULAFPUpOBwckkjzzqF6QyJVmfcpJY3vmYmCHEjSHHWyY9hjXdZWIFwdBlBNS2zVSnt0T7gHyxlk+zMfkirZ6VUA8hmfHSc5AGsiPXWg+Ktwa7Y8ZesR2XMidYIPhp8kY557Bj7trP6sJGenRe1Hp3GKX+5DSj3VSw/cDQh1OvM9adJo8dSHsRkHyII+hGRozo+uVrT1tto01J/hid38uo85J/U6sWBrlB4ltrKrWibU5OPkUcH2440A24xmiYEtWI4Mf2boyR/hEn8vvz76qpS01hCmpCZQPnksTkIfZRyfbWPouB793dTYMyE+3dVcbSSJutSwtaWOJHnAlLNgrCo4OpLu9WCOS2hV0aRIEQN8wjUHnH6nS1rldeBNVT0go9X7vjVbXoD3s2D/pYv/dDw17Hjv6h8SBuOe/uMIK0le1IKVutNBbTrRJznxfQ+vPfVpirwWq/h9MNhgySxRy9awxkHqcH8BHfSF5oFnDqizpjDLJEI/wDie/rqM113haCKOKvC33kiGOr/ADE5LfmcaquFgwYmSbMpUqBKJJZJnMk0jyO3dnJJP66iNdrhrRM8/9k=" alt="C3" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+        <div class="logo-circle"><div style="font-size:9px;font-weight:900;color:#e67e22;text-align:center;line-height:1.1">CCC</div></div>
         <div>
           <div class="brand-title">COOK COUNTY <span class="highlight">COOKS</span></div>
           <div class="brand-sub">DAILY SALES REPORT &nbsp;|&nbsp; ${state.stores.length} STORES</div>
@@ -1048,21 +556,13 @@ function render() {
         <div class="header-center-title">${slideTitle}</div>
       </div>
       <div class="header-right">
-        <div style="display:flex; gap:8px; align-items:center;">
-          <div class="live-badge"><div class="live-dot"></div> LIVE</div>
-          <div class="day-badge" title="Accent color rotates daily"><div class="day-dot"></div>${dayInfo.name}</div>
-        </div>
+        <div class="live-badge"><div class="live-dot"></div> LIVE</div>
         <div class="datetime">${dateStr} | ${timeStr}</div>
       </div>
     </div>
-    <div class="district-bar">
-      <span class="district-bar-label">District</span>
-      ${districtTabsHtml}
-      ${storeSelectorHtml}
-    </div>
     <div class="progress-bar">
       <select class="slide-select" id="slideSelect" onchange="goSlide(parseInt(this.value))">
-        ${state.slides.map((s, i) => `<option value="${i}"${i === state.currentSlide ? ' selected' : ''}>${s.label || s.title || 'Slide ' + (i+1)}</option>`).join('')}
+        ${state.slides.map((s, i) => `<option value="${i}"${i === state.currentSlide ? ' selected' : ''}>${s.label || s.title || 'Slide ' + (i + 1)}</option>`).join('')}
       </select>
       <div class="progress-track" title="Time until next slide">
         <div class="countdown-fill" id="countdownBar" style="width:100%"></div>
@@ -1076,238 +576,419 @@ function render() {
   `;
 }
 
+// ---- Store Overview Grid ----
+// REDESIGNED: Replaced TARGET GP / GP PER DAY / DAILY BAL with MOBILE / TABLETS / WATCHES
+// Added NEW RGU to left side. Centered content in boxes, larger text.
 function renderStoreGrid(stores) {
-  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:13px;text-align:center;">${label}</div><div class="metric-value" style="font-size:24px;text-align:center;">${val}</div></div>`;
+  const metricBox = (label, val, cls = 'blue') => `
+    <div class="metric ${cls}" style="padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div class="metric-label" style="font-size:10px;text-align:center;">${label}</div>
+      <div class="metric-value" style="font-size:16px;text-align:center;margin-top:2px;">${val}</div>
+    </div>`;
+
   let html = '<div class="store-grid">';
   for (const s of stores) {
     const varColor = s.varTarget >= 0 ? 'green' : 'red';
     const varSign = s.varTarget >= 0 ? '+' : '-';
-    const pct = v => (v * 100).toFixed(1) + '%';
+
     html += `
       <div class="store-card">
-        <div>
-          <div class="store-rank">#${s.rank}</div>
-          <div class="store-name">${s.name}</div>
-          <div class="store-gp">$${Math.round(s.gpTrend).toLocaleString()}</div>
-          <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
+        <div style="text-align:center;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:16px;font-weight:900;color:#e67e22;opacity:0.8;">#${s.rank}</div>
+            <div style="font-size:12px;color:#3498db;font-weight:700;background:#0d1a2a;padding:3px 10px;border-radius:12px;">RGU: ${s.newRGU}</div>
+          </div>
+          <div style="font-size:20px;font-weight:800;color:#fff;margin-top:4px;text-align:center;">${s.name}</div>
+          <div style="font-size:36px;font-weight:900;color:#e67e22;margin-top:4px;text-align:center;">$${Math.round(s.gp).toLocaleString()}</div>
+          <div style="font-size:12px;color:#5a7a9a;margin-top:3px;text-align:center;">
+            Target: $${Math.round(s.target).toLocaleString()} &nbsp;
+            <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span>
+          </div>
         </div>
-        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
-          ${m('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
-          ${m('MOB CR', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
-          ${m('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${m('NON-TRAD', pct(s.nonTrad), 'blue')}
-          ${m('GIG %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${m('PLUS', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${m('NEW->UPG', pct(s.newToUpg), 'blue')}
-          ${m('ACCESS', '$'+Math.round(s.accPerDev), 'blue')}
-          ${m('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
+        <!-- Device counts row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;">
+          ${metricBox('MOBILE', s.mobileMTD, 'green')}
+          ${metricBox('TABLETS', s.tabletMTD, 'blue')}
+          ${metricBox('WATCHES', s.watchesMTD, 'blue')}
+        </div>
+        <!-- Performance metrics grid -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:6px;">
+          ${metricBox('GP TREND', fmt.dollar(s.gpTrend), s.gpTrend >= 0 ? 'green' : 'red')}
+          ${metricBox('MOB CR', fmt.pct(s.mobileCR), s.mobileCR >= 0.08 ? 'green' : s.mobileCR >= 0.05 ? 'yellow' : 'red')}
+          ${metricBox('FISCAL CR', fmt.pct(s.fiscalCR), s.fiscalCR >= 0.08 ? 'green' : s.fiscalCR >= 0.05 ? 'yellow' : 'red')}
+          ${metricBox('NON-TRAD', fmt.pct(s.nonTrad), 'blue')}
+          ${metricBox('GIG %', fmt.pct(s.gigPct), s.gigPct >= 0.5 ? 'green' : s.gigPct >= 0.35 ? 'yellow' : 'red')}
+          ${metricBox('PREMIUM', fmt.pct(s.premium), s.premium >= 0.85 ? 'green' : s.premium >= 0.7 ? 'yellow' : 'red')}
+          ${metricBox('NEW/UPG', fmt.pct(s.newToUpg), 'blue')}
+          ${metricBox('ACCESS', fmt.dollar(s.accPerDev), 'blue')}
+          ${metricBox('NPS', fmt.pct(s.nps), s.nps >= 0.8 ? 'green' : s.nps >= 0.6 ? 'yellow' : 'red')}
         </div>
       </div>`;
   }
   // Fill empty cards
   for (let i = stores.length; i < CONFIG.STORE_CARDS_PER_PAGE; i++) {
-    html += '<div class="store-card" style="opacity:0.15;border:1px dashed var(--day-line-2);"></div>';
+    html += '<div class="store-card" style="opacity:0.15;border:1px dashed #1a3050;"></div>';
   }
   html += '</div>';
   return html;
 }
 
+// ---- Store Detail ----
+// REDESIGNED: Left side = RGU + MOBILE/TABLETS/WATCHES prominently up top, performance metrics below
+// Right side = Team Members (LARGER text, more impactful)
 function renderStoreDetail(s) {
   const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
   const varSign = s.varTarget >= 0 ? '+' : '-';
-  const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:16px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:15px;letter-spacing:1px;margin-bottom:2px;">${label}</div><div class="metric-value" style="font-size:32px;margin-top:4px;">${val}</div></div>`;
+
+  const tile = (label, val, cls = 'blue') => `
+    <div class="metric ${cls}" style="padding:14px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div class="metric-label" style="font-size:13px;letter-spacing:1px;margin-bottom:4px;">${label}</div>
+      <div class="metric-value" style="font-size:26px;margin-top:4px;">${val}</div>
+    </div>`;
 
   // Get reps for this store
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
-  // Sort reps by their company-wide rank (Column A on Rep Rank), best first.
-  storeReps.sort((a, b) => (a.rank || 9999) - (b.rank || 9999));
+  storeReps.sort((a, b) => b.gp - a.gp);
+
+  // Dynamically size rep rows based on count
+  const repCount = storeReps.length;
+  const repFontSize = repCount <= 4 ? '16px' : repCount <= 6 ? '14px' : repCount <= 8 ? '13px' : '12px';
+  const repPadding = repCount <= 4 ? '12px 12px' : repCount <= 6 ? '10px 12px' : '8px 10px';
+  const repGpSize = repCount <= 4 ? '20px' : repCount <= 6 ? '17px' : repCount <= 8 ? '15px' : '13px';
 
   let repHtml = '';
   if (storeReps.length) {
     repHtml = `
-      <div style="margin-top:14px;">
-        <div style="font-size:20px;font-weight:800;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:15px;color:#8899aa;padding:8px 10px;font-weight:700;letter-spacing:0.5px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PLUS%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <div style="font-size:15px;font-weight:700;color:#e67e22;letter-spacing:2px;margin-bottom:8px;text-align:center;">TEAM PERFORMANCE</div>
+        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:11px;color:#8899aa;padding:6px 10px;background:#0d1a2e;border-radius:8px 8px 0 0;font-weight:700;letter-spacing:0.5px;">
+          <span style="text-align:center;">RANK</span><span>NAME</span><span style="text-align:center;">GP $</span><span style="text-align:center;">ACC $</span><span style="text-align:center;">PREM%</span><span style="text-align:center;">GIG%</span><span style="text-align:center;">MOB</span><span style="text-align:center;">TAB</span><span style="text-align:center;">WATCH</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:18px;padding:12px 10px;background:var(--day-bg-4);border-radius:6px;margin-bottom:4px;border:1px solid var(--day-line);align-items:center;">
-            <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
-            <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
-            <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
-            <span>${Math.round(r.accPerMobile||0)}</span>
-            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
-            <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
-            <span>${r.mobile}</span>
-            <span>${r.tabletMTD||0}</span>
-            <span>${r.watchesMTD||0}</span>
+          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:${repFontSize};padding:${repPadding};background:#0c1525;border-radius:4px;margin-bottom:3px;border:1px solid #1a2540;align-items:center;">
+            <span style="color:#e67e22;font-weight:800;text-align:center;">#${r.rank}</span>
+            <span style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</span>
+            <span style="font-weight:800;text-align:center;font-size:${repGpSize};color:${r.gp >= 5000 ? '#2ecc40' : r.gp >= 3000 ? '#f1c40f' : '#e74c3c'};">${fmt.dollar(r.gp)}</span>
+            <span style="text-align:center;">${fmt.dollar(r.accPerMobile)}</span>
+            <span style="text-align:center;color:${r.premium >= 0.85 ? '#2ecc40' : r.premium >= 0.7 ? '#f1c40f' : '#e74c3c'};">${fmt.pct(r.premium)}</span>
+            <span style="text-align:center;color:${r.gigPct >= 0.5 ? '#2ecc40' : r.gigPct >= 0.35 ? '#f1c40f' : '#e74c3c'};">${fmt.pct(r.gigPct)}</span>
+            <span style="text-align:center;color:#3498db;font-weight:700;">${fmt.num(r.mobile)}</span>
+            <span style="text-align:center;color:#3498db;font-weight:700;">${fmt.num(r.tabletMTD)}</span>
+            <span style="text-align:center;color:#3498db;font-weight:700;">${fmt.num(r.watchesMTD)}</span>
           </div>
         `).join('')}
       </div>`;
   }
 
   return `
-    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:16px;height:100%;overflow:hidden;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;height:100%;overflow:hidden;">
       <!-- Left column -->
-      <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
+      <div style="display:flex;flex-direction:column;gap:12px;overflow:hidden;">
         <!-- Store Header -->
-        <div style="background:linear-gradient(135deg,var(--day-bg-3),var(--day-bg-4));border:1px solid var(--day-line-2);border-radius:12px;padding:20px 24px;">
+        <div style="background:linear-gradient(135deg,#0c1a2e,#0a1525);border:1px solid #1a3050;border-radius:12px;padding:18px 22px;">
           <div style="display:flex;justify-content:space-between;align-items:start;">
             <div>
-              <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
-              <div style="font-size:40px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
-              <div style="font-size:15px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
+              <div style="font-size:18px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
+              <div style="font-size:32px;font-weight:900;margin-top:4px;line-height:1;">${s.name}</div>
+              <div style="font-size:12px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gpTrend).toLocaleString()}</div>
-              <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP TREND</div>
+              <div style="font-size:46px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gp).toLocaleString()}</div>
+              <div style="font-size:12px;color:#8899aa;margin-top:4px;">GP $ MTD</div>
             </div>
           </div>
         </div>
-        <!-- Devices + RGU Row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
-          <div style="background:var(--day-bg-3);border:1px solid #e67e22;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#e67e22;letter-spacing:1px;font-weight:700;">TOTAL RGU</div>
-            <div style="font-size:34px;font-weight:900;margin-top:6px;color:#e67e22;">${s.newRGU}</div>
+        <!-- Device Counts + RGU Row -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:13px;color:#8899aa;letter-spacing:1px;">NEW RGU</div>
+            <div style="font-size:30px;font-weight:900;margin-top:6px;color:#e67e22;">${s.newRGU}</div>
           </div>
-          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">MOBILE</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
+          <div style="background:#0d2a1a;border:1px solid #2ecc40;border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:13px;color:#2ecc40;letter-spacing:1px;font-weight:700;">MOBILE</div>
+            <div style="font-size:30px;font-weight:900;margin-top:6px;color:#2ecc40;">${s.mobileMTD}</div>
           </div>
-          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">TABLET</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
+          <div style="background:#0d1a2a;border:1px solid #3498db;border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:13px;color:#3498db;letter-spacing:1px;font-weight:700;">TABLETS</div>
+            <div style="font-size:30px;font-weight:900;margin-top:6px;color:#3498db;">${s.tabletMTD}</div>
           </div>
-          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">WATCHES</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
+          <div style="background:#0d1a2a;border:1px solid #3498db;border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:13px;color:#3498db;letter-spacing:1px;font-weight:700;">WATCHES</div>
+            <div style="font-size:30px;font-weight:900;margin-top:6px;color:#3498db;">${s.watchesMTD}</div>
+          </div>
+        </div>
+        <!-- Target + Variance row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:12px;color:#8899aa;letter-spacing:1px;">TARGET GP</div>
+            <div style="font-size:22px;font-weight:800;margin-top:4px;">$${Math.round(s.target).toLocaleString()}</div>
+            <div style="font-size:12px;color:${varColor};margin-top:3px;">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:12px;color:#8899aa;letter-spacing:1px;">GP / DAY</div>
+            <div style="font-size:22px;font-weight:800;margin-top:4px;">$${Math.round(s.gpPerDay).toLocaleString()}</div>
+          </div>
+          <div style="background:#0c1a2e;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:12px;color:#8899aa;letter-spacing:1px;">DAILY BAL</div>
+            <div style="font-size:22px;font-weight:800;margin-top:4px;color:${s.dailyBal >= 0 ? '#2ecc40' : '#e74c3c'};">${s.dailyBal >= 0 ? '+' : ''}$${Math.round(Math.abs(s.dailyBal)).toLocaleString()}</div>
           </div>
         </div>
         <!-- Performance Metrics Grid -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;">
-          ${tile('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
-          ${tile('MOB CLOSE RATE', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
-          ${tile('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${tile('NON-TRAD', pct(s.nonTrad), 'blue')}
-          ${tile('GIG PLANS %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${tile('PLUS MIX', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${tile('NEW->UPGRADE', pct(s.newToUpg), 'blue')}
-          ${tile('ACCESSORIES', '$'+Math.round(s.accPerDev), 'blue')}
-          ${tile('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
+          ${tile('GP TREND', fmt.dollar(s.gpTrend), s.gpTrend >= 0 ? 'green' : 'red')}
+          ${tile('MOB CLOSE RATE', fmt.pct(s.mobileCR), s.mobileCR >= 0.08 ? 'green' : s.mobileCR >= 0.05 ? 'yellow' : 'red')}
+          ${tile('FISCAL CR', fmt.pct(s.fiscalCR), s.fiscalCR >= 0.08 ? 'green' : s.fiscalCR >= 0.05 ? 'yellow' : 'red')}
+          ${tile('NON-TRAD', fmt.pct(s.nonTrad), 'blue')}
+          ${tile('GIG %', fmt.pct(s.gigPct), s.gigPct >= 0.5 ? 'green' : s.gigPct >= 0.35 ? 'yellow' : 'red')}
+          ${tile('PREMIUM', fmt.pct(s.premium), s.premium >= 0.85 ? 'green' : s.premium >= 0.7 ? 'yellow' : 'red')}
+          ${tile('NEW/UPG', fmt.pct(s.newToUpg), 'blue')}
+          ${tile('ACCESSORIES', fmt.dollar(s.accPerDev), 'blue')}
+          ${tile('NPS', fmt.pct(s.nps), s.nps >= 0.8 ? 'green' : s.nps >= 0.6 ? 'yellow' : 'red')}
         </div>
       </div>
-      <!-- Right column -->
-      <div style="display:flex;flex-direction:column;gap:12px;overflow:hidden;">
-        <!-- Team Members -->
-        <div style="flex:1;overflow:hidden;">${repHtml}</div>
+      <!-- Right column: Team Members -->
+      <div style="display:flex;flex-direction:column;overflow:hidden;">
+        ${repHtml}
       </div>
     </div>`;
 }
 
-// === YESTERDAY'S CONVERSION RENDERER ===
-function renderYesterday(district, distStores) {
-  const y = state.yesterday;
-  if (!y || (!y.loaded && !y.error)) {
-    return '<div class="yc-wrap"><div class="yc-empty">Loading yesterday\'s data…</div></div>';
+// ---- Rep Breakdown (Full page) ----
+// REDESIGNED: Larger text, more impactful, centered values
+function renderRepBreakdown(page) {
+  const start = page * CONFIG.REPS_PER_PAGE;
+  const pageReps = state.reps.slice(start, start + CONFIG.REPS_PER_PAGE);
+
+  // Dynamic sizing based on rep count
+  const count = pageReps.length;
+  const rowFontSize = count <= 8 ? '16px' : count <= 10 ? '14px' : count <= 12 ? '13px' : '12px';
+  const rowPadding = count <= 8 ? '12px 14px' : count <= 10 ? '10px 12px' : '8px 10px';
+  const gpFontSize = count <= 8 ? '20px' : count <= 10 ? '17px' : count <= 12 ? '15px' : '13px';
+  const headerSize = count <= 10 ? '12px' : '11px';
+
+  const gpColor = v => v >= 5000 ? '#2ecc40' : v >= 3000 ? '#f1c40f' : '#e74c3c';
+  const gigColor = v => v >= 0.5 ? '#2ecc40' : v >= 0.35 ? '#f1c40f' : '#e74c3c';
+  const premColor = v => v >= 0.85 ? '#2ecc40' : v >= 0.7 ? '#f1c40f' : '#e74c3c';
+
+  const cols = '56px 1.2fr 1fr 90px 72px 72px 60px 60px 66px 72px 72px';
+
+  let html = `
+    <div class="rep-grid" style="height:calc(100vh - 110px);overflow:hidden;">
+      <div style="display:grid;grid-template-columns:${cols};gap:6px;padding:8px 14px;background:#0d1a2e;border-radius:8px 8px 0 0;font-size:${headerSize};font-weight:700;color:#8899aa;letter-spacing:0.8px;margin-bottom:4px;align-items:center;">
+        <span style="text-align:center;">#</span>
+        <span>NAME</span>
+        <span>STORE</span>
+        <span style="text-align:center;">GP $</span>
+        <span style="text-align:center;">GIG %</span>
+        <span style="text-align:center;">PREMIUM</span>
+        <span style="text-align:center;">MOB</span>
+        <span style="text-align:center;">TAB</span>
+        <span style="text-align:center;">WATCH</span>
+        <span style="text-align:center;">ACC/MOB</span>
+        <span style="text-align:center;">WAGE EST</span>
+      </div>`;
+
+  for (const r of pageReps) {
+    html += `
+      <div style="display:grid;grid-template-columns:${cols};gap:6px;padding:${rowPadding};background:#0c1525;border-radius:6px;border:1px solid #1a2540;font-size:${rowFontSize};align-items:center;margin-bottom:3px;">
+        <span style="color:#e67e22;font-weight:900;text-align:center;font-size:${gpFontSize};">#${r.rank}</span>
+        <span style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</span>
+        <span style="color:#8899aa;font-size:${count <= 10 ? '13px' : '11px'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.store}</span>
+        <span style="font-weight:800;text-align:center;font-size:${gpFontSize};color:${gpColor(r.gp)};">${fmt.dollar(r.gp)}</span>
+        <span style="font-weight:700;text-align:center;color:${gigColor(r.gigPct)};">${fmt.pct(r.gigPct)}</span>
+        <span style="font-weight:700;text-align:center;color:${premColor(r.premium)};">${fmt.pct(r.premium)}</span>
+        <span style="font-weight:700;text-align:center;color:#3498db;">${fmt.num(r.mobile)}</span>
+        <span style="font-weight:700;text-align:center;color:#3498db;">${fmt.num(r.tabletMTD)}</span>
+        <span style="font-weight:700;text-align:center;color:#3498db;">${fmt.num(r.watchesMTD)}</span>
+        <span style="font-weight:700;text-align:center;color:#8899aa;">${r.accPerMobile ? fmt.dollar(r.accPerMobile) : (r.gphr ? fmt.dollar(r.gphr) : '--')}</span>
+        <span style="font-weight:700;text-align:center;color:#f1c40f;">${r.blendedWage ? '$' + r.blendedWage.toFixed(2) : '--'}</span>
+      </div>`;
   }
-  // Build per-store rows for this district by joining the Zero-tab data and
-  // T-Sheet counts onto our store list.
-  const rows = distStores.map(s => {
-    // The Zero tab keys stores by short name (e.g. "Burbank") same as state.stores.
-    const z = y.rows[s.name] || {};
-    const traffic = z.traffic || 0;
-    const mobile  = z.mobile  || 0;
-    const mcr     = (z.mcr != null) ? z.mcr : null;
-    const tcharts = (y.tsheets && y.tsheets[s.name]) || 0;
-    const tpct    = traffic > 0 ? (tcharts / traffic) * 100 : null;
-    return { store: s.name, traffic, mobile, mcr, tcharts, tpct };
-  });
-  // Sort by MCR descending (best at the top)
-  rows.sort((a, b) => (b.mcr ?? -1) - (a.mcr ?? -1));
 
-  // Totals
-  let tTraffic = 0, tMobile = 0, tCharts = 0;
-  for (const r of rows) { tTraffic += r.traffic; tMobile += r.mobile; tCharts += r.tcharts; }
-  const tMcr  = tTraffic > 0 ? (tMobile  / tTraffic) * 100 : null;
-  const tTPct = tTraffic > 0 ? (tCharts  / tTraffic) * 100 : null;
+  // Fill empty rows
+  for (let i = pageReps.length; i < CONFIG.REPS_PER_PAGE; i++) {
+    html += `<div style="display:grid;grid-template-columns:${cols};gap:6px;padding:${rowPadding};background:#0c1525;border-radius:6px;border:1px dashed #1a2540;opacity:0.15;margin-bottom:3px;"></div>`;
+  }
 
-  const pctClass = (p, type) => {
-    if (p == null || isNaN(p)) return 'muted';
-    if (type === 'tpct') return p > 20 ? 'good' : p >= 15 ? 'warn' : 'bad';
-    return p > 7 ? 'good' : p >= 6 ? 'warn' : 'bad';
-  };
-  const pctText = p => (p == null || isNaN(p)) ? '—' : p.toFixed(1) + '%';
+  html += '</div>';
+  return html;
+}
 
-  const dateLabel = y.date
-    ? new Date(y.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })
-    : 'Yesterday';
+// ---- Promos ----
+// ---- Raise Program (per District) ----
+// ---- District / Region Rank Table ----
+function renderRankTable(entries, titleLabel, nameLabel) {
+  const count = entries.length;
+  // For districts (25 entries) use smaller sizing, for regions (9) use larger
+  const isSmall = count > 15;
+  const rowFontSize = isSmall ? '12px' : count > 10 ? '14px' : '16px';
+  const rowPadding = isSmall ? '6px 8px' : count > 10 ? '8px 10px' : '12px 14px';
+  const valSize = isSmall ? '13px' : count > 10 ? '15px' : '18px';
+  const headerSize = isSmall ? '10px' : '11px';
 
-  const tbody = rows.map((r, i) => `
-    <tr>
-      <td style="color:var(--day-accent);font-weight:900;width:48px;font-size:22px;">${i + 1}</td>
-      <td style="font-weight:800;color:#fff;font-size:22px;">${r.store}</td>
-      <td class="num">${r.traffic.toLocaleString()}</td>
-      <td class="num">${r.mobile.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(r.mcr, 'mcr')}">${pctText(r.mcr)}</span></td>
-      <td class="num">${r.tcharts.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(r.tpct, 'tpct')}">${pctText(r.tpct)}</span></td>
-    </tr>`).join('');
+  const cols = isSmall
+    ? '40px 1.2fr 78px 62px 62px 52px 52px 52px 58px 58px 58px 70px'
+    : '50px 1.4fr 90px 74px 74px 62px 62px 62px 68px 68px 68px 80px';
 
-  const totalRow = `
-    <tr class="total">
-      <td></td>
-      <td>${district.label.toUpperCase()} TOTAL</td>
-      <td class="num">${tTraffic.toLocaleString()}</td>
-      <td class="num">${tMobile.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(tMcr, 'mcr')}">${pctText(tMcr)}</span></td>
-      <td class="num">${tCharts.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(tTPct, 'tpct')}">${pctText(tTPct)}</span></td>
-    </tr>`;
+  // Find Jeff's DMs to highlight
+  const jeffDMs = Object.keys(state.raiseDistricts);
 
-  return `
-    <div class="yc-wrap">
-      <div class="yc-header">
-        <div>
-          <div class="yc-title">${district.label}</div>
-          <div class="yc-subtitle">${dateLabel} · MCR &amp; T-Chart % by store</div>
-        </div>
+  let html = `
+    <div style="height:calc(100vh - 110px);display:flex;flex-direction:column;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:${cols};gap:4px;padding:8px 10px;background:#0d1a2e;border-radius:8px 8px 0 0;font-size:${headerSize};font-weight:700;color:#8899aa;letter-spacing:0.6px;align-items:center;margin-bottom:3px;">
+        <span style="text-align:center;">#</span>
+        <span>${nameLabel.toUpperCase()}</span>
+        <span style="text-align:center;">GP TREND</span>
+        <span style="text-align:center;">MOB CR</span>
+        <span style="text-align:center;">GIG %</span>
+        <span style="text-align:center;">MOB</span>
+        <span style="text-align:center;">TAB</span>
+        <span style="text-align:center;">WATCH</span>
+        <span style="text-align:center;">ACCESS</span>
+        <span style="text-align:center;">NPS</span>
+        <span style="text-align:center;">NEW/UPG</span>
+        <span style="text-align:center;">TTL SCORE</span>
       </div>
-      <div class="yc-kpis">
-        <div class="yc-kpi"><div class="yc-kpi-l">Traffic</div><div class="yc-kpi-v">${tTraffic.toLocaleString()}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">Mobile</div><div class="yc-kpi-v">${tMobile.toLocaleString()}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">MCR</div><div class="yc-kpi-v ${pctClass(tMcr,'mcr')}">${pctText(tMcr)}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">T-Charts</div><div class="yc-kpi-v">${tCharts.toLocaleString()}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">T-Chart %</div><div class="yc-kpi-v ${pctClass(tTPct,'tpct')}">${pctText(tTPct)}</div></div>
-      </div>
-      <div class="yc-table">
-        <table>
-          <thead><tr>
-            <th>#</th><th>Store</th>
-            <th class="num">Traffic</th>
-            <th class="num">Mobile</th>
-            <th class="num">MCR</th>
-            <th class="num">T-Charts</th>
-            <th class="num">T-Chart %</th>
-          </tr></thead>
-          <tbody>${tbody}${totalRow}</tbody>
-        </table>
+      <div style="flex:1;overflow:hidden;">`;
+
+  for (const e of entries) {
+    // Highlight Jeff's districts
+    const isJeff = jeffDMs.some(dm => e.name.toLowerCase().includes(dm.split(' ')[0].toLowerCase()));
+    const rowBg = isJeff ? '#0d1a30' : (entries.indexOf(e) % 2 === 0 ? '#0c1525' : '#0b1320');
+    const rowBorder = isJeff ? '#e67e22' : '#1a2540';
+    const nameColor = isJeff ? '#e67e22' : '#fff';
+    const nameWeight = isJeff ? '800' : '700';
+
+    // Top 3 get special rank treatment
+    const rankColor = e.rank <= 3 ? '#e67e22' : '#8899aa';
+
+    html += `
+      <div style="display:grid;grid-template-columns:${cols};gap:4px;padding:${rowPadding};background:${rowBg};border-radius:5px;border:1px solid ${rowBorder};font-size:${rowFontSize};align-items:center;margin-bottom:2px;">
+        <span style="color:${rankColor};font-weight:900;text-align:center;font-size:${valSize};">${e.rank}</span>
+        <span style="font-weight:${nameWeight};color:${nameColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${e.name}${isJeff ? ' ★' : ''}</span>
+        <span style="text-align:center;font-weight:700;font-size:${valSize};color:${e.gpTrend >= 50000 ? '#2ecc40' : e.gpTrend >= 40000 ? '#f1c40f' : '#e74c3c'};">${fmt.dollar(e.gpTrend)}</span>
+        <span style="text-align:center;font-weight:700;color:${e.mobileCR >= 0.08 ? '#2ecc40' : e.mobileCR >= 0.06 ? '#f1c40f' : '#e74c3c'};">${fmt.pct(e.mobileCR)}</span>
+        <span style="text-align:center;font-weight:700;color:${e.gigPct >= 0.6 ? '#2ecc40' : e.gigPct >= 0.45 ? '#f1c40f' : '#e74c3c'};">${fmt.pct(e.gigPct)}</span>
+        <span style="text-align:center;font-weight:700;color:#3498db;">${e.mobileMTD}</span>
+        <span style="text-align:center;font-weight:700;color:#3498db;">${e.tabletMTD}</span>
+        <span style="text-align:center;font-weight:700;color:#3498db;">${e.watchesMTD}</span>
+        <span style="text-align:center;font-weight:700;">$${Math.round(e.accessory)}</span>
+        <span style="text-align:center;font-weight:700;color:${e.nps >= 0.8 ? '#2ecc40' : e.nps >= 0.7 ? '#f1c40f' : '#e74c3c'};">${fmt.pct(e.nps)}</span>
+        <span style="text-align:center;font-weight:700;">${fmt.pct(e.newToUpg)}</span>
+        <span style="text-align:center;font-weight:800;font-size:${valSize};color:#e67e22;">${e.totalScore}</span>
+      </div>`;
+  }
+
+  html += `
       </div>
     </div>`;
+  return html;
+}
+
+function renderRaiseProgram(dm, page) {
+  const allReps = state.raiseDistricts[dm] || [];
+  const start = page * CONFIG.RAISE_REPS_PER_PAGE;
+  const pageReps = allReps.slice(start, start + CONFIG.RAISE_REPS_PER_PAGE);
+  const months = state.raiseMonths;
+  const count = pageReps.length;
+
+  // Dynamic sizing
+  const rowFontSize = count <= 10 ? '15px' : count <= 13 ? '13px' : '12px';
+  const rowPadding = count <= 10 ? '10px 12px' : count <= 13 ? '8px 10px' : '6px 8px';
+  const gpSize = count <= 10 ? '16px' : count <= 13 ? '14px' : '12px';
+  const headerSize = count <= 10 ? '12px' : '11px';
+
+  // Build column template: Rank, Name, Store, [months...], Grand Total, Raise
+  const monthColWidth = months.length <= 3 ? '80px' : months.length <= 6 ? '65px' : '55px';
+  const colTemplate = `44px 1.4fr 0.9fr ${months.map(() => monthColWidth).join(' ')} 90px 80px`;
+
+  // Compute district totals
+  const districtGrandTotal = allReps.reduce((s, r) => s + r.grandTotal, 0);
+  const districtMonthTotals = {};
+  for (const m of months) {
+    districtMonthTotals[m] = allReps.reduce((s, r) => s + (r.months[m] || 0), 0);
+  }
+
+  let html = `
+    <div style="height:calc(100vh - 110px);display:flex;flex-direction:column;overflow:hidden;">
+      <!-- District Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:0 4px;">
+        <div>
+          <span style="font-size:20px;font-weight:900;color:#e67e22;letter-spacing:1px;">DM: ${dm}</span>
+          <span style="font-size:14px;color:#8899aa;margin-left:12px;">${allReps.length} Reps</span>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;">
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:#8899aa;letter-spacing:1px;">DISTRICT GP</div>
+            <div style="font-size:22px;font-weight:900;color:#e67e22;">$${Math.round(districtGrandTotal).toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Header -->
+      <div style="display:grid;grid-template-columns:${colTemplate};gap:4px;padding:8px 10px;background:#0d1a2e;border-radius:8px 8px 0 0;font-size:${headerSize};font-weight:700;color:#8899aa;letter-spacing:0.8px;align-items:center;">
+        <span style="text-align:center;">#</span>
+        <span>NAME</span>
+        <span>STORE</span>
+        ${months.map(m => `<span style="text-align:center;">${m.toUpperCase()}</span>`).join('')}
+        <span style="text-align:center;">YTD TOTAL</span>
+        <span style="text-align:center;">RAISE</span>
+      </div>
+
+      <!-- Rows -->
+      <div style="flex:1;overflow:hidden;">`;
+
+  pageReps.forEach((r, idx) => {
+    const rowNum = start + idx + 1;
+    const raiseColor = r.raisesEarned > 0 ? '#2ecc40' : '#5a7a9a';
+    const raiseText = r.raisesEarned > 0 ? '+$' + r.raiseAmount.toFixed(2) + '/hr' : '--';
+    const totalColor = r.grandTotal >= 65000 ? '#2ecc40' : r.grandTotal >= 45000 ? '#f1c40f' : '#fff';
+
+    // Progress toward next raise
+    const progressPct = Math.min(100, (r.grandTotal % 65000) / 65000 * 100);
+
+    html += `
+      <div style="display:grid;grid-template-columns:${colTemplate};gap:4px;padding:${rowPadding};background:${idx % 2 === 0 ? '#0c1525' : '#0b1320'};border-radius:4px;border:1px solid #1a2540;font-size:${rowFontSize};align-items:center;margin-bottom:2px;">
+        <span style="color:#e67e22;font-weight:800;text-align:center;">${rowNum}</span>
+        <span style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</span>
+        <span style="color:#8899aa;font-size:${count <= 10 ? '12px' : '11px'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.store}</span>
+        ${months.map(m => {
+          const v = r.months[m] || 0;
+          return `<span style="text-align:center;font-weight:600;font-size:${gpSize};">${v > 0 ? '$' + Math.round(v).toLocaleString() : '--'}</span>`;
+        }).join('')}
+        <span style="text-align:center;font-weight:800;font-size:${gpSize};color:${totalColor};">$${Math.round(r.grandTotal).toLocaleString()}</span>
+        <span style="text-align:center;font-weight:800;color:${raiseColor};font-size:${gpSize};">${raiseText}</span>
+      </div>`;
+  });
+
+  html += `
+      </div>
+
+      <!-- Disclaimer -->
+      <div style="padding:8px 12px;margin-top:6px;background:linear-gradient(135deg,#1a2744,#0d1a2e);border:1px solid #e67e2244;border-radius:8px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:18px;">&#9733;</div>
+        <div style="font-size:11px;color:#ccc;line-height:1.4;">
+          <strong style="color:#e67e22;">RAISE PROGRAM:</strong>
+          Employees earn a <strong style="color:#2ecc40;">$0.50/hr raise</strong> for every <strong style="color:#e67e22;">$65,000</strong> in Gross Profit earned for the company (YTD cumulative total).
+        </div>
+      </div>
+    </div>`;
+
+  return html;
 }
 
 function renderPromos() {
   if (state.promos) {
     const cacheBust = '?t=' + Math.floor(Date.now() / 300000);
     return `
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
-      <div style="font-size:13px;font-weight:700;letter-spacing:3px;color:#e67e22;text-transform:uppercase;">XM Daily Promotion Card</div>
-      <img src="${state.promos}${cacheBust}"
-           style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid var(--day-line-2);box-shadow:0 0 40px #e67e2222;"
-           alt="Daily Promotion Card"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
-      <div style="display:none;color:#5a7a9a;font-size:15px;font-style:italic;">Promo card image could not be loaded.</div>
-    </div>`;
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
+        <div style="font-size:13px;font-weight:700;letter-spacing:3px;color:#e67e22;text-transform:uppercase;">XM Daily Promotion Card</div>
+        <img src="${state.promos}${cacheBust}"
+          style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid #1a3050;box-shadow:0 0 40px #e67e2222;"
+          alt="Daily Promotion Card"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+        <div style="display:none;color:#5a7a9a;font-size:15px;font-style:italic;">Promo card image could not be loaded.</div>
+      </div>`;
   }
   return `
     <div class="promo-slide">
@@ -1319,7 +1000,7 @@ function renderPromos() {
     </div>`;
 }
 
-// -- COUNTDOWN --
+// ========== COUNTDOWN ==========
 function startCountdown() {
   if (state.countdownTimer) clearInterval(state.countdownTimer);
   state.countdownStart = Date.now();
@@ -1331,7 +1012,7 @@ function startCountdown() {
   }, 100);
 }
 
-// -- SLIDESHOW --
+// ========== SLIDESHOW ==========
 function startSlideshow() {
   if (state.slideTimer) clearInterval(state.slideTimer);
   state.slideTimer = setInterval(() => {
@@ -1340,18 +1021,13 @@ function startSlideshow() {
     startCountdown();
   }, CONFIG.SLIDE_INTERVAL);
   startCountdown();
-
-  // Auto-refresh data
   if (state.refreshTimer) clearInterval(state.refreshTimer);
-  state.refreshTimer = setInterval(() => {
-    loadData();
-  }, CONFIG.REFRESH_INTERVAL);
+  state.refreshTimer = setInterval(() => { loadData(); }, CONFIG.REFRESH_INTERVAL);
 }
 
 function goSlide(i) {
   state.currentSlide = i;
   render();
-  // Reset auto-advance timer and countdown
   if (state.slideTimer) clearInterval(state.slideTimer);
   state.slideTimer = setInterval(() => {
     state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
@@ -1361,18 +1037,14 @@ function goSlide(i) {
   startCountdown();
 }
 
-// -- KEYBOARD NAV --
+// ========== KEYBOARD NAV ==========
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight' || e.key === ' ') { goSlide((state.currentSlide + 1) % state.totalSlides); }
   if (e.key === 'ArrowLeft') { goSlide((state.currentSlide - 1 + state.totalSlides) % state.totalSlides); }
 });
 
-// -- INIT --
-loadPersistedFilters();
-applyDayColor();
-scheduleDayColorAtMidnight();
+// ========== INIT ==========
 loadData();
 </script>
 </body>
-<!-- v2.1 -->
 </html>
