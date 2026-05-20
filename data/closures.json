@@ -2915,11 +2915,10 @@
     "store": "Kildeer"
   },
   "2321743671": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T21:48:21.957Z",
+    "status": "Closed",
+    "ts": "2026-05-20T18:57:59.237Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-05-15"
+    "store": "Cicero"
   },
   "2322487562": {
     "status": "Closed",
