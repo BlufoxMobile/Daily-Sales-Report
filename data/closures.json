@@ -3227,6 +3227,12 @@
     "dm": "Jacob Cabrales",
     "store": "South Bend"
   },
+  "2326548007": {
+    "status": "Closed",
+    "ts": "2026-05-20T19:53:08.964Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
+  },
   "2326557753": {
     "status": "Can Not Close",
     "ts": "2026-05-18T17:47:54.071Z",
@@ -3278,6 +3284,12 @@
     "ts": "2026-05-18T17:49:36.438Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "2326924436": {
+    "status": "Closed",
+    "ts": "2026-05-20T19:53:07.669Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   },
   "2326967292": {
     "status": "Closed",
