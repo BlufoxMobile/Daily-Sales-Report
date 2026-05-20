@@ -2715,11 +2715,10 @@
     "pendingUntil": "2026-05-13"
   },
   "2320114202": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T21:48:16.110Z",
+    "status": "Closed",
+    "ts": "2026-05-20T19:00:47.327Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-05-15"
+    "store": "Cicero"
   },
   "2320170520": {
     "status": "Closed",
