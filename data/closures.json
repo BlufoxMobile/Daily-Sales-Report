@@ -2573,11 +2573,10 @@
     "store": "Evergreen Park"
   },
   "2318761961": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T21:48:30.405Z",
+    "status": "Closed",
+    "ts": "2026-05-20T18:48:00.766Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-05-15"
+    "store": "Cicero"
   },
   "2318775768": {
     "status": "Closed",
