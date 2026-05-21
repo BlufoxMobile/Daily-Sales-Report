@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-19T01:18:31.517Z",
+  "updatedAt": "2026-05-21T03:35:59.209Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -19,7 +19,7 @@
     "Oak Ridge Xfinity Store",
     "Round Lake Beach Xfinity Store",
     "Schererville Xfinity Store",
-    "Skokie Xfinity Store",
+    "South Skokie Xfinity Store",
     "South Bend Xfinity Store",
     "South Knoxville Xfinity Store",
     "Tinley Park Xfinity Store",
@@ -78,13 +78,13 @@
     "Oak Ridge Xfinity Store": "kKirkland@blufoxmobile.com",
     "Round Lake Beach Xfinity Store": "ISolis@blufoxmobile.com",
     "Schererville Xfinity Store": "miJackson@blufoxmobile.com",
-    "Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
     "South Knoxville Xfinity Store": "zSpradling@blufoxmobile.com",
     "Tinley Park Xfinity Store": "sOrozco@blufoxmobile.com",
     "Uptown Xfinity Store": "HDodge@blufoxmobile.com",
     "Valparaiso Xfinity Store": "EWashington@blufoxmobile.com",
     "Bourbonnais Xfinity Store": "jbilbrey@blufoxmobile.com",
-    "South Bend Xfinity Store": "jbilbrey@blufoxmobile.com"
+    "South Bend Xfinity Store": "jbilbrey@blufoxmobile.com",
+    "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -104,13 +104,13 @@
     "Oak Ridge Xfinity Store": "mbrooks@blufoxmobile.com",
     "Round Lake Beach Xfinity Store": "IDhorajiwala@blufoxmobile.com",
     "Schererville Xfinity Store": "jcabrales@blufoxmobile.com",
-    "Skokie Xfinity Store": "IDhorajiwala@blufoxmobile.com",
     "South Bend Xfinity Store": "jcabrales@blufoxmobile.com",
     "South Knoxville Xfinity Store": "mbrooks@blufoxmobile.com",
     "Tinley Park Xfinity Store": "juCarrillo@blufoxmobile.com",
     "Uptown Xfinity Store": "IDhorajiwala@blufoxmobile.com",
     "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com",
-    "Evergreen Park Xfinity Store": "juCarrillo@blufoxmobile.com"
+    "Evergreen Park Xfinity Store": "juCarrillo@blufoxmobile.com",
+    "South Skokie Xfinity Store": "IDhorajiwala@blufoxmobile.com"
   },
   "storeManagerNames": {
     "Burbank Xfinity Store": "Zuri Salazar",
@@ -130,12 +130,12 @@
     "Oak Ridge Xfinity Store": "Kayla Kirkland",
     "Schererville Xfinity Store": "Michael Jackson",
     "Round Lake Beach Xfinity Store": "Irvin Solis",
-    "Skokie Xfinity Store": "Ozzie Garcia",
     "Valparaiso Xfinity Store": "Emari Washington",
     "Uptown Xfinity Store": "Hunter Dodge",
     "Tinley Park Xfinity Store": "Sebas Orozco",
     "South Knoxville Xfinity Store": "Zoe Spradling",
     "Bourbonnais Xfinity Store": "Vacant Position",
-    "South Bend Xfinity Store": "Vacant Position"
+    "South Bend Xfinity Store": "Vacant Position",
+    "South Skokie Xfinity Store": "Ozzie Garcia"
   }
 }
