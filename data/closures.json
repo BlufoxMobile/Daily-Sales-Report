@@ -3717,6 +3717,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-05-25"
   },
+  "2333614590": {
+    "status": "Closed",
+    "ts": "2026-05-21T16:31:44.354Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
