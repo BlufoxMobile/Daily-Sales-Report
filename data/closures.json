@@ -4857,5 +4857,12 @@
     "ts": "2026-05-22T19:41:25.883Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "1001295092402109": {
+    "status": "Pending Install",
+    "ts": "2026-05-22T19:42:28.545Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville",
+    "pendingUntil": "2026-05-24"
   }
 }
