@@ -3812,11 +3812,10 @@
     "store": "Michigan City"
   },
   "2337914350": {
-    "status": "Pending Install",
-    "ts": "2026-05-22T19:29:13.868Z",
+    "status": "Closed",
+    "ts": "2026-05-22T19:38:42.876Z",
     "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-06-01"
+    "store": "Greeneville"
   },
   "1001290369922103": {
     "status": "Pending Install",
