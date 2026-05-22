@@ -3895,6 +3895,13 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2337694199": {
+    "status": "Pending Install",
+    "ts": "2026-05-22T20:54:48.566Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville",
+    "pendingUntil": "2026-06-07"
+  },
   "2337914350": {
     "status": "Pending Install",
     "ts": "2026-05-22T19:39:23.076Z",
