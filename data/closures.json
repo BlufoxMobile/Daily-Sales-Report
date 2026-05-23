@@ -5006,5 +5006,11 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park",
     "pendingUntil": "2026-05-23"
+  },
+  "1002280160022053": {
+    "status": "Closed",
+    "ts": "2026-05-23T18:09:09.805Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   }
 }
