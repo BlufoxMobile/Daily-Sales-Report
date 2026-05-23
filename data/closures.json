@@ -5048,5 +5048,12 @@
     "ts": "2026-05-23T18:34:14.683Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
+  },
+  "1001295710852107": {
+    "status": "Pending Install",
+    "ts": "2026-05-23T18:36:29.490Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville",
+    "pendingUntil": "2026-05-30"
   }
 }
