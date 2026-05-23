@@ -4988,9 +4988,10 @@
     "store": "Elkhart"
   },
   "1002279925812055": {
-    "status": "Closed",
-    "ts": "2026-05-23T18:06:51.229Z",
+    "status": "Pending Install",
+    "ts": "2026-05-23T18:06:59.932Z",
     "dm": "Juan Carrillo",
-    "store": "Tinley Park"
+    "store": "Tinley Park",
+    "pendingUntil": "2026-05-23"
   }
 }
