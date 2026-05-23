@@ -2839,11 +2839,10 @@
     "store": "Evergreen Park"
   },
   "2321075102": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T19:33:58.576Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-23T18:12:46.325Z",
     "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-05-19"
+    "store": "Tinley Park"
   },
   "2321152042": {
     "status": "Closed",
