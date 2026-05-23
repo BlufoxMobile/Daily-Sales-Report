@@ -3597,11 +3597,10 @@
     "store": "Johnson City"
   },
   "2329919529": {
-    "status": "Pending Install",
-    "ts": "2026-05-18T19:33:08.461Z",
+    "status": "Closed",
+    "ts": "2026-05-23T19:52:18.506Z",
     "dm": "Juan Carrillo",
-    "store": "Frankfort",
-    "pendingUntil": "2026-05-19"
+    "store": "Frankfort"
   },
   "2329928523": {
     "status": "Closed",
