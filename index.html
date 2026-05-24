@@ -8,19 +8,31 @@
 <style></style>
 </head>
 <body>
-<div id="app">
-  <div class="loading-screen" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading Sales Report...</div>
-    <div class="error-text" id="errorMsg" style="display:none"></div>
-    <button class="retry-btn" id="retryBtn" style="display:none" onclick="loadData()">Retry</button>
-  </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#080e1a; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
+  html, body { background:#000; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
+
+  /* === FIXED-CANVAS SCALING ===
+     Everything is laid out for a 1920x1080 virtual canvas, then JS scales the
+     whole canvas with transform:scale() to fit any viewport. Phones, tablets,
+     laptops, and every TV (regardless of native resolution or aspect ratio)
+     get the same proportional layout, just at different physical sizes. The
+     letterbox bars are pure black so the bright slide pops in any room. */
+  #stage {
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:#000;
+    overflow:hidden;
+  }
+  #stage-scaler {
+    width:1920px; height:1080px;
+    flex-shrink:0;
+    transform-origin: top left;
+    position:absolute;
+    top:0; left:0;
+  }
+  body { background:var(--day-bg) !important; }
 
   /* === DAY-OF-WEEK FULL THEMING ===
      applyDayColor() rewrites every variable below at page load (and at midnight)
@@ -45,8 +57,10 @@
   }
   /* Tint the whole page surface with the day color */
   body { background: var(--day-bg) !important; }
-  .header { background: linear-gradient(180deg, var(--day-bg-2) 0%, var(--day-bg) 100%) !important; }
-  .logo-circle { background: var(--day-line) !important; }
+  .header { background: linear-gradient(180deg, var(--day-bg-2) 0%, var(--day-bg) 100%) !important;
+    border-bottom-width: 4px !important; box-shadow: 0 4px 24px var(--day-glow) !important; }
+  .logo-circle { background: var(--day-line) !important;
+    box-shadow: 0 0 18px var(--day-glow) !important; }
   .progress-bar { background: var(--day-bg) !important; }
   .progress-track { background: var(--day-line) !important; }
   .dot-nav span { background: var(--day-line) !important; }
@@ -66,8 +80,12 @@
   .header { border-bottom-color: var(--day-accent) !important; }
   .logo-circle { border-color: var(--day-accent) !important; }
   .logo-text { color: var(--day-accent) !important; }
-  .brand-title .highlight { color: var(--day-accent) !important; text-shadow:0 0 14px var(--day-glow); }
-  .header-center-title { color: var(--day-accent) !important; text-shadow:0 0 18px var(--day-glow); }
+  .brand-title .highlight { color: var(--day-accent) !important; text-shadow:0 0 18px var(--day-glow), 0 0 36px var(--day-glow); }
+  .header-center-title { color: var(--day-accent) !important; text-shadow:0 0 22px var(--day-glow), 0 0 44px var(--day-glow); }
+  /* Make the store cards glow softly on the day color */
+  .store-card { box-shadow: 0 4px 22px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04); }
+  .store-card::before { background: linear-gradient(90deg,transparent,var(--day-accent),transparent) !important; opacity:0.8; }
+  .store-rank, .store-gp, .header-center-sub, .brand-sub { color: var(--day-accent) !important; }
   .progress-fill, .countdown-fill { background:linear-gradient(90deg,var(--day-accent),var(--day-accent2)) !important; }
   .slide-label b, .slide-type { color: var(--day-accent) !important; }
   .day-badge {
@@ -283,7 +301,8 @@
     flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px;
     max-width:1340px; width:100%;
   }
-  .rk-grid.single { grid-template-columns:1fr; max-width:960px; }
+  /* Single-column with all 7 metric columns needs more horizontal room */
+  .rk-grid.single { grid-template-columns:1fr; max-width:1700px; }
   .rk-table {
     background:var(--day-bg-3); border:1px solid var(--day-line); border-radius:12px;
     overflow:hidden;
@@ -342,18 +361,45 @@
   .dot-nav span { width:7px; height:7px; border-radius:50%; background:var(--day-line); cursor:pointer; transition:background 0.3s; }
   .dot-nav span.active { background:#e67e22; }
 
-  /* -- Slide Container -- */
-  .slide-container { height:calc(100vh - 100px); padding:8px 20px; overflow:hidden; }
+  /* -- Slide Container -- fixed dimensions inside the 1920x1080 canvas.
+     Total page chrome (header 80 + district bar 50 + progress bar 36) ≈ 166,
+     leaving ~914 for the slide body. */
+  .slide-container { height:914px; padding:14px 30px; overflow:hidden; }
 
   /* -- Store Grid -- */
   .store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
-  .store-card { background:linear-gradient(135deg,var(--day-bg-3) 0%,var(--day-bg-4) 100%); border:1px solid var(--day-line-2); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
+  .store-card { background:linear-gradient(135deg,var(--day-bg-3) 0%,var(--day-bg-4) 100%); border:1px solid var(--day-line-2); border-radius:14px; padding:22px 26px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
   .store-card:hover { border-color:#e67e22; }
   .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
-  .store-rank { font-size:16px; font-weight:900; color:#e67e22; opacity:0.7; }
-  .store-name { font-size:17px; font-weight:800; color:#fff; margin-top:1px; }
-  .store-gp { font-size:30px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .store-gp-sub { font-size:12px; color:#5a7a9a; margin-top:6px; }
+  /* Hero block at the top of each card — rank # sits on the LEFT in a huge
+     font, store name + GP trend stack on the RIGHT. All three are sized to
+     dominate the card so anyone glancing at the TV can spot their store and
+     ranking from across the room. */
+  .store-hero {
+    display:flex; align-items:center; gap:24px;
+    padding-bottom:14px; border-bottom:2px solid var(--day-line-2);
+  }
+  .store-hero-rank {
+    font-size:104px; font-weight:900; color:var(--day-accent);
+    line-height:1; letter-spacing:-3px;
+    flex-shrink:0; min-width:140px; text-align:center;
+    text-shadow:0 0 28px var(--day-glow);
+  }
+  .store-hero-info { flex:1; min-width:0; text-align:right; }
+  .store-name {
+    font-size:44px; font-weight:900; color:#fff;
+    line-height:1; letter-spacing:0.3px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .store-gp {
+    font-size:64px; font-weight:900; color:var(--day-accent);
+    margin-top:6px; line-height:1; letter-spacing:-1.5px;
+    text-shadow:0 0 28px var(--day-glow);
+  }
+  .store-gp-sub { font-size:15px; color:#8899aa; margin-top:6px; font-weight:600; letter-spacing:0.5px; }
+  /* Keep the legacy single-column hero classes around as fallbacks so any
+     old markup still renders cleanly. */
+  .store-rank { font-size:34px; font-weight:900; color:var(--day-accent); line-height:1; letter-spacing:0.5px; }
   .store-gp-sub .green { color:#2ecc40; }
   .store-gp-sub .red { color:#e74c3c; }
 
@@ -410,8 +456,8 @@
   @media (min-width:1600px) {
     .metric-label { font-size:max(14px, 0.9vw) !important; }
     .metric-value { font-size:max(18px, 1.2vw) !important; }
-    .store-name { font-size:max(17px, 1.1vw); }
-    .store-gp { font-size:max(30px, 1.8vw); }
+    .store-name { font-size:max(38px, 1.1vw); }
+    .store-gp { font-size:max(62px, 1.8vw); }
     .store-gp-sub { font-size:max(12px, 0.75vw); }
     .summary-value { font-size:max(28px, 2.5vw); }
     .summary-label { font-size:max(14px, 1vw); }
@@ -451,9 +497,8 @@
     .header-right .live-badge { display:none; }
   }
 </style>
-</head>
-<body>
 
+<div id="stage"><div id="stage-scaler">
 <div id="app">
   <div class="loading-screen" id="loading">
     <div class="spinner"></div>
@@ -462,6 +507,7 @@
     <button class="retry-btn" id="retryBtn" style="display:none" onclick="loadData()">Retry</button>
   </div>
 </div>
+</div></div>
 
 <script>
 // -- CONFIG --
@@ -469,6 +515,9 @@ const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
   EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
   PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
+  // Second promo card shown after each promo slide — upload your "More
+  // Everything / One Low Price" image to data/more-everything.jpg in your repo.
+  XFINITY_PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/more-everything.jpg',
   SLIDE_INTERVAL: 15000,     // 15 seconds per slide
   REFRESH_INTERVAL: 1800000, // 30 minutes data refresh
   STORE_CARDS_PER_PAGE: 6,
@@ -495,28 +544,32 @@ const CONFIG = {
 // whole TV display feels different from yesterday — not just the accent.
 // `bg/bg2/bg3/bg4` are the dark surface tints (body, header, cards) and
 // `line/line2/line3` are the matching tinted borders.
+// Brighter, more saturated palette that pops on a TV across a busy room.
+// Primary = main accent (vivid). Secondary = highlight (lighter).
+// bg/bg2/bg3/bg4 = dark surfaces (slightly lifted from black so colors read
+// without crushing). line/line2/line3 = matching borders.
 const DAY_COLORS = {
-  0: { name: 'SUNDAY',    primary: '#ff4d8b', secondary: '#ff80a8',
-       bg:'#1a0a12', bg2:'#26121b', bg3:'#33182a', bg4:'#220f1d',
-       line:'#3d1d2c', line2:'#4d2638', line3:'#26121b' },
-  1: { name: 'MONDAY',    primary: '#ff3333', secondary: '#ff6666',
-       bg:'#1a0808', bg2:'#260e0e', bg3:'#331818', bg4:'#220e0e',
-       line:'#3d1d1d', line2:'#4d2828', line3:'#260e0e' },
-  2: { name: 'TUESDAY',   primary: '#ff8800', secondary: '#ffa64d',
-       bg:'#1a0d00', bg2:'#261408', bg3:'#33200a', bg4:'#221408',
-       line:'#3d2510', line2:'#4d3015', line3:'#261408' },
-  3: { name: 'WEDNESDAY', primary: '#ffc400', secondary: '#ffd966',
-       bg:'#1a1500', bg2:'#26200a', bg3:'#332b0f', bg4:'#22200a',
-       line:'#3d340f', line2:'#4d4015', line3:'#26200a' },
-  4: { name: 'THURSDAY',  primary: '#1ed760', secondary: '#4dffb0',
-       bg:'#051a0e', bg2:'#082617', bg3:'#0a3320', bg4:'#082217',
-       line:'#0d3d28', line2:'#114d33', line3:'#082617' },
-  5: { name: 'FRIDAY',    primary: '#2979ff', secondary: '#6aadff',
-       bg:'#080e1a', bg2:'#0d1526', bg3:'#0c1a2e', bg4:'#0a1525',
-       line:'#1a2744', line2:'#1a3050', line3:'#14213a' },
-  6: { name: 'SATURDAY',  primary: '#a855f7', secondary: '#c084fc',
-       bg:'#110a1a', bg2:'#1a1226', bg3:'#221a33', bg4:'#170f22',
-       line:'#2e2240', line2:'#3d2d52', line3:'#1a1226' },
+  0: { name: 'SUNDAY',    primary: '#ff2e88', secondary: '#ff66a6',
+       bg:'#260a16', bg2:'#33121e', bg3:'#421a2a', bg4:'#2e1220',
+       line:'#592640', line2:'#6e334f', line3:'#33121e' },
+  1: { name: 'MONDAY',    primary: '#ff1f1f', secondary: '#ff5757',
+       bg:'#260808', bg2:'#330e0e', bg3:'#421414', bg4:'#2e0e0e',
+       line:'#591f1f', line2:'#6e2828', line3:'#330e0e' },
+  2: { name: 'TUESDAY',   primary: '#ff7a00', secondary: '#ffa040',
+       bg:'#261200', bg2:'#33180a', bg3:'#42220d', bg4:'#2e180a',
+       line:'#592e10', line2:'#6e3a16', line3:'#33180a' },
+  3: { name: 'WEDNESDAY', primary: '#ffcf00', secondary: '#ffe066',
+       bg:'#261d00', bg2:'#33270a', bg3:'#42330f', bg4:'#2e240a',
+       line:'#594000', line2:'#6e5000', line3:'#33270a' },
+  4: { name: 'THURSDAY',  primary: '#1be564', secondary: '#5cffaa',
+       bg:'#062612', bg2:'#08331a', bg3:'#0c4226', bg4:'#082e18',
+       line:'#0e593a', line2:'#106e4a', line3:'#08331a' },
+  5: { name: 'FRIDAY',    primary: '#3b8cff', secondary: '#76b5ff',
+       bg:'#0a1426', bg2:'#0e1c33', bg3:'#122642', bg4:'#0e1b2e',
+       line:'#1f3559', line2:'#26426e', line3:'#0e1c33' },
+  6: { name: 'SATURDAY',  primary: '#b34dff', secondary: '#cf85ff',
+       bg:'#180a26', bg2:'#211233', bg3:'#2c1a42', bg4:'#1e122e',
+       line:'#3d2659', line2:'#4d306e', line3:'#211233' },
 };
 
 // === DISTRICTS ===
@@ -834,14 +887,17 @@ function parseRaiseProgram(wb) {
 
 // === DM / REGION RANK PARSER ===
 // Both sheets share the same layout: header at row index 2 (0-based), data
-// from row 3. Cols A=Rank, B=name (DM or Region), C=Avg GP Trend $,
-// D=Mobile per Internet, E=GP/RGU, F=CR, H=Mobile CR (25 pts).
+// from row 3. Column indices verified against the May 14 spreadsheet:
+//   A=Rank, B=name (DM or Region),
+//   C=Avg GP Trend $, D=Mobile per Internet, E=GP/RGU,
+//   F=Fiscal CR, H=Mobile CR (25 pts),
+//   P=GIG Plans %, Y=Mobile Plus Mix %, AF=Net Accessory Per Device %,
+//   AG=NPS %.
 function parseRankSheet(wb, sheetName) {
   const sheet = wb.Sheets[sheetName];
   if (!sheet) return [];
   const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
   const rows = [];
-  // Find the header row dynamically; usually index 2.
   let headerIdx = -1;
   for (let i = 0; i < Math.min(aoa.length, 6); i++) {
     if (aoa[i] && String(aoa[i][0] || '').trim() === 'Rank') { headerIdx = i; break; }
@@ -855,11 +911,15 @@ function parseRankSheet(wb, sheetName) {
     rows.push({
       rank: Number(r[0]) || 0,
       name,
-      avgGpTrend: Number(r[2]) || 0,
-      mobilePerInternet: Number(r[3]) || 0,
-      gpPerRgu: Number(r[4]) || 0,
-      fiscalCr: Number(r[5]) || 0,
-      mobileCr: Number(r[7]) || 0,
+      avgGpTrend: Number(r[2]) || 0,        // C
+      mobilePerInternet: Number(r[3]) || 0,  // D
+      gpPerRgu: Number(r[4]) || 0,           // E
+      fiscalCr: Number(r[5]) || 0,           // F
+      mobileCr: Number(r[7]) || 0,           // H
+      gigAttach: Number(r[15]) || 0,         // P  - GIG Plans %
+      plusAttach: Number(r[24]) || 0,        // Y  - Mobile Plus Mix %
+      accPerDev: Number(r[31]) || 0,         // AF - Net Accessory Per Device %
+      nps: Number(r[32]) || 0,               // AG - NPS %
     });
   }
   return rows;
@@ -1184,16 +1244,22 @@ function buildSlides() {
   }
 
   // Force a promo slide every N content slides regardless of selection.
-  const promoSlide = { type: 'promos', title: 'DAILY PROMOTIONS', label: 'Promotions' };
+  // Each promo is immediately followed by the Xfinity "More Everything" card
+  // so the two promo pieces always cycle together.
+  const promoSlide = { type: 'promos',        title: 'DAILY PROMOTIONS',        label: 'Promotions' };
+  const xfinitySlide = { type: 'xfinity-promo', title: 'XFINITY MORE EVERYTHING', label: 'Xfinity Special' };
+  const pushPromoPair = arr => { arr.push(promoSlide); arr.push(xfinitySlide); };
   const N = CONFIG.PROMO_EVERY_N || 4;
   const interleaved = [];
   for (let si = 0; si < state.slides.length; si++) {
     interleaved.push(state.slides[si]);
-    if ((si + 1) % N === 0) interleaved.push(promoSlide);
+    if ((si + 1) % N === 0) pushPromoPair(interleaved);
   }
-  // Always end on a promo so a short slide list (e.g. one store) still shows promos.
-  if (interleaved.length === 0 || interleaved[interleaved.length - 1].type !== 'promos') {
-    interleaved.push(promoSlide);
+  // Always end on the promo pair so a short slide list (e.g. one store) still
+  // shows them.
+  const last = interleaved[interleaved.length - 1];
+  if (interleaved.length === 0 || (last && last.type !== 'xfinity-promo')) {
+    pushPromoPair(interleaved);
   }
   state.slides = interleaved;
 
@@ -1222,6 +1288,9 @@ function render() {
   } else if (slide.type === 'promos') {
     slideTitle = 'DAILY PROMOTIONS';
     slideContent = renderPromos();
+  } else if (slide.type === 'xfinity-promo') {
+    slideTitle = 'XFINITY MORE EVERYTHING';
+    slideContent = renderXfinityPromo();
   } else if (slide.type === 'yesterday') {
     slideTitle = "YESTERDAY'S CONVERSION — " + slide.district.label.toUpperCase();
     slideContent = renderYesterday(slide.district, slide.stores);
@@ -1316,11 +1385,13 @@ function renderStoreGrid(stores) {
     const pct = v => (v * 100).toFixed(1) + '%';
     html += `
       <div class="store-card">
-        <div>
-          <div class="store-rank">#${s.rank}</div>
-          <div class="store-name">${s.name}</div>
-          <div class="store-gp">$${Math.round(s.gpTrend).toLocaleString()}</div>
-          <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
+        <div class="store-hero">
+          <div class="store-hero-rank">#${s.rank}</div>
+          <div class="store-hero-info">
+            <div class="store-name">${s.name}</div>
+            <div class="store-gp">$${Math.round(s.gpTrend).toLocaleString()}</div>
+            <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
+          </div>
         </div>
         <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
           ${m('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
@@ -1359,27 +1430,27 @@ function renderStoreDetail(s) {
     repHtml = `
       <div style="margin-top:14px;">
         <div style="font-size:20px;font-weight:800;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:15px;color:#8899aa;padding:8px 10px;font-weight:700;letter-spacing:0.5px;">
-          <span>RANK</span><span>NAME</span><span>GP $</span><span>ACC $</span><span>PLUS%</span><span>GIG%</span><span>MOB</span><span>TAB</span><span>WATCH</span>
+        <div style="display:grid;grid-template-columns:70px 1.5fr 100px 80px 80px 60px 60px 60px 130px;gap:14px;font-size:14px;color:#8899aa;padding:10px 16px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;border-bottom:2px solid var(--day-line);">
+          <span>NAT'L #</span><span>Rep Name</span><span>GP $</span><span>Plus %</span><span>GIG %</span><span>XM</span><span>Tab</span><span>Watch</span><span>Est. Blended Wage</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:44px 1fr 80px 64px 64px 64px 52px 52px 56px;gap:4px;font-size:18px;padding:12px 10px;background:var(--day-bg-4);border-radius:6px;margin-bottom:4px;border:1px solid var(--day-line);align-items:center;">
-            <span style="color:#e67e22;font-weight:800">#${r.rank}</span>
-            <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
-            <span style="font-weight:700">${Math.round(r.gp).toLocaleString()}</span>
-            <span>${Math.round(r.accPerMobile||0)}</span>
-            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'#e67e22':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
+          <div style="display:grid;grid-template-columns:70px 1.5fr 100px 80px 80px 60px 60px 60px 130px;gap:14px;font-size:18px;padding:12px 16px;background:var(--day-bg-4);border-radius:6px;margin:6px 0;border:1px solid var(--day-line);align-items:center;">
+            <span style="color:var(--day-accent);font-weight:800">#${r.rank}</span>
+            <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</span>
+            <span style="font-weight:700">$${Math.round(r.gp).toLocaleString()}</span>
+            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'var(--day-accent)':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
             <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
             <span>${r.mobile}</span>
             <span>${r.tabletMTD||0}</span>
             <span>${r.watchesMTD||0}</span>
+            <span style="color:var(--day-accent);font-weight:700">${r.blendedWage > 0 ? '$' + Number(r.blendedWage).toFixed(2) : '—'}</span>
           </div>
         `).join('')}
       </div>`;
   }
 
   return `
-    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:16px;height:100%;overflow:hidden;">
+    <div style="display:grid;grid-template-columns:1fr 1.85fr;gap:16px;height:100%;overflow:hidden;">
       <!-- Left column -->
       <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
         <!-- Store Header -->
@@ -1613,52 +1684,61 @@ function renderRaiseProgram(district, rows, slide) {
     </div>`;
 }
 
+// === Shared helpers for ranking renderers ===
+const _fmt$  = n => '$' + Math.round(n).toLocaleString();
+const _fmtPct = p => (p == null) ? '—' : (p * 100).toFixed(1) + '%';
+// Accessory Per Device on the rank sheets is a dollar amount per device
+// (e.g. 27.99 = $27.99), not a percentage — format accordingly.
+const _fmtAcc = v => (v == null) ? '—' : '$' + Number(v).toFixed(2);
+function _rankRowsHTML(rows, isOurs) {
+  return rows.map(r => `
+    <tr class="${isOurs(r.name) ? 'mine' : ''}">
+      <td><span class="rk-rank-num">${r.rank}</span></td>
+      <td><span class="rk-name">${r.name}</span></td>
+      <td class="num">${_fmt$(r.avgGpTrend)}</td>
+      <td class="num">${_fmtPct(r.mobileCr)}</td>
+      <td class="num">${_fmtPct(r.fiscalCr)}</td>
+      <td class="num">${_fmtPct(r.plusAttach)}</td>
+      <td class="num">${_fmtPct(r.gigAttach)}</td>
+      <td class="num">${_fmtAcc(r.accPerDev)}</td>
+      <td class="num">${_fmtPct(r.nps)}</td>
+    </tr>`).join('');
+}
+function _rankHeaderHTML(nameLabel) {
+  return `<thead><tr>
+    <th style="width:48px;">#</th>
+    <th>${nameLabel}</th>
+    <th class="num">GP Trend</th>
+    <th class="num">MCR</th>
+    <th class="num">FCR</th>
+    <th class="num">Plus</th>
+    <th class="num">GIG</th>
+    <th class="num">Acc/Dev</th>
+    <th class="num">NPS</th>
+  </tr></thead>`;
+}
+
 // === DM RANKINGS RENDERER ===
 function renderDmRanks() {
   const rows = state.dmRanks || [];
   if (!rows.length) return '<div class="rk-wrap"><div class="rp-empty">No DM rank data.</div></div>';
-  // Identify "our" DMs by matching their name against the dmMatch substrings
-  // we use everywhere else.
   const ourDmSubstrings = DISTRICTS.flatMap(d => d.dmMatch || []).map(s => s.toLowerCase());
   const isOurs = name => {
     const n = String(name || '').toLowerCase();
     return ourDmSubstrings.some(k => n.includes(k));
   };
-  // Split into two columns for readability on a 43" TV
-  const half = Math.ceil(rows.length / 2);
-  const left = rows.slice(0, half);
-  const right = rows.slice(half);
-  const fmt$ = n => '$' + Math.round(n).toLocaleString();
-  const fmtPct = p => (p == null) ? '—' : (p * 100).toFixed(1) + '%';
-
-  const buildTable = (data) => `
-    <div class="rk-table"><table>
-      <thead><tr>
-        <th>#</th><th>District Manager</th>
-        <th class="num">Avg GP Trend</th>
-        <th class="num">Mobile CR</th>
-      </tr></thead>
-      <tbody>${data.map(r => `
-        <tr class="${isOurs(r.name) ? 'mine' : ''}">
-          <td><span class="rk-rank-num">${r.rank}</span></td>
-          <td><span class="rk-name">${r.name}</span></td>
-          <td class="num">${fmt$(r.avgGpTrend)}</td>
-          <td class="num">${fmtPct(r.mobileCr)}</td>
-        </tr>`).join('')}
-      </tbody>
-    </table></div>`;
-
-  // Count of "ours" for the subtitle
   const oursCount = rows.filter(r => isOurs(r.name)).length;
   return `
     <div class="rk-wrap">
       <div class="rk-header">
         <div class="rk-title">District Manager Rankings</div>
-        <div class="rk-subtitle">${rows.length} DMs nationally · ${oursCount} from Greater Chicago highlighted</div>
+        <div class="rk-subtitle">${rows.length} DMs nationally · ${oursCount} of yours highlighted</div>
       </div>
-      <div class="rk-grid">
-        ${buildTable(left)}
-        ${buildTable(right)}
+      <div class="rk-grid single">
+        <div class="rk-table"><table>
+          ${_rankHeaderHTML('District Manager')}
+          <tbody>${_rankRowsHTML(rows, isOurs)}</tbody>
+        </table></div>
       </div>
     </div>`;
 }
@@ -1673,37 +1753,178 @@ function renderRegionRanks() {
     return ourKeys.some(k => n.includes(k));
   };
   const oursCount = rows.filter(r => isOurs(r.name)).length;
-  const fmt$ = n => '$' + Math.round(n).toLocaleString();
-  const fmtPct = p => (p == null) ? '—' : (p * 100).toFixed(1) + '%';
   return `
     <div class="rk-wrap">
       <div class="rk-header">
         <div class="rk-title">Region Rankings</div>
-        <div class="rk-subtitle">All ${rows.length} regions ranked nationally${oursCount > 1 ? ' · ' + oursCount + ' of yours highlighted' : ''}</div>
+        <div class="rk-subtitle">All ${rows.length} regions ranked nationally${oursCount > 0 ? ' · ' + oursCount + ' of yours highlighted' : ''}</div>
       </div>
       <div class="rk-grid single">
         <div class="rk-table"><table>
-          <thead><tr>
-            <th style="width:60px;">#</th>
-            <th>Region</th>
-            <th class="num">Avg GP Trend</th>
-            <th class="num">Mobile per Internet</th>
-            <th class="num">GP / RGU</th>
-            <th class="num">Fiscal CR</th>
-            <th class="num">Mobile CR</th>
-          </tr></thead>
-          <tbody>${rows.map(r => `
-            <tr class="${isOurs(r.name) ? 'mine' : ''}">
-              <td><span class="rk-rank-num">${r.rank}</span></td>
-              <td><span class="rk-name">${r.name}</span></td>
-              <td class="num">${fmt$(r.avgGpTrend)}</td>
-              <td class="num">${r.mobilePerInternet.toFixed(2)}</td>
-              <td class="num">$${r.gpPerRgu.toFixed(2)}</td>
-              <td class="num">${fmtPct(r.fiscalCr)}</td>
-              <td class="num">${fmtPct(r.mobileCr)}</td>
-            </tr>`).join('')}
-          </tbody>
+          ${_rankHeaderHTML('Region')}
+          <tbody>${_rankRowsHTML(rows, isOurs)}</tbody>
         </table></div>
+      </div>
+    </div>`;
+}
+
+// === XFINITY "MORE EVERYTHING" PROMO ===
+// Pure-HTML recreation of the More Everything / One Low Price marketing card.
+// Lives entirely in the page (no external image needed) so it always renders
+// no matter what's in the repo or which TV is loading it. If you'd rather use
+// your own image, drop it at data/more-everything.jpg and change
+// renderXfinityPromo to swap back to the image version.
+function renderXfinityPromo() {
+  return `
+    <div style="height:100%;width:100%;display:flex;align-items:center;justify-content:center;padding:6px 12px;">
+      <div style="
+        position:relative;
+        width:100%; max-width:1780px; height:100%;
+        background:
+          radial-gradient(ellipse 900px 500px at 15% 95%, rgba(0,229,255,0.22), transparent 60%),
+          radial-gradient(ellipse 900px 500px at 85% 95%, rgba(255,46,200,0.22), transparent 60%),
+          linear-gradient(180deg, #02060f 0%, #0a0517 100%);
+        border-radius:18px;
+        border:3px solid #00e5ff;
+        box-shadow:0 0 60px rgba(0,229,255,0.35), inset 0 0 80px rgba(255,46,200,0.10);
+        overflow:hidden;
+        display:grid;
+        grid-template-rows: auto auto 1fr auto auto;
+        gap:14px;
+        padding:22px 36px 18px;
+        font-family:'Inter',sans-serif;
+      ">
+        <!-- Row 1: xfinity wordmark + NEW SPECIAL badge + compact headline -->
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:20px;">
+            <div style="font-size:48px; font-weight:900; color:#fff; letter-spacing:-1px; line-height:1;">xfinity</div>
+            <div style="padding:8px 22px; border:2px solid #ff2ec8; border-radius:12px; color:#fff; font-size:18px; font-weight:800; letter-spacing:2px; box-shadow:0 0 18px rgba(255,46,200,0.55);">NEW SPECIAL!</div>
+          </div>
+          <div style="line-height:1; font-weight:900; text-align:right;">
+            <div style="font-size:56px; letter-spacing:-1.5px;">
+              <span style="color:#fff;">MORE </span><span style="font-family:'Brush Script MT', cursive; color:#ff2ec8; font-style:italic; font-weight:400; letter-spacing:1px;">Everything</span>
+              <span style="color:#fff;"> · ONE </span><span style="color:#00e5ff; text-shadow:0 0 22px rgba(0,229,255,0.5);">LOW PRICE.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: BIG 4-column - three product features + $85 price box -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1.2fr; gap:18px;">
+          <!-- GIG SPEED INTERNET -->
+          <div style="border:2.5px solid #00e5ff; border-radius:18px; padding:24px 22px; text-align:center; background:rgba(0,229,255,0.06); box-shadow:0 0 30px rgba(0,229,255,0.28); display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:84px; color:#00e5ff; line-height:1; text-shadow:0 0 28px rgba(0,229,255,0.7);">📶</div>
+            <div style="font-size:30px; font-weight:900; color:#00e5ff; letter-spacing:1.5px; margin-top:14px; line-height:1.05;">GIG SPEED<br>INTERNET</div>
+            <div style="font-size:18px; color:#e8f5ff; margin-top:14px; line-height:1.35; font-weight:600;">Lightning fast.<br>Stream. Game. Win.<br>All at once.</div>
+          </div>
+          <!-- NOW TV -->
+          <div style="border:2.5px solid #ff2ec8; border-radius:18px; padding:24px 22px; text-align:center; background:rgba(255,46,200,0.06); box-shadow:0 0 30px rgba(255,46,200,0.28); display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:84px; color:#ff2ec8; line-height:1; text-shadow:0 0 28px rgba(255,46,200,0.7);">▶</div>
+            <div style="font-size:30px; font-weight:900; color:#ff2ec8; letter-spacing:1.5px; margin-top:14px; line-height:1.05;">NOW TV<br>125+ CHANNELS</div>
+            <div style="font-size:18px; color:#ffe5f5; margin-top:14px; line-height:1.35; font-weight:600;">Live sports, news,<br>entertainment &amp; more.<br>Stream what you love.</div>
+          </div>
+          <!-- HOME CAMERA -->
+          <div style="border:2.5px solid #a347ff; border-radius:18px; padding:24px 22px; text-align:center; background:rgba(163,71,255,0.06); box-shadow:0 0 30px rgba(163,71,255,0.28); display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:84px; color:#a347ff; line-height:1; text-shadow:0 0 28px rgba(163,71,255,0.7);">📷</div>
+            <div style="font-size:30px; font-weight:900; color:#a347ff; letter-spacing:1.5px; margin-top:14px; line-height:1.05;">SMART HOME<br>CAMERA</div>
+            <div style="font-size:18px; color:#f1e5ff; margin-top:14px; line-height:1.35; font-weight:600;">Keep an eye on<br>what matters most,<br>right from your phone.</div>
+          </div>
+          <!-- $85/MO PRICE BOX -->
+          <div style="border:3px solid #d4ff00; border-radius:18px; padding:18px 22px; text-align:center; box-shadow:0 0 40px rgba(212,255,0,0.42); background:rgba(0,0,0,0.4); display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:18px; font-weight:800; letter-spacing:2px; color:#fff;">ALL FOR ONLY</div>
+            <div style="font-size:130px; font-weight:900; color:#d4ff00; line-height:1; margin-top:4px; letter-spacing:-4px; text-shadow:0 0 40px rgba(212,255,0,0.6);">$85<span style="font-size:40px; font-weight:700; color:#fff; vertical-align:top; margin-left:4px;">/mo</span></div>
+            <div style="font-size:16px; font-weight:700; color:#fff; margin-top:8px; letter-spacing:1px;">GUARANTEED PRICE</div>
+            <div style="font-size:30px; font-weight:900; color:#d4ff00; margin-top:2px; letter-spacing:1.5px; text-shadow:0 0 18px rgba(212,255,0,0.55);">FOR 5 YEARS!</div>
+            <div style="margin-top:12px; padding:8px 22px; border:2px solid #ff2ec8; border-radius:14px; display:inline-block; color:#ff2ec8; font-size:22px; font-weight:900; letter-spacing:2px; box-shadow:0 0 18px rgba(255,46,200,0.55); align-self:center;">NO CONTRACT!</div>
+          </div>
+        </div>
+
+        <!-- Row 3: BIG full-width Xfinity Pro upsell with feature highlights.
+             Left third = brand + price; right two thirds = 4 key features as a
+             2×2 grid so the team can pitch what Pro actually does. -->
+        <div style="border:3px solid #a347ff; border-radius:18px; padding:20px 28px; box-shadow:0 0 36px rgba(163,71,255,0.45); background:linear-gradient(90deg, rgba(163,71,255,0.22) 0%, rgba(163,71,255,0.06) 100%);">
+          <div style="display:grid; grid-template-columns: 0.7fr 1.6fr; gap:24px; align-items:center;">
+            <!-- LEFT: brand + price -->
+            <div style="text-align:center; padding-right:20px; border-right:2px solid rgba(163,71,255,0.5);">
+              <div style="font-size:16px; color:#e8d6ff; letter-spacing:2.5px; font-weight:800; text-transform:uppercase;">Level up with</div>
+              <div style="font-size:54px; font-weight:900; color:#fff; line-height:1; margin-top:4px; letter-spacing:-1px;">XFINITY</div>
+              <div style="font-size:54px; font-weight:900; color:#d4ff00; line-height:1; text-shadow:0 0 22px rgba(212,255,0,0.55); letter-spacing:-1px;">PRO</div>
+              <div style="font-size:14px; color:#e8d6ff; margin-top:8px; font-weight:700; letter-spacing:1px;">JUST</div>
+              <div style="font-size:62px; font-weight:900; color:#d4ff00; line-height:1; margin-top:2px; text-shadow:0 0 22px rgba(212,255,0,0.6); letter-spacing:-2px;">+$15<span style="font-size:22px; font-weight:700; color:#fff; vertical-align:top; margin-left:4px;">/mo</span></div>
+            </div>
+            <!-- RIGHT: 2x2 feature grid -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:12px;">
+              <!-- 4G LTE Cellular Backup -->
+              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
+                <div style="font-size:42px; line-height:1; flex-shrink:0;">📶</div>
+                <div style="min-width:0;">
+                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">4G LTE CELLULAR BACKUP</div>
+                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Auto-switches to cellular if broadband drops — up to <b style="color:#fff;">30 / 7 Mbps</b>.</div>
+                </div>
+              </div>
+              <!-- Boost a Device -->
+              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
+                <div style="font-size:42px; line-height:1; flex-shrink:0;">⚡</div>
+                <div style="min-width:0;">
+                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">BOOST A DEVICE</div>
+                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Send low-latency WiFi to a specific gaming console or work laptop.</div>
+                </div>
+              </div>
+              <!-- Mesh WiFi 6 Extension -->
+              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
+                <div style="font-size:42px; line-height:1; flex-shrink:0;">📡</div>
+                <div style="min-width:0;">
+                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">MESH WIFI 6 EXTENDERS</div>
+                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Up to <b style="color:#fff;">2 tri-band</b> extenders kill dead spots across the home.</div>
+                </div>
+              </div>
+              <!-- Battery Backup -->
+              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
+                <div style="font-size:42px; line-height:1; flex-shrink:0;">🔋</div>
+                <div style="min-width:0;">
+                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">BATTERY BACKUP</div>
+                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Optional plug-in battery keeps you online <b style="color:#fff;">up to 4 hours</b> in a power outage.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: three benefit cards -->
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+          <div style="border:1.5px solid #00e5ff; border-radius:12px; padding:10px 16px; display:flex; gap:12px; align-items:center; box-shadow:0 0 16px rgba(0,229,255,0.25);">
+            <div style="font-size:26px; color:#00e5ff;">🔒</div>
+            <div>
+              <div style="font-size:14px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">PRICE LOCK GUARANTEE</div>
+              <div style="font-size:11px; color:#cdd6e0; margin-top:1px;">Your price is locked in for 5 years.</div>
+            </div>
+          </div>
+          <div style="border:1.5px solid #00e5ff; border-radius:12px; padding:10px 16px; display:flex; gap:12px; align-items:center; box-shadow:0 0 16px rgba(0,229,255,0.25);">
+            <div style="font-size:26px; color:#00e5ff;">📄</div>
+            <div>
+              <div style="font-size:14px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">NO CONTRACT</div>
+              <div style="font-size:11px; color:#cdd6e0; margin-top:1px;">Stay because you love it, not because you're locked in.</div>
+            </div>
+          </div>
+          <div style="border:1.5px solid #00e5ff; border-radius:12px; padding:10px 16px; display:flex; gap:12px; align-items:center; box-shadow:0 0 16px rgba(0,229,255,0.25);">
+            <div style="font-size:26px; color:#00e5ff;">😊</div>
+            <div>
+              <div style="font-size:14px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">ALL THE TECH. ALL THE PERKS.</div>
+              <div style="font-size:11px; color:#cdd6e0; margin-top:1px;">One simple price. Everything you need. Zero stress.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 5: Tagline footer -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <div style="line-height:1.1;">
+            <div style="font-size:22px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">MORE SPEED. MORE STREAMS. MORE SECURITY.</div>
+            <div style="font-size:28px; font-weight:400; font-family:'Brush Script MT', cursive; color:#ff2ec8; font-style:italic; margin-top:4px;">All for less.</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:34px; font-weight:900; color:#fff; line-height:1; letter-spacing:-1px;">xfinity</div>
+            <div style="font-size:11px; color:#00e5ff; letter-spacing:2.5px; font-weight:700; margin-top:4px;">RELIABLE. SIMPLE. AWESOME.</div>
+          </div>
+        </div>
       </div>
     </div>`;
 }
@@ -1779,10 +2000,32 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') { goSlide((state.currentSlide - 1 + state.totalSlides) % state.totalSlides); }
 });
 
+// === STAGE SCALER ===
+// Scale the fixed 1920x1080 canvas to fit any viewport while preserving the
+// aspect ratio. Letterboxed black bars fill the leftover space (top/bottom
+// for narrow viewports, sides for wide ones). Runs on load, resize, and
+// orientation change so phones, tablets, laptops, and TVs all render the
+// same proportional layout.
+function fitStage() {
+  const stage = document.getElementById('stage-scaler');
+  if (!stage) return;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const r = Math.min(w / 1920, h / 1080);
+  const offX = (w - 1920 * r) / 2;
+  const offY = (h - 1080 * r) / 2;
+  stage.style.transform = 'scale(' + r + ')';
+  stage.style.left = offX + 'px';
+  stage.style.top  = offY + 'px';
+}
+window.addEventListener('resize', fitStage);
+window.addEventListener('orientationchange', () => setTimeout(fitStage, 150));
+
 // -- INIT --
 loadPersistedFilters();
 applyDayColor();
 scheduleDayColorAtMidnight();
+fitStage();
 loadData();
 </script>
 </body>
