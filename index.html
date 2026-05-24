@@ -302,20 +302,28 @@
     flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px;
     max-width:1340px; width:100%;
   }
-  /* Single-column with all 7 metric columns needs more horizontal room */
+  /* Single-column (used by Region Rankings — only 9 rows, lots of vertical
+     room) — text is dialed way up so it reads from across a room. */
   .rk-grid.single { grid-template-columns:1fr; max-width:1700px; }
+  .rk-grid.single .rk-table th {
+    padding:18px 18px; font-size:18px; letter-spacing:2px;
+  }
+  .rk-grid.single .rk-table td {
+    padding:18px 18px; font-size:26px; color:#fff;
+  }
+  .rk-grid.single .rk-rank-num { font-size:30px; }
+  .rk-grid.single .rk-name { font-size:28px; }
   /* DM two-column layout uses nearly the full canvas width since each side
-     still needs all 9 columns. Cells get tighter padding and smaller column
-     labels so everything fits without horizontal scrolling. */
-  .rk-grid.two-col-dm { grid-template-columns:1fr 1fr; max-width:1820px; gap:18px; }
+     still needs all 9 columns. Bumped from ~13px to ~18px for legibility. */
+  .rk-grid.two-col-dm { grid-template-columns:1fr 1fr; max-width:1860px; gap:18px; }
   .rk-grid.two-col-dm .rk-table th {
-    padding:8px 7px; font-size:11px; letter-spacing:1px;
+    padding:10px 9px; font-size:13px; letter-spacing:1.2px;
   }
   .rk-grid.two-col-dm .rk-table td {
-    padding:7px 7px; font-size:13px;
+    padding:10px 9px; font-size:18px;
   }
-  .rk-grid.two-col-dm .rk-rank-num { font-size:14px; }
-  .rk-grid.two-col-dm .rk-name { font-size:13px; }
+  .rk-grid.two-col-dm .rk-rank-num { font-size:20px; }
+  .rk-grid.two-col-dm .rk-name { font-size:18px; }
   .rk-table {
     background:var(--day-bg-3); border:1px solid var(--day-line); border-radius:12px;
     overflow:hidden;
