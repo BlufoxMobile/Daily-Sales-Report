@@ -1442,21 +1442,21 @@ function renderStoreDetail(s) {
   if (storeReps.length) {
     repHtml = `
       <div style="margin-top:14px;">
-        <div style="font-size:20px;font-weight:800;color:#e67e22;letter-spacing:2px;margin-bottom:8px;">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:70px 1.5fr 100px 80px 80px 60px 60px 60px 130px;gap:14px;font-size:14px;color:#8899aa;padding:10px 16px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;border-bottom:2px solid var(--day-line);">
-          <span>NAT'L #</span><span>Rep Name</span><span>GP $</span><span>Plus %</span><span>GIG %</span><span>XM</span><span>Tab</span><span>Watch</span><span>Est. Blended Wage</span>
+        <div style="font-size:32px;font-weight:900;color:var(--day-accent);letter-spacing:3px;margin-bottom:12px;text-shadow:0 0 18px var(--day-glow);">TEAM MEMBERS</div>
+        <div style="display:grid;grid-template-columns:90px 1.5fr 130px 100px 100px 76px 76px 88px 150px;gap:16px;font-size:18px;color:#8899aa;padding:14px 20px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2px solid var(--day-line);">
+          <span>NAT'L #</span><span>Rep Name</span><span>GP $</span><span>Plus %</span><span>GIG %</span><span>XM</span><span>Tab</span><span>Watch</span><span>Est. Wage</span>
         </div>
         ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:70px 1.5fr 100px 80px 80px 60px 60px 60px 130px;gap:14px;font-size:18px;padding:12px 16px;background:var(--day-bg-4);border-radius:6px;margin:6px 0;border:1px solid var(--day-line);align-items:center;">
-            <span style="color:var(--day-accent);font-weight:800">#${r.rank}</span>
-            <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</span>
-            <span style="font-weight:700">$${Math.round(r.gp).toLocaleString()}</span>
-            <span style="color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'var(--day-accent)':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
-            <span>${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
-            <span>${r.mobile}</span>
-            <span>${r.tabletMTD||0}</span>
-            <span>${r.watchesMTD||0}</span>
-            <span style="color:var(--day-accent);font-weight:700">${r.blendedWage > 0 ? '$' + Number(r.blendedWage).toFixed(2) : '—'}</span>
+          <div style="display:grid;grid-template-columns:90px 1.5fr 130px 100px 100px 76px 76px 88px 150px;gap:16px;font-size:24px;padding:16px 20px;background:var(--day-bg-4);border-radius:8px;margin:8px 0;border:1px solid var(--day-line);align-items:center;">
+            <span style="color:var(--day-accent);font-weight:900;font-size:26px">#${r.rank}</span>
+            <span style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;">${r.name}</span>
+            <span style="font-weight:800;color:#fff;">$${Math.round(r.gp).toLocaleString()}</span>
+            <span style="font-weight:700;color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'var(--day-accent)':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
+            <span style="font-weight:700;">${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
+            <span style="font-weight:700;">${r.mobile}</span>
+            <span style="font-weight:700;">${r.tabletMTD||0}</span>
+            <span style="font-weight:700;">${r.watchesMTD||0}</span>
+            <span style="color:var(--day-accent);font-weight:800">${r.blendedWage > 0 ? '$' + Number(r.blendedWage).toFixed(2) : '—'}</span>
           </div>
         `).join('')}
       </div>`;
