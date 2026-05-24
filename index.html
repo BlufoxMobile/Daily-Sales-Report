@@ -266,19 +266,20 @@
   }
   .rp-table table { width:100%; border-collapse:collapse; }
   .rp-table th {
-    text-align:left; padding:14px 14px; font-size:14px;
+    text-align:left; padding:11px 14px; font-size:14px;
     color:#8899aa; letter-spacing:1.8px; text-transform:uppercase;
     border-bottom:1px solid var(--day-line); background:var(--day-bg-4);
     font-weight:700;
   }
   .rp-table th.num, .rp-table td.num { text-align:right; }
   .rp-table td {
-    padding:11px 14px; font-size:17px; color:#cdd6e0;
+    padding:9px 14px; font-size:17px; color:#cdd6e0;
     border-bottom:1px solid var(--day-line-3);
   }
   .rp-table tr.total td {
     background:rgba(255,255,255,0.04); color:#fff; font-weight:800; font-size:18px;
     border-top:2px solid var(--day-accent);
+    padding:12px 14px;
   }
   .rp-table .rp-rep { font-weight:800; color:#fff; }
   .rp-table .rp-store { color:#8899aa; font-size:13px; }
@@ -303,6 +304,18 @@
   }
   /* Single-column with all 7 metric columns needs more horizontal room */
   .rk-grid.single { grid-template-columns:1fr; max-width:1700px; }
+  /* DM two-column layout uses nearly the full canvas width since each side
+     still needs all 9 columns. Cells get tighter padding and smaller column
+     labels so everything fits without horizontal scrolling. */
+  .rk-grid.two-col-dm { grid-template-columns:1fr 1fr; max-width:1820px; gap:18px; }
+  .rk-grid.two-col-dm .rk-table th {
+    padding:8px 7px; font-size:11px; letter-spacing:1px;
+  }
+  .rk-grid.two-col-dm .rk-table td {
+    padding:7px 7px; font-size:13px;
+  }
+  .rk-grid.two-col-dm .rk-rank-num { font-size:14px; }
+  .rk-grid.two-col-dm .rk-name { font-size:13px; }
   .rk-table {
     background:var(--day-bg-3); border:1px solid var(--day-line); border-radius:12px;
     overflow:hidden;
@@ -1199,7 +1212,7 @@ function buildSlides() {
       if (!rpRows.length) continue;
       // Sort once (descending YTD) so pagination splits the leaderboard cleanly.
       const sorted = rpRows.slice().sort((a, b) => b.grandTotal - a.grandTotal);
-      const REPS_PER_PAGE = 14;
+      const REPS_PER_PAGE = 12;
       const totalPages = Math.max(1, Math.ceil(sorted.length / REPS_PER_PAGE));
       for (let pg = 0; pg < totalPages; pg++) {
         const slice = sorted.slice(pg * REPS_PER_PAGE, (pg + 1) * REPS_PER_PAGE);
@@ -1719,6 +1732,9 @@ function _rankHeaderHTML(nameLabel) {
 }
 
 // === DM RANKINGS RENDERER ===
+// Two-column layout — splits the 25 DMs roughly in half so all of them fit
+// on one slide. Columns scale up the metric font slightly since each table
+// is narrower than the full-width single-column variant.
 function renderDmRanks() {
   const rows = state.dmRanks || [];
   if (!rows.length) return '<div class="rk-wrap"><div class="rp-empty">No DM rank data.</div></div>';
@@ -1728,17 +1744,23 @@ function renderDmRanks() {
     return ourDmSubstrings.some(k => n.includes(k));
   };
   const oursCount = rows.filter(r => isOurs(r.name)).length;
+  const half = Math.ceil(rows.length / 2);
+  const left = rows.slice(0, half);
+  const right = rows.slice(half);
+  const buildTable = data => `
+    <div class="rk-table"><table>
+      ${_rankHeaderHTML('District Manager')}
+      <tbody>${_rankRowsHTML(data, isOurs)}</tbody>
+    </table></div>`;
   return `
     <div class="rk-wrap">
       <div class="rk-header">
         <div class="rk-title">District Manager Rankings</div>
         <div class="rk-subtitle">${rows.length} DMs nationally · ${oursCount} of yours highlighted</div>
       </div>
-      <div class="rk-grid single">
-        <div class="rk-table"><table>
-          ${_rankHeaderHTML('District Manager')}
-          <tbody>${_rankRowsHTML(rows, isOurs)}</tbody>
-        </table></div>
+      <div class="rk-grid two-col-dm">
+        ${buildTable(left)}
+        ${buildTable(right)}
       </div>
     </div>`;
 }
