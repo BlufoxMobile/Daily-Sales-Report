@@ -4018,6 +4018,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-06-04"
   },
+  "2338541217": {
+    "status": "Closed",
+    "ts": "2026-05-25T17:17:52.261Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2338680611": {
     "status": "Pending Install",
     "ts": "2026-05-25T16:56:36.313Z",
