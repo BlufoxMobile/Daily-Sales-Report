@@ -3133,11 +3133,10 @@
     "store": "Greeneville"
   },
   "2324303492": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T21:14:29.594Z",
+    "status": "Closed",
+    "ts": "2026-05-25T17:22:38.018Z",
     "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-05-21"
+    "store": "Burbank"
   },
   "2324315646": {
     "status": "Can Not Close",
@@ -3146,11 +3145,10 @@
     "store": "Elkhart"
   },
   "2324321909": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T21:14:35.614Z",
+    "status": "Closed",
+    "ts": "2026-05-25T17:22:36.412Z",
     "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-05-21"
+    "store": "Burbank"
   },
   "2324426971": {
     "status": "Pending Install",
