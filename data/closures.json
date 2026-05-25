@@ -961,11 +961,10 @@
     "store": "Cicero"
   },
   "2282575657": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T23:25:45.468Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-25T18:21:52.617Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-05-19"
+    "store": "Uptown"
   },
   "2282607014": {
     "status": "Closed",
