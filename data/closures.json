@@ -363,6 +363,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2256844524": {
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T16:59:25.496Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2257108940": {
     "status": "Can Not Close",
     "ts": "2026-05-05T17:33:10.323Z",
