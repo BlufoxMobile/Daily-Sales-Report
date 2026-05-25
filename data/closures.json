@@ -5156,8 +5156,8 @@
     "pendingUntil": "2026-06-01"
   },
   "1002281708112059": {
-    "status": "Closed",
-    "ts": "2026-05-25T16:58:21.563Z",
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T16:58:25.547Z",
     "dm": "Jacob Cabrales",
     "store": "Cicero"
   }
