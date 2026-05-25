@@ -357,6 +357,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2255837305": {
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T16:59:28.225Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2255843511": {
     "status": "Closed",
     "ts": "2026-05-19T22:41:02.543Z",
