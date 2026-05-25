@@ -3974,8 +3974,8 @@
     "pendingUntil": "2026-05-29"
   },
   "2340197741": {
-    "status": "Cancelled Order",
-    "ts": "2026-05-25T16:27:38.650Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-25T16:27:43.147Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
