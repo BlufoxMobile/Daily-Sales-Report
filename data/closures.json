@@ -5250,5 +5250,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-06-03"
+  },
+  "1002280954682054": {
+    "status": "Pending Install",
+    "ts": "2026-05-25T17:21:13.307Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-06-13"
   }
 }
