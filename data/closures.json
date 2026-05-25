@@ -5333,5 +5333,12 @@
     "ts": "2026-05-25T18:20:33.286Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
+  },
+  "1002279959062056": {
+    "status": "Pending Install",
+    "ts": "2026-05-25T20:46:39.021Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-06-01"
   }
 }
