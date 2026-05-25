@@ -3969,6 +3969,12 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2336882021": {
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T17:52:33.140Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
+  },
   "2336882960": {
     "status": "Closed",
     "ts": "2026-05-22T20:15:43.820Z",
