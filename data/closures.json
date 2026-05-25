@@ -4570,11 +4570,10 @@
     "pendingUntil": "2026-05-22"
   },
   "1002277397382052": {
-    "status": "Pending Install",
-    "ts": "2026-05-11T18:23:00.875Z",
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T16:44:03.465Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-05-23"
+    "store": "Cicero"
   },
   "1001292569632102": {
     "status": "Pending Install",
