@@ -3711,6 +3711,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2331109787": {
+    "status": "Pending Install",
+    "ts": "2026-05-25T20:58:58.114Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb",
+    "pendingUntil": "2026-06-01"
+  },
   "2331121153": {
     "status": "Closed",
     "ts": "2026-05-21T15:22:57.595Z",
