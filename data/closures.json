@@ -3994,6 +3994,12 @@
     "store": "South Knoxville",
     "pendingUntil": "2026-06-07"
   },
+  "2337694845": {
+    "status": "Closed",
+    "ts": "2026-05-25T17:29:33.085Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
+  },
   "2337715709": {
     "status": "Pending Install",
     "ts": "2026-05-25T16:59:28.883Z",
