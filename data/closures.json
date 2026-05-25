@@ -4140,6 +4140,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2340258388": {
+    "status": "Pending Install",
+    "ts": "2026-05-25T20:53:54.220Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-06-01"
+  },
   "2340316965": {
     "status": "Can Not Close",
     "ts": "2026-05-25T16:42:24.805Z",
