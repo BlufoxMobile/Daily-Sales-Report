@@ -3835,6 +3835,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2333240582": {
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T20:47:49.741Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2333534132": {
     "status": "Pending Install",
     "ts": "2026-05-20T19:54:58.093Z",
