@@ -3854,6 +3854,12 @@
     "store": "Hammond",
     "pendingUntil": "2026-05-23"
   },
+  "2334774461": {
+    "status": "Can Not Close",
+    "ts": "2026-05-25T16:26:45.282Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2334988305": {
     "status": "Pending Install",
     "ts": "2026-05-22T16:51:25.071Z",
