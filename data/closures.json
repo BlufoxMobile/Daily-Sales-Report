@@ -3823,6 +3823,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
+  "2333107734": {
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T20:47:55.047Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2333134099": {
     "status": "Closed",
     "ts": "2026-05-22T20:11:11.641Z",
