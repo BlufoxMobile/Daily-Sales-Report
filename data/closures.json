@@ -3798,6 +3798,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2332989855": {
+    "status": "Cancelled Order",
+    "ts": "2026-05-25T20:46:30.721Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2333008794": {
     "status": "Closed",
     "ts": "2026-05-21T16:28:24.009Z",
