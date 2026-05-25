@@ -3148,11 +3148,10 @@
     "store": "Burbank"
   },
   "2324426971": {
-    "status": "Pending Install",
-    "ts": "2026-05-12T17:41:18.224Z",
+    "status": "Closed",
+    "ts": "2026-05-25T20:55:14.786Z",
     "dm": "Juan Carrillo",
-    "store": "Dekalb",
-    "pendingUntil": "2026-05-15"
+    "store": "Dekalb"
   },
   "2324588111": {
     "status": "Pending Install",
