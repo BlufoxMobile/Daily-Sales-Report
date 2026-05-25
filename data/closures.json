@@ -4132,6 +4132,13 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2341061761": {
+    "status": "Pending Install",
+    "ts": "2026-05-25T18:12:08.148Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-06-04"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
