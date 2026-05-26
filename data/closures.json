@@ -4237,6 +4237,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2340316908": {
+    "status": "Pending Install",
+    "ts": "2026-05-26T18:58:20.177Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-06-02"
+  },
   "2340316965": {
     "status": "Can Not Close",
     "ts": "2026-05-25T16:42:24.805Z",
