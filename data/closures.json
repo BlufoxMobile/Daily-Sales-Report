@@ -3896,12 +3896,24 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2334591269": {
+    "status": "Closed",
+    "ts": "2026-05-26T15:43:04.816Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2334593362": {
     "status": "Pending Install",
     "ts": "2026-05-22T16:51:04.264Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-05-23"
+  },
+  "2334659218": {
+    "status": "Closed",
+    "ts": "2026-05-26T15:43:06.079Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2334717875": {
     "status": "Can Not Close",
