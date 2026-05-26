@@ -4206,6 +4206,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2340253205": {
+    "status": "Closed",
+    "ts": "2026-05-26T17:40:14.118Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2340254072": {
     "status": "Closed",
     "ts": "2026-05-25T16:58:30.498Z",
@@ -4218,6 +4224,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-06-01"
+  },
+  "2340268636": {
+    "status": "Closed",
+    "ts": "2026-05-26T17:40:12.833Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2340316965": {
     "status": "Can Not Close",
