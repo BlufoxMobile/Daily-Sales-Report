@@ -5523,5 +5523,11 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-06-01"
+  },
+  "1002281450492055": {
+    "status": "Closed",
+    "ts": "2026-05-26T19:00:31.678Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   }
 }
