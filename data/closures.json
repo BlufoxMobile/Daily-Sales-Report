@@ -4175,6 +4175,12 @@
     "store": "Frankfort",
     "pendingUntil": "2026-06-01"
   },
+  "2339263703": {
+    "status": "Closed",
+    "ts": "2026-05-26T16:43:24.792Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2339776341": {
     "status": "Pending Install",
     "ts": "2026-05-25T17:01:42.063Z",
