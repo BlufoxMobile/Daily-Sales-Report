@@ -4439,6 +4439,13 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2340373714": {
+    "status": "Pending Install",
+    "ts": "2026-05-26T20:12:54.586Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-06-02"
+  },
   "2340385134": {
     "status": "Closed",
     "ts": "2026-05-26T17:28:23.283Z",
