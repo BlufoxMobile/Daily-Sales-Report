@@ -1614,11 +1614,10 @@
     "store": "Oak Ridge"
   },
   "2303205440": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T18:52:29.482Z",
+    "status": "Closed",
+    "ts": "2026-05-26T19:43:16.151Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-05-12"
+    "store": "Glenview"
   },
   "2303301686": {
     "status": "Cancelled Order",
@@ -1649,18 +1648,16 @@
     "store": "Hammond"
   },
   "2303718822": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T18:52:32.800Z",
+    "status": "Closed",
+    "ts": "2026-05-26T19:43:13.831Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-05-12"
+    "store": "Glenview"
   },
   "2303719985": {
-    "status": "Pending Install",
-    "ts": "2026-05-05T18:52:45.334Z",
+    "status": "Closed",
+    "ts": "2026-05-26T19:43:15.063Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-05-12"
+    "store": "Glenview"
   },
   "2303728980": {
     "status": "Pending Install",
