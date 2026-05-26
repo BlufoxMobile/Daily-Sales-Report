@@ -4470,6 +4470,13 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2340544086": {
+    "status": "Pending Install",
+    "ts": "2026-05-26T20:02:42.336Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-06-02"
+  },
   "2340553501": {
     "status": "Closed",
     "ts": "2026-05-25T16:55:51.174Z",
