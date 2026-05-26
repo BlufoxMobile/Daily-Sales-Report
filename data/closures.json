@@ -4421,6 +4421,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-06-04"
   },
+  "2341666566": {
+    "status": "Can Not Close",
+    "ts": "2026-05-26T19:24:58.789Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
