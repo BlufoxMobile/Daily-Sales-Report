@@ -4246,6 +4246,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-06-12"
   },
+  "2339024753": {
+    "status": "Closed",
+    "ts": "2026-05-26T19:22:51.017Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2339088707": {
     "status": "Pending Install",
     "ts": "2026-05-25T20:51:17.921Z",
