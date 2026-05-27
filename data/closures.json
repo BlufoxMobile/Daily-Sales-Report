@@ -3242,11 +3242,10 @@
     "store": "Oak Ridge"
   },
   "2325213667": {
-    "status": "Pending Install",
-    "ts": "2026-05-20T19:47:41.266Z",
+    "status": "Closed",
+    "ts": "2026-05-27T20:45:56.568Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-05-26"
+    "store": "Cicero"
   },
   "2325246856": {
     "status": "Closed",
