@@ -5855,5 +5855,12 @@
     "ts": "2026-05-27T20:46:45.344Z",
     "dm": "Jacob Cabrales",
     "store": "Cicero"
+  },
+  "1002281528222054": {
+    "status": "Pending Install",
+    "ts": "2026-05-28T19:04:24.074Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-05-29"
   }
 }
