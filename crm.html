@@ -840,14 +840,10 @@
 
   .fu2-response {
     margin: 10px 14px 6px;
-    padding: 7px 10px;
+    padding: 8px 12px;
     font-size: 12px;
     color: var(--muted);
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    line-height: 1.6;
     background: rgba(0,0,0,0.18);
     border-left: 2px solid var(--green);
     border-radius: 0 5px 5px 0;
@@ -887,16 +883,55 @@
     white-space: nowrap;
   }
   .fu2-btn:last-child { border-right: none; }
-  .fu2-log { color: var(--blue); }
-  .fu2-log:hover { background: rgba(139,111,247,0.14); }
-  .fu2-sold { color: var(--green); }
-  .fu2-sold:hover { background: rgba(0,230,118,0.12); }
-  .fu2-sold.active { background: rgba(0,230,118,0.18); color: var(--green); font-weight: 800; }
-  .fu2-declined { color: #FBA5BC; }
-  .fu2-declined:hover { background: rgba(230,0,77,0.12); }
-  .fu2-declined.active { background: rgba(230,0,77,0.18); color: #FBA5BC; font-weight: 800; }
-  .fu2-resubmit-btn { color: var(--orange); background: rgba(97,56,245,0.1); }
-  .fu2-resubmit-btn:hover { background: rgba(97,56,245,0.22); }
+
+  /* ── Log Attempt: electric blue ── */
+  .fu2-log {
+    background: linear-gradient(135deg, #2563EB, #0EA5E9);
+    color: white;
+  }
+  .fu2-log:hover { filter: brightness(1.12); }
+
+  /* ── Sold: vivid green ── */
+  .fu2-sold {
+    background: linear-gradient(135deg, #059669, #10B981);
+    color: white;
+  }
+  .fu2-sold:hover { filter: brightness(1.12); }
+  .fu2-sold.active {
+    background: linear-gradient(135deg, #047857, #059669);
+    box-shadow: inset 0 0 0 2px white;
+  }
+
+  /* ── Declined: solid red ── */
+  .fu2-declined {
+    background: linear-gradient(135deg, #DC2626, #EF4444);
+    color: white;
+  }
+  .fu2-declined:hover { filter: brightness(1.12); }
+  .fu2-declined.active {
+    background: linear-gradient(135deg, #B91C1C, #DC2626);
+    box-shadow: inset 0 0 0 2px white;
+  }
+
+  /* ── Resubmit: neon yellow, pulsing glow ── */
+  @keyframes neonPulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(250,204,21,0.7), 0 0 18px rgba(250,204,21,0.4); }
+    50%       { box-shadow: 0 0 14px rgba(250,204,21,1),   0 0 36px rgba(250,204,21,0.7), 0 0 60px rgba(250,204,21,0.3); }
+  }
+  .fu2-resubmit-btn {
+    background: linear-gradient(135deg, #CA8A04, #FBBF24, #FDE68A);
+    color: #1c1000;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    animation: neonPulse 1.6s ease-in-out infinite;
+    border-right: none;
+  }
+  .fu2-resubmit-btn:hover {
+    filter: brightness(1.1);
+    animation-duration: 0.7s;
+  }
+
+  /* ── Dismiss/Cancel ── */
   .fu2-dismiss-btn { color: var(--muted); font-size: 12px; }
   .fu2-dismiss-btn:hover { background: rgba(230,0,77,0.1); color: #FBA5BC; }
 
