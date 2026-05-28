@@ -782,53 +782,107 @@
   .fu-action-group select.is-sold { border-color: var(--green); color: var(--green); font-weight: 700; background: rgba(0,230,118,0.12); }
   .fu-action-group select.is-declined { border-color: var(--red); color: #FBA5BC; background: rgba(230,0,77,0.1); font-weight: 600; }
 
-  /* ===== SIMPLIFIED FOLLOW-UP ACTIONS ===== */
-  .fu-actions-simple {
+  /* ===== BIG ACTION BAR ===== */
+  .fu-action-bar {
     display: flex;
-    gap: 20px;
-    align-items: flex-end;
+    gap: 10px;
+    align-items: stretch;
     flex-wrap: wrap;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 2px solid var(--border);
   }
-  .fu-contact-log { flex: 1; min-width: 200px; }
-  .fu-action-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .fu-contact-entries {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 8px;
-  }
-  .fu-contact-entry {
-    font-size: 12px;
-    color: var(--text);
-    background: var(--card);
-    border-left: 3px solid var(--green);
-    padding: 4px 10px;
-    border-radius: 0 4px 4px 0;
-  }
-  .fu-contact-none { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 6px; }
-  .fu-log-btn {
-    background: transparent;
-    border: 1px dashed var(--border-bright);
-    color: var(--blue);
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
+  .fu-big-btn {
+    padding: 16px 22px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
     font-family: inherit;
-    font-weight: 600;
-    transition: all 0.15s;
+    border: 2px solid transparent;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+    line-height: 1.2;
+    text-align: center;
   }
-  .fu-log-btn:hover { background: rgba(139,111,247,0.12); border-style: solid; }
+  /* Log Attempt — left side, takes remaining space */
+  .fu-btn-contact {
+    flex: 1;
+    min-width: 180px;
+    background: rgba(139,111,247,0.12);
+    border-color: var(--blue);
+    color: var(--blue);
+    flex-direction: column;
+    gap: 4px;
+  }
+  .fu-btn-contact:hover { background: rgba(139,111,247,0.28); box-shadow: 0 0 16px rgba(139,111,247,0.3); }
+  .fu-btn-contact .fu-btn-sub { font-size: 11px; font-weight: 500; color: var(--muted); }
+  /* Sold */
+  .fu-btn-sold {
+    min-width: 140px;
+    background: rgba(0,230,118,0.1);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .fu-btn-sold:hover { background: rgba(0,230,118,0.22); box-shadow: 0 0 16px rgba(0,230,118,0.3); }
+  .fu-btn-sold.active {
+    background: var(--green);
+    color: #0B0818;
+    box-shadow: 0 0 24px rgba(0,230,118,0.5);
+  }
+  /* Declined */
+  .fu-btn-declined {
+    min-width: 140px;
+    background: rgba(230,0,77,0.1);
+    border-color: var(--red);
+    color: #FBA5BC;
+  }
+  .fu-btn-declined:hover { background: rgba(230,0,77,0.22); box-shadow: 0 0 16px rgba(230,0,77,0.3); }
+  .fu-btn-declined.active {
+    background: var(--red);
+    color: white;
+    box-shadow: 0 0 24px rgba(230,0,77,0.5);
+  }
+  /* Resubmit */
+  .fu-btn-resubmit {
+    flex: 1;
+    min-width: 240px;
+    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+    border-color: transparent;
+    color: white;
+    font-size: 15px;
+  }
+  .fu-btn-resubmit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(97,56,245,0.45); }
+  /* Dismiss/Cancel */
+  .fu-btn-dismiss {
+    background: transparent;
+    border-color: rgba(176,168,208,0.35);
+    color: var(--muted);
+    padding: 16px 18px;
+    font-size: 13px;
+  }
+  .fu-btn-dismiss:hover { border-color: var(--red); color: #FBA5BC; }
+  /* Mini contact log beneath the log button */
+  .fu-attempts-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .fu-attempt-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 3px 10px;
+    border-radius: 0 4px 4px 0;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .fu-save-inline { font-size: 11px; color: var(--green); align-self: center; white-space: nowrap; }
 
   .fu-save { font-size: 11px; color: var(--muted); margin-top: 6px; min-height: 14px; font-style: italic; }
   .fu-save.saved { color: var(--green); font-style: normal; }
@@ -2393,40 +2447,41 @@ function renderFuLeadCard(l) {
   let actionsHtml = '';
 
   if (isApproved && !closed) {
-    // Approved → simplified: contact log + outcome only
     const contacts = s.contacts || [];
-    const contactEntries = contacts.length > 0
-      ? contacts.slice(-3).reverse().map(c =>
-          `<span class="fu-contact-entry">📞 ${formatFuDate(c.ts)}</span>`
-        ).join('')
-      : `<span class="fu-contact-none">No attempts logged yet</span>`;
+    const attemptChips = contacts.slice(-5).reverse()
+      .map(c => `<span class="fu-attempt-chip">📞 ${formatFuDate(c.ts)}</span>`).join('');
+    const logLabel = contacts.length > 0
+      ? `${contacts.length} attempt${contacts.length > 1 ? 's' : ''} logged`
+      : 'No attempts logged yet';
+    const soldActive   = s.outcome === 'sold'     ? 'active' : '';
+    const declinedActive = s.outcome === 'declined' ? 'active' : '';
+    const savedMsg = s.updatedAt ? `<span class="fu-save-inline">✓ Saved ${formatFuRelative(s.updatedAt)}</span>` : '';
 
     actionsHtml = `
-      <div class="fu-actions-simple">
-        <div class="fu-contact-log">
-          <div class="fu-action-label">Contact Attempts</div>
-          <div class="fu-contact-entries">${contactEntries}</div>
-          <button class="fu-log-btn" onclick="logFuContact('${escapeAttr(l.id)}')">+ Log Attempt Today</button>
+      <div class="fu-action-bar">
+        <div style="display:flex;flex-direction:column;flex:1;min-width:180px;gap:8px;">
+          <button class="fu-big-btn fu-btn-contact" onclick="logFuContact('${escapeAttr(l.id)}')">
+            <span style="font-size:20px;">📞</span>
+            <span>Log Attempt Today</span>
+            <span class="fu-btn-sub">${logLabel}</span>
+          </button>
+          ${contacts.length > 0 ? `<div class="fu-attempts-mini">${attemptChips}</div>` : ''}
         </div>
-        <div class="fu-action-group">
-          <label>Outcome</label>
-          <select class="${outcomeCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','outcome',this.value)">
-            <option value="">— pending</option>
-            <option value="sold" ${s.outcome === 'sold' ? 'selected' : ''}>💰 Sold</option>
-            <option value="declined" ${s.outcome === 'declined' ? 'selected' : ''}>⛔ Declined</option>
-          </select>
-        </div>
-        <div class="fu-action-group" style="min-width:140px;">
-          <label>&nbsp;</label>
-          <div class="fu-save ${s.updatedAt ? 'saved' : ''}">${s.updatedAt ? 'Saved ' + formatFuRelative(s.updatedAt) : ''}</div>
-        </div>
+        <button class="fu-big-btn fu-btn-sold ${soldActive}" onclick="onFuOutcome('${escapeAttr(l.id)}','sold')">
+          <span style="font-size:22px;">💰</span><span>Sold</span>
+        </button>
+        <button class="fu-big-btn fu-btn-declined ${declinedActive}" onclick="onFuOutcome('${escapeAttr(l.id)}','declined')">
+          <span style="font-size:22px;">⛔</span><span>Declined</span>
+        </button>
+        ${savedMsg}
       </div>`;
   } else if (isResubmit && !closed) {
-    // Resubmit → two buttons. Cancel = dismiss from queue. Resubmit = open modal.
     actionsHtml = `
-      <div style="display:flex;gap:10px;margin-top:8px;">
-        <button class="icon-btn" style="padding:10px 18px;" onclick="dismissFuLead('${escapeAttr(l.id)}')">Cancel</button>
-        <button class="icon-btn" style="padding:10px 18px;background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-color:transparent;color:white;font-weight:600;" onclick="openFuResubmit('${escapeAttr(l.id)}')">🔁 Resubmit with corrected account #</button>
+      <div class="fu-action-bar">
+        <button class="fu-big-btn fu-btn-resubmit" onclick="openFuResubmit('${escapeAttr(l.id)}')">
+          <span style="font-size:20px;">🔁</span><span>Resubmit with Corrected Account #</span>
+        </button>
+        <button class="fu-big-btn fu-btn-dismiss" onclick="dismissFuLead('${escapeAttr(l.id)}')">Cancel</button>
       </div>`;
   }
   // Denied / closed → no actions
@@ -2601,6 +2656,13 @@ function logFuContact(id) {
   saveFuState();
   showToast('📞 Contact attempt logged', 'success');
   renderFu();
+}
+
+// Tapping Sold or Declined toggles the outcome (tap again to undo).
+function onFuOutcome(id, outcome) {
+  const cur = fuState.followState[id] || {};
+  const newVal = cur.outcome === outcome ? '' : outcome;
+  onFuFieldChange(id, 'outcome', newVal);
 }
 
 function setFuBucket(bucket) {
