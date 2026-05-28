@@ -4600,6 +4600,12 @@
     "store": "Kildeer",
     "pendingUntil": "2026-06-06"
   },
+  "2343777139": {
+    "status": "Closed",
+    "ts": "2026-05-28T21:43:48.156Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "2343999105": {
     "status": "Pending Install",
     "ts": "2026-05-28T19:00:57.351Z",
