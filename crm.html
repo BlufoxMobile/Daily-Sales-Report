@@ -782,107 +782,135 @@
   .fu-action-group select.is-sold { border-color: var(--green); color: var(--green); font-weight: 700; background: rgba(0,230,118,0.12); }
   .fu-action-group select.is-declined { border-color: var(--red); color: #FBA5BC; background: rgba(230,0,77,0.1); font-weight: 600; }
 
-  /* ===== BIG ACTION BAR ===== */
-  .fu-action-bar {
-    display: flex;
+  /* ===== LEAD CARDS v2 — 2-COLUMN GRID ===== */
+  .fu-leads-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    align-items: stretch;
-    flex-wrap: wrap;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 2px solid var(--border);
+    padding: 14px 20px 18px;
   }
-  .fu-big-btn {
-    padding: 16px 22px;
+  @media (max-width: 1100px) { .fu-leads-grid { grid-template-columns: 1fr; } }
+
+  .fu2-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    font-size: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .fu2-card:hover { border-color: var(--border-bright); }
+
+  .fu2-top {
+    padding: 11px 14px 5px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .fu2-name { font-size: 14px; font-weight: 700; color: var(--text); flex-shrink: 0; }
+  .fu2-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  .fu2-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fu2-pill.green  { background: rgba(0,230,118,0.14); color: #6EE7B7; border: 1px solid rgba(0,230,118,0.4); }
+  .fu2-pill.amber  { background: rgba(255,170,0,0.14); color: #FFD27A; border: 1px solid rgba(255,170,0,0.4); }
+  .fu2-pill.red    { background: rgba(230,0,77,0.14);  color: #FBA5BC; border: 1px solid rgba(230,0,77,0.4); }
+  .fu2-pill.blue   { background: rgba(139,111,247,0.14); color: #C4B5FD; border: 1px solid rgba(139,111,247,0.4); }
+  .fu2-pill.muted  { background: rgba(176,168,208,0.1); color: var(--muted); border: 1px solid rgba(176,168,208,0.25); }
+
+  .fu2-info {
+    padding: 3px 14px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .fu2-acct { color: var(--orange); font-family: 'SF Mono', Consolas, monospace; font-weight: 600; font-size: 11px; }
+
+  .fu2-response {
+    margin: 10px 14px 6px;
+    padding: 7px 10px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    background: rgba(0,0,0,0.18);
+    border-left: 2px solid var(--green);
+    border-radius: 0 5px 5px 0;
+  }
+
+  .fu2-intent {
+    padding: 2px 14px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+  .fu2-intent-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .fu2-intent-chip { background: rgba(59,130,246,0.12); color: #93C5FD; border-radius: 8px; padding: 1px 7px; font-size: 11px; font-weight: 600; }
+
+  /* 3-button action row pinned to card bottom */
+  .fu2-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+  }
+  .fu2-btn {
+    padding: 12px 6px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     font-family: inherit;
-    border: 2px solid transparent;
-    transition: all 0.18s;
-    display: inline-flex;
+    border: none;
+    background: transparent;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 5px;
+    border-right: 1px solid var(--border);
     white-space: nowrap;
-    line-height: 1.2;
-    text-align: center;
   }
-  /* Log Attempt — left side, takes remaining space */
-  .fu-btn-contact {
-    flex: 1;
-    min-width: 180px;
-    background: rgba(139,111,247,0.12);
-    border-color: var(--blue);
-    color: var(--blue);
-    flex-direction: column;
-    gap: 4px;
-  }
-  .fu-btn-contact:hover { background: rgba(139,111,247,0.28); box-shadow: 0 0 16px rgba(139,111,247,0.3); }
-  .fu-btn-contact .fu-btn-sub { font-size: 11px; font-weight: 500; color: var(--muted); }
-  /* Sold */
-  .fu-btn-sold {
-    min-width: 140px;
-    background: rgba(0,230,118,0.1);
-    border-color: var(--green);
-    color: var(--green);
-  }
-  .fu-btn-sold:hover { background: rgba(0,230,118,0.22); box-shadow: 0 0 16px rgba(0,230,118,0.3); }
-  .fu-btn-sold.active {
-    background: var(--green);
-    color: #0B0818;
-    box-shadow: 0 0 24px rgba(0,230,118,0.5);
-  }
-  /* Declined */
-  .fu-btn-declined {
-    min-width: 140px;
-    background: rgba(230,0,77,0.1);
-    border-color: var(--red);
-    color: #FBA5BC;
-  }
-  .fu-btn-declined:hover { background: rgba(230,0,77,0.22); box-shadow: 0 0 16px rgba(230,0,77,0.3); }
-  .fu-btn-declined.active {
-    background: var(--red);
-    color: white;
-    box-shadow: 0 0 24px rgba(230,0,77,0.5);
-  }
-  /* Resubmit */
-  .fu-btn-resubmit {
-    flex: 1;
-    min-width: 240px;
-    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
-    border-color: transparent;
-    color: white;
-    font-size: 15px;
-  }
-  .fu-btn-resubmit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(97,56,245,0.45); }
-  /* Dismiss/Cancel */
-  .fu-btn-dismiss {
-    background: transparent;
-    border-color: rgba(176,168,208,0.35);
+  .fu2-btn:last-child { border-right: none; }
+  .fu2-log { color: var(--blue); }
+  .fu2-log:hover { background: rgba(139,111,247,0.14); }
+  .fu2-sold { color: var(--green); }
+  .fu2-sold:hover { background: rgba(0,230,118,0.12); }
+  .fu2-sold.active { background: rgba(0,230,118,0.18); color: var(--green); font-weight: 800; }
+  .fu2-declined { color: #FBA5BC; }
+  .fu2-declined:hover { background: rgba(230,0,77,0.12); }
+  .fu2-declined.active { background: rgba(230,0,77,0.18); color: #FBA5BC; font-weight: 800; }
+  .fu2-resubmit-btn { color: var(--orange); background: rgba(97,56,245,0.1); }
+  .fu2-resubmit-btn:hover { background: rgba(97,56,245,0.22); }
+  .fu2-dismiss-btn { color: var(--muted); font-size: 12px; }
+  .fu2-dismiss-btn:hover { background: rgba(230,0,77,0.1); color: #FBA5BC; }
+
+  .fu2-footer {
+    padding: 5px 14px;
+    font-size: 10.5px;
     color: var(--muted);
-    padding: 16px 18px;
-    font-size: 13px;
-  }
-  .fu-btn-dismiss:hover { border-color: var(--red); color: #FBA5BC; }
-  /* Mini contact log beneath the log button */
-  .fu-attempts-mini {
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.1);
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
+    justify-content: space-between;
+    align-items: center;
   }
-  .fu-attempt-chip {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--green);
-    padding: 3px 10px;
-    border-radius: 0 4px 4px 0;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .fu-save-inline { font-size: 11px; color: var(--green); align-self: center; white-space: nowrap; }
+  .fu2-footer .saved { color: var(--green); }
 
   .fu-save { font-size: 11px; color: var(--muted); margin-top: 6px; min-height: 14px; font-style: italic; }
   .fu-save.saved { color: var(--green); font-style: normal; }
@@ -2301,9 +2329,12 @@ function renderFuChips() {
 }
 
 // Filter the global lead list by current bucket + search.
-// Action Needed is the default — only Approved or Resubmit, neither closed nor sold.
+// Resubmitted leads are always hidden — they've been re-entered with a corrected account number.
 function fuFilteredLeads() {
   return fuState.allLeads.filter(l => {
+    const s = fuState.followState[l.id] || {};
+    // Always hide leads that were resubmitted — they'll appear as fresh entries
+    if (s.resubmitted) return false;
     if (fuState.bucket === 'action'   && !isFuActionable(l)) return false;
     if (fuState.bucket === 'approved' && (l._bucket !== 'approved' || isFuClosed(l))) return false;
     if (fuState.bucket === 'resubmit' && (l._bucket !== 'resubmit' || isFuClosed(l))) return false;
@@ -2364,8 +2395,10 @@ function renderFuList() {
       const sApv = s.totals.submitted ? Math.round((s.totals.approved / s.totals.submitted) * 100) : 0;
       const sSold = s.totals.approved ? Math.round((s.totals.sold / s.totals.approved) * 100) : 0;
 
-      // Lead cards (rendered when store is expanded)
-      const leadsHtml = subExpanded ? s.items.map(renderFuLeadCard).join('') : '';
+      // Lead cards (rendered when store is expanded) — 2-column grid
+      const leadsHtml = subExpanded
+        ? `<div class="fu-leads-grid">${s.items.map(renderFuLeadCard).join('')}</div>`
+        : '';
 
       storesHtml += `
         <div class="tk-substore ${subExpanded ? 'expanded' : ''}">
@@ -2416,113 +2449,94 @@ function renderFuList() {
   container.innerHTML = html;
 }
 
-// Detailed lead card shown when a store row is expanded.
+// Detailed lead card — compact 2-column grid layout
 function renderFuLeadCard(l) {
   const s = fuState.followState[l.id] || {};
-  const isDue = isFuDue(l);
   const closed = isFuClosed(l);
+  const isDue  = isFuDue(l);
   const isApproved = l._bucket === 'approved';
   const isResubmit = l._bucket === 'resubmit';
-  const hasContacted = !!(s.contacts && s.contacts.length > 0);
-  const cardClass = ['fu-card', isDue ? 'due' : '', hasContacted ? 'contacted' : ''].filter(Boolean).join(' ');
-  const outcomeCls = s.outcome === 'sold' ? 'is-sold' : (s.outcome === 'declined' ? 'is-declined' : '');
-  const respText = stripHtml(l.creditTeamResponse || '(no response paragraph captured)');
+  const contacts   = s.contacts || [];
+  const hasContacted = contacts.length > 0;
 
-  // Bucket badge
-  let badge = '';
-  if (l._bucket === 'approved') badge = '<span class="fu-badge contacted">✅ Approved</span>';
-  else if (l._bucket === 'resubmit') badge = `<span class="fu-badge" style="background:rgba(255,170,0,0.18);color:#FFD27A;border:1px solid var(--yellow);">🔁 Resubmit</span>`;
-  else if (l._bucket === 'denied') badge = `<span class="fu-badge" style="background:rgba(230,0,77,0.18);color:#FBA5BC;border:1px solid var(--red);">⛔ Denied</span>`;
+  // Left border accent by state
+  let accentStyle = '';
+  if (isApproved && !closed)    accentStyle = 'border-left: 3px solid var(--green);';
+  else if (isResubmit && !closed) accentStyle = 'border-left: 3px solid var(--yellow);';
+  else if (closed)                accentStyle = 'opacity: 0.6;';
 
-  // Status badges (due / contacted / closed states)
-  let extraBadges = '';
-  if (isDue) extraBadges += ' <span class="fu-badge due">⚡ No contact yet</span>';
-  if (hasContacted && !closed) extraBadges += ' <span class="fu-badge contacted">📞 ' + (s.contacts.length) + ' attempt' + (s.contacts.length > 1 ? 's' : '') + ' logged</span>';
-  if (s.sold) extraBadges += ' <span class="fu-badge contacted">💰 Sold ' + formatFuRelative(s.soldAt) + '</span>';
-  if (s.declined) extraBadges += ' <span class="fu-badge" style="background:rgba(230,0,77,0.18);color:#FBA5BC;border:1px solid var(--red);">⛔ Declined ' + formatFuRelative(s.declinedAt) + '</span>';
-  if (s.resubmitted) extraBadges += ` <span class="fu-badge contacted">🔁 Resubmitted ${formatFuRelative(s.resubmittedAt)}${s.newAccountNumber ? ' as #' + escapeHtml(s.newAccountNumber) : ''}</span>`;
-  if (s.cancelled) extraBadges += ' <span class="fu-badge" style="background:rgba(176,168,208,0.15);color:var(--muted);border:1px solid var(--muted);">✕ Dismissed ' + formatFuRelative(s.cancelledAt) + '</span>';
+  // Status pills
+  let pills = '';
+  if (l._bucket === 'approved') pills += '<span class="fu2-pill green">✅ Approved</span>';
+  else if (l._bucket === 'resubmit') pills += '<span class="fu2-pill amber">🔁 Resubmit</span>';
+  else if (l._bucket === 'denied')   pills += '<span class="fu2-pill red">⛔ Denied</span>';
+  else pills += '<span class="fu2-pill muted">⏳ Pending</span>';
 
-  // ----- Actions vary by bucket -----
+  if (s.sold)        pills += '<span class="fu2-pill green">💰 Sold</span>';
+  if (s.declined)    pills += '<span class="fu2-pill red">Declined</span>';
+  if (s.cancelled)   pills += '<span class="fu2-pill muted">Dismissed</span>';
+  if (hasContacted && !closed)
+    pills += `<span class="fu2-pill blue">📞 ${contacts.length} attempt${contacts.length > 1 ? 's' : ''}</span>`;
+  else if (isDue)
+    pills += '<span class="fu2-pill amber">⚡ Not contacted</span>';
+
+  // Response (2-line truncated)
+  const respText = stripHtml(l.creditTeamResponse || '').trim();
+  const responseHtml = respText
+    ? `<div class="fu2-response">${escapeHtml(respText)}</div>` : '';
+
+  // Intent chips
+  const iChips = [];
+  if (Number(l.salesAddLines)      > 0) iChips.push(`+${l.salesAddLines} line${l.salesAddLines>1?'s':''}`);
+  if (Number(l.salesUpgradePhones) > 0) iChips.push(`↑${l.salesUpgradePhones} upgrade${l.salesUpgradePhones>1?'s':''}`);
+  if (Number(l.salesAddWatches)    > 0) iChips.push(`+${l.salesAddWatches} watch${l.salesAddWatches>1?'es':''}`);
+  if (Number(l.salesAddTablets)    > 0) iChips.push(`+${l.salesAddTablets} tablet${l.salesAddTablets>1?'s':''}`);
+  const intentHtml = iChips.length
+    ? `<div class="fu2-intent"><span class="fu2-intent-label">Wants:</span>${iChips.map(c=>`<span class="fu2-intent-chip">${c}</span>`).join('')}</div>`
+    : '';
+
+  // Action buttons
   let actionsHtml = '';
-
   if (isApproved && !closed) {
-    const contacts = s.contacts || [];
-    const attemptChips = contacts.slice(-5).reverse()
-      .map(c => `<span class="fu-attempt-chip">📞 ${formatFuDate(c.ts)}</span>`).join('');
-    const logLabel = contacts.length > 0
-      ? `${contacts.length} attempt${contacts.length > 1 ? 's' : ''} logged`
-      : 'No attempts logged yet';
-    const soldActive   = s.outcome === 'sold'     ? 'active' : '';
-    const declinedActive = s.outcome === 'declined' ? 'active' : '';
-    const savedMsg = s.updatedAt ? `<span class="fu-save-inline">✓ Saved ${formatFuRelative(s.updatedAt)}</span>` : '';
-
+    const soldCls     = s.outcome === 'sold'     ? 'active' : '';
+    const declinedCls = s.outcome === 'declined' ? 'active' : '';
+    const logLabel    = hasContacted ? `📞 ${contacts.length} Attempt${contacts.length>1?'s':''}` : '📞 Log Attempt';
     actionsHtml = `
-      <div class="fu-action-bar">
-        <div style="display:flex;flex-direction:column;flex:1;min-width:180px;gap:8px;">
-          <button class="fu-big-btn fu-btn-contact" onclick="logFuContact('${escapeAttr(l.id)}')">
-            <span style="font-size:20px;">📞</span>
-            <span>Log Attempt Today</span>
-            <span class="fu-btn-sub">${logLabel}</span>
-          </button>
-          ${contacts.length > 0 ? `<div class="fu-attempts-mini">${attemptChips}</div>` : ''}
-        </div>
-        <button class="fu-big-btn fu-btn-sold ${soldActive}" onclick="onFuOutcome('${escapeAttr(l.id)}','sold')">
-          <span style="font-size:22px;">💰</span><span>Sold</span>
-        </button>
-        <button class="fu-big-btn fu-btn-declined ${declinedActive}" onclick="onFuOutcome('${escapeAttr(l.id)}','declined')">
-          <span style="font-size:22px;">⛔</span><span>Declined</span>
-        </button>
-        ${savedMsg}
+      <div class="fu2-actions">
+        <button class="fu2-btn fu2-log" onclick="logFuContact('${escapeAttr(l.id)}')">${logLabel}</button>
+        <button class="fu2-btn fu2-sold ${soldCls}" onclick="onFuOutcome('${escapeAttr(l.id)}','sold')">💰 Sold</button>
+        <button class="fu2-btn fu2-declined ${declinedCls}" onclick="onFuOutcome('${escapeAttr(l.id)}','declined')">⛔ Declined</button>
       </div>`;
   } else if (isResubmit && !closed) {
     actionsHtml = `
-      <div class="fu-action-bar">
-        <button class="fu-big-btn fu-btn-resubmit" onclick="openFuResubmit('${escapeAttr(l.id)}')">
-          <span style="font-size:20px;">🔁</span><span>Resubmit with Corrected Account #</span>
-        </button>
-        <button class="fu-big-btn fu-btn-dismiss" onclick="dismissFuLead('${escapeAttr(l.id)}')">Cancel</button>
+      <div class="fu2-actions">
+        <button class="fu2-btn fu2-dismiss-btn" onclick="dismissFuLead('${escapeAttr(l.id)}')">✕ Cancel</button>
+        <button class="fu2-btn fu2-resubmit-btn" style="grid-column:span 2" onclick="openFuResubmit('${escapeAttr(l.id)}')">🔁 Resubmit with Corrected Account #</button>
       </div>`;
   }
-  // Denied / closed → no actions
+
+  // Footer
+  const footerParts = [];
+  if (l.submittedAt) footerParts.push(`Submitted ${formatFuDate(l.submittedAt)}`);
+  if (l.respondedAt) footerParts.push(`Responded ${formatFuDate(l.respondedAt)}`);
+  const savedHtml = s.updatedAt ? `<span class="saved">✓ ${formatFuRelative(s.updatedAt)}</span>` : '';
 
   return `
-    <div class="${cardClass}" data-lead="${escapeAttr(l.id)}" style="margin-top:10px;${closed ? 'opacity:0.7;' : ''}">
-      <div class="fu-card-head">
-        <div class="fu-field">
-          <span class="fu-field-label">Customer</span>
-          <span class="fu-field-value">${escapeHtml(l.customerName || '—')}</span>
-          ${badge}${extraBadges}
-        </div>
-        <div class="fu-field">
-          <span class="fu-field-label">Phone</span>
-          <span class="fu-field-value mono">${escapeHtml(l.phone || '—')}</span>
-        </div>
-        <div class="fu-field">
-          <span class="fu-field-label">Account #</span>
-          <span class="fu-field-value mono acct">${escapeHtml(l.accountNumber || '—')}</span>
-        </div>
-        <div class="fu-field">
-          <span class="fu-field-label">Rep</span>
-          <span class="fu-field-value">${escapeHtml(l.rep || '—')}</span>
-        </div>
+    <div class="fu2-card" style="${accentStyle}">
+      <div class="fu2-top">
+        <span class="fu2-name">${escapeHtml(l.customerName || '—')}</span>
+        <div class="fu2-badges">${pills}</div>
       </div>
-      <div class="fu-response">
-        <strong>Credit Team Response</strong>${escapeHtml(respText)}
+      <div class="fu2-info">
+        <span>${escapeHtml(l.phone || '—')}</span>
+        <span class="fu2-acct">${escapeHtml(l.accountNumber || '—')}</span>
+        <span>${escapeHtml(l.rep || '—')}</span>
       </div>
-      ${(function(){
-        var chips = [];
-        if (Number(l.salesAddLines)      > 0) chips.push('<span class="fu-intent-chip">+' + l.salesAddLines      + ' line'    + (l.salesAddLines > 1 ? 's' : '')      + '</span>');
-        if (Number(l.salesUpgradePhones) > 0) chips.push('<span class="fu-intent-chip">↑' + l.salesUpgradePhones + ' upgrade' + (l.salesUpgradePhones > 1 ? 's' : '') + '</span>');
-        if (Number(l.salesAddWatches)    > 0) chips.push('<span class="fu-intent-chip">+' + l.salesAddWatches    + ' watch'   + (l.salesAddWatches > 1 ? 'es' : '')    + '</span>');
-        if (Number(l.salesAddTablets)    > 0) chips.push('<span class="fu-intent-chip">+' + l.salesAddTablets    + ' tablet'  + (l.salesAddTablets > 1 ? 's' : '')     + '</span>');
-        if (!chips.length) return '';
-        return '<div class="fu-intent"><span class="fu-intent-label">Customer wants:</span>' + chips.join('') + '</div>';
-      })()}
+      ${responseHtml}${intentHtml}
       ${actionsHtml}
-      <div class="fu-meta">
-        <span class="fu-meta-item">📅 Submitted ${formatFuDate(l.submittedAt)}</span>
-        ${l.respondedAt ? `<span class="fu-meta-item">✉️ Responded ${formatFuDate(l.respondedAt)}</span>` : ''}
+      <div class="fu2-footer">
+        <span>${footerParts.join(' · ')}</span>
+        ${savedHtml}
       </div>
     </div>
   `;
