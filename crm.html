@@ -780,6 +780,55 @@
   .fu-action-group select.is-followup { border-color: var(--yellow); color: var(--yellow); font-weight: 600; }
   .fu-action-group select.is-contacted { border-color: var(--green); color: var(--green); font-weight: 600; }
   .fu-action-group select.is-sold { border-color: var(--green); color: var(--green); font-weight: 700; background: rgba(0,230,118,0.12); }
+  .fu-action-group select.is-declined { border-color: var(--red); color: #FBA5BC; background: rgba(230,0,77,0.1); font-weight: 600; }
+
+  /* ===== SIMPLIFIED FOLLOW-UP ACTIONS ===== */
+  .fu-actions-simple {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .fu-contact-log { flex: 1; min-width: 200px; }
+  .fu-action-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .fu-contact-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .fu-contact-entry {
+    font-size: 12px;
+    color: var(--text);
+    background: var(--card);
+    border-left: 3px solid var(--green);
+    padding: 4px 10px;
+    border-radius: 0 4px 4px 0;
+  }
+  .fu-contact-none { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 6px; }
+  .fu-log-btn {
+    background: transparent;
+    border: 1px dashed var(--border-bright);
+    color: var(--blue);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .fu-log-btn:hover { background: rgba(139,111,247,0.12); border-style: solid; }
 
   .fu-save { font-size: 11px; color: var(--muted); margin-top: 6px; min-height: 14px; font-style: italic; }
   .fu-save.saved { color: var(--green); font-style: normal; }
@@ -1109,7 +1158,7 @@
       <button class="tk-chip active" data-bucket="action" onclick="setFuBucket('action')">⚡ Action Needed <span class="tk-chip-num" id="fuChipAction">0</span></button>
       <button class="tk-chip" data-bucket="approved" onclick="setFuBucket('approved')">✅ Approved <span class="tk-chip-num" id="fuChipApproved">0</span></button>
       <button class="tk-chip" data-bucket="resubmit" onclick="setFuBucket('resubmit')">🔁 Resubmit <span class="tk-chip-num" id="fuChipResubmit">0</span></button>
-      <button class="tk-chip" data-bucket="due" onclick="setFuBucket('due')">📅 Follow-ups Due <span class="tk-chip-num" id="fuChipDue">0</span></button>
+      <button class="tk-chip" data-bucket="due" onclick="setFuBucket('due')">📋 No Contact Yet <span class="tk-chip-num" id="fuChipDue">0</span></button>
       <button class="tk-chip" data-bucket="sold" onclick="setFuBucket('sold')">💰 Sold <span class="tk-chip-num" id="fuChipSold">0</span></button>
       <button class="tk-chip" data-bucket="denied" onclick="setFuBucket('denied')">⛔ Denied <span class="tk-chip-num" id="fuChipDenied">0</span></button>
       <button class="tk-chip" data-bucket="all" onclick="setFuBucket('all')">All <span class="tk-chip-num" id="fuChipAll">0</span></button>
@@ -2044,10 +2093,10 @@ let fuState = {
 };
 
 // True if a manager has explicitly removed this lead from the action queue
-// (cancelled, resubmitted, or sold). They still appear under "All".
+// (cancelled, resubmitted, sold, or declined). They still appear under "All".
 function isFuClosed(l) {
   const s = fuState.followState[l.id] || {};
-  return !!(s.sold || s.cancelled || s.resubmitted);
+  return !!(s.sold || s.cancelled || s.resubmitted || s.declined);
 }
 // True if this lead requires manager attention right now.
 function isFuActionable(l) {
@@ -2149,11 +2198,12 @@ function isFuApprovedForFollowUp(l) {
   return l._bucket === 'approved' && !isFuClosed(l);
 }
 function isFuSold(l) { return !!(fuState.followState[l.id] || {}).sold; }
+// "Due" now means: approved lead where no contact attempt has been logged yet.
 function isFuDue(l) {
-  const s = fuState.followState[l.id] || {};
   if (isFuClosed(l)) return false;
   if (l._bucket !== 'approved') return false;
-  return s.status === 'follow-up' && s.followUpDate && s.followUpDate <= todayISO();
+  const s = fuState.followState[l.id] || {};
+  return !(s.contacts && s.contacts.length > 0);
 }
 
 function renderFuStats() {
@@ -2319,11 +2369,9 @@ function renderFuLeadCard(l) {
   const closed = isFuClosed(l);
   const isApproved = l._bucket === 'approved';
   const isResubmit = l._bucket === 'resubmit';
-  const cardClass = ['fu-card', isDue ? 'due' : '', s.status === 'contacted' ? 'contacted' : ''].filter(Boolean).join(' ');
-  const methodCls = s.method ? 'is-set' : '';
-  const statusCls = s.status === 'contacted' ? 'is-contacted' : (s.status === 'follow-up' ? 'is-followup' : (s.method ? 'is-set' : ''));
-  const soldCls = s.sold ? 'is-sold' : '';
-  const showDate = s.status === 'follow-up';
+  const hasContacted = !!(s.contacts && s.contacts.length > 0);
+  const cardClass = ['fu-card', isDue ? 'due' : '', hasContacted ? 'contacted' : ''].filter(Boolean).join(' ');
+  const outcomeCls = s.outcome === 'sold' ? 'is-sold' : (s.outcome === 'declined' ? 'is-declined' : '');
   const respText = stripHtml(l.creditTeamResponse || '(no response paragraph captured)');
 
   // Bucket badge
@@ -2334,9 +2382,10 @@ function renderFuLeadCard(l) {
 
   // Status badges (due / contacted / closed states)
   let extraBadges = '';
-  if (isDue) extraBadges += ' <span class="fu-badge due">⚡ Follow-up due</span>';
-  if (s.status === 'contacted' && !closed) extraBadges += ' <span class="fu-badge contacted">✓ Contacted</span>';
+  if (isDue) extraBadges += ' <span class="fu-badge due">⚡ No contact yet</span>';
+  if (hasContacted && !closed) extraBadges += ' <span class="fu-badge contacted">📞 ' + (s.contacts.length) + ' attempt' + (s.contacts.length > 1 ? 's' : '') + ' logged</span>';
   if (s.sold) extraBadges += ' <span class="fu-badge contacted">💰 Sold ' + formatFuRelative(s.soldAt) + '</span>';
+  if (s.declined) extraBadges += ' <span class="fu-badge" style="background:rgba(230,0,77,0.18);color:#FBA5BC;border:1px solid var(--red);">⛔ Declined ' + formatFuRelative(s.declinedAt) + '</span>';
   if (s.resubmitted) extraBadges += ` <span class="fu-badge contacted">🔁 Resubmitted ${formatFuRelative(s.resubmittedAt)}${s.newAccountNumber ? ' as #' + escapeHtml(s.newAccountNumber) : ''}</span>`;
   if (s.cancelled) extraBadges += ' <span class="fu-badge" style="background:rgba(176,168,208,0.15);color:var(--muted);border:1px solid var(--muted);">✕ Dismissed ' + formatFuRelative(s.cancelledAt) + '</span>';
 
@@ -2344,35 +2393,27 @@ function renderFuLeadCard(l) {
   let actionsHtml = '';
 
   if (isApproved && !closed) {
-    // Approved → follow-up controls
+    // Approved → simplified: contact log + outcome only
+    const contacts = s.contacts || [];
+    const contactEntries = contacts.length > 0
+      ? contacts.slice(-3).reverse().map(c =>
+          `<span class="fu-contact-entry">📞 ${formatFuDate(c.ts)}</span>`
+        ).join('')
+      : `<span class="fu-contact-none">No attempts logged yet</span>`;
+
     actionsHtml = `
-      <div class="fu-actions">
-        <div class="fu-action-group">
-          <label>Method</label>
-          <select class="${methodCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','method',this.value)">
-            <option value="">—</option>
-            <option value="Call" ${s.method === 'Call' ? 'selected' : ''}>📞 Call</option>
-            <option value="Text" ${s.method === 'Text' ? 'selected' : ''}>💬 Text</option>
-            <option value="Email" ${s.method === 'Email' ? 'selected' : ''}>✉️ Email</option>
-          </select>
-        </div>
-        <div class="fu-action-group">
-          <label>Status</label>
-          <select class="${statusCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','status',this.value)">
-            <option value="">—</option>
-            <option value="contacted" ${s.status === 'contacted' ? 'selected' : ''}>Customer Contacted</option>
-            <option value="follow-up" ${s.status === 'follow-up' ? 'selected' : ''}>Follow Up Needed</option>
-          </select>
-        </div>
-        <div class="fu-action-group followup-date" style="${showDate ? '' : 'opacity:0.45;'}">
-          <label>Follow-up Date</label>
-          <input type="date" value="${s.followUpDate || ''}" ${showDate ? '' : 'disabled'} onchange="onFuFieldChange('${escapeAttr(l.id)}','followUpDate',this.value)">
+      <div class="fu-actions-simple">
+        <div class="fu-contact-log">
+          <div class="fu-action-label">Contact Attempts</div>
+          <div class="fu-contact-entries">${contactEntries}</div>
+          <button class="fu-log-btn" onclick="logFuContact('${escapeAttr(l.id)}')">+ Log Attempt Today</button>
         </div>
         <div class="fu-action-group">
           <label>Outcome</label>
-          <select class="${soldCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','sold',this.value)">
-            <option value="">—</option>
-            <option value="sold" ${s.sold ? 'selected' : ''}>💰 Sold</option>
+          <select class="${outcomeCls}" onchange="onFuFieldChange('${escapeAttr(l.id)}','outcome',this.value)">
+            <option value="">— pending</option>
+            <option value="sold" ${s.outcome === 'sold' ? 'selected' : ''}>💰 Sold</option>
+            <option value="declined" ${s.outcome === 'declined' ? 'selected' : ''}>⛔ Declined</option>
           </select>
         </div>
         <div class="fu-action-group" style="min-width:140px;">
@@ -2520,24 +2561,45 @@ async function confirmFuResubmit() {
 
 function onFuFieldChange(id, field, value) {
   const cur = fuState.followState[id] || {};
-  if (field === 'sold') {
+  if (field === 'outcome') {
     if (value === 'sold') {
       cur.sold = true;
       cur.soldAt = new Date().toISOString();
+      cur.declined = false;
+      delete cur.declinedAt;
+      cur.outcome = 'sold';
       showToast('💰 Marked as Sold!', 'success');
-    } else {
+    } else if (value === 'declined') {
+      cur.declined = true;
+      cur.declinedAt = new Date().toISOString();
       cur.sold = false;
       delete cur.soldAt;
+      cur.outcome = 'declined';
+      showToast('Transaction declined — lead closed.', 'success');
+    } else {
+      cur.sold = false;
+      cur.declined = false;
+      delete cur.soldAt;
+      delete cur.declinedAt;
+      cur.outcome = null;
     }
-  } else if (field === 'status') {
-    cur.status = value || null;
-    if (value !== 'follow-up') cur.followUpDate = null;
   } else {
     cur[field] = value || null;
   }
   cur.updatedAt = new Date().toISOString();
   fuState.followState[id] = cur;
   saveFuState();
+  renderFu();
+}
+
+function logFuContact(id) {
+  const cur = fuState.followState[id] || {};
+  if (!cur.contacts) cur.contacts = [];
+  cur.contacts.push({ ts: new Date().toISOString() });
+  cur.updatedAt = new Date().toISOString();
+  fuState.followState[id] = cur;
+  saveFuState();
+  showToast('📞 Contact attempt logged', 'success');
   renderFu();
 }
 
