@@ -4838,10 +4838,11 @@
     "store": "Hammond"
   },
   "1002267858362057": {
-    "status": "Can Not Close",
-    "ts": "2026-05-04T19:28:21.156Z",
+    "status": "Pending Install",
+    "ts": "2026-05-29T22:31:12.387Z",
     "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-06-01"
   },
   "1002275547102057": {
     "status": "Closed",
