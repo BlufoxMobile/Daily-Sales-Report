@@ -6034,5 +6034,11 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge",
     "pendingUntil": "2026-06-01"
+  },
+  "1001296795052100": {
+    "status": "Can Not Close",
+    "ts": "2026-05-30T19:53:28.306Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   }
 }
