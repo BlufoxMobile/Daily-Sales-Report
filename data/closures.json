@@ -4432,11 +4432,10 @@
     "store": "Greeneville"
   },
   "2339776341": {
-    "status": "Pending Install",
-    "ts": "2026-05-25T17:01:42.063Z",
+    "status": "Closed",
+    "ts": "2026-05-30T16:12:08.537Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-06-28"
+    "store": "Hammond"
   },
   "2340197741": {
     "status": "Can Not Close",
