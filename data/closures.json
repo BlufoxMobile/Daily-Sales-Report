@@ -4624,11 +4624,10 @@
     "pendingUntil": "2026-05-30"
   },
   "2343632686": {
-    "status": "Pending Install",
-    "ts": "2026-05-28T21:49:54.821Z",
+    "status": "Closed",
+    "ts": "2026-05-30T16:10:14.115Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-05-30"
+    "store": "Hammond"
   },
   "2343777139": {
     "status": "Closed",
