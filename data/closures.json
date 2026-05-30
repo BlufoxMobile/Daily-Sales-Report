@@ -4610,18 +4610,16 @@
     "pendingUntil": "2026-05-31"
   },
   "2343532567": {
-    "status": "Pending Install",
-    "ts": "2026-05-28T21:50:09.436Z",
+    "status": "Closed",
+    "ts": "2026-05-30T16:10:20.630Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-05-30"
+    "store": "Hammond"
   },
   "2343551573": {
-    "status": "Pending Install",
-    "ts": "2026-05-28T21:50:01.820Z",
+    "status": "Closed",
+    "ts": "2026-05-30T16:10:19.012Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-05-30"
+    "store": "Hammond"
   },
   "2343632686": {
     "status": "Closed",
