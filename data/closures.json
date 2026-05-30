@@ -6046,5 +6046,12 @@
     "ts": "2026-05-30T20:05:08.956Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "1001296799732103": {
+    "status": "Pending Install",
+    "ts": "2026-05-30T20:05:36.723Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-05-31"
   }
 }
