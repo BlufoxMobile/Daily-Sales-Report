@@ -128,6 +128,11 @@ def main():
 
     for full in by_store:
         by_store[full].sort(key=lambda n: n.lower())
+        # Always offer a generic "New Hire" choice so reps not yet on the
+        # report can still use the tools. Their real name appears the next
+        # day once they have a sale logged.
+        if "New Hire" not in by_store[full]:
+            by_store[full].append("New Hire")
 
     roster = {
         "updatedAt": datetime.now(timezone.utc).isoformat(),
