@@ -1,0 +1,213 @@
+{
+  "updatedAt": "2026-06-01T03:55:53.730424+00:00",
+  "source": "Sales Report.xlsx / Rep Rank",
+  "byStore": {
+    "Bourbonnais Xfinity Store": [
+      "Anthony Ray",
+      "Elidia Mendoza",
+      "Jose Quintanilla",
+      "Joseph Marsh",
+      "Louis Yiakos",
+      "Nancy Trombley",
+      "Pierre Henderson"
+    ],
+    "Burbank Xfinity Store": [
+      "Antonio Carradine",
+      "Arturo Cahue",
+      "Christopher Coleman",
+      "Eric Bartkowiak",
+      "Jacqueline Benitez",
+      "Jalen Logan",
+      "Omar Bustamante"
+    ],
+    "Calumet City Xfinity Store": [
+      "Dahjanay Bullard",
+      "Edgar Flowers",
+      "Jose Pugas",
+      "Kamar Thomas",
+      "Nicole Harris"
+    ],
+    "Cicero Xfinity Store": [
+      "Angel Torres",
+      "Cristofer Loredo",
+      "Francisco Salazar",
+      "Jaime Rodriguez",
+      "Julia Ariza",
+      "Kevin Morales",
+      "Leonardo Zavala",
+      "Ramon Gomez",
+      "Sarah Penablanca",
+      "Williams Perez-Arellano"
+    ],
+    "Dekalb Xfinity Store": [
+      "Caleb Green",
+      "Dashawn Dean",
+      "Ian Harrison",
+      "Kyin Edwards"
+    ],
+    "Elkhart Xfinity Store": [
+      "Aliyah Rosales",
+      "Alyissa Davis",
+      "Dylan Gamble",
+      "Dylan Regan",
+      "Emanuel Soto-Moreno",
+      "Fredy Aguilera",
+      "Josue Salazar",
+      "Katelynn Heltzel",
+      "Kathrynn Kirkman",
+      "Killian Thaxton"
+    ],
+    "Evanston Xfinity Store": [
+      "Anaf Rahman",
+      "Arilello Payne",
+      "Jamal Lomax",
+      "Suyal Ullah",
+      "Tanzim Chowdhury"
+    ],
+    "Evergreen Park Xfinity Store": [
+      "Aaron Hall",
+      "Adrian Bustamante",
+      "Alicia Valdez",
+      "Crystal Perez",
+      "Enrique Meza",
+      "Jeffrey Bilbrey",
+      "Jesus Romo",
+      "Marshawn Sykes",
+      "Vivian Avila",
+      "Wendy Cerda Bacilio"
+    ],
+    "Frankfort Xfinity Store": [
+      "Aiden Bolhuis",
+      "Austen Gast",
+      "Deontay Moore",
+      "Erick Smith",
+      "Frankie Pedraza-Scalfano",
+      "Gia Mele",
+      "Noah Cleveland",
+      "Tyrone Wilson jr"
+    ],
+    "Glenview Xfinity Store": [
+      "Alexandro Flores",
+      "Anthony Greer",
+      "Eric Gonzalez",
+      "Linda Weeks",
+      "Okeefe Perkins"
+    ],
+    "Greeneville Xfinity Store": [
+      "Abigail Howard",
+      "Alexander Harned",
+      "Angela Hahn",
+      "Cheyenne Smith",
+      "Dalton Arwood",
+      "Dalton Fox",
+      "Daniel Mitchell Jr.",
+      "Jared Reaves",
+      "Joshua Huerto",
+      "Justin Conard",
+      "Naseem Samuel",
+      "Nicholes Gilland"
+    ],
+    "Hammond Xfinity Store": [
+      "Daquita White",
+      "Darryl Charles",
+      "Donae Jones",
+      "Jada Borders",
+      "Jeremiah Watson",
+      "Matthew Gallardo",
+      "Reina Salgado",
+      "Timothy Bankston",
+      "Victoria Ponce de Leon"
+    ],
+    "Johnson City Xfinity Store": [
+      "Deaundre Mitchell",
+      "Joshua Jones",
+      "Justin Wyatt",
+      "Raymond Johnson",
+      "Richard Campbell"
+    ],
+    "Kildeer Xfinity Store": [
+      "Eddy Buckley",
+      "Gavin Williams",
+      "Jose Gomez",
+      "Matthew Rodriguez",
+      "Moises Chino"
+    ],
+    "Michigan City Xfinity Store": [
+      "Anthony Evans",
+      "Collin Crooks",
+      "Dalton Hogan",
+      "Elyssa Moses",
+      "Keegan Canada",
+      "Kristianna Limon",
+      "Linda Zoliner"
+    ],
+    "Oak Ridge Xfinity Store": [
+      "Angie Davidson",
+      "Erika McFall",
+      "Jacori Wimes",
+      "James Jones",
+      "Michael Wade",
+      "Quentin Furlong",
+      "Stefen Murrell-Onley"
+    ],
+    "Round Lake Beach Xfinity Store": [
+      "Irvin Solis",
+      "Isabel Betancourt",
+      "Johely Salinas Murillo",
+      "Jose Maldonado",
+      "Joseph Vasquez",
+      "Juan Padilla"
+    ],
+    "Schererville Xfinity Store": [
+      "Alyssa Baker",
+      "April Vasquez",
+      "Nickya Davis",
+      "Thristian Manuel",
+      "Victoria Moore"
+    ],
+    "South Skokie Xfinity Store": [
+      "Aedo Yonan",
+      "Alexis Rodriguez",
+      "Dayan Delgado",
+      "Steev Qaryo",
+      "Taiyeeb Chowdhury"
+    ],
+    "South Bend Xfinity Store": [
+      "Cora Estrada",
+      "Garrett Gill",
+      "Jorge Tafoya"
+    ],
+    "South Knoxville Xfinity Store": [
+      "Blake Parrott",
+      "Demarcus McKamey",
+      "Dereck Fesperman",
+      "Gregory Martin"
+    ],
+    "Tinley Park Xfinity Store": [
+      "Darionne Townsend",
+      "Emily Guzman",
+      "Felix Diaz",
+      "Khyree Battle",
+      "Sebastian Orozco"
+    ],
+    "Uptown Xfinity Store": [
+      "Hunter Dodge",
+      "Jordan Berry",
+      "Kenisha Banks",
+      "Oleksandr Kostenko",
+      "Ronaldinho Llivi",
+      "Shayna Perez"
+    ],
+    "Valparaiso Xfinity Store": [
+      "Airelle Young",
+      "Alexander del Risco",
+      "Alexandria Giglio",
+      "Anthony Suleski",
+      "Daniel Long",
+      "Denzel Brent",
+      "Emari Washington",
+      "Nathaniel Brogdon",
+      "Shamika Austin"
+    ]
+  }
+}
