@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-01T03:55:53.730424+00:00",
+  "updatedAt": "2026-06-01T04:14:32.625542+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -9,7 +9,8 @@
       "Joseph Marsh",
       "Louis Yiakos",
       "Nancy Trombley",
-      "Pierre Henderson"
+      "Pierre Henderson",
+      "New Hire"
     ],
     "Burbank Xfinity Store": [
       "Antonio Carradine",
@@ -18,14 +19,16 @@
       "Eric Bartkowiak",
       "Jacqueline Benitez",
       "Jalen Logan",
-      "Omar Bustamante"
+      "Omar Bustamante",
+      "New Hire"
     ],
     "Calumet City Xfinity Store": [
       "Dahjanay Bullard",
       "Edgar Flowers",
       "Jose Pugas",
       "Kamar Thomas",
-      "Nicole Harris"
+      "Nicole Harris",
+      "New Hire"
     ],
     "Cicero Xfinity Store": [
       "Angel Torres",
@@ -37,13 +40,15 @@
       "Leonardo Zavala",
       "Ramon Gomez",
       "Sarah Penablanca",
-      "Williams Perez-Arellano"
+      "Williams Perez-Arellano",
+      "New Hire"
     ],
     "Dekalb Xfinity Store": [
       "Caleb Green",
       "Dashawn Dean",
       "Ian Harrison",
-      "Kyin Edwards"
+      "Kyin Edwards",
+      "New Hire"
     ],
     "Elkhart Xfinity Store": [
       "Aliyah Rosales",
@@ -55,14 +60,16 @@
       "Josue Salazar",
       "Katelynn Heltzel",
       "Kathrynn Kirkman",
-      "Killian Thaxton"
+      "Killian Thaxton",
+      "New Hire"
     ],
     "Evanston Xfinity Store": [
       "Anaf Rahman",
       "Arilello Payne",
       "Jamal Lomax",
       "Suyal Ullah",
-      "Tanzim Chowdhury"
+      "Tanzim Chowdhury",
+      "New Hire"
     ],
     "Evergreen Park Xfinity Store": [
       "Aaron Hall",
@@ -74,7 +81,8 @@
       "Jesus Romo",
       "Marshawn Sykes",
       "Vivian Avila",
-      "Wendy Cerda Bacilio"
+      "Wendy Cerda Bacilio",
+      "New Hire"
     ],
     "Frankfort Xfinity Store": [
       "Aiden Bolhuis",
@@ -84,14 +92,16 @@
       "Frankie Pedraza-Scalfano",
       "Gia Mele",
       "Noah Cleveland",
-      "Tyrone Wilson jr"
+      "Tyrone Wilson jr",
+      "New Hire"
     ],
     "Glenview Xfinity Store": [
       "Alexandro Flores",
       "Anthony Greer",
       "Eric Gonzalez",
       "Linda Weeks",
-      "Okeefe Perkins"
+      "Okeefe Perkins",
+      "New Hire"
     ],
     "Greeneville Xfinity Store": [
       "Abigail Howard",
@@ -105,7 +115,8 @@
       "Joshua Huerto",
       "Justin Conard",
       "Naseem Samuel",
-      "Nicholes Gilland"
+      "Nicholes Gilland",
+      "New Hire"
     ],
     "Hammond Xfinity Store": [
       "Daquita White",
@@ -116,21 +127,24 @@
       "Matthew Gallardo",
       "Reina Salgado",
       "Timothy Bankston",
-      "Victoria Ponce de Leon"
+      "Victoria Ponce de Leon",
+      "New Hire"
     ],
     "Johnson City Xfinity Store": [
       "Deaundre Mitchell",
       "Joshua Jones",
       "Justin Wyatt",
       "Raymond Johnson",
-      "Richard Campbell"
+      "Richard Campbell",
+      "New Hire"
     ],
     "Kildeer Xfinity Store": [
       "Eddy Buckley",
       "Gavin Williams",
       "Jose Gomez",
       "Matthew Rodriguez",
-      "Moises Chino"
+      "Moises Chino",
+      "New Hire"
     ],
     "Michigan City Xfinity Store": [
       "Anthony Evans",
@@ -139,7 +153,8 @@
       "Elyssa Moses",
       "Keegan Canada",
       "Kristianna Limon",
-      "Linda Zoliner"
+      "Linda Zoliner",
+      "New Hire"
     ],
     "Oak Ridge Xfinity Store": [
       "Angie Davidson",
@@ -148,7 +163,8 @@
       "James Jones",
       "Michael Wade",
       "Quentin Furlong",
-      "Stefen Murrell-Onley"
+      "Stefen Murrell-Onley",
+      "New Hire"
     ],
     "Round Lake Beach Xfinity Store": [
       "Irvin Solis",
@@ -156,39 +172,45 @@
       "Johely Salinas Murillo",
       "Jose Maldonado",
       "Joseph Vasquez",
-      "Juan Padilla"
+      "Juan Padilla",
+      "New Hire"
     ],
     "Schererville Xfinity Store": [
       "Alyssa Baker",
       "April Vasquez",
       "Nickya Davis",
       "Thristian Manuel",
-      "Victoria Moore"
+      "Victoria Moore",
+      "New Hire"
     ],
     "South Skokie Xfinity Store": [
       "Aedo Yonan",
       "Alexis Rodriguez",
       "Dayan Delgado",
       "Steev Qaryo",
-      "Taiyeeb Chowdhury"
+      "Taiyeeb Chowdhury",
+      "New Hire"
     ],
     "South Bend Xfinity Store": [
       "Cora Estrada",
       "Garrett Gill",
-      "Jorge Tafoya"
+      "Jorge Tafoya",
+      "New Hire"
     ],
     "South Knoxville Xfinity Store": [
       "Blake Parrott",
       "Demarcus McKamey",
       "Dereck Fesperman",
-      "Gregory Martin"
+      "Gregory Martin",
+      "New Hire"
     ],
     "Tinley Park Xfinity Store": [
       "Darionne Townsend",
       "Emily Guzman",
       "Felix Diaz",
       "Khyree Battle",
-      "Sebastian Orozco"
+      "Sebastian Orozco",
+      "New Hire"
     ],
     "Uptown Xfinity Store": [
       "Hunter Dodge",
@@ -196,7 +218,8 @@
       "Kenisha Banks",
       "Oleksandr Kostenko",
       "Ronaldinho Llivi",
-      "Shayna Perez"
+      "Shayna Perez",
+      "New Hire"
     ],
     "Valparaiso Xfinity Store": [
       "Airelle Young",
@@ -207,7 +230,8 @@
       "Denzel Brent",
       "Emari Washington",
       "Nathaniel Brogdon",
-      "Shamika Austin"
+      "Shamika Austin",
+      "New Hire"
     ]
   }
 }
