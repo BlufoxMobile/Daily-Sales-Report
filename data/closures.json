@@ -4772,6 +4772,18 @@
     "store": "Elkhart",
     "pendingUntil": "2026-06-03"
   },
+  "2350372739": {
+    "status": "Closed",
+    "ts": "2026-06-02T21:41:07.478Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "2350577140": {
+    "status": "Closed",
+    "ts": "2026-06-02T21:41:08.789Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
