@@ -58,17 +58,19 @@ def short_to_full_map():
     """
     mapping = {}
     directory_stores = []
+    manager_names = {}
     if os.path.exists(DIRECTORY_PATH):
         try:
             with open(DIRECTORY_PATH) as f:
                 directory = json.load(f)
             directory_stores = directory.get("stores", []) or []
+            manager_names = directory.get("storeManagerNames", {}) or {}
             for full in directory_stores:
                 short = full[: -len(SUFFIX)] if full.endswith(SUFFIX) else full
                 mapping[short] = full
         except Exception as e:
             print(f"  (store-directory.json unreadable: {e})")
-    return mapping, directory_stores
+    return mapping, directory_stores, manager_names
 
 
 def jeff_short_stores(fp):
@@ -83,7 +85,7 @@ def main():
     fp = find_excel()
     print(f"  Using workbook: {fp}")
 
-    mapping, directory_stores = short_to_full_map()
+    mapping, directory_stores, manager_names = short_to_full_map()
 
     # Union of every store we should expose: directory stores + Jeff's district
     # stores from the report (covers brand-new stores not yet in the directory).
@@ -127,12 +129,20 @@ def main():
         by_store[full].append(name)
 
     for full in by_store:
-        by_store[full].sort(key=lambda n: n.lower())
-        # Always offer a generic "New Hire" choice so reps not yet on the
-        # report can still use the tools. Their real name appears the next
-        # day once they have a sale logged.
-        if "New Hire" not in by_store[full]:
-            by_store[full].append("New Hire")
+        names = by_store[full]
+        # Include the store manager (from the sales report / store directory) so
+        # managers can submit their own t-sheets. Skip vacant/blank entries.
+        mgr = (manager_names.get(full) or "").strip()
+        if mgr and mgr.lower() != "vacant position" and mgr.lower() not in {n.lower() for n in names}:
+            names.append(mgr)
+        names.sort(key=lambda n: n.lower())
+        # Catch-all options, always at the very bottom in this order:
+        #   "New Hire"  -> someone not on the report yet
+        #   "DM or Director Submission" -> a DM or director submitting a sheet
+        names = [n for n in names if n not in ("New Hire", "DM or Director Submission")]
+        names.append("New Hire")
+        names.append("DM or Director Submission")
+        by_store[full] = names
 
     roster = {
         "updatedAt": datetime.now(timezone.utc).isoformat(),
