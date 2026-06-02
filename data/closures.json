@@ -4753,10 +4753,11 @@
     "pendingUntil": "2026-06-03"
   },
   "2348984487": {
-    "status": "Can Not Close",
-    "ts": "2026-06-02T19:05:20.900Z",
+    "status": "Pending Install",
+    "ts": "2026-06-02T19:05:28.768Z",
     "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
+    "store": "Valparaiso",
+    "pendingUntil": "2026-06-03"
   },
   "2349409804": {
     "status": "Pending Install",
