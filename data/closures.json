@@ -4745,6 +4745,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2348978528": {
+    "status": "Pending Install",
+    "ts": "2026-06-02T19:05:12.198Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-06-03"
+  },
   "2349409804": {
     "status": "Pending Install",
     "ts": "2026-06-02T18:25:54.653Z",
