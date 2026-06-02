@@ -4720,6 +4720,13 @@
     "store": "Valparaiso",
     "pendingUntil": "2026-06-03"
   },
+  "2347357036": {
+    "status": "Pending Install",
+    "ts": "2026-06-02T19:05:00.014Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-06-03"
+  },
   "2347573729": {
     "status": "Closed",
     "ts": "2026-06-01T18:01:14.250Z",
