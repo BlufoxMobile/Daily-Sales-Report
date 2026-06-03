@@ -4813,6 +4813,12 @@
     "store": "Valparaiso",
     "pendingUntil": "2026-06-03"
   },
+  "2349313258": {
+    "status": "Closed",
+    "ts": "2026-06-03T19:19:14.512Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2349409804": {
     "status": "Pending Install",
     "ts": "2026-06-02T18:25:54.653Z",
