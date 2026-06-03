@@ -6193,5 +6193,12 @@
     "ts": "2026-06-02T21:43:31.021Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "1001297396382102": {
+    "status": "Pending Install",
+    "ts": "2026-06-03T19:13:48.491Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville",
+    "pendingUntil": "2026-06-10"
   }
 }
