@@ -5912,11 +5912,10 @@
     "store": "Tinley Park"
   },
   "1001295258892101": {
-    "status": "Pending Install",
-    "ts": "2026-05-23T18:31:01.786Z",
+    "status": "Cancelled Order",
+    "ts": "2026-06-03T19:13:38.699Z",
     "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-05-30"
+    "store": "South Knoxville"
   },
   "1001295521202104": {
     "status": "Closed",
