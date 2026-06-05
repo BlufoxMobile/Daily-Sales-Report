@@ -233,19 +233,7 @@
 
   <div class="status" id="status"></div>
 
-  <!-- âââ TOKEN SECTION (collapsed after first save) âââ -->
-  <div id="tokenSection" style="display:none;">
-    <details id="tokenDetails">
-      <summary style="color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:8px;">GitHub Token Settings</summary>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="password" id="tokenInput" placeholder="Paste your GitHub PAT here"
-          style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#e2e8f0;font-size:13px;font-family:monospace;">
-        <button onclick="saveToken()" style="padding:10px 16px;border-radius:8px;border:none;background:#22c55e;color:white;font-weight:600;cursor:pointer;font-size:13px;white-space:nowrap;">Save</button>
-      </div>
-      <p style="color:#64748b;font-size:11px;margin-top:6px;">Your token is stored only in this browser. It never leaves your machine except to call the GitHub API.</p>
-    </details>
-    <div id="tokenStatus" style="display:none;color:#22c55e;font-size:12px;margin-top:4px;"></div>
-  </div>
+  
 
   <div class="quick-links">
     <a href="https://blufoxmobile.github.io/Daily-Sales-Report/" target="_blank">Sales Dashboard →</a>
@@ -258,23 +246,39 @@
 
 <script>
 // âââ CONFIG âââââââââââââââââââââââââââââââââââââââââââââââ
-const _d = [5,5,1,14,26,26,61,28,20,18,48,73,83,47,52,46,45,76,85,61,69,14,93,0,51,59,66,53,90,48,53,35,22,57,32,10,17,88,71,86,1,46,16,58,3,15,29,32,59,26,1,50,34,21,17,5,48,55,31,11,49,10,61,62,45,8,49,30,58,21,43,8,27,57,24,28,31,34,42,63,58,85,46,63,39,4,23,52,89,57,48,15,63];
-    const _k = 'blufox';
-    let GITHUB_TOKEN = _d.map((c,i) => String.fromCharCode(c ^ _k.charCodeAt(i % _k.length))).join('');
+const PROXY_URL = 'https://script.google.com/macros/s/AKfycbxZgDgRW9r-g5AHMyRTljX-fQpHO6ueqpL7qBgXwbDVrjfQSMTLEE4e70AX0oZXV_M74Q/exec';
+
+function getUploadKey() {
+  let k = localStorage.getItem('bf_upload_key') || '';
+  if (!k) {
+    k = (prompt('Enter the upload key for the Blufox dashboards:') || '').trim();
+    if (k) localStorage.setItem('bf_upload_key', k);
+  }
+  if (!k) throw new Error('Upload key required.');
+  return k;
+}
+
+async function proxyPush(repoName, filePath, base64Content, message) {
+  const resp = await fetch(PROXY_URL, {
+    method: 'POST',
+    body: JSON.stringify({ key: getUploadKey(), files: [{ repo: repoName, path: filePath, contentBase64: base64Content, message: message }] })
+  });
+  let out = {};
+  try { out = await resp.json(); } catch (e) {}
+  if (out && out.error === 'unauthorized') {
+    localStorage.removeItem('bf_upload_key');
+    throw new Error('Upload key rejected - re-enter it on the next try.');
+  }
+  if (!out || !out.ok) {
+    const detail = (out.results || []).map(r => r.error).filter(Boolean).join('; ');
+    throw new Error('Upload failed: ' + (detail || out.error || ('HTTP ' + resp.status)));
+  }
+  return out;
+}
 const REPO_OWNER   = 'BlufoxMobile';
 const BRANCH       = 'main';
 
-function saveToken() {}
 
-// Pre-fill status on load
-if (GITHUB_TOKEN) {
-  document.addEventListener('DOMContentLoaded', () => {
-    const ts = document.getElementById('tokenStatus');
-    ts.style.display = 'block';
-    ts.textContent = 'Token loaded from browser storage.';
-    setTimeout(() => { ts.style.display = 'none'; }, 2000);
-  });
-}
 
 const REPOS = {
   sales:      'Daily-Sales-Report',
@@ -288,7 +292,7 @@ const REPOS = {
 const FILE_PATHS = {
   excel: 'data/Sales Report.xlsx',
   promo: 'data/promo-card.jpg',
-  exceptionsHtml: 'index.html',
+  exceptionsHtml: 'data/exceptions-data.js',
   goalsExcel:     'data/sales.xlsx',
   oneOnOneExcel:  'data/sales.xlsx',
   punchExcel:     'data/punch-data.xlsx',
@@ -334,11 +338,7 @@ bindFileZone(shopperInput, 'shopperZone', 'shopperFileName');
 
 function checkReady() {
   const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0];
-  const hasToken = !!GITHUB_TOKEN;
-  uploadBtn.disabled = !(hasFiles && hasToken);
-  if (hasFiles && !hasToken) {
-    setStatus('Please save your GitHub token first (expand settings below).', 'info');
-  }
+  uploadBtn.disabled = !hasFiles;
 }
 
 function setStatus(msg, type) {
@@ -372,123 +372,13 @@ function readFileAsArrayBuffer(file) {
   });
 }
 
-async function getFileSHA(repoName, filePath) {
-  try {
-    const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
-    const resp = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      return data.sha;
-    }
-    return null;
-  } catch { return null; }
-}
 
-async function getFileContent(repoName, filePath) {
-  // Get SHA from API
-  const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
-  const apiResp = await fetch(apiUrl, {
-    headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json'
-    }
-  });
-  if (!apiResp.ok) throw new Error('Could not fetch file info for ' + filePath);
-  const apiData = await apiResp.json();
-  const sha = apiData.sha;
 
-  // Fetch raw content directly (avoids base64 decode issues with large files)
-  const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${repoName}/${BRANCH}/${filePath}?t=${Date.now()}`;
-  const rawResp = await fetch(rawUrl);
-  if (!rawResp.ok) throw new Error('Could not fetch raw content for ' + filePath);
-  const content = await rawResp.text();
 
-  return { content, sha };
-}
 
 
     async function pushViaBlobs(repoName, filePath, base64Content, message) {
-      const apiBase = 'https://api.github.com/repos/' + REPO_OWNER + '/' + repoName;
-      const headers = {
-        'Authorization': 'Bearer ' + GITHUB_TOKEN,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      };
-
-      // 1. Create blob
-      const blobResp = await fetch(apiBase + '/git/blobs', {
-        method: 'POST', headers,
-        body: JSON.stringify({ content: base64Content, encoding: 'base64' })
-      });
-      if (!blobResp.ok) throw new Error('Blob create failed: ' + (await blobResp.json()).message);
-      const blob = await blobResp.json();
-
-      // 2. Get current ref
-      const refResp = await fetch(apiBase + '/git/ref/heads/' + BRANCH, { headers });
-      if (!refResp.ok) throw new Error('Ref fetch failed');
-      const ref = await refResp.json();
-
-      // 3. Get current commit to find tree
-      const commitResp = await fetch(apiBase + '/git/commits/' + ref.object.sha, { headers });
-      const currentCommit = await commitResp.json();
-
-      // 4. Create new tree
-      const treeResp = await fetch(apiBase + '/git/trees', {
-        method: 'POST', headers,
-        body: JSON.stringify({
-          base_tree: currentCommit.tree.sha,
-          tree: [{ path: filePath, mode: '100644', type: 'blob', sha: blob.sha }]
-        })
-      });
-      if (!treeResp.ok) throw new Error('Tree create failed: ' + (await treeResp.json()).message);
-      const tree = await treeResp.json();
-
-      // 5. Create commit
-      const newCommitResp = await fetch(apiBase + '/git/commits', {
-        method: 'POST', headers,
-        body: JSON.stringify({
-          message: message,
-          tree: tree.sha,
-          parents: [ref.object.sha]
-        })
-      });
-      if (!newCommitResp.ok) throw new Error('Commit create failed');
-      const newCommit = await newCommitResp.json();
-
-      // 6. Update ref
-      const updateResp = await fetch(apiBase + '/git/refs/heads/' + BRANCH, {
-        method: 'PATCH', headers,
-        body: JSON.stringify({ sha: newCommit.sha })
-      });
-      if (!updateResp.ok) throw new Error('Ref update failed');
-      return await updateResp.json();
-    }
-
-    async function pushToGitHub(repoName, filePath, base64Content, message) {
-  const sha = await getFileSHA(repoName, filePath);
-  const body = { message, content: base64Content, branch: BRANCH };
-  if (sha) body.sha = sha;
-
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}`;
-  const resp = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  if (!resp.ok) {
-    const err = await resp.json();
-    throw new Error((err.message || 'Unknown') + ` (HTTP ${resp.status})`);
-  }
-  return await resp.json();
+  return proxyPush(repoName, filePath, base64Content, message);
 }
 
 // âââ EXCEPTION REPORT LOGIC ââââââââââââââââââââââââââââââ
@@ -534,19 +424,7 @@ function buildExceptionData(workbook) {
       return { rawData, cancelData };
     }
 
-function injectDataIntoHtml(html, rawData, cancelData) {
-  // Replace const RAW_DATA = [...]; with new data
-  html = html.replace(
-    /const RAW_DATA\s*=\s*\[[\s\S]*?\];/,
-    'const RAW_DATA = [\n' + rawData.join(',\n') + '\n];'
-  );
-  // Replace const CANCEL_DATA = [...]; with new data
-  html = html.replace(
-    /const CANCEL_DATA\s*=\s*\[[\s\S]*?\];/,
-    'const CANCEL_DATA = [\n' + cancelData.join(',\n') + '\n];'
-  );
-  return html;
-}
+
 
 async function uploadExceptionReport(file) {
   setStatus('Reading Excel file...', 'info');
@@ -558,14 +436,8 @@ async function uploadExceptionReport(file) {
 
   setStatus(`Found ${rawData.length} exceptions, ${cancelData.length} cancellations. Fetching current report...`, 'info');
 
-  // Get the current index.html from the Exception-Report repo
-  const { content: currentHtml, sha } = await getFileContent(REPOS.exceptions, FILE_PATHS.exceptionsHtml);
-
-  // Inject the new data
-  const updatedHtml = injectDataIntoHtml(currentHtml, rawData, cancelData);
-
-  // Push the updated file
-  setStatus('Pushing updated Exception Report...', 'info');
+  setStatus('Pushing exception data...', 'info');
+  const updatedHtml = '// Generated by upload.html - do not edit by hand.\nwindow.RAW_DATA = [\n' + rawData.join(',\n') + '\n];\nwindow.CANCEL_DATA = [\n' + cancelData.join(',\n') + '\n];\n';
 
   // Robust base64 encoding for large strings with possible Unicode
   function toBase64(str) {
@@ -582,25 +454,7 @@ async function uploadExceptionReport(file) {
 
   const b64 = toBase64(updatedHtml);
 
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPOS.exceptions}/contents/${encodeURIComponent(FILE_PATHS.exceptionsHtml)}`;
-  const resp = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      message: 'Update exception data â ' + new Date().toLocaleDateString(),
-      content: b64,
-      sha: sha,
-      branch: BRANCH
-    })
-  });
-  if (!resp.ok) {
-    const err = await resp.json();
-    throw new Error('Exception Report push failed: ' + (err.message || `HTTP ${resp.status}`));
-  }
+  await pushToGitHub(REPOS.exceptions, FILE_PATHS.exceptionsHtml, b64, 'Update exception data - ' + new Date().toLocaleDateString());
 
   return { exceptions: rawData.length, cancellations: cancelData.length };
 }
