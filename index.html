@@ -6,6 +6,7 @@
 <title>Cook County Cooks - Daily Sales Report</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style></style>
+<script src="https://blufoxmobile.github.io/Daily-Sales-Report/store-aliases.js"></script>
 </head>
 <body>
 <style>
@@ -854,7 +855,7 @@ async function loadTSheetCounts() {
   // Re-key into our store names.
   const counts = {};
   for (const s of state.stores) {
-    const tname = TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store');
+    const tname = (window.BLUFOX_STORES ? window.BLUFOX_STORES.xfinityStoreName(s.name) : (TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store')));
     counts[s.name] = raw[tname] || 0;
   }
   return { counts, date: useDate, ok: true };
