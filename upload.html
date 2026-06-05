@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blufox Daily Upload</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://blufoxmobile.github.io/Daily-Sales-Report/store-aliases.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -516,18 +517,18 @@ function buildExceptionData(workbook) {
       const excSheet = workbook.Sheets['Exceptions'];
       if (!excSheet) throw new Error('No "Exceptions" tab found in the Excel file');
       const allExcRows = XLSX.utils.sheet_to_json(excSheet, { defval: '' });
-      const excRows = allExcRows.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+      const excRows = allExcRows.filter(r => (window.BLUFOX_STORES ? window.BLUFOX_STORES.isMyStore(r['Store']) : MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim())));
       const rawData = excRows.map(r => {
-        return `{store:"${escStr(r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
+        return `{store:"${escStr(window.BLUFOX_STORES ? window.BLUFOX_STORES.normalizeStore(r['Store']) : r['Store'])}",rep:"${escStr(r['Rep Name'])}",date:"${fmtDate(r['Order Date'])}",type:"${escStr(r['Type'])}",subType:"${escStr(r['Sub Type'])}",lob:"${escStr(r['LOB'])}"}`;
       });
 
       const cancelSheet = workbook.Sheets['Cancelled Orders'];
       let cancelData = [];
       if (cancelSheet) {
         const allCancelRows = XLSX.utils.sheet_to_json(cancelSheet, { defval: '' });
-        const cancelRows = allCancelRows.filter(r => MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim()));
+        const cancelRows = allCancelRows.filter(r => (window.BLUFOX_STORES ? window.BLUFOX_STORES.isMyStore(r['Store']) : MY_STORES_LOWER.includes(String(r['Store']).toLowerCase().trim())));
         cancelData = cancelRows.map(r => {
-          return `{store:"${escStr(r['Store'])}",rep:"",orderDate:"${fmtDate(r['Order Date'])}",cancelDate:"${fmtDate(r['Date Of Cancelation'])}",reason:"${escStr(r['Cancel Reason'])}"}`;
+          return `{store:"${escStr(window.BLUFOX_STORES ? window.BLUFOX_STORES.normalizeStore(r['Store']) : r['Store'])}",rep:"",orderDate:"${fmtDate(r['Order Date'])}",cancelDate:"${fmtDate(r['Date Of Cancelation'])}",reason:"${escStr(r['Cancel Reason'])}"}`;
         });
       }
       return { rawData, cancelData };
@@ -647,7 +648,7 @@ function buildOpenOrdersJson(workbook) {
       }
 
       return {
-        store: String(r['Store'] || '').trim(),
+        store: (window.BLUFOX_STORES ? window.BLUFOX_STORES.normalizeStore(r['Store']) : String(r['Store'] || '').trim()),
         dm: String(r['DM'] || '').trim(),
         orderDate: orderDate || null,
         customerId: String(r['Customer ID'] || '').trim(),
