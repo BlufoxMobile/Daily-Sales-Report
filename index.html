@@ -2,11 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Cook County Cooks - Daily Sales Report</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  // Compute the initial scale BEFORE the body paints so the first frame
+  // already fits whatever screen this is loading on. The same math runs
+  // again in fitStage() on every resize.
+  (function() {
+    function setScale() {
+      var w = window.innerWidth || document.documentElement.clientWidth || 1920;
+      var h = window.innerHeight || document.documentElement.clientHeight || 1080;
+      var r = Math.min(w / 1920, h / 1080);
+      var root = document.documentElement;
+      root.style.setProperty('--fit-scale', r);
+      root.style.setProperty('--fit-x', ((w - 1920 * r) / 2) + 'px');
+      root.style.setProperty('--fit-y', ((h - 1080 * r) / 2) + 'px');
+    }
+    setScale();
+    // Re-run on every resize/orientation change.
+    window.addEventListener('resize', setScale, { passive: true });
+    window.addEventListener('orientationchange', function() { setTimeout(setScale, 150); });
+    // Keep the global function reachable so the main script can also call it.
+    window.__fitStage = setScale;
+  })();
+</script>
 <style></style>
-<script src="https://blufoxmobile.github.io/Daily-Sales-Report/store-aliases.js"></script>
 </head>
 <body>
 <style>
@@ -15,23 +36,27 @@
   html, body { background:#000; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
 
   /* === FIXED-CANVAS SCALING ===
-     Everything is laid out for a 1920x1080 virtual canvas, then JS scales the
-     whole canvas with transform:scale() to fit any viewport. Phones, tablets,
-     laptops, and every TV (regardless of native resolution or aspect ratio)
-     get the same proportional layout, just at different physical sizes. The
-     letterbox bars are pure black so the bright slide pops in any room. */
+     Everything is laid out for a 1920x1080 virtual canvas, then it's scaled
+     with transform:scale() to fit any viewport. Phones, tablets, laptops,
+     and every TV — regardless of native resolution or aspect ratio — get
+     the same proportional layout, just at different physical sizes. CSS
+     variables (--fit-scale / --fit-x / --fit-y) are set by the head script
+     BEFORE first paint so the page never flashes unscaled. JS keeps them
+     updated on every resize / orientation change. Letterbox bars are pure
+     black so the bright slide pops in any room. */
   #stage {
     position:fixed; inset:0;
-    display:flex; align-items:center; justify-content:center;
     background:#000;
     overflow:hidden;
   }
   #stage-scaler {
     width:1920px; height:1080px;
-    flex-shrink:0;
     transform-origin: top left;
+    transform: scale(var(--fit-scale, 1));
     position:absolute;
-    top:0; left:0;
+    top: var(--fit-y, 0);
+    left: var(--fit-x, 0);
+    will-change: transform;
   }
   body { background:var(--day-bg) !important; }
 
@@ -855,7 +880,7 @@ async function loadTSheetCounts() {
   // Re-key into our store names.
   const counts = {};
   for (const s of state.stores) {
-    const tname = (window.BLUFOX_STORES ? window.BLUFOX_STORES.xfinityStoreName(s.name) : (TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store')));
+    const tname = TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store');
     counts[s.name] = raw[tname] || 0;
   }
   return { counts, date: useDate, ok: true };
@@ -2033,24 +2058,37 @@ document.addEventListener('keydown', (e) => {
 
 // === STAGE SCALER ===
 // Scale the fixed 1920x1080 canvas to fit any viewport while preserving the
-// aspect ratio. Letterboxed black bars fill the leftover space (top/bottom
-// for narrow viewports, sides for wide ones). Runs on load, resize, and
-// orientation change so phones, tablets, laptops, and TVs all render the
-// same proportional layout.
+// aspect ratio. The head script already sets the initial scale before first
+// paint via the --fit-scale CSS variable; this function keeps it updated.
+// Runs on: load, DOMContentLoaded, resize, orientationchange, visibility
+// changes, page-show (back/forward cache), and a few timed retries after
+// load to catch slow-rendering TVs whose viewport size settles late.
 function fitStage() {
-  const stage = document.getElementById('stage-scaler');
-  if (!stage) return;
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  // Prefer the head-script helper since it owns the CSS variables — falls
+  // back to inline calculation if the head script didn't run for some reason.
+  if (window.__fitStage) { window.__fitStage(); return; }
+  const root = document.documentElement;
+  const w = window.innerWidth || root.clientWidth || 1920;
+  const h = window.innerHeight || root.clientHeight || 1080;
   const r = Math.min(w / 1920, h / 1080);
-  const offX = (w - 1920 * r) / 2;
-  const offY = (h - 1080 * r) / 2;
-  stage.style.transform = 'scale(' + r + ')';
-  stage.style.left = offX + 'px';
-  stage.style.top  = offY + 'px';
+  root.style.setProperty('--fit-scale', r);
+  root.style.setProperty('--fit-x', ((w - 1920 * r) / 2) + 'px');
+  root.style.setProperty('--fit-y', ((h - 1080 * r) / 2) + 'px');
 }
-window.addEventListener('resize', fitStage);
+window.addEventListener('resize', fitStage, { passive: true });
 window.addEventListener('orientationchange', () => setTimeout(fitStage, 150));
+window.addEventListener('load', fitStage);
+window.addEventListener('pageshow', fitStage);
+document.addEventListener('DOMContentLoaded', fitStage);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) fitStage(); });
+// Retry a few times after load — some smart-TV browsers report stale viewport
+// dimensions for the first ~second while the page is still settling.
+[50, 250, 750, 1500, 3000].forEach(ms => setTimeout(fitStage, ms));
+// ResizeObserver catches device-rotation, container changes, and Chromecast
+// virtual-display resizes that don't always fire a "resize" event.
+if (window.ResizeObserver) {
+  try { new ResizeObserver(fitStage).observe(document.documentElement); } catch(e) {}
+}
 
 // -- INIT --
 loadPersistedFilters();
