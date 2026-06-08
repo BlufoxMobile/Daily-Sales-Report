@@ -4846,6 +4846,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2347826716": {
+    "status": "Pending Install",
+    "ts": "2026-06-08T23:24:44.414Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-06-15"
+  },
   "2348153249": {
     "status": "Closed",
     "ts": "2026-06-08T23:23:54.574Z",
