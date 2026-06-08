@@ -4680,11 +4680,10 @@
     "store": "Johnson City"
   },
   "2343999105": {
-    "status": "Pending Install",
-    "ts": "2026-05-28T19:00:57.351Z",
+    "status": "Closed",
+    "ts": "2026-06-08T22:27:52.152Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-06-05"
+    "store": "Kildeer"
   },
   "2344020267": {
     "status": "Pending Install",
