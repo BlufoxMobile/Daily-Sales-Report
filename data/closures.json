@@ -5113,6 +5113,13 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2357234275": {
+    "status": "Pending Install",
+    "ts": "2026-06-08T22:35:16.133Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach",
+    "pendingUntil": "2026-06-12"
+  },
   "2357276310": {
     "status": "Closed",
     "ts": "2026-06-08T17:43:52.556Z",
