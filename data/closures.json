@@ -5166,6 +5166,18 @@
     "store": "Hammond",
     "pendingUntil": "2026-06-10"
   },
+  "2359753672": {
+    "status": "Closed",
+    "ts": "2026-06-08T22:40:11.375Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2360482221": {
+    "status": "Closed",
+    "ts": "2026-06-08T22:40:12.694Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
