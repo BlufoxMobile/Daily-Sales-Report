@@ -6613,5 +6613,12 @@
     "ts": "2026-06-08T22:40:17.274Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "1002283854942057": {
+    "status": "Pending Install",
+    "ts": "2026-06-08T22:40:32.522Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-06-15"
   }
 }
