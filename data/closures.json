@@ -4843,11 +4843,23 @@
     "store": "Valparaiso",
     "pendingUntil": "2026-06-03"
   },
+  "2349070079": {
+    "status": "Closed",
+    "ts": "2026-06-08T17:35:05.501Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2349313258": {
     "status": "Closed",
     "ts": "2026-06-03T19:19:14.512Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2349335167": {
+    "status": "Closed",
+    "ts": "2026-06-08T17:35:04.146Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2349409804": {
     "status": "Closed",
