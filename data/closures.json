@@ -5022,6 +5022,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2353002751": {
+    "status": "Closed",
+    "ts": "2026-06-08T22:40:40.744Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2353064144": {
     "status": "Closed",
     "ts": "2026-06-06T20:38:42.066Z",
@@ -5051,6 +5057,18 @@
     "ts": "2026-06-05T15:56:33.205Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2353737162": {
+    "status": "Closed",
+    "ts": "2026-06-08T22:40:39.293Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2354158347": {
+    "status": "Closed",
+    "ts": "2026-06-08T22:40:42.014Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2354275326": {
     "status": "Closed",
