@@ -6919,5 +6919,12 @@
     "ts": "2026-06-09T01:03:06.042Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
+  },
+  "1002284742752054": {
+    "status": "Pending Install",
+    "ts": "2026-06-09T22:38:24.101Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-06-16"
   }
 }
