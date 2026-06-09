@@ -5303,6 +5303,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2358772792": {
+    "status": "Pending Install",
+    "ts": "2026-06-09T18:24:44.239Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-06-12"
+  },
   "2358890187": {
     "status": "Pending Install",
     "ts": "2026-06-08T17:46:46.799Z",
