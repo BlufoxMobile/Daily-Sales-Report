@@ -288,6 +288,18 @@ body {
   padding:7px 12px; cursor:pointer; max-width:250px;
 }
 
+/* ---------- "NEW DATA" TOAST ---------- */
+.toast {
+  position:absolute; top:132px; left:50%; z-index:20;
+  transform:translateX(-50%) translateY(-24px);
+  background:var(--card); border:3px solid var(--day-line); color:var(--day-ink);
+  font-size:24px; font-weight:900; padding:16px 36px; border-radius:999px;
+  box-shadow:0 14px 38px rgba(70,60,45,.18);
+  opacity:0; transition:opacity .5s ease, transform .5s cubic-bezier(.2,.7,.3,1);
+  pointer-events:none; white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
 /* ---------- LOADING ---------- */
 #loading {
   position:fixed; inset:0; z-index:50;
@@ -332,7 +344,10 @@ const CONFIG = {
   PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
   XFINITY_PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/more-everything.jpg',
   SLIDE_INTERVAL: 15000,     // 15 seconds per slide
-  REFRESH_INTERVAL: 1800000, // 30 minutes data refresh
+  // Auto-refresh window: look for a newly uploaded Sales Report every
+  // `everyMin` minutes between startMin and endMin (minutes since midnight).
+  // Default: 9:00 AM – 11:30 AM, every 30 minutes.
+  REFRESH_WINDOW: { startMin: 9 * 60, endMin: 11 * 60 + 30, everyMin: 30 },
   STORE_CARDS_PER_PAGE: 6,
   REPS_PER_PAGE: 14,
   PROMO_EVERY_N: 4,
@@ -386,6 +401,7 @@ let state = {
   currentSlide: 0,
   totalSlides: 0,
   paused: false,
+  dataSig: null,
   slideTimer: null,
   refreshTimer: null,
   countdownTimer: null,
@@ -629,6 +645,12 @@ async function loadData() {
     const resp = await fetch(CONFIG.EXCEL_URL + cacheBust);
     if (!resp.ok) throw new Error('Could not fetch sales report (HTTP ' + resp.status + ')');
     const buf = await resp.arrayBuffer();
+    // Skip the full reload when the file on GitHub hasn't changed — keeps
+    // the slideshow running smoothly during background checks.
+    const sig = bufferSignature(buf);
+    if (state.dataSig && sig === state.dataSig && state.stores.length) return;
+    const isUpdate = !!state.dataSig && state.stores.length > 0;
+    state.dataSig = sig;
     const wb = XLSX.read(buf, { type: 'array' });
     parseWorkbook(wb);
     await loadYesterday(wb);
@@ -640,6 +662,7 @@ async function loadData() {
     if (loading) loading.style.display = 'none';
     render();
     startSlideshow();
+    if (isUpdate) showToast('📊 Fresh sales report just loaded — numbers updated!');
   } catch(err) {
     console.error(err);
     if (loading) { loading.style.display='flex'; errorMsg.textContent = err.message; errorMsg.style.display = 'block'; retryBtn.style.display = 'block'; }
@@ -885,6 +908,16 @@ function buildSlides() {
   state.totalSlides = state.slides.length;
   state.currentSlide = 0;
 }
+// Cheap fingerprint of the downloaded workbook so we can tell whether the
+// file on GitHub actually changed since the last check.
+function bufferSignature(buf) {
+  const v = new Uint8Array(buf);
+  let h = 0;
+  const step = Math.max(1, Math.floor(v.length / 4096));
+  for (let i = 0; i < v.length; i += step) h = (h * 31 + v[i]) >>> 0;
+  return v.length + ':' + h;
+}
+
 // ============ FORMAT HELPERS ============
 const fmtMoney = n => (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString();
 const pctStr = v => (v * 100).toFixed(1) + '%';
@@ -999,7 +1032,7 @@ function render() {
         <div class="logo-circle"><img src="${LOGO_SRC}" alt="C3" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
         <div>
           <div class="brand-title">COOK COUNTY <span class="highlight">COOKS</span></div>
-          <div class="brand-sub">DAILY SALES REPORT · ${state.stores.length} STORES</div>
+          <div class="brand-sub">DAILY SALES REPORT · ${state.stores.length} STORES${state.lastRefresh ? ' · UPDATED ' + state.lastRefresh.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true}) : ''}</div>
         </div>
       </div>
       <div class="header-center">
@@ -1351,7 +1384,43 @@ document.addEventListener('keydown', e => {
   if (e.code === 'Space') { e.preventDefault(); togglePause(); }
   else if (e.key === 'ArrowRight') nextSlide();
   else if (e.key === 'ArrowLeft') prevSlide();
+  else if (e.key === 'r' || e.key === 'R') { state.dataSig = null; loadData(); }
 });
+
+// ============ AUTO-REFRESH SCHEDULER ============
+// Watches for the day's new Sales Report upload: every 30 minutes from
+// 9:00 AM to 11:30 AM (9:00, 9:30, 10:00, 10:30, 11:00, 11:30). If the TV
+// was asleep or offline during the window, it catches up as soon as it
+// wakes any time after 9 AM and still has yesterday's data. Press "R" to
+// force a refresh at any time.
+let lastAutoAttempt = 0;
+function inRefreshWindow(d) {
+  const m = d.getHours() * 60 + d.getMinutes();
+  return m >= CONFIG.REFRESH_WINDOW.startMin && m <= CONFIG.REFRESH_WINDOW.endMin;
+}
+function autoRefreshTick() {
+  if (Date.now() - lastAutoAttempt < 5 * 60 * 1000) return; // throttle retries
+  const now = new Date();
+  const windowOpen = new Date(now.getFullYear(), now.getMonth(), now.getDate(),
+    Math.floor(CONFIG.REFRESH_WINDOW.startMin / 60), CONFIG.REFRESH_WINDOW.startMin % 60, 0);
+  const stale = state.lastRefresh && now >= windowOpen && state.lastRefresh < windowOpen;
+  const onCheckpoint = inRefreshWindow(now) && now.getMinutes() % CONFIG.REFRESH_WINDOW.everyMin === 0;
+  if (onCheckpoint || stale) { lastAutoAttempt = Date.now(); loadData(); }
+}
+setInterval(autoRefreshTick, 30000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) autoRefreshTick(); });
+
+// "New data" toast — floats in below the header, then fades away.
+function showToast(msg) {
+  const scaler = document.getElementById('stage-scaler');
+  if (!scaler) return;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  scaler.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 700); }, 7000);
+}
 
 // ============ INIT ============
 window.addEventListener('resize', fitStage);
@@ -1361,7 +1430,6 @@ fitStage();
 wakeControls();
 loadData();
 scheduleDayColorAtMidnight();
-setInterval(() => loadData(), CONFIG.REFRESH_INTERVAL);
 </script>
 </body>
 </html>
