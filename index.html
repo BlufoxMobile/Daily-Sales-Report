@@ -5,639 +5,370 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Cook County Cooks - Daily Sales Report</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-  // Compute the initial scale BEFORE the body paints so the first frame
-  // already fits whatever screen this is loading on. The same math runs
-  // again in fitStage() on every resize.
-  (function() {
-    function setScale() {
-      var w = window.innerWidth || document.documentElement.clientWidth || 1920;
-      var h = window.innerHeight || document.documentElement.clientHeight || 1080;
-      var r = Math.min(w / 1920, h / 1080);
-      var root = document.documentElement;
-      root.style.setProperty('--fit-scale', r);
-      root.style.setProperty('--fit-x', ((w - 1920 * r) / 2) + 'px');
-      root.style.setProperty('--fit-y', ((h - 1080 * r) / 2) + 'px');
-    }
-    setScale();
-    // Re-run on every resize/orientation change.
-    window.addEventListener('resize', setScale, { passive: true });
-    window.addEventListener('orientationchange', function() { setTimeout(setScale, 150); });
-    // Keep the global function reachable so the main script can also call it.
-    window.__fitStage = setScale;
-  })();
-</script>
-<style></style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   COOK COUNTY COOKS — DAILY SALES REPORT (Pastel Redesign)
+   Light, warm, friendly. A fresh pastel color every day.
+   Fixed 1920x1080 design canvas, scaled to fit ANY screen.
+   ============================================================ */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  /* Day theme variables — set by applyDayColor() */
+  --day-ink:   #E8590C;   /* readable accent (text, numbers)   */
+  --day-mid:   #FF922B;   /* medium accent (bars, gradients)   */
+  --day-soft:  #FFE8CC;   /* pastel fill (pills, badges)       */
+  --day-tint:  #FFF4E6;   /* very light wash (backgrounds)     */
+  --day-line:  #FFD8A8;   /* pastel border                     */
+  /* Fixed neutrals */
+  --paper:  #FDFCFA;
+  --card:   #FFFFFF;
+  --text:   #46413B;      /* warm charcoal */
+  --muted:  #97907F;      /* warm gray     */
+  --track:  #F2EEE7;
+  /* Status colors (pastel chips) */
+  --good-ink:#2B8A3E; --good-bg:#D3F9D8;
+  --warn-ink:#E8590C; --warn-bg:#FFE8CC;
+  --low-ink: #C92A2A; --low-bg: #FFE3E3;
+}
+
+html, body { height:100%; overflow:hidden; }
+body {
+  font-family:'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--paper);
+  color: var(--text);
+}
+
+/* ---------- STAGE: 1920x1080 canvas scaled to fit any screen ---------- */
+#stage {
+  position:fixed; inset:0; overflow:hidden;
+  background: linear-gradient(160deg, var(--day-tint) 0%, var(--paper) 45%, var(--day-tint) 100%);
+  transition: background 1s ease;
+}
+#stage-scaler {
+  width:1920px; height:1080px;
+  position:absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%) scale(1);
+  transform-origin: center center;
+}
+
+/* ---------- Floating pastel blobs (gentle background life) ---------- */
+.blob { position:absolute; border-radius:50%; filter:blur(70px); opacity:.55; pointer-events:none; }
+.blob1 { width:560px; height:560px; background:var(--day-soft); top:-160px; left:-120px; animation: drift1 26s ease-in-out infinite alternate; }
+.blob2 { width:480px; height:480px; background:var(--day-soft); bottom:-180px; right:-100px; animation: drift2 31s ease-in-out infinite alternate; }
+.blob3 { width:340px; height:340px; background:var(--day-tint); top:38%; left:42%; animation: drift3 23s ease-in-out infinite alternate; opacity:.8; }
+@keyframes drift1 { from{ transform:translate(0,0) scale(1);} to{ transform:translate(90px,60px) scale(1.12);} }
+@keyframes drift2 { from{ transform:translate(0,0) scale(1.08);} to{ transform:translate(-80px,-70px) scale(.95);} }
+@keyframes drift3 { from{ transform:translate(0,0);} to{ transform:translate(-60px,80px);} }
+
+/* ---------- HEADER ---------- */
+.header {
+  position:absolute; top:0; left:0; right:0; height:112px; z-index:5;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 40px;
+  background: rgba(255,255,255,.82);
+  border-bottom: 3px solid var(--day-line);
+  backdrop-filter: blur(6px);
+}
+.header-left { display:flex; align-items:center; gap:18px; min-width:430px; }
+.logo-circle {
+  width:68px; height:68px; border-radius:50%;
+  border:4px solid var(--day-soft); overflow:hidden; flex-shrink:0;
+  box-shadow:0 4px 14px rgba(70,65,59,.12);
+}
+.brand-title { font-size:30px; font-weight:900; letter-spacing:.5px; line-height:1.05; }
+.brand-title .highlight { color:var(--day-ink); }
+.brand-sub { font-size:15px; font-weight:700; color:var(--muted); letter-spacing:2px; margin-top:3px; }
+.header-center { text-align:center; flex:1; padding:0 20px; min-width:0; }
+.header-center-title { font-size:40px; font-weight:900; letter-spacing:1px; color:var(--text); line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header-center-title .accent { color:var(--day-ink); }
+.header-center-sub { font-size:18px; font-weight:700; color:var(--muted); margin-top:4px; }
+.header-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; min-width:430px; }
+.pill-row { display:flex; gap:10px; align-items:center; }
+.pill {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--day-soft); color:var(--day-ink);
+  border-radius:999px; padding:8px 18px;
+  font-size:17px; font-weight:900; letter-spacing:1px;
+}
+.pill.live { background:var(--good-bg); color:var(--good-ink); }
+.live-dot { width:11px; height:11px; border-radius:50%; background:var(--good-ink); animation:pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.75);} }
+.pill.paused { background:var(--low-bg); color:var(--low-ink); }
+.datetime { font-size:19px; font-weight:800; color:var(--muted); }
+
+/* ---------- SLIDE AREA ---------- */
+.slide-container {
+  position:absolute; top:112px; bottom:104px; left:0; right:0;
+  padding:26px 40px; z-index:2; overflow:hidden;
+}
+.slide-inner { width:100%; height:100%; }
+
+/* Slide entrance animations — variant rotates so it feels fresh */
+.anim-fade  { animation: fadeUp .65s cubic-bezier(.2,.7,.3,1) both; }
+.anim-slide { animation: slideL .6s cubic-bezier(.2,.7,.3,1) both; }
+.anim-zoom  { animation: zoomIn .6s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes fadeUp { from{ opacity:0; transform:translateY(34px);} to{ opacity:1; transform:none;} }
+@keyframes slideL { from{ opacity:0; transform:translateX(60px);} to{ opacity:1; transform:none;} }
+@keyframes zoomIn { from{ opacity:0; transform:scale(.94);} to{ opacity:1; transform:none;} }
+/* Staggered children: set style="--i:n" */
+.stagger { animation: fadeUp .55s cubic-bezier(.2,.7,.3,1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+
+/* ---------- STORE OVERVIEW GRID ---------- */
+.store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:20px; height:100%; }
+.store-card {
+  background:var(--card); border-radius:24px; padding:18px 24px 16px;
+  box-shadow:0 8px 26px rgba(70,60,45,.09);
+  border:1px solid #F3EFE8;
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.store-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:9px;
+  background:linear-gradient(90deg, var(--day-mid), var(--day-soft));
+}
+.store-card.empty { background:transparent; border:2px dashed var(--day-line); box-shadow:none; }
+.store-card.empty::before { display:none; }
+.card-top { display:flex; align-items:center; gap:14px; margin-top:6px; }
+.rank-badge {
+  width:58px; height:58px; border-radius:18px; flex-shrink:0;
+  background:var(--day-soft); color:var(--day-ink);
+  display:flex; align-items:center; justify-content:center;
+  font-size:23px; font-weight:900;
+}
+.rank-badge.medal { font-size:34px; background:#FFF6DB; }
+.card-store-name { font-size:30px; font-weight:900; line-height:1.05; }
+.card-store-sub { font-size:14px; font-weight:700; color:var(--muted); margin-top:2px; }
+.card-gp-row { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
+.card-gp { font-size:54px; font-weight:900; color:var(--text); line-height:1; letter-spacing:-1px; }
+.card-gp-label { font-size:15px; font-weight:800; color:var(--muted); letter-spacing:1px; }
+.delta-chip { font-size:17px; font-weight:900; border-radius:999px; padding:3px 12px; }
+.delta-chip.up { background:var(--good-bg); color:var(--good-ink); }
+.delta-chip.down { background:var(--low-bg); color:var(--low-ink); }
+/* Goal progress bar */
+.goal-wrap { margin-top:10px; }
+.goal-bar { height:15px; background:var(--track); border-radius:999px; overflow:hidden; }
+.goal-fill {
+  height:100%; border-radius:999px; width:0;
+  background:linear-gradient(90deg, var(--day-mid), var(--day-ink));
+  animation: grow 1s .25s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes grow { to { width: var(--w, 0%); } }
+.goal-label { display:flex; justify-content:space-between; font-size:14px; font-weight:800; color:var(--muted); margin-top:5px; }
+.goal-label b { color:var(--text); }
+/* Metric chips */
+.chips { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:auto; padding-top:12px; }
+.chip { border-radius:14px; padding:8px 4px 7px; text-align:center; background:var(--day-tint); }
+.chip .cl { font-size:12px; font-weight:800; color:var(--muted); letter-spacing:.4px; }
+.chip .cv { font-size:21px; font-weight:900; color:var(--day-ink); margin-top:1px; }
+.chip.good { background:var(--good-bg); } .chip.good .cv { color:var(--good-ink); }
+.chip.warn { background:var(--warn-bg); } .chip.warn .cv { color:var(--warn-ink); }
+.chip.low  { background:var(--low-bg);  } .chip.low  .cv { color:var(--low-ink); }
+
+/* ---------- STORE DETAIL ---------- */
+.detail-grid { display:grid; grid-template-columns: 1fr 1.6fr; gap:20px; height:100%; }
+.detail-left { display:flex; flex-direction:column; gap:14px; min-height:0; }
+.hero-card {
+  background:var(--card); border-radius:24px; padding:22px 26px;
+  box-shadow:0 8px 26px rgba(70,60,45,.09); border:1px solid #F3EFE8;
+  position:relative; overflow:hidden;
+}
+.hero-card::before { content:''; position:absolute; top:0; left:0; right:0; height:9px; background:linear-gradient(90deg, var(--day-mid), var(--day-soft)); }
+.hero-row { display:flex; justify-content:space-between; align-items:flex-start; margin-top:4px; }
+.hero-name { font-size:42px; font-weight:900; line-height:1; margin-top:6px; }
+.hero-sub { font-size:16px; font-weight:700; color:var(--muted); margin-top:8px; }
+.hero-gp { font-size:64px; font-weight:900; color:var(--day-ink); line-height:1; letter-spacing:-1px; text-align:right; }
+.hero-gp-label { font-size:15px; font-weight:800; color:var(--muted); letter-spacing:1px; text-align:right; margin-top:6px; }
+.device-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.device-tile { background:var(--card); border-radius:18px; padding:14px 8px; text-align:center; border:1px solid #F3EFE8; box-shadow:0 5px 16px rgba(70,60,45,.07); }
+.device-tile.star { background:var(--day-soft); border-color:var(--day-line); }
+.device-tile .dl { font-size:14px; font-weight:800; color:var(--muted); letter-spacing:1px; }
+.device-tile.star .dl { color:var(--day-ink); }
+.device-tile .dv { font-size:38px; font-weight:900; margin-top:2px; }
+.device-tile.star .dv { color:var(--day-ink); }
+.detail-chips { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; flex:1; min-height:0; }
+.detail-chips .chip { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; }
+.detail-chips .chip .cl { font-size:14px; }
+.detail-chips .chip .cv { font-size:28px; }
+
+/* ---------- TABLES (team, yesterday, raise, rankings) ---------- */
+.panel {
+  background:var(--card); border-radius:24px; padding:20px 26px;
+  box-shadow:0 8px 26px rgba(70,60,45,.09); border:1px solid #F3EFE8;
+  height:100%; display:flex; flex-direction:column; min-height:0; overflow:hidden;
+}
+.panel-title { font-size:26px; font-weight:900; color:var(--day-ink); letter-spacing:1.5px; margin-bottom:4px; }
+.panel-sub { font-size:15px; font-weight:700; color:var(--muted); margin-bottom:12px; }
+.thead { display:grid; gap:12px; padding:10px 16px; font-size:14px; font-weight:900; color:var(--muted); text-transform:uppercase; letter-spacing:1px; border-bottom:2px solid var(--day-soft); }
+.trow {
+  display:grid; gap:12px; align-items:center; padding:11px 16px;
+  border-radius:14px; margin-top:7px; font-size:21px; font-weight:700;
+  background:var(--day-tint);
+}
+.trow:nth-child(odd) { background:#FBF9F5; }
+.trow.mine { background:var(--day-soft); outline:2px solid var(--day-line); }
+.trow .rk { color:var(--day-ink); font-weight:900; }
+.trow .nm { font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.trow .money { font-weight:900; }
+.trow.total { background:var(--day-soft); font-weight:900; outline:2px solid var(--day-line); }
+.tscroll { flex:1; min-height:0; overflow:hidden; }
+
+/* Traffic mini-bars (Yesterday slide) */
+.mini-track { display:block; height:12px; background:var(--track); border-radius:999px; overflow:hidden; width:100%; flex:1; }
+.mini-fill { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg, var(--day-mid), var(--day-ink)); width:0; animation:grow .9s .2s forwards; }
+
+/* Raise sparkline */
+.spark { display:flex; align-items:flex-end; gap:3px; height:34px; }
+.spark span { flex:1; min-width:6px; border-radius:4px 4px 2px 2px; background:var(--day-line); }
+.spark span.hot { background:var(--day-mid); }
+.tier-chip { background:var(--good-bg); color:var(--good-ink); border-radius:999px; padding:4px 14px; font-size:18px; font-weight:900; white-space:nowrap; }
+.tier-chip.zero { background:var(--track); color:var(--muted); }
+
+/* Two-column ranking layout */
+.rank-cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; height:100%; min-height:0; }
+
+/* ---------- PROMO SLIDES ---------- */
+.promo-wrap { height:100%; display:flex; align-items:center; justify-content:center; }
+.promo-frame {
+  background:var(--card); border-radius:28px; padding:22px;
+  box-shadow:0 14px 40px rgba(70,60,45,.14); border:1px solid #F3EFE8;
+  animation: sway 6s ease-in-out infinite alternate;
+  max-width:92%; max-height:94%;
+  display:flex; align-items:center; justify-content:center;
+}
+@keyframes sway { from{ transform:rotate(-.5deg) translateY(0);} to{ transform:rotate(.5deg) translateY(-10px);} }
+.promo-frame img { max-width:100%; max-height:780px; border-radius:16px; display:block; }
+.promo-missing { padding:80px 100px; text-align:center; color:var(--muted); font-size:28px; font-weight:800; }
+
+/* ---------- FOOTER / CONTROLS ---------- */
+.controls {
+  position:absolute; bottom:0; left:0; right:0; height:104px; z-index:6;
+  background:rgba(255,255,255,.86); backdrop-filter:blur(6px);
+  border-top:3px solid var(--day-line);
+  display:flex; align-items:center; gap:18px; padding:0 32px;
+  transition:opacity .6s ease;
+}
+.controls.idle { opacity:.45; }
+.countdown-track { position:absolute; top:-3px; left:0; right:0; height:6px; background:transparent; }
+.countdown-fill { height:100%; background:linear-gradient(90deg, var(--day-mid), var(--day-ink)); border-radius:0 999px 999px 0; transition:width .1s linear; }
+.district-tabs { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
+.district-tab {
+  padding:9px 16px; border-radius:999px; font-size:16px; font-weight:800;
+  background:var(--track); color:var(--muted); cursor:pointer; white-space:nowrap;
+  transition:all .2s;
+}
+.district-tab:hover { background:var(--day-soft); color:var(--day-ink); }
+.district-tab.active { background:var(--day-ink); color:#fff; }
+.district-count { margin-left:6px; opacity:.75; font-size:14px; }
+.store-picker {
+  font-family:inherit; font-size:16px; font-weight:800; color:var(--text);
+  background:var(--card); border:2px solid var(--day-line); border-radius:999px;
+  padding:8px 14px; cursor:pointer; max-width:230px;
+}
+.store-picker.has-selection { border-color:var(--day-ink); color:var(--day-ink); }
+.spacer { flex:1; }
+.ctl-btn {
+  width:54px; height:54px; border-radius:50%; border:2px solid var(--day-line);
+  background:var(--card); color:var(--day-ink); font-size:22px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s, background .2s; flex-shrink:0;
+}
+.ctl-btn:hover { transform:scale(1.1); background:var(--day-soft); }
+.ctl-btn.play-pause { width:62px; height:62px; font-size:26px; background:var(--day-soft); }
+.dot-nav { display:flex; gap:6px; align-items:center; max-width:560px; flex-wrap:wrap; justify-content:center; }
+.dot-nav span { width:11px; height:11px; border-radius:999px; background:#E2DCD2; cursor:pointer; transition:all .25s; }
+.dot-nav span.active { width:30px; background:var(--day-ink); }
+.slide-counter { font-size:19px; font-weight:900; color:var(--muted); white-space:nowrap; }
+.slide-select {
+  font-family:inherit; font-size:15px; font-weight:800; color:var(--muted);
+  background:var(--card); border:2px solid var(--track); border-radius:999px;
+  padding:7px 12px; cursor:pointer; max-width:250px;
+}
+
+/* ---------- LOADING ---------- */
+#loading {
+  position:fixed; inset:0; z-index:50;
+  background:linear-gradient(160deg, var(--day-tint), var(--paper));
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+  font-family:'Nunito', sans-serif;
+}
+.spinner {
+  width:64px; height:64px; border-radius:50%;
+  border:7px solid var(--day-soft); border-top-color:var(--day-ink);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+#loading h2 { font-size:26px; font-weight:900; color:var(--text); }
+#errorMsg { display:none; color:var(--low-ink); font-size:17px; font-weight:700; max-width:520px; text-align:center; }
+#retryBtn {
+  display:none; font-family:inherit; font-size:17px; font-weight:900; color:#fff;
+  background:var(--day-ink); border:none; border-radius:999px; padding:12px 34px; cursor:pointer;
+}
+</style>
 </head>
 <body>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { background:#000; color:#fff; font-family:'Inter',sans-serif; overflow:hidden; height:100vh; width:100vw; }
-
-  /* === FIXED-CANVAS SCALING ===
-     Everything is laid out for a 1920x1080 virtual canvas, then it's scaled
-     with transform:scale() to fit any viewport. Phones, tablets, laptops,
-     and every TV — regardless of native resolution or aspect ratio — get
-     the same proportional layout, just at different physical sizes. CSS
-     variables (--fit-scale / --fit-x / --fit-y) are set by the head script
-     BEFORE first paint so the page never flashes unscaled. JS keeps them
-     updated on every resize / orientation change. Letterbox bars are pure
-     black so the bright slide pops in any room. */
-  #stage {
-    position:fixed; inset:0;
-    background:#000;
-    overflow:hidden;
-  }
-  #stage-scaler {
-    width:1920px; height:1080px;
-    transform-origin: top left;
-    transform: scale(var(--fit-scale, 1));
-    position:absolute;
-    top: var(--fit-y, 0);
-    left: var(--fit-x, 0);
-    will-change: transform;
-  }
-  body { background:var(--day-bg) !important; }
-
-  /* === DAY-OF-WEEK FULL THEMING ===
-     applyDayColor() rewrites every variable below at page load (and at midnight)
-     so BOTH the accent color AND the entire dark-background palette swap each
-     day. Defaults below match the original blue so nothing breaks if the script
-     never runs. */
-  :root {
-    /* Accent (highlights, borders, badges) */
-    --day-accent: #e67e22;
-    --day-accent2: #f39c12;
-    --day-glow: rgba(230,126,34,0.55);
-    --day-name: 'DAY';
-    /* Tinted dark surfaces (body, cards, headers) — these replace the hardcoded
-       navy blues so the whole page reads as the day's color family. */
-    --day-bg:    #080e1a;   /* body */
-    --day-bg-2:  #0d1526;   /* header / progress bar dark */
-    --day-bg-3:  #0c1a2e;   /* card surface */
-    --day-bg-4:  #0a1525;   /* card surface alt */
-    --day-line:  #1a2744;   /* subtle borders */
-    --day-line-2:#1a3050;   /* stronger borders */
-    --day-line-3:#14213a;   /* faint dividers */
-  }
-  /* Tint the whole page surface with the day color */
-  body { background: var(--day-bg) !important; }
-  .header { background: linear-gradient(180deg, var(--day-bg-2) 0%, var(--day-bg) 100%) !important;
-    border-bottom-width: 4px !important; box-shadow: 0 4px 24px var(--day-glow) !important; }
-  .logo-circle { background: var(--day-line) !important;
-    box-shadow: 0 0 18px var(--day-glow) !important; }
-  .progress-bar { background: var(--day-bg) !important; }
-  .progress-track { background: var(--day-line) !important; }
-  .dot-nav span { background: var(--day-line) !important; }
-  .store-card { background: linear-gradient(135deg, var(--day-bg-3) 0%, var(--day-bg-4) 100%) !important; border-color: var(--day-line-2) !important; }
-  /* District bar overrides the local hardcoded #070d18 we set earlier */
-  .district-bar { background: var(--day-bg) !important; border-bottom-color: var(--day-line-3) !important; }
-  /* Yesterday slide surfaces */
-  .yc-table { background: var(--day-bg-3) !important; border-color: var(--day-line) !important; }
-  .yc-kpi { background: linear-gradient(180deg, var(--day-bg-3), var(--day-bg-4)) !important; border-color: var(--day-line) !important; }
-  .yc-table th { background: var(--day-bg-2) !important; border-bottom-color: var(--day-line) !important; }
-  .yc-table td { border-bottom-color: var(--day-line-3) !important; }
-  /* District-tab borders pick up the day line color */
-  .district-tab { border-color: var(--day-line-2); }
-
-  /* Override every place the original hardcoded #e67e22 appeared so the
-     day color flows through the whole UI. */
-  .header { border-bottom-color: var(--day-accent) !important; }
-  .logo-circle { border-color: var(--day-accent) !important; }
-  .logo-text { color: var(--day-accent) !important; }
-  .brand-title .highlight { color: var(--day-accent) !important; text-shadow:0 0 18px var(--day-glow), 0 0 36px var(--day-glow); }
-  .header-center-title { color: var(--day-accent) !important; text-shadow:0 0 22px var(--day-glow), 0 0 44px var(--day-glow); }
-  /* Make the store cards glow softly on the day color */
-  .store-card { box-shadow: 0 4px 22px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04); }
-  .store-card::before { background: linear-gradient(90deg,transparent,var(--day-accent),transparent) !important; opacity:0.8; }
-  .store-rank, .store-gp, .header-center-sub, .brand-sub { color: var(--day-accent) !important; }
-  .progress-fill, .countdown-fill { background:linear-gradient(90deg,var(--day-accent),var(--day-accent2)) !important; }
-  .slide-label b, .slide-type { color: var(--day-accent) !important; }
-  .day-badge {
-    display:flex; align-items:center; gap:7px;
-    background:rgba(0,0,0,0.4); border:1.5px solid var(--day-accent);
-    border-radius:20px; padding:5px 14px;
-    font-size:12px; font-weight:800; letter-spacing:2px;
-    color:var(--day-accent); text-transform:uppercase;
-    box-shadow:0 0 14px var(--day-glow);
-  }
-  .day-badge .day-dot {
-    width:9px; height:9px; border-radius:50%;
-    background:var(--day-accent); box-shadow:0 0 10px var(--day-accent);
-  }
-
-  /* === DISTRICT FILTER TABS === */
-  .district-bar {
-    display:flex; align-items:center; gap:8px;
-    padding:8px 28px; background:#070d18;
-    border-bottom:1px solid #14213a;
-    flex-wrap:wrap;
-  }
-  .district-bar-label {
-    font-size:11px; letter-spacing:3px; color:#8899aa;
-    text-transform:uppercase; font-weight:700;
-    margin-right:6px;
-  }
-  .district-tab {
-    cursor:pointer; padding:6px 16px; border-radius:6px;
-    font-family:'Inter',sans-serif; font-size:12px;
-    font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
-    color:#cdd6e0; background:rgba(255,255,255,0.04);
-    border:1.5px solid #1f2d4a; transition:all 0.18s ease;
-    user-select:none;
-  }
-  .district-tab:hover {
-    background:rgba(255,255,255,0.08);
-    border-color:var(--day-accent); color:#fff;
-  }
-  .district-tab.active {
-    background:var(--day-accent); border-color:var(--day-accent);
-    color:#0a0f1c; box-shadow:0 0 16px var(--day-glow);
-  }
-  .district-tab .district-count {
-    display:inline-block; margin-left:6px; padding:1px 6px;
-    border-radius:10px; background:rgba(0,0,0,0.25);
-    font-size:10px; font-weight:800;
-  }
-  .district-tab.active .district-count {
-    background:rgba(0,0,0,0.35); color:#0a0f1c;
-  }
-
-  /* Store picker dropdown — sits beside the district tabs */
-  .store-picker-wrap {
-    margin-left:auto; display:flex; align-items:center; gap:8px;
-  }
-  .store-picker-label {
-    font-size:11px; letter-spacing:3px; color:#8899aa;
-    text-transform:uppercase; font-weight:700;
-  }
-  .store-picker {
-    background:rgba(255,255,255,0.04);
-    border:1.5px solid #1f2d4a;
-    color:#cdd6e0;
-    border-radius:6px;
-    padding:6px 30px 6px 12px;
-    font-family:'Inter',sans-serif;
-    font-size:12px; font-weight:700; letter-spacing:1px;
-    text-transform:uppercase;
-    cursor:pointer;
-    appearance:none;
-    -webkit-appearance:none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--day-accent) 50%),
-                      linear-gradient(135deg, var(--day-accent) 50%, transparent 50%);
-    background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
-    transition: all 0.18s ease;
-  }
-  .store-picker:hover, .store-picker:focus {
-    border-color:var(--day-accent); color:#fff; outline:none;
-  }
-  .store-picker.has-selection {
-    background-color:var(--day-accent); color:#0a0f1c; border-color:var(--day-accent);
-    background-image: linear-gradient(45deg, transparent 50%, #0a0f1c 50%),
-                      linear-gradient(135deg, #0a0f1c 50%, transparent 50%);
-  }
-  .store-picker option { background:var(--day-bg-3); color:#fff; }
-
-  /* === YESTERDAY'S CONVERSION SLIDE ===
-     Sized for a 43" TV at typical viewing distance (8–10 ft). Text is bumped
-     well past the rest of the deck because this is the slide salespeople
-     will squint at most. The KPI strip and the table are both centered with
-     the same max-width, mirroring the original Yesterday's-Conversion repo. */
-  .yc-wrap { display:flex; flex-direction:column; height:100%; gap:18px; align-items:center; }
-  .yc-header {
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:6px 4px; text-align:center;
-  }
-  .yc-title {
-    font-size:36px; font-weight:900; color:var(--day-accent);
-    letter-spacing:2.5px; text-transform:uppercase;
-    text-shadow:0 0 22px var(--day-glow); line-height:1;
-  }
-  .yc-subtitle { font-size:18px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
-  .yc-kpis {
-    display:grid; grid-template-columns:repeat(5,1fr); gap:14px;
-    max-width:1180px; width:100%;
-  }
-  .yc-kpi {
-    background:linear-gradient(180deg,var(--day-bg-3),var(--day-bg-4));
-    border:1px solid var(--day-line); border-radius:10px;
-    padding:14px 18px;
-    position:relative; overflow:hidden;
-    text-align:center;
-  }
-  .yc-kpi::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:3px;
-    background:var(--day-accent); opacity:0.75;
-  }
-  .yc-kpi-l { font-size:13px; color:#8899aa; letter-spacing:2.5px; font-weight:700; text-transform:uppercase; margin-bottom:8px; }
-  .yc-kpi-v { font-size:36px; font-weight:900; line-height:1; color:#fff; }
-  .yc-kpi-v.good { color:#2ecc40; }
-  .yc-kpi-v.warn { color:#f39c12; }
-  .yc-kpi-v.bad  { color:#e74c3c; }
-  /* Centered table card */
-  .yc-table {
-    flex:1; overflow:hidden;
-    background:var(--day-bg-3); border:1px solid var(--day-line); border-radius:14px;
-    max-width:1180px; width:100%;
-  }
-  .yc-table table { width:100%; border-collapse:collapse; }
-  .yc-table th {
-    text-align:left; padding:18px 22px; font-size:15px;
-    color:#8899aa; letter-spacing:2px; text-transform:uppercase;
-    border-bottom:1px solid var(--day-line); background:var(--day-bg-4);
-    font-weight:700;
-  }
-  .yc-table th.num, .yc-table td.num { text-align:right; }
-  .yc-table td {
-    padding:16px 22px; font-size:21px; color:#cdd6e0;
-    border-bottom:1px solid var(--day-line-3);
-  }
-  .yc-table tr:last-child td { border-bottom:none; }
-  .yc-table tr.total td {
-    background:rgba(255,255,255,0.04);
-    color:#fff; font-weight:800; font-size:22px;
-    border-top:2px solid var(--day-accent);
-    padding:18px 22px;
-  }
-  .yc-pill {
-    display:inline-block; padding:5px 14px; border-radius:14px;
-    font-weight:800; font-size:19px; min-width:78px; text-align:center;
-  }
-  .yc-pill.good { background:rgba(46,204,64,0.15); color:#2ecc40; }
-  .yc-pill.warn { background:rgba(243,156,18,0.15); color:#f39c12; }
-  .yc-pill.bad  { background:rgba(231,76,60,0.15); color:#e74c3c; }
-  .yc-pill.muted{ background:rgba(255,255,255,0.06); color:#8899aa; }
-  .yc-empty { padding:30px; text-align:center; color:#8899aa; font-size:14px; }
-
-  /* === RAISE PROGRAM SLIDE === */
-  .rp-wrap { display:flex; flex-direction:column; height:100%; gap:14px; align-items:center; }
-  .rp-header { text-align:center; padding:4px 4px; }
-  .rp-title { font-size:36px; font-weight:900; color:var(--day-accent);
-    letter-spacing:2.5px; text-transform:uppercase; text-shadow:0 0 22px var(--day-glow); line-height:1; }
-  .rp-subtitle { font-size:18px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
-  .rp-disclaimer {
-    background:var(--day-bg-3); border:1.5px solid var(--day-accent); border-radius:10px;
-    padding:10px 22px; max-width:1180px; width:100%;
-    text-align:center; color:var(--day-accent); font-size:17px; font-weight:700;
-    letter-spacing:1.2px; text-transform:uppercase;
-  }
-  .rp-disclaimer .rp-dis-amount { font-size:21px; font-weight:900; }
-  .rp-table {
-    flex:1; overflow:hidden;
-    background:var(--day-bg-3); border:1px solid var(--day-line); border-radius:14px;
-    max-width:1180px; width:100%;
-  }
-  .rp-table table { width:100%; border-collapse:collapse; }
-  .rp-table th {
-    text-align:left; padding:11px 14px; font-size:14px;
-    color:#8899aa; letter-spacing:1.8px; text-transform:uppercase;
-    border-bottom:1px solid var(--day-line); background:var(--day-bg-4);
-    font-weight:700;
-  }
-  .rp-table th.num, .rp-table td.num { text-align:right; }
-  .rp-table td {
-    padding:9px 14px; font-size:17px; color:#cdd6e0;
-    border-bottom:1px solid var(--day-line-3);
-  }
-  .rp-table tr.total td {
-    background:rgba(255,255,255,0.04); color:#fff; font-weight:800; font-size:18px;
-    border-top:2px solid var(--day-accent);
-    padding:12px 14px;
-  }
-  .rp-table .rp-rep { font-weight:800; color:#fff; }
-  .rp-table .rp-store { color:#8899aa; font-size:13px; }
-  .rp-table .rp-gtot { color:var(--day-accent); font-weight:900; font-size:19px; }
-  .rp-table .rp-tier {
-    display:inline-block; padding:3px 9px; border-radius:10px;
-    background:rgba(46,204,64,0.18); color:#2ecc40; font-weight:800; font-size:14px;
-    min-width:54px; text-align:center;
-  }
-  .rp-table .rp-tier.zero { background:rgba(255,255,255,0.06); color:#8899aa; }
-  .rp-empty { padding:30px; text-align:center; color:#8899aa; font-size:16px; }
-
-  /* === RANKING SLIDES (DM and Region) === */
-  .rk-wrap { display:flex; flex-direction:column; height:100%; gap:14px; align-items:center; }
-  .rk-header { text-align:center; padding:4px 4px; }
-  .rk-title { font-size:36px; font-weight:900; color:var(--day-accent);
-    letter-spacing:2.5px; text-transform:uppercase; text-shadow:0 0 22px var(--day-glow); line-height:1; }
-  .rk-subtitle { font-size:18px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
-  .rk-grid {
-    flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px;
-    max-width:1340px; width:100%;
-  }
-  /* Single-column (used by Region Rankings — only 9 rows, lots of vertical
-     room) — text is dialed way up so it reads from across a room. */
-  .rk-grid.single { grid-template-columns:1fr; max-width:1700px; }
-  .rk-grid.single .rk-table th {
-    padding:18px 18px; font-size:18px; letter-spacing:2px;
-  }
-  .rk-grid.single .rk-table td {
-    padding:18px 18px; font-size:26px; color:#fff;
-  }
-  .rk-grid.single .rk-rank-num { font-size:30px; }
-  .rk-grid.single .rk-name { font-size:28px; }
-  /* DM two-column layout uses nearly the full canvas width since each side
-     still needs all 9 columns. Bumped from ~13px to ~18px for legibility. */
-  .rk-grid.two-col-dm { grid-template-columns:1fr 1fr; max-width:1860px; gap:18px; }
-  .rk-grid.two-col-dm .rk-table th {
-    padding:10px 9px; font-size:13px; letter-spacing:1.2px;
-  }
-  .rk-grid.two-col-dm .rk-table td {
-    padding:10px 9px; font-size:18px;
-  }
-  .rk-grid.two-col-dm .rk-rank-num { font-size:20px; }
-  .rk-grid.two-col-dm .rk-name { font-size:18px; }
-  .rk-table {
-    background:var(--day-bg-3); border:1px solid var(--day-line); border-radius:12px;
-    overflow:hidden;
-  }
-  .rk-table table { width:100%; border-collapse:collapse; }
-  .rk-table th {
-    text-align:left; padding:11px 14px; font-size:12px;
-    color:#8899aa; letter-spacing:1.5px; text-transform:uppercase;
-    border-bottom:1px solid var(--day-line); background:var(--day-bg-4);
-    font-weight:700;
-  }
-  .rk-table th.num, .rk-table td.num { text-align:right; }
-  .rk-table td {
-    padding:9px 14px; font-size:15px; color:#cdd6e0;
-    border-bottom:1px solid var(--day-line-3);
-  }
-  .rk-table tr:last-child td { border-bottom:none; }
-  /* Highlight rows belonging to our region/district */
-  .rk-table tr.mine td {
-    background:rgba(255,255,255,0.06);
-    color:#fff; font-weight:700;
-  }
-  .rk-table tr.mine td:first-child {
-    box-shadow:inset 4px 0 0 var(--day-accent);
-  }
-  .rk-rank-num { color:var(--day-accent); font-weight:900; font-size:16px; }
-  .rk-name { font-weight:700; color:#fff; }
-  .rk-table tr.mine .rk-name { color:var(--day-accent); }
-
-  /* -- Header -- */
-  .header { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; background:linear-gradient(180deg,var(--day-bg-2) 0%,var(--day-bg) 100%); border-bottom:3px solid #e67e22; }
-  .header-left { display:flex; align-items:center; gap:16px; }
-  .logo-circle { width:56px; height:56px; border-radius:50%; background:var(--day-line); display:flex; align-items:center; justify-content:center; border:2px solid #e67e22; overflow:hidden; }
-  .logo-circle img { width:100%; height:100%; object-fit:cover; }
-  .logo-text { font-size:11px; color:#e67e22; font-weight:800; letter-spacing:1.5px; }
-  .brand-title { font-size:22px; font-weight:900; letter-spacing:2px; }
-  .brand-title .highlight { color:#e67e22; }
-  .brand-sub { font-size:11px; color:#8899aa; letter-spacing:2px; margin-top:6px; }
-  .header-center { text-align:center; }
-  .header-center-sub { font-size:11px; color:#8899aa; letter-spacing:3px; }
-  .header-center-title { font-size:28px; font-weight:900; letter-spacing:4px; margin-top:6px; }
-  .header-right { text-align:right; display:flex; align-items:center; gap:14px; }
-  .live-badge { display:flex; align-items:center; gap:6px; background:#0d2a0d; border:1px solid #2ecc40; border-radius:20px; padding:6px 16px; font-size:14px; font-weight:700; color:#2ecc40; letter-spacing:1px; }
-  .live-dot { width:8px; height:8px; border-radius:50%; background:#2ecc40; animation:pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-  .datetime { font-size:14px; color:#8899aa; margin-top:6px; }
-
-  /* -- Slide Progress -- */
-  .progress-bar { display:flex; align-items:center; gap:10px; padding:6px 28px; background:#0a1120; }
-  .slide-label { font-size:14px; color:#8899aa; min-width:100px; }
-  .slide-label b { color:#e67e22; }
-  .progress-track { flex:1; height:4px; background:var(--day-line); border-radius:2px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.5s ease; }
-  .slide-type { font-size:11px; color:#e67e22; letter-spacing:2px; font-weight:700; display:flex; align-items:center; gap:8px; }
-  .dot-nav { display:flex; gap:4px; }
-  .dot-nav span { width:7px; height:7px; border-radius:50%; background:var(--day-line); cursor:pointer; transition:background 0.3s; }
-  .dot-nav span.active { background:#e67e22; }
-
-  /* -- Slide Container -- fixed dimensions inside the 1920x1080 canvas.
-     Total page chrome (header 80 + district bar 50 + progress bar 36) ≈ 166,
-     leaving ~914 for the slide body. */
-  .slide-container { height:914px; padding:14px 30px; overflow:hidden; }
-
-  /* -- Store Grid -- */
-  .store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:14px; height:100%; }
-  .store-card { background:linear-gradient(135deg,var(--day-bg-3) 0%,var(--day-bg-4) 100%); border:1px solid var(--day-line-2); border-radius:14px; padding:22px 26px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:border-color 0.3s; }
-  .store-card:hover { border-color:#e67e22; }
-  .store-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e67e2244,transparent); }
-  /* Hero block at the top of each card — rank # sits on the LEFT in a huge
-     font, store name + GP trend stack on the RIGHT. All three are sized to
-     dominate the card so anyone glancing at the TV can spot their store and
-     ranking from across the room. */
-  .store-hero {
-    display:flex; align-items:center; gap:24px;
-    padding-bottom:14px; border-bottom:2px solid var(--day-line-2);
-  }
-  .store-hero-rank {
-    font-size:104px; font-weight:900; color:var(--day-accent);
-    line-height:1; letter-spacing:-3px;
-    flex-shrink:0; min-width:140px; text-align:center;
-    text-shadow:0 0 28px var(--day-glow);
-  }
-  .store-hero-info { flex:1; min-width:0; text-align:right; }
-  .store-name {
-    font-size:44px; font-weight:900; color:#fff;
-    line-height:1; letter-spacing:0.3px;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  .store-gp {
-    font-size:64px; font-weight:900; color:var(--day-accent);
-    margin-top:6px; line-height:1; letter-spacing:-1.5px;
-    text-shadow:0 0 28px var(--day-glow);
-  }
-  .store-gp-sub { font-size:15px; color:#8899aa; margin-top:6px; font-weight:600; letter-spacing:0.5px; }
-  /* Keep the legacy single-column hero classes around as fallbacks so any
-     old markup still renders cleanly. */
-  .store-rank { font-size:34px; font-weight:900; color:var(--day-accent); line-height:1; letter-spacing:0.5px; }
-  .store-gp-sub .green { color:#2ecc40; }
-  .store-gp-sub .red { color:#e74c3c; }
-
-  .store-metrics { display:flex; gap:6px; margin-top:auto; }
-  .metric { flex:1; text-align:center; border-radius:6px; padding:5px 2px; }
-  .metric-label { font-size:14px; font-weight:700; letter-spacing:1px; color:#ffffff88; margin-bottom:3px; }
-  .metric-value { font-size:18px; font-weight:800; }
-  .metric.green { background:#0d2a1a; color:#2ecc40; }
-  .metric.yellow { background:#2a2a0d; color:#f1c40f; }
-  .metric.red { background:#2a0d0d; color:#e74c3c; }
-  .metric.blue { background:#0d1a2a; color:#3498db; }
-
-  /* -- Rep Grid -- */
-  .rep-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; height:100%; align-content:start; }
-  .rep-header-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:var(--day-bg-2); border-radius:8px; font-size:11px; font-weight:700; color:#8899aa; letter-spacing:1px; }
-  .rep-row { grid-column:1/-1; display:grid; grid-template-columns:50px 1fr 100px 80px 80px 80px 80px 80px; gap:8px; padding:8px 12px; background:var(--day-bg-4); border-radius:6px; border:1px solid var(--day-line); font-size:13px; align-items:center; }
-  .rep-rank { color:#e67e22; font-weight:800; }
-  .rep-name { font-weight:700; }
-  .rep-store { color:#8899aa; font-size:11px; }
-  .rep-val { text-align:center; font-weight:700; }
-
-  /* -- Promo Slide -- */
-  .promo-slide { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:20px; }
-  .promo-title { font-size:42px; font-weight:900; letter-spacing:3px; color:#e67e22; }
-  .promo-content { font-size:24px; color:#ccc; text-align:center; max-width:800px; line-height:1.8; }
-  .promo-badge { background:var(--day-line); border:2px solid #e67e22; border-radius:12px; padding:20px 40px; }
-  .promo-empty { color:#5a7a9a; font-size:16px; font-style:italic; }
-
-  /* -- Loading / Error -- */
-  .loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:16px; }
-  .spinner { width:48px; height:48px; border:4px solid var(--day-line); border-top-color:#e67e22; border-radius:50%; animation:spin 1s linear infinite; }
-  @keyframes spin { to{transform:rotate(360deg);} }
-  .loading-text { color:#8899aa; font-size:14px; }
-  .error-text { color:#e74c3c; font-size:14px; margin-top:8px; }
-  .retry-btn { background:#e67e22; border:none; color:#fff; padding:10px 24px; border-radius:8px; font-size:14px; cursor:pointer; margin-top:12px; }
-
-  /* -- Summary Bar -- */
-  .summary-bar { grid-column:1/-1; display:flex; gap:20px; }
-  .summary-card { flex:1; background:linear-gradient(135deg,var(--day-bg-3),var(--day-bg-4)); border:1px solid var(--day-line-2); border-radius:10px; padding:24px 30px; text-align:center; }
-  .summary-label { font-size:26px; color:#8899aa; letter-spacing:1.5px; font-weight:600; }
-  .summary-value { font-size:56px; font-weight:900; color:#e67e22; margin-top:6px; }
-  .summary-sub { font-size:20px; color:#5a7a9a; margin-top:6px; }
-
-  /* -- Slide Dropdown -- */
-  .slide-select { background:var(--day-bg-2); border:1px solid #2a3a5a; color:#e67e22; font-size:14px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer; max-width:230px; outline:none; }
-  .slide-select option { background:var(--day-bg-2); color:#fff; }
-  .slide-select:focus { border-color:#e67e22; }
-
-  /* -- Countdown bar -- */
-  .countdown-fill { height:100%; background:linear-gradient(90deg,#e67e22,#f39c12); border-radius:2px; transition:width 0.1s linear; }
-
-
-  /* -- Auto-scale for large screens / TVs -- */
-  @media (min-width:1600px) {
-    .metric-label { font-size:max(14px, 0.9vw) !important; }
-    .metric-value { font-size:max(18px, 1.2vw) !important; }
-    .store-name { font-size:max(38px, 1.1vw); }
-    .store-gp { font-size:max(62px, 1.8vw); }
-    .store-gp-sub { font-size:max(12px, 0.75vw); }
-    .summary-value { font-size:max(28px, 2.5vw); }
-    .summary-label { font-size:max(14px, 1vw); }
-    .summary-sub { font-size:max(11px, 0.7vw); }
-  }
-
-  /* -- Mobile responsive -- */
-  @media (max-width:900px) {
-    .header-center { display:none; }
-    .store-grid { grid-template-columns:repeat(2,1fr); grid-template-rows:auto; overflow-y:auto; }
-    .rep-header-row, .rep-row { grid-template-columns:40px 1fr 90px 70px 70px; font-size:11px; padding:6px 8px; }
-    .rep-header-row > *:nth-child(n+6), .rep-row > *:nth-child(n+6) { display:none; }
-  }
-  @media (max-width:600px) {
-    .header { padding:6px 10px; }
-    .logo-circle { width:38px; height:38px; }
-    .brand-title { font-size:15px; }
-    .brand-sub { font-size:9px; letter-spacing:1px; }
-    .live-badge { padding:4px 8px; font-size:10px; }
-    .datetime { font-size:10px; }
-    .slide-container { height:calc(100vh - 88px); padding:4px 8px; overflow-y:auto; }
-    .progress-bar { padding:4px 10px; gap:6px; }
-    .slide-label { font-size:10px; min-width:60px; }
-    .slide-select { max-width:130px; font-size:11px; padding:3px 6px; }
-    .store-grid { grid-template-columns:1fr 1fr; gap:6px; }
-    .store-card { padding:10px 10px; }
-    .store-gp { font-size:20px; }
-    .store-name { font-size:13px; }
-    .metric-value { font-size:12px; }
-    .metric-label { font-size:7px; }
-    .dot-nav { display:none; }
-    .rep-header-row, .rep-row { grid-template-columns:32px 1fr 70px 60px; font-size:10px; }
-    .rep-header-row > *:nth-child(n+5), .rep-row > *:nth-child(n+5) { display:none; }
-  }
-  @media (max-width:400px) {
-    .store-grid { grid-template-columns:1fr; }
-    .header-right .live-badge { display:none; }
-  }
-</style>
-
-<div id="stage"><div id="stage-scaler">
-<div id="app">
-  <div class="loading-screen" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading Sales Report...</div>
-    <div class="error-text" id="errorMsg" style="display:none"></div>
-    <button class="retry-btn" id="retryBtn" style="display:none" onclick="loadData()">Retry</button>
+<div id="stage">
+  <div id="stage-scaler">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div id="app"></div>
   </div>
 </div>
-</div></div>
-
+<div id="loading">
+  <div class="spinner"></div>
+  <h2>Loading Sales Report...</h2>
+  <div id="errorMsg"></div>
+  <button id="retryBtn" onclick="loadData()">Retry</button>
+</div>
 <script>
-// -- CONFIG --
+// ================= CONFIG (unchanged from previous version) =================
 const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
   EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
   PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
-  // Second promo card shown after each promo slide — upload your "More
-  // Everything / One Low Price" image to data/more-everything.jpg in your repo.
   XFINITY_PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/more-everything.jpg',
   SLIDE_INTERVAL: 15000,     // 15 seconds per slide
   REFRESH_INTERVAL: 1800000, // 30 minutes data refresh
   STORE_CARDS_PER_PAGE: 6,
   REPS_PER_PAGE: 14,
-  PROMO_EVERY_N: 4,                      // insert a promo slide after every N content slides
-  // Yesterday's Conversion data sources (mirror Yesterday's-Conversion repo)
-  ZERO_SHEET: 'Zero',                    // tab in Sales Report.xlsx with traffic+MCR
+  PROMO_EVERY_N: 4,
+  ZERO_SHEET: 'Zero',
   TSHEET_API_URL: 'https://script.google.com/macros/s/AKfycbyQaa1yvggLJuw5dcme74vwAW3hSB3BvzCK40IhLThy-F8KZDFOF6gcyl8psNMd3yD-Cg/exec',
-  // Raise Program — employees earn $0.50/hr raise for every RAISE_TIER_GP in
-  // year-to-date Gross Profit. Source: Raise Program tab in Sales Report.xlsx.
   RAISE_TIER_GP: 65000,
   RAISE_AMOUNT: 0.50,
   RAISE_PROGRAM_SHEET: 'Raise Program',
   DISTRICT_RANK_SHEET: 'District Rank',
   REGION_RANK_SHEET: 'Region Rank',
-  // Regions you oversee (matched as case-insensitive substrings against the
-  // Region Rank "Region" column). Add more here to highlight additional
-  // regions on the Region Rankings slide.
   OUR_REGIONS: ['Greater Chicago', 'Big South'],
 };
 
-// === DAY-OF-WEEK COLOR PALETTE ===
-// Each day swaps BOTH the bright accent and the dark surface palette so the
-// whole TV display feels different from yesterday — not just the accent.
-// `bg/bg2/bg3/bg4` are the dark surface tints (body, header, cards) and
-// `line/line2/line3` are the matching tinted borders.
-// Brighter, more saturated palette that pops on a TV across a busy room.
-// Primary = main accent (vivid). Secondary = highlight (lighter).
-// bg/bg2/bg3/bg4 = dark surfaces (slightly lifted from black so colors read
-// without crushing). line/line2/line3 = matching borders.
+// ============ DAY-OF-WEEK PASTEL PALETTE ============
+// A fresh, warm pastel theme every day. ink = readable accent for text,
+// mid = medium accent for bars/gradients, soft = pastel fill, tint = light
+// wash, line = pastel border. emoji shows in the day pill.
 const DAY_COLORS = {
-  0: { name: 'SUNDAY',    primary: '#ff2e88', secondary: '#ff66a6',
-       bg:'#260a16', bg2:'#33121e', bg3:'#421a2a', bg4:'#2e1220',
-       line:'#592640', line2:'#6e334f', line3:'#33121e' },
-  1: { name: 'MONDAY',    primary: '#ff1f1f', secondary: '#ff5757',
-       bg:'#260808', bg2:'#330e0e', bg3:'#421414', bg4:'#2e0e0e',
-       line:'#591f1f', line2:'#6e2828', line3:'#330e0e' },
-  2: { name: 'TUESDAY',   primary: '#ff7a00', secondary: '#ffa040',
-       bg:'#261200', bg2:'#33180a', bg3:'#42220d', bg4:'#2e180a',
-       line:'#592e10', line2:'#6e3a16', line3:'#33180a' },
-  3: { name: 'WEDNESDAY', primary: '#ffcf00', secondary: '#ffe066',
-       bg:'#261d00', bg2:'#33270a', bg3:'#42330f', bg4:'#2e240a',
-       line:'#594000', line2:'#6e5000', line3:'#33270a' },
-  4: { name: 'THURSDAY',  primary: '#1be564', secondary: '#5cffaa',
-       bg:'#062612', bg2:'#08331a', bg3:'#0c4226', bg4:'#082e18',
-       line:'#0e593a', line2:'#106e4a', line3:'#08331a' },
-  5: { name: 'FRIDAY',    primary: '#3b8cff', secondary: '#76b5ff',
-       bg:'#0a1426', bg2:'#0e1c33', bg3:'#122642', bg4:'#0e1b2e',
-       line:'#1f3559', line2:'#26426e', line3:'#0e1c33' },
-  6: { name: 'SATURDAY',  primary: '#b34dff', secondary: '#cf85ff',
-       bg:'#180a26', bg2:'#211233', bg3:'#2c1a42', bg4:'#1e122e',
-       line:'#3d2659', line2:'#4d306e', line3:'#211233' },
+  0: { name:'SUNDAY',    emoji:'🌸', ink:'#D6336C', mid:'#F06595', soft:'#FFDEEB', tint:'#FFF0F6', line:'#FCC2D7' },
+  1: { name:'MONDAY',    emoji:'🍓', ink:'#E03131', mid:'#FF6B6B', soft:'#FFE3E3', tint:'#FFF5F5', line:'#FFC9C9' },
+  2: { name:'TUESDAY',   emoji:'🍑', ink:'#E8590C', mid:'#FF922B', soft:'#FFE8CC', tint:'#FFF4E6', line:'#FFD8A8' },
+  3: { name:'WEDNESDAY', emoji:'🌞', ink:'#E67700', mid:'#FAB005', soft:'#FFF3BF', tint:'#FFF9DB', line:'#FFEC99' },
+  4: { name:'THURSDAY',  emoji:'🍀', ink:'#2B8A3E', mid:'#51CF66', soft:'#D3F9D8', tint:'#EBFBEE', line:'#B2F2BB' },
+  5: { name:'FRIDAY',    emoji:'💧', ink:'#1971C2', mid:'#4DABF7', soft:'#D0EBFF', tint:'#E7F5FF', line:'#A5D8FF' },
+  6: { name:'SATURDAY',  emoji:'🪻', ink:'#6741D9', mid:'#9775FA', soft:'#E5DBFF', tint:'#F3F0FF', line:'#D0BFFF' },
 };
 
-// === DISTRICTS ===
-// Stores are mapped to a District Manager in the source spreadsheet's "DM"
-// column. We group them into geographic districts based on those assignments.
-// `dmMatch` is a list of substrings; a store belongs to the district if its
-// `dm` field contains any of them (case-insensitive). `storeMatch` is an
-// optional safety-net list of store-name substrings — used when a brand-new
-// store hasn't been assigned a DM in the spreadsheet yet. Rename labels
-// freely — the matching logic only depends on `dmMatch` / `storeMatch`.
+// ================= DISTRICTS (unchanged) =================
 const DISTRICTS = [
   { key: 'all',   label: 'All Stores',     dmMatch: null },
-  { key: 'north', label: 'North Chicago',  dmMatch: ['dhorajiwala'] },     // Imaad Dhorajiwala: Glenview, Skokie, Uptown, Evanston, Kildeer, Round Lake Beach
-  { key: 'south', label: 'South Chicago',  dmMatch: ['carrillo'],
-    storeMatch: ['calumet city'] },                                        // Juan Carrillo: Burbank, Frankfort, Tinley Park, Bourbonnais, Evergreen Park, Dekalb, Calumet City (DM blank in spreadsheet)
-  { key: 'nwi',   label: 'NW Indiana',     dmMatch: ['cabrales'] },        // Jacob Cabrales: Hammond, Valparaiso, Cicero, Schererville, Michigan City, Elkhart, South Bend
-  { key: 'tn',    label: 'Tennessee',      dmMatch: ['brooks'] },          // Matthew Brooks: Greeneville, South Knoxville, Johnson City, Oak Ridge
+  { key: 'north', label: 'North Chicago',  dmMatch: ['dhorajiwala'] },
+  { key: 'south', label: 'South Chicago',  dmMatch: ['carrillo'], storeMatch: ['calumet city'] },
+  { key: 'nwi',   label: 'NW Indiana',     dmMatch: ['cabrales'] },
+  { key: 'tn',    label: 'Tennessee',      dmMatch: ['brooks'] },
 ];
 
-// Maps a store name (as it appears in Store Rank) to the name used in the
-// T-Sheets system, when they differ. Mirrors the Yesterday's-Conversion repo.
 const TSHEET_NAME_BY_STORE = {
   'South Skokie': 'Skokie Xfinity Store',
 };
@@ -645,15 +376,16 @@ const TSHEET_NAME_BY_STORE = {
 let state = {
   stores: [],
   currentDistrict: 'all',
-  currentStore: 'all',                   // 'all' or a specific store name
+  currentStore: 'all',
   yesterday: { rows: {}, tsheets: {}, date: null, loaded: false, error: null },
   raiseProgram: { monthHeaders: [], rows: [], loaded: false },
-  dmRanks: [],                           // [{rank, name, avgGpTrend, mobileCr, fiscalCr}]
-  regionRanks: [],                       // [{rank, name, avgGpTrend, mobileCr, fiscalCr}]
+  dmRanks: [],
+  regionRanks: [],
   reps: [],
   promos: null,
   currentSlide: 0,
   totalSlides: 0,
+  paused: false,
   slideTimer: null,
   refreshTimer: null,
   countdownTimer: null,
@@ -662,126 +394,77 @@ let state = {
   slides: [],
 };
 
-// === PERSISTED FILTER STATE ===
-// Save the active district and store to localStorage so the TV keeps showing
-// the selected view through data refreshes, browser cache reloads, and
-// re-deploys. The user has to actively pick a different district (or "All
-// Stores") to switch — daily data updates won't unstick their choice.
+// ============ PERSISTED FILTERS (same storage key as before) ============
 const FILTER_STORAGE_KEY = 'c3-slides-filter-v1';
-
 function savePersistedFilters() {
   try {
     localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({
-      district: state.currentDistrict,
-      store: state.currentStore,
+      district: state.currentDistrict, store: state.currentStore,
     }));
-  } catch (e) { /* localStorage may be unavailable; not fatal */ }
+  } catch (e) {}
 }
-
 function loadPersistedFilters() {
   try {
     const raw = localStorage.getItem(FILTER_STORAGE_KEY);
     if (!raw) return;
     const v = JSON.parse(raw);
-    // Only apply the saved district if it still exists in our DISTRICTS list.
-    if (v.district && DISTRICTS.some(d => d.key === v.district)) {
-      state.currentDistrict = v.district;
-    }
-    // Only apply the saved store if it's still a valid store name. We can't
-    // verify against state.stores here (loaded later), so we keep the string
-    // as-is and let buildSlides fall back gracefully if the store vanished.
+    if (v.district && DISTRICTS.some(d => d.key === v.district)) state.currentDistrict = v.district;
     if (v.store) state.currentStore = v.store;
-  } catch (e) { /* corrupt JSON; ignore */ }
+  } catch (e) {}
 }
 
-// === DAY COLOR + DISTRICT HELPERS ===
+// ============ DAY THEME ============
 function applyDayColor() {
   const day = DAY_COLORS[new Date().getDay()];
   const root = document.documentElement;
-  root.style.setProperty('--day-accent', day.primary);
-  root.style.setProperty('--day-accent2', day.secondary);
-  // Tinted dark surface palette so the entire UI shifts each day, not just the accent.
-  root.style.setProperty('--day-bg',     day.bg);
-  root.style.setProperty('--day-bg-2',   day.bg2);
-  root.style.setProperty('--day-bg-3',   day.bg3);
-  root.style.setProperty('--day-bg-4',   day.bg4);
-  root.style.setProperty('--day-line',   day.line);
-  root.style.setProperty('--day-line-2', day.line2);
-  root.style.setProperty('--day-line-3', day.line3);
-  // Build a glow color from the primary by appending an alpha channel.
-  const hex = day.primary.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  root.style.setProperty('--day-glow', `rgba(${r},${g},${b},0.55)`);
-  root.style.setProperty('--day-name', `'${day.name}'`);
+  root.style.setProperty('--day-ink',  day.ink);
+  root.style.setProperty('--day-mid',  day.mid);
+  root.style.setProperty('--day-soft', day.soft);
+  root.style.setProperty('--day-tint', day.tint);
+  root.style.setProperty('--day-line', day.line);
 }
-// Reapply at midnight so a long-running TV display picks up the new color
-// without needing a manual reload.
 function scheduleDayColorAtMidnight() {
   const now = new Date();
   const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
-  const ms = tomorrow - now;
-  setTimeout(() => { applyDayColor(); render(); scheduleDayColorAtMidnight(); }, ms);
+  setTimeout(() => { applyDayColor(); render(); scheduleDayColorAtMidnight(); }, tomorrow - now);
 }
+function getDayInfo() { return DAY_COLORS[new Date().getDay()]; }
 
-function getDayInfo() {
-  return DAY_COLORS[new Date().getDay()];
-}
-
+// ============ DISTRICT HELPERS (unchanged) ============
 function getActiveDistrict() {
   return DISTRICTS.find(d => d.key === state.currentDistrict) || DISTRICTS[0];
 }
-
 function storeMatchesDistrict(store, dist) {
   if (!dist || !dist.dmMatch) return true;
   const dm = String(store.dm || '').toLowerCase();
   if (dist.dmMatch.some(m => dm.includes(m))) return true;
-  // Fallback: also match by store name when configured (catches new stores
-  // whose DM column hasn't been filled in yet, e.g. Calumet City).
   if (dist.storeMatch && dist.storeMatch.length) {
     const name = String(store.name || '').toLowerCase();
     if (dist.storeMatch.some(m => name.includes(m))) return true;
   }
   return false;
 }
-
 function filteredStores() {
   const dist = getActiveDistrict();
   if (!dist || !dist.dmMatch) return state.stores;
   return state.stores.filter(s => storeMatchesDistrict(s, dist));
 }
-
 function districtCount(distKey) {
   const dist = DISTRICTS.find(d => d.key === distKey);
   if (!dist) return 0;
   if (!dist.dmMatch) return state.stores.length;
   return state.stores.filter(s => storeMatchesDistrict(s, dist)).length;
 }
-
 function setDistrict(key) {
   if (state.currentDistrict === key) return;
   state.currentDistrict = key;
-  // Switching districts always clears the per-store filter so it doesn't
-  // confusingly retain a store from a different district.
   state.currentStore = 'all';
   savePersistedFilters();
-  // Rebuild the slide list because the # of stores changed.
   buildSlides();
   state.currentSlide = 0;
   render();
-  // Reset the auto-advance timer so the next tick starts fresh on the new view.
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
+  startSlideshow();
 }
-
-// Per-store selector: picking a store also auto-snaps the district to whichever
-// one contains that store, so the slideshow shows: that store + its district + promo every N.
 function setStore(name) {
   if (state.currentStore === name) return;
   state.currentStore = name;
@@ -793,15 +476,8 @@ function setStore(name) {
   buildSlides();
   state.currentSlide = 0;
   render();
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
+  startSlideshow();
 }
-
 function findDistrictForStore(storeName) {
   const store = state.stores.find(s => s.name.toLowerCase() === String(storeName).toLowerCase());
   if (!store) return null;
@@ -812,18 +488,14 @@ function findDistrictForStore(storeName) {
   return null;
 }
 
-// === YESTERDAY'S CONVERSION LOADER ===
-// Pulls the "Zero" tab from the same Sales Report workbook (mobile traffic +
-// MCR per store) and the T-Sheets daily counts from a Google Apps Script.
+// ============ YESTERDAY'S CONVERSION LOADERS (unchanged) ============
 function parseZeroSheet(wb) {
   const sheet = wb.Sheets[CONFIG.ZERO_SHEET];
   if (!sheet) return {};
   const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
   let headerIdx = -1;
   for (let i = 0; i < Math.min(aoa.length, 10); i++) {
-    if (aoa[i] && aoa[i][0] && String(aoa[i][0]).trim().toLowerCase() === 'store name') {
-      headerIdx = i; break;
-    }
+    if (aoa[i] && aoa[i][0] && String(aoa[i][0]).trim().toLowerCase() === 'store name') { headerIdx = i; break; }
   }
   if (headerIdx === -1) return {};
   const out = {};
@@ -839,16 +511,11 @@ function parseZeroSheet(wb) {
   }
   return out;
 }
-
 function yesterdayISO() {
   const d = new Date(); d.setDate(d.getDate() - 1);
   return d.toISOString().slice(0, 10);
 }
-
 async function loadTSheetCounts() {
-  // The Apps Script returns { submissions: [{store, timestamp, ...}] }.
-  // Group by day, prefer yesterday, fall back to the most recent day with
-  // a healthy submission count (>= 30) so a quiet weekend doesn't break things.
   const url = CONFIG.TSHEET_API_URL + '?t=' + Date.now();
   let resp;
   try { resp = await fetch(url, { method: 'GET' }); }
@@ -877,7 +544,6 @@ async function loadTSheetCounts() {
     if (!s.store) continue;
     raw[s.store] = (raw[s.store] || 0) + 1;
   }
-  // Re-key into our store names.
   const counts = {};
   for (const s of state.stores) {
     const tname = TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store');
@@ -885,28 +551,18 @@ async function loadTSheetCounts() {
   }
   return { counts, date: useDate, ok: true };
 }
-
 async function loadYesterday(wb) {
   try {
     const rows = parseZeroSheet(wb);
     let tsheets = { counts: {}, date: null, ok: false };
-    try { tsheets = await loadTSheetCounts(); } catch (e) { /* T-Sheets is optional */ }
-    state.yesterday = {
-      rows,
-      tsheets: tsheets.counts || {},
-      date: tsheets.date,
-      loaded: true,
-      error: null,
-    };
+    try { tsheets = await loadTSheetCounts(); } catch (e) {}
+    state.yesterday = { rows, tsheets: tsheets.counts || {}, date: tsheets.date, loaded: true, error: null };
   } catch (err) {
     state.yesterday = { rows: {}, tsheets: {}, date: null, loaded: false, error: String(err) };
   }
 }
 
-// === RAISE PROGRAM PARSER ===
-// Sheet layout (column letters): A=Employee, B=Store, C=DM, D=RD, E…=monthly
-// GP totals, last column = Grand Total. The month columns grow as the year
-// progresses, so we detect "Grand Total" dynamically.
+// ============ RAISE PROGRAM PARSER (unchanged) ============
 function parseRaiseProgram(wb) {
   const sheet = wb.Sheets[CONFIG.RAISE_PROGRAM_SHEET];
   if (!sheet) return { monthHeaders: [], rows: [], loaded: false };
@@ -921,10 +577,8 @@ function parseRaiseProgram(wb) {
     const r = aoa[i];
     if (!r || !r[0]) continue;
     rows.push({
-      name: String(r[0] || ''),
-      store: String(r[1] || ''),
-      dm: String(r[2] || ''),
-      rd: String(r[3] || ''),
+      name: String(r[0] || ''), store: String(r[1] || ''),
+      dm: String(r[2] || ''), rd: String(r[3] || ''),
       months: monthHeaders.map((_, j) => Number(r[4 + j]) || 0),
       grandTotal: Number(r[gtIdx]) || 0,
     });
@@ -932,14 +586,7 @@ function parseRaiseProgram(wb) {
   return { monthHeaders, rows, loaded: true };
 }
 
-// === DM / REGION RANK PARSER ===
-// Both sheets share the same layout: header at row index 2 (0-based), data
-// from row 3. Column indices verified against the May 14 spreadsheet:
-//   A=Rank, B=name (DM or Region),
-//   C=Avg GP Trend $, D=Mobile per Internet, E=GP/RGU,
-//   F=Fiscal CR, H=Mobile CR (25 pts),
-//   P=GIG Plans %, Y=Mobile Plus Mix %, AF=Net Accessory Per Device %,
-//   AG=NPS %.
+// ============ DM / REGION RANK PARSER (unchanged) ============
 function parseRankSheet(wb, sheetName) {
   const sheet = wb.Sheets[sheetName];
   if (!sheet) return [];
@@ -956,29 +603,27 @@ function parseRankSheet(wb, sheetName) {
     const name = String(r[1] || '').trim();
     if (!name) continue;
     rows.push({
-      rank: Number(r[0]) || 0,
-      name,
-      avgGpTrend: Number(r[2]) || 0,        // C
-      mobilePerInternet: Number(r[3]) || 0,  // D
-      gpPerRgu: Number(r[4]) || 0,           // E
-      fiscalCr: Number(r[5]) || 0,           // F
-      mobileCr: Number(r[7]) || 0,           // H
-      gigAttach: Number(r[15]) || 0,         // P  - GIG Plans %
-      plusAttach: Number(r[24]) || 0,        // Y  - Mobile Plus Mix %
-      accPerDev: Number(r[31]) || 0,         // AF - Net Accessory Per Device %
-      nps: Number(r[32]) || 0,               // AG - NPS %
+      rank: Number(r[0]) || 0, name,
+      avgGpTrend: Number(r[2]) || 0,
+      mobilePerInternet: Number(r[3]) || 0,
+      gpPerRgu: Number(r[4]) || 0,
+      fiscalCr: Number(r[5]) || 0,
+      mobileCr: Number(r[7]) || 0,
+      gigAttach: Number(r[15]) || 0,
+      plusAttach: Number(r[24]) || 0,
+      accPerDev: Number(r[31]) || 0,
+      nps: Number(r[32]) || 0,
     });
   }
   return rows;
 }
 
-// -- DATA LOADING --
+// ============ DATA LOADING (unchanged) ============
 async function loadData() {
   const loading = document.getElementById('loading');
   const errorMsg = document.getElementById('errorMsg');
   const retryBtn = document.getElementById('retryBtn');
-  if (loading) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; }
-
+  if (loading && !state.stores.length) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; }
   try {
     const cacheBust = '?t=' + Date.now();
     const resp = await fetch(CONFIG.EXCEL_URL + cacheBust);
@@ -986,38 +631,31 @@ async function loadData() {
     const buf = await resp.arrayBuffer();
     const wb = XLSX.read(buf, { type: 'array' });
     parseWorkbook(wb);
-    // Pull the Yesterday's Conversion data (Zero tab + T-Sheets API).
-    // Awaited so the first render has the data, but a failure is non-fatal.
     await loadYesterday(wb);
-
-    // Always set promo URL -- img onerror handler hides it if missing
     state.promos = CONFIG.PROMO_URL;
-
     state.lastRefresh = new Date();
+    const keepSlide = state.currentSlide;
     buildSlides();
+    state.currentSlide = Math.min(keepSlide, Math.max(0, state.totalSlides - 1));
+    if (loading) loading.style.display = 'none';
     render();
     startSlideshow();
   } catch(err) {
     console.error(err);
-    if (loading) { errorMsg.textContent = err.message; errorMsg.style.display = 'block'; retryBtn.style.display = 'block'; }
-
-    // Try loading from local file input as fallback
+    if (loading) { loading.style.display='flex'; errorMsg.textContent = err.message; errorMsg.style.display = 'block'; retryBtn.style.display = 'block'; }
     if (!state.stores.length) showLocalFallback();
   }
 }
-
 function showLocalFallback() {
   const loading = document.getElementById('loading');
   if (!loading) return;
-  const existing = document.getElementById('localUpload');
-  if (existing) return;
+  if (document.getElementById('localUpload')) return;
   const div = document.createElement('div');
   div.id = 'localUpload';
   div.style.cssText = 'margin-top:16px;text-align:center;';
-  div.innerHTML = '<p style="color:#8899aa;font-size:12px;margin-bottom:8px">Or load a local Excel file:</p><input type="file" accept=".xlsx,.xls" style="color:#8899aa;font-size:12px;" onchange="loadLocalFile(event)">';
+  div.innerHTML = '<p style="color:var(--muted);font-size:14px;font-weight:700;margin-bottom:8px">Or load a local Excel file:</p><input type="file" accept=".xlsx,.xls" style="color:var(--muted);font-size:14px;" onchange="loadLocalFile(event)">';
   loading.appendChild(div);
 }
-
 async function loadLocalFile(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -1027,29 +665,24 @@ async function loadLocalFile(e) {
   await loadYesterday(wb);
   state.lastRefresh = new Date();
   buildSlides();
+  document.getElementById('loading').style.display = 'none';
   render();
   startSlideshow();
 }
 
-// -- PARSING --
+// ============ WORKBOOK PARSING (unchanged) ============
 function parseWorkbook(wb) {
-  // Parse Store Rank
   const ws = wb.Sheets['Store Rank'];
   if (!ws) return;
   const data = XLSX.utils.sheet_to_json(ws, { header:1, defval:null });
-
   let headerRow = -1;
   for (let i = 0; i < Math.min(15, data.length); i++) {
     const row = data[i];
-    if (row && row.some(c => c && String(c).trim() === 'Rank') && row.some(c => c && String(c).includes('Store'))) {
-      headerRow = i; break;
-    }
+    if (row && row.some(c => c && String(c).trim() === 'Rank') && row.some(c => c && String(c).includes('Store'))) { headerRow = i; break; }
   }
   if (headerRow < 0) return;
-
   const headers = data[headerRow].map(h => h ? String(h).trim() : '');
   const col = (name) => headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
-
   const iRank=col('Rank'), iRegion=col('Region'), iStore=col('Store'), iEsop=col('ESOP'),
     iRSD=col('RSD'), iDM=col('DM'), iSM=col('SM'), iGP=col('GP $'),
     iLastGP=headers.findIndex(h=>h.includes('Last Month GP $')),
@@ -1058,15 +691,11 @@ function parseWorkbook(wb) {
     iMobileMTD=col('Mobile MTD'), iNewMob=headers.findIndex(h=>h.includes('New Mobile')),
     iMobTrend=col('Mobile Trend'), iHSI=col('HSI'), iNewRGU=col('NEW RGU'),
     iScore=col('Total Score'), iVideo=col('Video attach');
-
   const iGPTrend = headers.findIndex(h => h === 'GP $ Trend');
   const iMobileCR = headers.findIndex(h => h.toLowerCase().includes('mobile close rate'));
   const iFiscalCR = headers.findIndex(h => h.toLowerCase().includes('fiscal close rate'));
   const iNonTrad = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
   const iGig = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%') && h.toLowerCase().includes('pts'));
-  // The company renamed "Premium" to "Plus", so the column header is now
-  // "Mobile Plus Mix (%)" (Store Rank column BT). Old "premium mix" header
-  // is kept as a fallback in case an older spreadsheet is uploaded.
   let iPremium = headers.findIndex(h => h.toLowerCase().includes('mobile plus mix'));
   if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('plus mix'));
   if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
@@ -1104,7 +733,7 @@ function parseWorkbook(wb) {
   }
   state.stores.sort((a, b) => a.rank - b.rank);
 
-  // Parse Rep Rank
+  // Rep Rank
   const repWs = wb.Sheets['Rep Rank'];
   if (repWs) {
     const repData = XLSX.utils.sheet_to_json(repWs, { header:1, defval:null });
@@ -1116,12 +745,10 @@ function parseWorkbook(wb) {
     if (repHeader >= 0) {
       const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
       const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
-
       const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'),
         riLoc=rc('location'), riDM=rc('dm'),
         riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
         riMobile=rc('mobile mtd'),
-        // Same rename: column U on Rep Rank is now "Mobile Plus Mix (%)".
         riPremium=(function(){
           let ix=rh.findIndex(h=>h && h.toLowerCase().includes('mobile plus mix'));
           if(ix<0) ix=rh.findIndex(h=>h && h.toLowerCase().includes('plus mix'));
@@ -1130,14 +757,10 @@ function parseWorkbook(wb) {
         })(),
         riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
         riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
-        const riGigPct=rh.findIndex(h=>h&&h.toLowerCase().includes('gig'));
-        const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
-        const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
-        const riWatches=rh.findIndex(h=>h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
-        const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
-        const riAcc=rh.findIndex(h=>h&&h.toLowerCase().includes('accessory'));
-
-      // New columns for rep breakdown
+      const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
+      const riWatches=rh.findIndex(h=>h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
+      const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
+      const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
       const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
       const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
       const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
@@ -1157,14 +780,10 @@ function parseWorkbook(wb) {
           premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
           nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
           gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
-          gigPct: riGigPct>=0 ? parseFloat(row[riGigPct])||0 : 0,
-          tabletMTD: riTablet>=0 ? parseInt(row[riTablet])||0 : 0,
-          watchesMTD: riWatch>=0 ? parseInt(row[riWatch])||0 : 0,
           newToUpg: riNewToUpg>=0 ? parseFloat(row[riNewToUpg])||0 : 0,
-          accPerMobile: riAcc>=0 ? parseFloat(row[riAcc])||0 : 0,
           gigPct: riGig >= 0 ? Number(row[riGig]) || 0 : 0,
           tabletMTD: riTablet >= 0 ? Number(row[riTablet]) || 0 : 0,
-          watchesMTD: riWatches >= 0 ? Number(row[riWatches]) || 0 : 0,
+          watchesMTD: (riWatches >= 0 ? Number(row[riWatches]) : (riWatch >= 0 ? Number(row[riWatch]) : 0)) || 0,
           accPerMobile: riAccMobile >= 0 ? Number(row[riAccMobile]) || 0 : 0,
           blendedWage: riBlendedWage >= 0 ? Number(row[riBlendedWage]) || 0 : 0,
         });
@@ -1173,70 +792,48 @@ function parseWorkbook(wb) {
     }
   }
 
-  // === NEW SLIDES: Raise Program, District Rank, Region Rank ===
   state.raiseProgram = parseRaiseProgram(wb);
   state.dmRanks      = parseRankSheet(wb, CONFIG.DISTRICT_RANK_SHEET);
   state.regionRanks  = parseRankSheet(wb, CONFIG.REGION_RANK_SHEET);
 }
 
-// -- SLIDE BUILDING --
+// ============ SLIDE BUILDING (unchanged logic) ============
 function buildSlides() {
   state.slides = [];
-
-  // Apply the currently-selected district filter so only the right stores
-  // appear in the overview pages and the per-store detail slides.
   const visibleStores = filteredStores();
 
-  // If a single store is selected, surface that store's detail FIRST so it
-  // shows up immediately when the team's TV opens to "their" view. The rest
-  // of the district still rotates through afterwards.
   let primaryStore = null;
   if (state.currentStore && state.currentStore !== 'all') {
     primaryStore = visibleStores.find(s => s.name.toLowerCase() === state.currentStore.toLowerCase());
     if (primaryStore) {
-      state.slides.push({
-        type: 'store-detail', store: primaryStore,
-        label: 'YOUR STORE — #' + primaryStore.rank + ' ' + primaryStore.name,
-      });
+      state.slides.push({ type: 'store-detail', store: primaryStore,
+        label: 'YOUR STORE — #' + primaryStore.rank + ' ' + primaryStore.name });
     }
   }
 
-  // Store overview pages (filtered to the active district)
   const storePages = Math.max(1, Math.ceil(visibleStores.length / CONFIG.STORE_CARDS_PER_PAGE));
   for (let i = 0; i < storePages; i++) {
     const label = storePages > 1 ? 'Overview (Pg ' + (i+1) + ')' : 'Store Overview';
     state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
   }
 
-  // Yesterday's Conversion rollup — one slide per active scope (a district when
-  // filtered, otherwise one per district). Shows traffic / mobile / MCR / T-Charts
-  // pulled from the Sales Report's Zero tab + the T-Sheets API.
   const districtsToShow = state.currentDistrict === 'all'
     ? DISTRICTS.filter(d => d.key !== 'all')
     : DISTRICTS.filter(d => d.key === state.currentDistrict);
   for (const dist of districtsToShow) {
     const distStores = state.stores.filter(s => storeMatchesDistrict(s, dist));
     if (!distStores.length) continue;
-    state.slides.push({
-      type: 'yesterday', title: "YESTERDAY'S CONVERSION",
-      district: dist, stores: distStores,
-      label: "Yesterday — " + dist.label,
-    });
+    state.slides.push({ type: 'yesterday', title: "YESTERDAY'S CONVERSION",
+      district: dist, stores: distStores, label: "Yesterday — " + dist.label });
   }
 
-  // Raise Program slide per district — shows YTD GP per rep and how close
-  // they are to the next $0.50 raise (one tier per $65,000).
   if (state.raiseProgram && state.raiseProgram.loaded) {
     for (const dist of districtsToShow) {
       const distStores = state.stores.filter(s => storeMatchesDistrict(s, dist));
       if (!distStores.length) continue;
-      // Match Raise Program rows by either DM name OR store name (catches
-      // brand-new stores whose DM column might still be blank).
       const distDmKeys = (dist.dmMatch || []).map(s => s.toLowerCase());
       const distStoreNames = distStores.map(s => s.name.toLowerCase());
       const rpRows = state.raiseProgram.rows.filter(r => {
-        // Skip zero-earners (managers, inactive reps, transfers) so the slide
-        // is just about reps who actually have GP toward a raise tier.
         if (!(r.grandTotal > 0)) return false;
         const dmLower = String(r.dm || '').toLowerCase();
         if (distDmKeys.some(k => dmLower.includes(k))) return true;
@@ -1244,7 +841,6 @@ function buildSlides() {
         return distStoreNames.some(n => storeLower === n);
       });
       if (!rpRows.length) continue;
-      // Sort once (descending YTD) so pagination splits the leaderboard cleanly.
       const sorted = rpRows.slice().sort((a, b) => b.grandTotal - a.grandTotal);
       const REPS_PER_PAGE = 12;
       const totalPages = Math.max(1, Math.ceil(sorted.length / REPS_PER_PAGE));
@@ -1252,48 +848,27 @@ function buildSlides() {
         const slice = sorted.slice(pg * REPS_PER_PAGE, (pg + 1) * REPS_PER_PAGE);
         state.slides.push({
           type: 'raise', title: 'RAISE PROGRAM',
-          district: dist, rows: slice,
-          // Always pass the full district list so we can show the true district
-          // total + accurate "page X of Y" subtitle, even on later pages.
-          allRows: sorted,
+          district: dist, rows: slice, allRows: sorted,
           page: pg, totalPages: totalPages,
-          label: totalPages > 1
-            ? `Raise — ${dist.label} (Pg ${pg + 1}/${totalPages})`
-            : `Raise — ${dist.label}`,
+          label: totalPages > 1 ? `Raise — ${dist.label} (Pg ${pg + 1}/${totalPages})` : `Raise — ${dist.label}`,
         });
       }
     }
   }
 
-  // DM Rankings (national) — one slide, always shown regardless of filter.
   if (state.dmRanks && state.dmRanks.length) {
-    state.slides.push({
-      type: 'dm-rank', title: 'DISTRICT MANAGER RANKINGS',
-      label: 'DM Rankings',
-    });
+    state.slides.push({ type: 'dm-rank', title: 'DISTRICT MANAGER RANKINGS', label: 'DM Rankings' });
   }
-  // Region Rankings (national) — one slide, always shown regardless of filter.
   if (state.regionRanks && state.regionRanks.length) {
-    state.slides.push({
-      type: 'region-rank', title: 'REGION RANKINGS',
-      label: 'Region Rankings',
-    });
+    state.slides.push({ type: 'region-rank', title: 'REGION RANKINGS', label: 'Region Rankings' });
   }
 
-  // Individual store detail slides for everyone else in the district
-  // (skip the primaryStore — already shown above).
   for (const store of visibleStores) {
     if (primaryStore && store.name === primaryStore.name) continue;
-    state.slides.push({
-      type: 'store-detail', store: store,
-      label: '#' + store.rank + ' ' + store.name,
-    });
+    state.slides.push({ type: 'store-detail', store: store, label: '#' + store.rank + ' ' + store.name });
   }
 
-  // Force a promo slide every N content slides regardless of selection.
-  // Each promo is immediately followed by the Xfinity "More Everything" card
-  // so the two promo pieces always cycle together.
-  const promoSlide = { type: 'promos',        title: 'DAILY PROMOTIONS',        label: 'Promotions' };
+  const promoSlide   = { type: 'promos',        title: 'DAILY PROMOTIONS',        label: 'Promotions' };
   const xfinitySlide = { type: 'xfinity-promo', title: 'XFINITY MORE EVERYTHING', label: 'Xfinity Special' };
   const pushPromoPair = arr => { arr.push(promoSlide); arr.push(xfinitySlide); };
   const N = CONFIG.PROMO_EVERY_N || 4;
@@ -1302,801 +877,491 @@ function buildSlides() {
     interleaved.push(state.slides[si]);
     if ((si + 1) % N === 0) pushPromoPair(interleaved);
   }
-  // Always end on the promo pair so a short slide list (e.g. one store) still
-  // shows them.
   const last = interleaved[interleaved.length - 1];
   if (interleaved.length === 0 || (last && last.type !== 'xfinity-promo')) {
     pushPromoPair(interleaved);
   }
   state.slides = interleaved;
-
   state.totalSlides = state.slides.length;
   state.currentSlide = 0;
 }
+// ============ FORMAT HELPERS ============
+const fmtMoney = n => (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString();
+const pctStr = v => (v * 100).toFixed(1) + '%';
+const medalFor = r => r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : null;
+const stCR   = v => v >= 0.08 ? 'good' : v >= 0.05 ? 'warn' : 'low';
+const stGig  = v => v >= 0.5  ? 'good' : v >= 0.35 ? 'warn' : 'low';
+const stPlus = v => v >= 0.85 ? 'good' : v >= 0.7  ? 'warn' : 'low';
+const stNPS  = v => v >= 0.8  ? 'good' : v >= 0.6  ? 'warn' : 'low';
+const chip = (label, val, cls) => `<div class="chip ${cls || ''}"><div class="cl">${label}</div><div class="cv">${val}</div></div>`;
+// Rank-sheet values can be fractions (percentages) or dollar figures.
+const smartPct = v => Math.abs(v) <= 1.5 ? pctStr(v) : Math.round(v).toLocaleString();
+const smartAcc = v => Math.abs(v) <= 1.5 ? pctStr(v) : fmtMoney(v);
 
-// -- RENDERING --
+const SLIDE_SUBTITLES = {
+  'stores': "How each store is tracking toward this month's profit goal",
+  'store-detail': 'A closer look at the store and its team',
+  'yesterday': 'Who walked in yesterday — and how many became customers',
+  'raise': 'Every $65,000 in year-to-date profit = another $0.50/hr raise',
+  'dm-rank': 'How all district managers stack up across the company',
+  'region-rank': 'How the regions stack up — ours are highlighted',
+  'promos': "Today's deals to lead with",
+  'xfinity-promo': 'More Everything — one low price',
+};
+
+// Animated count-up for any element with class "count"
+function runCountUps() {
+  document.querySelectorAll('.count').forEach(el => {
+    const val = parseFloat(el.dataset.val) || 0;
+    const prefix = el.dataset.prefix || '', suffix = el.dataset.suffix || '';
+    const dec = parseInt(el.dataset.dec || '0', 10);
+    const dur = 900, t0 = performance.now();
+    const fmt = n => {
+      const sign = n < 0 ? '-' : '';
+      const abs = Math.abs(n);
+      return sign + prefix + (dec > 0 ? abs.toFixed(dec) : Math.round(abs).toLocaleString()) + suffix;
+    };
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(val * e);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+// ============ MAIN RENDER ============
+const LOGO_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABQAFADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABAUCAwYAAQf/xAA3EAACAgEDAgQDBgILAAAAAAABAgMEEQAFIRIxE0FhcQYiURQyQoGRoSNSJDM0U2JyhLGywdH/xAAZAQADAQEBAAAAAAAAAAAAAAABAgMEAAX/xAAnEQACAgEDAgYDAQAAAAAAAAABAgARAxIhMRPwFEJRgbHRI2Ghwf/aAAwDAQACEQMRAD8A+eHXmuOidsijn3OtDMvVHJKqsM5yCfroToZs2yzbpIiokjmQkRxx4DPj7zEnhVHHJ8+ANbLY/gcB5TdiasI2wC3RK78dwcFVXy4GT541nds3W5t9qCztsVdWSv4bQKxJKkl+zd+T5aNrfEu8X7omO4/Zh1lVQpnp7Z44H5HVBhdpJs6r32Y+k+BI5LM4WSqVwDEZKoJbOeG6SPPzAH7awG57d9mCzRI6I5AMT8lCwJGD+JTg4Pfjka+h7tU3XZtts7mm9tbVynimSMLlCQvyspPSMHyHHOOdZC7ucthmdXESS/ceNOlmCIQAueUQDgeZycnnU0UsaEozhRZmckjkhkMcsbRuO6sMEflqOjN16m3WdeWYME9yAB/1phY2StXqzM9wmeCIPLGFHBPbSPlVKB85VMTOCR5RHrtMd2rQQpWkqpiN1ILCQOCw8vfGM+XOl2ijBhYiupU0Zx1OCUwTxzLy0bhx+RzqB1dSqvcsrBG6KzZwXOM48h9T9AO+miw+7AEvo0b9KB8K4OPlPzI2fVT+2mUsVJJVkt+F4rAAlhwT9fTXbXRXcZYKdZXnNbIyy9JPOcN5KoPIB55J47ac7v8ADW7LWJiiEvynPhuSDkeYHPHtrdhZVS2qzwJ52cM2QBbocmLWp12haIKVRxghGKgj2BxoKxHG9+AEqyRIRIyn7qjlhjy+UH9dXQVJYZJIw8oi8LpQOQeg+Y4+h7emiNm2ae1Rkli8CIU/69bExUHhg3P4chu/bgd9PmYaL01cTAv5K1aq/wBmagsLJuqWbPCtP4j+mWydM90gjjs2788quJW/oyo+eo8fMfQaFm2yJbFGOGSXptnIDgZVM4z1Dg8AnsO3bnXsm4VVeRDt9UxJwg8IZx6sMH88nXktjtgwM9lclKVIgNq3NbdWmI+VelQqhQB6Aap0w3SCCNIZYYvBLllaMMSOOnkZyRySO/4dL9UAAFCTJJNmcdXU3gjuRSWo2khRgzIuMtjy59dVHV1KBZ58SsVhjUySsO4Ud8ep4A9SNGCN3sypQO4QXLHVNOQEliQmVu7HIPlkd/bTqp8a+JQWDdPGZM4JgdonHsw74+mllAN4TXbCJHlf4aAcRRjsB6f79z31StijZlkWToXrODngOMZB9D662DCdA1nnyMwNmGs6F45Imso26Nqv02a9jdYRwl2sC0wH8sqA5DD+bkHWVV22zxLsFy0kfVJAhEYjeZe3STk8+ZP4cfUjAElWsLpEFxUgKkswf7h+h9NEQS1Y45a6OjqM9SM2EmUfX6MOcMOeNROJuL/vxLrlQbgc/r5nkV1jQkm5jOWixEMdC9IKqPov3ifr550up12s2OQ5UfMxVC37aYGBDQMVNZ5q/UzmQqEbnpwAPPAHJ7cnGqapgpzPHOXye5BKOmPTsf10EXcahQjO+x0GzPd26Xq15OvqZXkjBAI6xnqJx5EM5B9vTSzR+89cdmOrLnxIIx1k9y7fOx9uccccaA1M1e0qLA3np1othoVWpzTX+v7KkBs2eg4Z0DdMcYPl1MCfyGs6dafZLlWTb5a1irPbikhjjmhrnEuY3LKQPNWzgkcjSmGHLte02PEjgsWpK9kOlMCY4Bji6ndsjkdWFx76M2vYNrksCBKkRlpu9eSWUllsP4OWJU8fK7LjHppVDcu3alyOwtbb4kZoxIiYaIEjMS84xkLk9/LzOuuS7nYvWIJr8SxCtizIsIVV6iGJ4/ESoJPfjUWzrZBPEquBqsDmQotRk3FyaIWlsdaSXw5VxJPICB/E93I48gMaPkqbdubLLZ2vwJLULrDGi+EIBHH1NIQO/U7ADPlpes26D4lmsPYg6vAX7RMYQY5I8DllPcnAPPmM6kJdwL2qs+4yywNH9r8VEHiMWIIAPfBYA47ZA1xzJ6xhgf0h8Xw5TtV7USyyrYjkmhhlaU5eQdCqp8sdXXxor7PtEbtSh2asTNuopdcxZ+ygsRjBAHHGeedJ55d7svGJdwU2iySzIUULAFPUpOBwckkjzzqF6QyJVmfcpJY3vmYmCHEjSHHWyY9hjXdZWIFwdBlBNS2zVSnt0T7gHyxlk+zMfkirZ6VUA8hmfHSc5AGsiPXWg+Ktwa7Y8ZesR2XMidYIPhp8kY557Bj7trP6sJGenRe1Hp3GKX+5DSj3VSw/cDQh1OvM9adJo8dSHsRkHyII+hGRozo+uVrT1tto01J/hid38uo85J/U6sWBrlB4ltrKrWibU5OPkUcH2440A24xmiYEtWI4Mf2boyR/hEn8vvz76qpS01hCmpCZQPnksTkIfZRyfbWPouB793dTYMyE+3dVcbSSJutSwtaWOJHnAlLNgrCo4OpLu9WCOS2hV0aRIEQN8wjUHnH6nS1rldeBNVT0go9X7vjVbXoD3s2D/pYv/dDw17Hjv6h8SBuOe/uMIK0le1IKVutNBbTrRJznxfQ+vPfVpirwWq/h9MNhgySxRy9awxkHqcH8BHfSF5oFnDqizpjDLJEI/wDie/rqM113haCKOKvC33kiGOr/ACE5LfmcaquFgwYmSbMpUqBKJJZJnMk0jyO3dnJJP66iNdrhrRM8/9k=";
+
 function render() {
   const app = document.getElementById('app');
+  if (!state.slides.length) return;
   const slide = state.slides[state.currentSlide] || state.slides[0];
 
   let slideContent = '';
   let slideTitle = slide.title || '';
-
   if (slide.type === 'stores') {
     slideTitle = 'STORE OVERVIEW';
-    // Always slice from the filtered list so the active district shows only its stores.
     const visibleStores = filteredStores();
     const start = slide.page * CONFIG.STORE_CARDS_PER_PAGE;
-    const pageStores = visibleStores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE);
-    slideContent = renderStoreGrid(pageStores);
+    slideContent = renderStoreGrid(visibleStores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE));
   } else if (slide.type === 'store-detail') {
-    slideTitle = slide.store.name.toUpperCase() + ' - DETAIL';
+    slideTitle = slide.store.name.toUpperCase();
     slideContent = renderStoreDetail(slide.store);
   } else if (slide.type === 'promos') {
     slideTitle = 'DAILY PROMOTIONS';
-    slideContent = renderPromos();
+    slideContent = renderPromoImage(CONFIG.PROMO_URL);
   } else if (slide.type === 'xfinity-promo') {
     slideTitle = 'XFINITY MORE EVERYTHING';
-    slideContent = renderXfinityPromo();
+    slideContent = renderPromoImage(CONFIG.XFINITY_PROMO_URL);
   } else if (slide.type === 'yesterday') {
-    slideTitle = "YESTERDAY'S CONVERSION — " + slide.district.label.toUpperCase();
+    slideTitle = 'YESTERDAY — ' + slide.district.label.toUpperCase();
     slideContent = renderYesterday(slide.district, slide.stores);
   } else if (slide.type === 'raise') {
     slideTitle = 'RAISE PROGRAM — ' + slide.district.label.toUpperCase();
     slideContent = renderRaiseProgram(slide.district, slide.rows, slide);
   } else if (slide.type === 'dm-rank') {
     slideTitle = 'DISTRICT MANAGER RANKINGS';
-    slideContent = renderDmRanks();
+    slideContent = renderRankTable(state.dmRanks, 'dm');
   } else if (slide.type === 'region-rank') {
     slideTitle = 'REGION RANKINGS';
-    slideContent = renderRegionRanks();
+    slideContent = renderRankTable(state.regionRanks, 'region');
   }
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
   const timeStr = now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',hour12:true});
   const dayInfo = getDayInfo();
+  const subtitle = SLIDE_SUBTITLES[slide.type] || '';
 
-  // Build district tabs HTML (one per entry in DISTRICTS).
+  // Entrance animation rotates by slide + day so the show feels fresh.
+  const animClass = ['anim-fade','anim-slide','anim-zoom'][(state.currentSlide + now.getDay()) % 3];
+
   const activeDist = state.currentDistrict;
   const districtTabsHtml = DISTRICTS.map(d => {
     const cnt = districtCount(d.key);
-    const isActive = d.key === activeDist;
-    return `<div class="district-tab${isActive ? ' active' : ''}" onclick="setDistrict('${d.key}')">${d.label}<span class="district-count">${cnt}</span></div>`;
+    return `<div class="district-tab${d.key === activeDist ? ' active' : ''}" onclick="setDistrict('${d.key}')">${d.label}<span class="district-count">${cnt}</span></div>`;
   }).join('');
 
-  // Build the per-store dropdown — sorted alphabetically so anyone can find
-  // their store quickly. Picking one auto-snaps the district filter too.
   const sortedStores = state.stores.slice().sort((a,b) => a.name.localeCompare(b.name));
   const activeStore = state.currentStore || 'all';
   const storeOptions = ['<option value="all">All Stores in District</option>']
-    .concat(sortedStores.map(s =>
-      `<option value="${s.name}"${s.name === activeStore ? ' selected' : ''}>${s.name}</option>`
-    )).join('');
-  const storeSelectorHtml = `
-    <div class="store-picker-wrap">
-      <span class="store-picker-label">My Store</span>
-      <select class="store-picker${activeStore !== 'all' ? ' has-selection' : ''}" onchange="setStore(this.value)">
-        ${storeOptions}
-      </select>
-    </div>`;
+    .concat(sortedStores.map(s => `<option value="${s.name}"${s.name === activeStore ? ' selected' : ''}>${s.name}</option>`)).join('');
+
+  const dotsHtml = state.totalSlides <= 40
+    ? `<div class="dot-nav">${state.slides.map((_, i) => `<span class="${i === state.currentSlide ? 'active' : ''}" onclick="goSlide(${i})"></span>`).join('')}</div>`
+    : '';
 
   app.innerHTML = `
     <div class="header">
       <div class="header-left">
-        <div class="logo-circle"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABQAFADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABAUCAwYAAQf/xAA3EAACAgEDAgQDBgILAAAAAAABAgMEEQAFIRIxE0FhcQYiURQyQoGRoSNSJDM0U2JyhLGywdH/xAAZAQADAQEBAAAAAAAAAAAAAAABAgMEAAX/xAAnEQACAgEDAgYDAQAAAAAAAAABAgARAxIhMRPwFEJRgbHRI2Ghwf/aAAwDAQACEQMRAD8A+eHXmuOidsijn3OtDMvVHJKqsM5yCfroToZs2yzbpIiokjmQkRxx4DPj7zEnhVHHJ8+ANbLY/gcB5TdiasI2wC3RK78dwcFVXy4GT541nds3W5t9qCztsVdWSv4bQKxJKkl+zd+T5aNrfEu8X7omO4/Zh1lVQpnp7Z44H5HVBhdpJs6r32Y+k+BI5LM4WSqVwDEZKoJbOeG6SPPzAH7awG57d9mCzRI6I5AMT8lCwJGD+JTg4Pfjka+h7tU3XZtts7mm9tbVynimSMLlCQvyspPSMHyHHOOdZC7ucthmdXESS/ceNOlmCIQAueUQDgeZycnnU0UsaEozhRZmckjkhkMcsbRuO6sMEflqOjN16m3WdeWYME9yAB/1phY2StXqzM9wmeCIPLGFHBPbSPlVKB85VMTOCR5RHrtMd2rQQpWkqpiN1ILCQOCw8vfGM+XOl2ijBhYiupU0Zx1OCUwTxzLy0bhx+RzqB1dSqvcsrBG6KzZwXOM48h9T9AO+miw+7AEvo0b9KB8K4OPlPzI2fVT+2mUsVJJVkt+F4rAAlhwT9fTXbXRXcZYKdZXnNbIyy9JPOcN5KoPIB55J47ac7v8ADW7LWJiiEvynPhuSDkeYHPHtrdhZVS2qzwJ52cM2QBbocmLWp12haIKVRxghGKgj2BxoKxHG9+AEqyRIRIyn7qjlhjy+UH9dXQVJYZJIw8oi8LpQOQeg+Y4+h7emiNm2ae1Rkli8CIU/69bExUHhg3P4chu/bgd9PmYaL01cTAv5K1aq/wBmagsLJuqWbPCtP4j+mWydM90gjjs2788quJW/oyo+eo8fMfQaFm2yJbFGOGSXptnIDgZVM4z1Dg8AnsO3bnXsm4VVeRDt9UxJwg8IZx6sMH88nXktjtgwM9lclKVIgNq3NbdWmI+VelQqhQB6Aap0w3SCCNIZYYvBLllaMMSOOnkZyRySO/4dL9UAAFCTJJNmcdXU3gjuRSWo2khRgzIuMtjy59dVHV1KBZ58SsVhjUySsO4Ud8ep4A9SNGCN3sypQO4QXLHVNOQEliQmVu7HIPlkd/bTqp8a+JQWDdPGZM4JgdonHsw74+mllAN4TXbCJHlf4aAcRRjsB6f79z31StijZlkWToXrODngOMZB9D662DCdA1nnyMwNmGs6F45Imso26Nqv02a9jdYRwl2sC0wH8sqA5DD+bkHWVV22zxLsFy0kfVJAhEYjeZe3STk8+ZP4cfUjAElWsLpEFxUgKkswf7h+h9NEQS1Y45a6OjqM9SM2EmUfX6MOcMOeNROJuL/vxLrlQbgc/r5nkV1jQkm5jOWixEMdC9IKqPov3ifr550up12s2OQ5UfMxVC37aYGBDQMVNZ5q/UzmQqEbnpwAPPAHJ7cnGqapgpzPHOXye5BKOmPTsf10EXcahQjO+x0GzPd26Xq15OvqZXkjBAI6xnqJx5EM5B9vTSzR+89cdmOrLnxIIx1k9y7fOx9uccccaA1M1e0qLA3np1othoVWpzTX+v7KkBs2eg4Z0DdMcYPl1MCfyGs6dafZLlWTb5a1irPbikhjjmhrnEuY3LKQPNWzgkcjSmGHLte02PEjgsWpK9kOlMCY4Bji6ndsjkdWFx76M2vYNrksCBKkRlpu9eSWUllsP4OWJU8fK7LjHppVDcu3alyOwtbb4kZoxIiYaIEjMS84xkLk9/LzOuuS7nYvWIJr8SxCtizIsIVV6iGJ4/ESoJPfjUWzrZBPEquBqsDmQotRk3FyaIWlsdaSXw5VxJPICB/E93I48gMaPkqbdubLLZ2vwJLULrDGi+EIBHH1NIQO/U7ADPlpes26D4lmsPYg6vAX7RMYQY5I8DllPcnAPPmM6kJdwL2qs+4yywNH9r8VEHiMWIIAPfBYA47ZA1xzJ6xhgf0h8Xw5TtV7USyyrYjkmhhlaU5eQdCqp8sdXXxor7PtEbtSh2asTNuopdcxZ+ygsRjBAHHGeedJ55d7svGJdwU2iySzIUULAFPUpOBwckkjzzqF6QyJVmfcpJY3vmYmCHEjSHHWyY9hjXdZWIFwdBlBNS2zVSnt0T7gHyxlk+zMfkirZ6VUA8hmfHSc5AGsiPXWg+Ktwa7Y8ZesR2XMidYIPhp8kY557Bj7trP6sJGenRe1Hp3GKX+5DSj3VSw/cDQh1OvM9adJo8dSHsRkHyII+hGRozo+uVrT1tto01J/hid38uo85J/U6sWBrlB4ltrKrWibU5OPkUcH2440A24xmiYEtWI4Mf2boyR/hEn8vvz76qpS01hCmpCZQPnksTkIfZRyfbWPouB793dTYMyE+3dVcbSSJutSwtaWOJHnAlLNgrCo4OpLu9WCOS2hV0aRIEQN8wjUHnH6nS1rldeBNVT0go9X7vjVbXoD3s2D/pYv/dDw17Hjv6h8SBuOe/uMIK0le1IKVutNBbTrRJznxfQ+vPfVpirwWq/h9MNhgySxRy9awxkHqcH8BHfSF5oFnDqizpjDLJEI/wDie/rqM113haCKOKvC33kiGOr/ADE5LfmcaquFgwYmSbMpUqBKJJZJnMk0jyO3dnJJP66iNdrhrRM8/9k=" alt="C3" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+        <div class="logo-circle"><img src="${LOGO_SRC}" alt="C3" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
         <div>
           <div class="brand-title">COOK COUNTY <span class="highlight">COOKS</span></div>
-          <div class="brand-sub">DAILY SALES REPORT &nbsp;|&nbsp; ${state.stores.length} STORES</div>
+          <div class="brand-sub">DAILY SALES REPORT · ${state.stores.length} STORES</div>
         </div>
       </div>
       <div class="header-center">
-        <div class="header-center-sub">DAILY SALES REPORT</div>
         <div class="header-center-title">${slideTitle}</div>
+        <div class="header-center-sub">${subtitle}</div>
       </div>
       <div class="header-right">
-        <div style="display:flex; gap:8px; align-items:center;">
-          <div class="live-badge"><div class="live-dot"></div> LIVE</div>
-          <div class="day-badge" title="Accent color rotates daily"><div class="day-dot"></div>${dayInfo.name}</div>
+        <div class="pill-row">
+          ${state.paused ? '<div class="pill paused">⏸ PAUSED</div>' : '<div class="pill live"><div class="live-dot"></div>LIVE</div>'}
+          <div class="pill" title="A fresh color every day">${dayInfo.emoji} ${dayInfo.name}</div>
         </div>
-        <div class="datetime">${dateStr} | ${timeStr}</div>
+        <div class="datetime">${dateStr} · ${timeStr}</div>
       </div>
     </div>
-    <div class="district-bar">
-      <span class="district-bar-label">District</span>
-      ${districtTabsHtml}
-      ${storeSelectorHtml}
-    </div>
-    <div class="progress-bar">
-      <select class="slide-select" id="slideSelect" onchange="goSlide(parseInt(this.value))">
+    <div class="slide-container"><div class="slide-inner ${animClass}">${slideContent}</div></div>
+    <div class="controls" id="controls">
+      <div class="countdown-track"><div class="countdown-fill" id="countdownBar" style="width:${state.paused ? 100 : 100}%"></div></div>
+      <div class="district-tabs">${districtTabsHtml}</div>
+      <select class="store-picker${activeStore !== 'all' ? ' has-selection' : ''}" onchange="setStore(this.value)" title="My Store">${storeOptions}</select>
+      <div class="spacer"></div>
+      <button class="ctl-btn" onclick="prevSlide()" title="Previous slide">◀</button>
+      <button class="ctl-btn play-pause" onclick="togglePause()" title="${state.paused ? 'Resume slideshow' : 'Pause on this slide'}">${state.paused ? '▶' : '⏸'}</button>
+      <button class="ctl-btn" onclick="nextSlide()" title="Next slide">▶</button>
+      ${dotsHtml}
+      <div class="slide-counter">${state.currentSlide + 1} / ${state.totalSlides}</div>
+      <select class="slide-select" onchange="goSlide(parseInt(this.value))">
         ${state.slides.map((s, i) => `<option value="${i}"${i === state.currentSlide ? ' selected' : ''}>${s.label || s.title || 'Slide ' + (i+1)}</option>`).join('')}
       </select>
-      <div class="progress-track" title="Time until next slide">
-        <div class="countdown-fill" id="countdownBar" style="width:100%"></div>
-      </div>
-      <div class="slide-type">
-        <span>${state.currentSlide + 1} / ${state.totalSlides}</span>
-        <div class="dot-nav">${state.slides.map((_, i) => `<span class="${i === state.currentSlide ? 'active' : ''}" onclick="goSlide(${i})"></span>`).join('')}</div>
-      </div>
-    </div>
-    <div class="slide-container">${slideContent}</div>
-  `;
+    </div>`;
+  runCountUps();
 }
 
+// ============ SLIDE RENDERERS ============
 function renderStoreGrid(stores) {
-  const m = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:13px;text-align:center;">${label}</div><div class="metric-value" style="font-size:24px;text-align:center;">${val}</div></div>`;
   let html = '<div class="store-grid">';
-  for (const s of stores) {
-    const varColor = s.varTarget >= 0 ? 'green' : 'red';
-    const varSign = s.varTarget >= 0 ? '+' : '-';
-    const pct = v => (v * 100).toFixed(1) + '%';
+  stores.forEach((s, idx) => {
+    const up = s.varTarget >= 0;
+    const medal = medalFor(s.rank);
+    const goalPct = s.target > 0 ? Math.max(0, Math.min(100, s.gpTrend / s.target * 100)) : 0;
     html += `
-      <div class="store-card">
-        <div class="store-hero">
-          <div class="store-hero-rank">#${s.rank}</div>
-          <div class="store-hero-info">
-            <div class="store-name">${s.name}</div>
-            <div class="store-gp">$${Math.round(s.gpTrend).toLocaleString()}</div>
-            <div class="store-gp-sub">Target: $${Math.round(s.target).toLocaleString()} &nbsp; <span class="${varColor}">${varSign}$${Math.round(Math.abs(s.varTarget)).toLocaleString()}</span></div>
+      <div class="store-card stagger" style="--i:${idx}">
+        <div class="card-top">
+          <div class="rank-badge${medal ? ' medal' : ''}" title="National rank #${s.rank}">${medal || '#' + s.rank}</div>
+          <div>
+            <div class="card-store-name">${s.name}</div>
+            <div class="card-store-sub">${medal ? '#' + s.rank + ' in the company · ' : ''}SM: ${s.sm || '—'}</div>
           </div>
         </div>
-        <div class="store-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;">
-          ${m('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
-          ${m('MOB CR', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
-          ${m('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${m('NON-TRAD', pct(s.nonTrad), 'blue')}
-          ${m('GIG %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${m('PLUS', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${m('NEW->UPG', pct(s.newToUpg), 'blue')}
-          ${m('ACCESS', '$'+Math.round(s.accPerDev), 'blue')}
-          ${m('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
+        <div class="card-gp-row">
+          <div class="card-gp count" data-val="${Math.round(s.gpTrend)}" data-prefix="$">$0</div>
+          <div class="delta-chip ${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${fmtMoney(Math.abs(s.varTarget))} vs goal</div>
+        </div>
+        <div class="goal-wrap">
+          <div class="goal-bar"><div class="goal-fill" style="--w:${goalPct.toFixed(1)}%"></div></div>
+          <div class="goal-label"><span>Monthly goal: ${fmtMoney(s.target)}</span><b>${s.target > 0 ? Math.round(s.gpTrend / s.target * 100) : 0}% of goal</b></div>
+        </div>
+        <div class="chips">
+          ${chip('MOBILE CR', pctStr(s.mobileCR), stCR(s.mobileCR))}
+          ${chip('FISCAL CR', pctStr(s.fiscalCR), stCR(s.fiscalCR))}
+          ${chip('NON-TRAD', pctStr(s.nonTrad), '')}
+          ${chip('GIG %', pctStr(s.gigPct), stGig(s.gigPct))}
+          ${chip('PLUS MIX', pctStr(s.premium), stPlus(s.premium))}
+          ${chip('NEW→UPG', pctStr(s.newToUpg), '')}
+          ${chip('ACCESS', fmtMoney(s.accPerDev), '')}
+          ${chip('NPS', pctStr(s.nps), stNPS(s.nps))}
         </div>
       </div>`;
-  }
-  // Fill empty cards
+  });
   for (let i = stores.length; i < CONFIG.STORE_CARDS_PER_PAGE; i++) {
-    html += '<div class="store-card" style="opacity:0.15;border:1px dashed var(--day-line-2);"></div>';
+    html += '<div class="store-card empty"></div>';
   }
-  html += '</div>';
-  return html;
+  return html + '</div>';
 }
 
 function renderStoreDetail(s) {
-  const varColor = s.varTarget >= 0 ? '#2ecc40' : '#e74c3c';
-  const varSign = s.varTarget >= 0 ? '+' : '-';
-  const pct = v => (v * 100).toFixed(1) + '%';
-  const tile = (label, val, cls='blue') => `<div class="metric ${cls}" style="padding:16px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="metric-label" style="font-size:15px;letter-spacing:1px;margin-bottom:2px;">${label}</div><div class="metric-value" style="font-size:32px;margin-top:4px;">${val}</div></div>`;
-
-  // Get reps for this store
+  const up = s.varTarget >= 0;
+  const medal = medalFor(s.rank);
+  const goalPct = s.target > 0 ? Math.max(0, Math.min(100, s.gpTrend / s.target * 100)) : 0;
   const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
-  // Sort reps by their company-wide rank (Column A on Rep Rank), best first.
   storeReps.sort((a, b) => (a.rank || 9999) - (b.rank || 9999));
 
-  let repHtml = '';
-  if (storeReps.length) {
-    repHtml = `
-      <div style="margin-top:14px;">
-        <div style="font-size:32px;font-weight:900;color:var(--day-accent);letter-spacing:3px;margin-bottom:12px;text-shadow:0 0 18px var(--day-glow);">TEAM MEMBERS</div>
-        <div style="display:grid;grid-template-columns:90px 1.5fr 130px 100px 100px 76px 76px 88px 150px;gap:16px;font-size:18px;color:#8899aa;padding:14px 20px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2px solid var(--day-line);">
-          <span>NAT'L #</span><span>Rep Name</span><span>GP $</span><span>Plus %</span><span>GIG %</span><span>XM</span><span>Tab</span><span>Watch</span><span>Est. Wage</span>
-        </div>
-        ${storeReps.map(r => `
-          <div style="display:grid;grid-template-columns:90px 1.5fr 130px 100px 100px 76px 76px 88px 150px;gap:16px;font-size:24px;padding:16px 20px;background:var(--day-bg-4);border-radius:8px;margin:8px 0;border:1px solid var(--day-line);align-items:center;">
-            <span style="color:var(--day-accent);font-weight:900;font-size:26px">#${r.rank}</span>
-            <span style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;">${r.name}</span>
-            <span style="font-weight:800;color:#fff;">$${Math.round(r.gp).toLocaleString()}</span>
-            <span style="font-weight:700;color:${r.premium>=0.85?'#2ecc40':r.premium>=0.7?'var(--day-accent)':'#e74c3c'}">${(r.premium*100).toFixed(1)}%</span>
-            <span style="font-weight:700;">${r.gigPct!==undefined?(r.gigPct*100).toFixed(1)+'%':'--'}</span>
-            <span style="font-weight:700;">${r.mobile}</span>
-            <span style="font-weight:700;">${r.tabletMTD||0}</span>
-            <span style="font-weight:700;">${r.watchesMTD||0}</span>
-            <span style="color:var(--day-accent);font-weight:800">${r.blendedWage > 0 ? '$' + Number(r.blendedWage).toFixed(2) : '—'}</span>
-          </div>
-        `).join('')}
+  const cols = '64px 1.5fr 120px 100px 95px 70px 70px 88px 120px';
+  const repRows = storeReps.map((r, i) => {
+    const rm = medalFor(r.rank);
+    return `
+      <div class="trow stagger" style="grid-template-columns:${cols};--i:${i};font-size:${storeReps.length > 11 ? 17 : 20}px;padding:${storeReps.length > 11 ? '7px 16px' : '10px 16px'}">
+        <span class="rk">${rm || '#' + r.rank}</span>
+        <span class="nm">${r.name}</span>
+        <span class="money">${fmtMoney(r.gp)}</span>
+        <span style="color:${r.premium >= 0.85 ? 'var(--good-ink)' : r.premium >= 0.7 ? 'var(--warn-ink)' : 'var(--low-ink)'};font-weight:900">${pctStr(r.premium)}</span>
+        <span>${pctStr(r.gigPct)}</span>
+        <span>${r.mobile}</span>
+        <span>${r.tabletMTD || 0}</span>
+        <span>${r.watchesMTD || 0}</span>
+        <span class="rk">${r.blendedWage > 0 ? '$' + Number(r.blendedWage).toFixed(2) : '—'}</span>
       </div>`;
-  }
+  }).join('');
 
   return `
-    <div style="display:grid;grid-template-columns:1fr 1.85fr;gap:16px;height:100%;overflow:hidden;">
-      <!-- Left column -->
-      <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden;">
-        <!-- Store Header -->
-        <div style="background:linear-gradient(135deg,var(--day-bg-3),var(--day-bg-4));border:1px solid var(--day-line-2);border-radius:12px;padding:20px 24px;">
-          <div style="display:flex;justify-content:space-between;align-items:start;">
+    <div class="detail-grid">
+      <div class="detail-left">
+        <div class="hero-card stagger" style="--i:0">
+          <div class="hero-row">
             <div>
-              <div style="font-size:22px;color:#e67e22;font-weight:800;letter-spacing:1px;">RANK #${s.rank}</div>
-              <div style="font-size:40px;font-weight:900;margin-top:6px;line-height:1;">${s.name}</div>
-              <div style="font-size:15px;color:#8899aa;margin-top:6px;">${s.region} &nbsp;|&nbsp; SM: ${s.sm} &nbsp;|&nbsp; DM: ${s.dm}</div>
+              <div class="pill" style="font-size:16px;">${medal ? medal + ' ' : ''}RANK #${s.rank} IN THE COMPANY</div>
+              <div class="hero-name">${s.name}</div>
+              <div class="hero-sub">${s.region} · SM: ${s.sm || '—'} · DM: ${s.dm || '—'}</div>
             </div>
-            <div style="text-align:right;">
-              <div style="font-size:58px;font-weight:900;color:#e67e22;line-height:1;">$${Math.round(s.gpTrend).toLocaleString()}</div>
-              <div style="font-size:16px;color:#8899aa;margin-top:6px;">GP TREND</div>
+            <div>
+              <div class="hero-gp count" data-val="${Math.round(s.gpTrend)}" data-prefix="$">$0</div>
+              <div class="hero-gp-label">GP TREND THIS MONTH</div>
+            </div>
+          </div>
+          <div class="goal-wrap">
+            <div class="goal-bar"><div class="goal-fill" style="--w:${goalPct.toFixed(1)}%"></div></div>
+            <div class="goal-label">
+              <span>Monthly goal: ${fmtMoney(s.target)}</span>
+              <b style="color:${up ? 'var(--good-ink)' : 'var(--low-ink)'}">${up ? '▲' : '▼'} ${fmtMoney(Math.abs(s.varTarget))} vs goal</b>
             </div>
           </div>
         </div>
-        <!-- Devices + RGU Row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
-          <div style="background:var(--day-bg-3);border:1px solid #e67e22;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#e67e22;letter-spacing:1px;font-weight:700;">TOTAL RGU</div>
-            <div style="font-size:34px;font-weight:900;margin-top:6px;color:#e67e22;">${s.newRGU}</div>
-          </div>
-          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">MOBILE</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.mobileMTD}</div>
-          </div>
-          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">TABLET</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.tabletMTD}</div>
-          </div>
-          <div style="background:var(--day-bg-3);border:1px solid var(--day-line-2);border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:16px;color:#8899aa;letter-spacing:1px;">WATCHES</div>
-            <div style="font-size:40px;font-weight:900;margin-top:6px;">${s.watchesMTD}</div>
-          </div>
+        <div class="device-row stagger" style="--i:1">
+          <div class="device-tile star"><div class="dl">TOTAL RGU</div><div class="dv">${s.newRGU}</div></div>
+          <div class="device-tile"><div class="dl">MOBILE</div><div class="dv">${s.mobileMTD}</div></div>
+          <div class="device-tile"><div class="dl">TABLETS</div><div class="dv">${s.tabletMTD}</div></div>
+          <div class="device-tile"><div class="dl">WATCHES</div><div class="dv">${s.watchesMTD}</div></div>
         </div>
-        <!-- Performance Metrics Grid -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;">
-          ${tile('GP TREND', '$'+Math.round(s.gpTrend).toLocaleString(), s.gpTrend>=0?'green':'red')}
-          ${tile('MOB CLOSE RATE', pct(s.mobileCR), s.mobileCR>=0.08?'green':s.mobileCR>=0.05?'yellow':'red')}
-          ${tile('FISCAL CR', pct(s.fiscalCR), s.fiscalCR>=0.08?'green':s.fiscalCR>=0.05?'yellow':'red')}
-          ${tile('NON-TRAD', pct(s.nonTrad), 'blue')}
-          ${tile('GIG PLANS %', pct(s.gigPct), s.gigPct>=0.5?'green':s.gigPct>=0.35?'yellow':'red')}
-          ${tile('PLUS MIX', pct(s.premium), s.premium>=0.85?'green':s.premium>=0.7?'yellow':'red')}
-          ${tile('NEW->UPGRADE', pct(s.newToUpg), 'blue')}
-          ${tile('ACCESSORIES', '$'+Math.round(s.accPerDev), 'blue')}
-          ${tile('NPS', pct(s.nps), s.nps>=0.8?'green':s.nps>=0.6?'yellow':'red')}
+        <div class="detail-chips stagger" style="--i:2">
+          ${chip('MOBILE CR', pctStr(s.mobileCR), stCR(s.mobileCR))}
+          ${chip('FISCAL CR', pctStr(s.fiscalCR), stCR(s.fiscalCR))}
+          ${chip('NON-TRAD', pctStr(s.nonTrad), '')}
+          ${chip('GIG %', pctStr(s.gigPct), stGig(s.gigPct))}
+          ${chip('PLUS MIX', pctStr(s.premium), stPlus(s.premium))}
+          ${chip('NEW→UPG', pctStr(s.newToUpg), '')}
+          ${chip('ACCESS', fmtMoney(s.accPerDev), '')}
+          ${chip('NPS', pctStr(s.nps), stNPS(s.nps))}
         </div>
       </div>
-      <!-- Right column -->
-      <div style="display:flex;flex-direction:column;gap:12px;overflow:hidden;">
-        <!-- Team Members -->
-        <div style="flex:1;overflow:hidden;">${repHtml}</div>
+      <div class="panel">
+        <div class="panel-title">⭐ TEAM MEMBERS</div>
+        <div class="panel-sub">Ranked by national standing — GP, Plus mix, GIG, devices sold &amp; estimated wage</div>
+        <div class="thead" style="grid-template-columns:${cols}">
+          <span>NAT'L</span><span>Rep Name</span><span>GP $</span><span>Plus %</span><span>GIG %</span><span>XM</span><span>Tab</span><span>Watch</span><span>Est. Wage</span>
+        </div>
+        <div class="tscroll">${repRows || '<div class="panel-sub" style="margin-top:20px">No team data available.</div>'}</div>
       </div>
     </div>`;
 }
 
-// === YESTERDAY'S CONVERSION RENDERER ===
 function renderYesterday(district, distStores) {
   const y = state.yesterday;
   if (!y || (!y.loaded && !y.error)) {
-    return '<div class="yc-wrap"><div class="yc-empty">Loading yesterday\'s data…</div></div>';
+    return '<div class="panel"><div class="panel-sub" style="font-size:24px;margin:auto;">Loading yesterday\'s data…</div></div>';
   }
-  // Build per-store rows for this district by joining the Zero-tab data and
-  // T-Sheet counts onto our store list.
   const rows = distStores.map(s => {
-    // The Zero tab keys stores by short name (e.g. "Burbank") same as state.stores.
     const z = y.rows[s.name] || {};
     const traffic = z.traffic || 0;
     const mobile  = z.mobile  || 0;
     const mcr     = (z.mcr != null) ? z.mcr : null;
     const tcharts = (y.tsheets && y.tsheets[s.name]) || 0;
-    const tpct    = traffic > 0 ? (tcharts / traffic) * 100 : null;
-    return { store: s.name, traffic, mobile, mcr, tcharts, tpct };
+    const tpct    = traffic > 0 ? (tcharts / traffic * 100).toFixed(1) + '%' : '0%';
+    return { name: s.name, traffic, mobile, mcr, tcharts, tpct };
   });
-  // Sort by MCR descending (best at the top)
-  rows.sort((a, b) => (b.mcr ?? -1) - (a.mcr ?? -1));
-
-  // Totals
-  let tTraffic = 0, tMobile = 0, tCharts = 0;
-  for (const r of rows) { tTraffic += r.traffic; tMobile += r.mobile; tCharts += r.tcharts; }
-  const tMcr  = tTraffic > 0 ? (tMobile  / tTraffic) * 100 : null;
-  const tTPct = tTraffic > 0 ? (tCharts  / tTraffic) * 100 : null;
-
-  const pctClass = (p, type) => {
-    if (p == null || isNaN(p)) return 'muted';
-    if (type === 'tpct') return p > 20 ? 'good' : p >= 15 ? 'warn' : 'bad';
-    return p > 7 ? 'good' : p >= 6 ? 'warn' : 'bad';
-  };
-  const pctText = p => (p == null || isNaN(p)) ? '—' : p.toFixed(1) + '%';
-
-  const dateLabel = y.date
-    ? new Date(y.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })
-    : 'Yesterday';
-
-  const tbody = rows.map((r, i) => `
-    <tr>
-      <td style="color:var(--day-accent);font-weight:900;width:48px;font-size:22px;">${i + 1}</td>
-      <td style="font-weight:800;color:#fff;font-size:22px;">${r.store}</td>
-      <td class="num">${r.traffic.toLocaleString()}</td>
-      <td class="num">${r.mobile.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(r.mcr, 'mcr')}">${pctText(r.mcr)}</span></td>
-      <td class="num">${r.tcharts.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(r.tpct, 'tpct')}">${pctText(r.tpct)}</span></td>
-    </tr>`).join('');
-
-  const totalRow = `
-    <tr class="total">
-      <td></td>
-      <td>${district.label.toUpperCase()} TOTAL</td>
-      <td class="num">${tTraffic.toLocaleString()}</td>
-      <td class="num">${tMobile.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(tMcr, 'mcr')}">${pctText(tMcr)}</span></td>
-      <td class="num">${tCharts.toLocaleString()}</td>
-      <td class="num"><span class="yc-pill ${pctClass(tTPct, 'tpct')}">${pctText(tTPct)}</span></td>
-    </tr>`;
-
+  const maxTraffic = Math.max(1, ...rows.map(r => r.traffic));
+  const tot = rows.reduce((a, r) => ({ traffic: a.traffic + r.traffic, mobile: a.mobile + r.mobile, tcharts: a.tcharts + r.tcharts }), { traffic:0, mobile:0, tcharts:0 });
+  const totMcr = tot.traffic > 0 ? (tot.mobile / tot.traffic * 100).toFixed(1) + '%' : '—';
+  const totTpct = tot.traffic > 0 ? (tot.tcharts / tot.traffic * 100).toFixed(1) + '%' : '—';
+  const cols = '1.1fr 1.5fr 170px 170px 150px 170px';
+  const compact = rows.length > 9;
+  const rowsHtml = rows.map((r, i) => `
+    <div class="trow stagger" style="grid-template-columns:${cols};--i:${i};${compact ? 'font-size:18px;padding:8px 16px;' : ''}">
+      <span class="nm">${r.name}</span>
+      <span style="display:flex;align-items:center;gap:10px;"><span class="money" style="min-width:46px;">${r.traffic}</span><span class="mini-track"><span class="mini-fill" style="--w:${(r.traffic / maxTraffic * 100).toFixed(0)}%"></span></span></span>
+      <span class="money">${r.mobile}</span>
+      <span class="rk">${r.mcr != null ? r.mcr.toFixed(1) + '%' : '—'}</span>
+      <span class="money">${r.tcharts}</span>
+      <span class="rk">${r.tpct}</span>
+    </div>`).join('');
   return `
-    <div class="yc-wrap">
-      <div class="yc-header">
-        <div>
-          <div class="yc-title">${district.label}</div>
-          <div class="yc-subtitle">${dateLabel} · MCR &amp; T-Chart % by store</div>
+    <div class="panel">
+      <div class="panel-title">🚶 WALK-INS → SALES${y.date ? ' · ' + y.date : ''}</div>
+      <div class="panel-sub">Walk-in traffic, mobile sales made, close rate, and T-Charts completed</div>
+      <div class="thead" style="grid-template-columns:${cols}">
+        <span>Store</span><span>Walk-ins</span><span>Mobile Sales</span><span>Close Rate</span><span>T-Charts</span><span>T-Chart %</span>
+      </div>
+      <div class="tscroll">
+        ${rowsHtml}
+        <div class="trow total" style="grid-template-columns:${cols};${compact ? 'font-size:18px;padding:8px 16px;' : ''}">
+          <span class="nm">DISTRICT TOTAL</span>
+          <span class="money">${tot.traffic}</span>
+          <span class="money">${tot.mobile}</span>
+          <span class="rk">${totMcr}</span>
+          <span class="money">${tot.tcharts}</span>
+          <span class="rk">${totTpct}</span>
         </div>
-      </div>
-      <div class="yc-kpis">
-        <div class="yc-kpi"><div class="yc-kpi-l">Traffic</div><div class="yc-kpi-v">${tTraffic.toLocaleString()}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">Mobile</div><div class="yc-kpi-v">${tMobile.toLocaleString()}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">MCR</div><div class="yc-kpi-v ${pctClass(tMcr,'mcr')}">${pctText(tMcr)}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">T-Charts</div><div class="yc-kpi-v">${tCharts.toLocaleString()}</div></div>
-        <div class="yc-kpi"><div class="yc-kpi-l">T-Chart %</div><div class="yc-kpi-v ${pctClass(tTPct,'tpct')}">${pctText(tTPct)}</div></div>
-      </div>
-      <div class="yc-table">
-        <table>
-          <thead><tr>
-            <th>#</th><th>Store</th>
-            <th class="num">Traffic</th>
-            <th class="num">Mobile</th>
-            <th class="num">MCR</th>
-            <th class="num">T-Charts</th>
-            <th class="num">T-Chart %</th>
-          </tr></thead>
-          <tbody>${tbody}${totalRow}</tbody>
-        </table>
       </div>
     </div>`;
 }
 
-// === RAISE PROGRAM RENDERER ===
 function renderRaiseProgram(district, rows, slide) {
-  if (!rows || !rows.length) {
-    return '<div class="rp-wrap"><div class="rp-empty">No raise-program data for ' + district.label + ' yet.</div></div>';
-  }
-  const monthHeaders = state.raiseProgram.monthHeaders || [];
-  // `rows` is already this page's slice, pre-sorted by buildSlides.
-  const sorted = rows;
-  // Full district list (across all pages) — used for the district-wide total
-  // shown on the last page so it reflects every rep, not just this page.
-  const fullList = (slide && slide.allRows) ? slide.allRows : rows;
-  const isLastPage = !slide || (slide.page + 1) === slide.totalPages;
-  const fmt = n => '$' + Math.round(n).toLocaleString();
-
-  // Per-rep computation: current tier = floor(gtot / 65000) * $0.50,
-  // dollars-to-next = (tier+1)*65000 - gtot.
-  const tierFor = g => Math.floor(g / CONFIG.RAISE_TIER_GP);
-  const raiseFor = g => tierFor(g) * CONFIG.RAISE_AMOUNT;
-  const toNextFor = g => (tierFor(g) + 1) * CONFIG.RAISE_TIER_GP - g;
-  const tierPill = g => {
-    const t = tierFor(g);
-    return t > 0
-      ? `<span class="rp-tier">+$${raiseFor(g).toFixed(2)}</span>`
-      : `<span class="rp-tier zero">—</span>`;
-  };
-
-  // Build month-column headers
-  const monthThs = monthHeaders.map(m => `<th class="num">${m}</th>`).join('');
-  // Body rows
-  const tbody = sorted.map((r, i) => {
-    const monthTds = r.months.map(v => `<td class="num">${v ? fmt(v) : '—'}</td>`).join('');
+  const allRows = slide.allRows || rows;
+  const distTotal = allRows.reduce((a, r) => a + r.grandTotal, 0);
+  const pageInfo = slide.totalPages > 1 ? ` · Page ${slide.page + 1} of ${slide.totalPages}` : '';
+  const cols = '56px 1.3fr 1fr 230px 150px 175px 1.2fr';
+  const compact = rows.length > 10;
+  const rowsHtml = rows.map((r, i) => {
+    const globalRank = slide.page * 12 + i + 1;
+    const tiers = Math.floor(r.grandTotal / CONFIG.RAISE_TIER_GP);
+    const raise = (tiers * CONFIG.RAISE_AMOUNT).toFixed(2);
+    const intoTier = r.grandTotal - tiers * CONFIG.RAISE_TIER_GP;
+    const progress = (intoTier / CONFIG.RAISE_TIER_GP * 100).toFixed(0);
+    const toGo = CONFIG.RAISE_TIER_GP - intoTier;
+    const maxM = Math.max(1, ...r.months);
+    const spark = r.months.map(m => `<span style="height:${Math.max(8, m / maxM * 100)}%" class="${m === maxM && m > 0 ? 'hot' : ''}" title="${fmtMoney(m)}"></span>`).join('');
     return `
-      <tr>
-        <td><div class="rp-rep">${r.name}</div><div class="rp-store">${r.store || ''}</div></td>
-        ${monthTds}
-        <td class="num rp-gtot">${fmt(r.grandTotal)}</td>
-        <td class="num">${tierPill(r.grandTotal)}</td>
-        <td class="num">${r.grandTotal > 0 ? fmt(toNextFor(r.grandTotal)) : '—'}</td>
-      </tr>`;
+      <div class="trow stagger" style="grid-template-columns:${cols};--i:${i};${compact ? 'font-size:17px;padding:6px 16px;' : 'font-size:19px;'}">
+        <span class="rk">${medalFor(globalRank) || '#' + globalRank}</span>
+        <span class="nm">${r.name}</span>
+        <span class="nm" style="color:var(--muted);font-weight:700">${r.store}</span>
+        <span class="spark">${spark}</span>
+        <span class="money">${fmtMoney(r.grandTotal)}</span>
+        <span><span class="tier-chip${tiers > 0 ? '' : ' zero'}">${tiers > 0 ? '+$' + raise + '/hr ' + '⭐'.repeat(Math.min(tiers, 4)) : 'In progress'}</span></span>
+        <span style="display:flex;align-items:center;gap:10px;">
+          <span class="mini-track"><span class="mini-fill" style="--w:${progress}%"></span></span>
+          <span style="font-size:14px;font-weight:800;color:var(--muted);white-space:nowrap;">${fmtMoney(toGo)} to go</span>
+        </span>
+      </div>`;
   }).join('');
-
-  // District total — computed across the FULL district (all pages), shown
-  // only on the last page so it's not misleading on a middle page.
-  let totalRow = '';
-  if (isLastPage) {
-    const totals = monthHeaders.map((_, j) => fullList.reduce((s, r) => s + (r.months[j] || 0), 0));
-    const grandSum = fullList.reduce((s, r) => s + r.grandTotal, 0);
-    const totalTds = totals.map(v => `<td class="num">${fmt(v)}</td>`).join('');
-    totalRow = `
-      <tr class="total">
-        <td>${district.label.toUpperCase()} TOTAL</td>
-        ${totalTds}
-        <td class="num rp-gtot">${fmt(grandSum)}</td>
-        <td></td><td></td>
-      </tr>`;
-  }
-
-  const pageLabel = slide && slide.totalPages > 1
-    ? ` · Page ${slide.page + 1} of ${slide.totalPages}`
-    : '';
-
   return `
-    <div class="rp-wrap">
-      <div class="rp-header">
-        <div class="rp-title">${district.label}</div>
-        <div class="rp-subtitle">Year-to-date Gross Profit by rep${pageLabel}</div>
+    <div class="panel">
+      <div class="panel-title">💸 ROAD TO THE NEXT RAISE</div>
+      <div class="panel-sub">Every ${fmtMoney(CONFIG.RAISE_TIER_GP)} of year-to-date GP earns another $${CONFIG.RAISE_AMOUNT.toFixed(2)}/hr · District YTD total: <b style="color:var(--day-ink)">${fmtMoney(distTotal)}</b>${pageInfo}</div>
+      <div class="thead" style="grid-template-columns:${cols}">
+        <span>#</span><span>Team Member</span><span>Store</span><span>GP by Month</span><span>YTD GP</span><span>Raise Earned</span><span>Progress to Next Raise</span>
       </div>
-      <div class="rp-disclaimer">
-        Every <span class="rp-dis-amount">$${CONFIG.RAISE_TIER_GP.toLocaleString()}</span> in yearly GP earns a
-        <span class="rp-dis-amount">$${CONFIG.RAISE_AMOUNT.toFixed(2)}/hr</span> raise
-      </div>
-      <div class="rp-table">
-        <table>
-          <thead><tr>
-            <th>Rep</th>
-            ${monthThs}
-            <th class="num">YTD Total</th>
-            <th class="num">Earned Raise</th>
-            <th class="num">To Next $0.50</th>
-          </tr></thead>
-          <tbody>${tbody}${totalRow}</tbody>
-        </table>
-      </div>
+      <div class="tscroll">${rowsHtml}</div>
     </div>`;
 }
 
-// === Shared helpers for ranking renderers ===
-const _fmt$  = n => '$' + Math.round(n).toLocaleString();
-const _fmtPct = p => (p == null) ? '—' : (p * 100).toFixed(1) + '%';
-// Accessory Per Device on the rank sheets is a dollar amount per device
-// (e.g. 27.99 = $27.99), not a percentage — format accordingly.
-const _fmtAcc = v => (v == null) ? '—' : '$' + Number(v).toFixed(2);
-function _rankRowsHTML(rows, isOurs) {
-  return rows.map(r => `
-    <tr class="${isOurs(r.name) ? 'mine' : ''}">
-      <td><span class="rk-rank-num">${r.rank}</span></td>
-      <td><span class="rk-name">${r.name}</span></td>
-      <td class="num">${_fmt$(r.avgGpTrend)}</td>
-      <td class="num">${_fmtPct(r.mobileCr)}</td>
-      <td class="num">${_fmtPct(r.fiscalCr)}</td>
-      <td class="num">${_fmtPct(r.plusAttach)}</td>
-      <td class="num">${_fmtPct(r.gigAttach)}</td>
-      <td class="num">${_fmtAcc(r.accPerDev)}</td>
-      <td class="num">${_fmtPct(r.nps)}</td>
-    </tr>`).join('');
-}
-function _rankHeaderHTML(nameLabel) {
-  return `<thead><tr>
-    <th style="width:48px;">#</th>
-    <th>${nameLabel}</th>
-    <th class="num">GP Trend</th>
-    <th class="num">MCR</th>
-    <th class="num">FCR</th>
-    <th class="num">Plus</th>
-    <th class="num">GIG</th>
-    <th class="num">Acc/Dev</th>
-    <th class="num">NPS</th>
-  </tr></thead>`;
-}
-
-// === DM RANKINGS RENDERER ===
-// Two-column layout — splits the 25 DMs roughly in half so all of them fit
-// on one slide. Columns scale up the metric font slightly since each table
-// is narrower than the full-width single-column variant.
-function renderDmRanks() {
-  const rows = state.dmRanks || [];
-  if (!rows.length) return '<div class="rk-wrap"><div class="rp-empty">No DM rank data.</div></div>';
-  const ourDmSubstrings = DISTRICTS.flatMap(d => d.dmMatch || []).map(s => s.toLowerCase());
-  const isOurs = name => {
-    const n = String(name || '').toLowerCase();
-    return ourDmSubstrings.some(k => n.includes(k));
+function renderRankTable(rows, kind) {
+  const sorted = rows.slice().sort((a, b) => a.rank - b.rank);
+  const ourDMs = new Set(state.stores.map(s => String(s.dm || '').toLowerCase().trim()).filter(Boolean));
+  const isMine = (name) => {
+    const n = String(name).toLowerCase().trim();
+    if (kind === 'region') return CONFIG.OUR_REGIONS.some(r => n.includes(r.toLowerCase()));
+    if (ourDMs.has(n)) return true;
+    for (const dm of ourDMs) { if (dm.includes(n) || n.includes(dm)) return true; }
+    return false;
   };
-  const oursCount = rows.filter(r => isOurs(r.name)).length;
-  const half = Math.ceil(rows.length / 2);
-  const left = rows.slice(0, half);
-  const right = rows.slice(half);
-  const buildTable = data => `
-    <div class="rk-table"><table>
-      ${_rankHeaderHTML('District Manager')}
-      <tbody>${_rankRowsHTML(data, isOurs)}</tbody>
-    </table></div>`;
+  const cols = '64px 1.6fr 150px 120px 130px 130px 110px 110px 120px 110px';
+  const compact = sorted.length > 14;
+  const fontSize = compact ? 16 : (kind === 'region' ? 24 : 19);
+  const pad = compact ? '5px 14px' : (kind === 'region' ? '13px 16px' : '9px 16px');
+  const rowsHtml = sorted.map((r, i) => `
+    <div class="trow${isMine(r.name) ? ' mine' : ''} stagger" style="grid-template-columns:${cols};--i:${Math.min(i, 12)};font-size:${fontSize}px;padding:${pad};">
+      <span class="rk">${medalFor(r.rank) || '#' + r.rank}</span>
+      <span class="nm">${r.name}${isMine(r.name) ? ' ⭐' : ''}</span>
+      <span class="money">${fmtMoney(r.avgGpTrend)}</span>
+      <span>${Math.abs(r.mobilePerInternet) <= 1.5 && r.mobilePerInternet !== 0 ? Number(r.mobilePerInternet).toFixed(2) : Math.round(r.mobilePerInternet)}</span>
+      <span class="money">${fmtMoney(r.gpPerRgu)}</span>
+      <span>${smartPct(r.fiscalCr)}</span>
+      <span>${smartPct(r.mobileCr)}</span>
+      <span>${smartPct(r.gigAttach)}</span>
+      <span>${smartPct(r.plusAttach)}</span>
+      <span>${smartPct(r.nps)}</span>
+    </div>`).join('');
   return `
-    <div class="rk-wrap">
-      <div class="rk-header">
-        <div class="rk-title">District Manager Rankings</div>
-        <div class="rk-subtitle">${rows.length} DMs nationally · ${oursCount} of yours highlighted</div>
+    <div class="panel">
+      <div class="panel-title">🏆 NATIONAL STANDINGS</div>
+      <div class="panel-sub">${kind === 'region' ? 'Our regions are highlighted with a star' : 'Our district managers are highlighted with a star'}</div>
+      <div class="thead" style="grid-template-columns:${cols}">
+        <span>Rank</span><span>${kind === 'region' ? 'Region' : 'District Manager'}</span><span>GP Trend</span><span>Mob/Int</span><span>GP/RGU</span><span>Fiscal CR</span><span>Mobile CR</span><span>GIG %</span><span>Plus %</span><span>NPS</span>
       </div>
-      <div class="rk-grid two-col-dm">
-        ${buildTable(left)}
-        ${buildTable(right)}
-      </div>
+      <div class="tscroll">${rowsHtml}</div>
     </div>`;
 }
 
-// === REGION RANKINGS RENDERER ===
-function renderRegionRanks() {
-  const rows = state.regionRanks || [];
-  if (!rows.length) return '<div class="rk-wrap"><div class="rp-empty">No region rank data.</div></div>';
-  const ourKeys = (CONFIG.OUR_REGIONS || []).map(r => String(r).toLowerCase());
-  const isOurs = name => {
-    const n = String(name || '').toLowerCase();
-    return ourKeys.some(k => n.includes(k));
-  };
-  const oursCount = rows.filter(r => isOurs(r.name)).length;
+function renderPromoImage(url) {
   return `
-    <div class="rk-wrap">
-      <div class="rk-header">
-        <div class="rk-title">Region Rankings</div>
-        <div class="rk-subtitle">All ${rows.length} regions ranked nationally${oursCount > 0 ? ' · ' + oursCount + ' of yours highlighted' : ''}</div>
-      </div>
-      <div class="rk-grid single">
-        <div class="rk-table"><table>
-          ${_rankHeaderHTML('Region')}
-          <tbody>${_rankRowsHTML(rows, isOurs)}</tbody>
-        </table></div>
+    <div class="promo-wrap">
+      <div class="promo-frame">
+        <img src="${url}?t=${Math.floor(Date.now() / 600000)}" alt="Promotion" onerror="promoMissing(this)">
       </div>
     </div>`;
 }
-
-// === XFINITY "MORE EVERYTHING" PROMO ===
-// Pure-HTML recreation of the More Everything / One Low Price marketing card.
-// Lives entirely in the page (no external image needed) so it always renders
-// no matter what's in the repo or which TV is loading it. If you'd rather use
-// your own image, drop it at data/more-everything.jpg and change
-// renderXfinityPromo to swap back to the image version.
-function renderXfinityPromo() {
-  return `
-    <div style="height:100%;width:100%;display:flex;align-items:center;justify-content:center;padding:6px 12px;">
-      <div style="
-        position:relative;
-        width:100%; max-width:1780px; height:100%;
-        background:
-          radial-gradient(ellipse 900px 500px at 15% 95%, rgba(0,229,255,0.22), transparent 60%),
-          radial-gradient(ellipse 900px 500px at 85% 95%, rgba(255,46,200,0.22), transparent 60%),
-          linear-gradient(180deg, #02060f 0%, #0a0517 100%);
-        border-radius:18px;
-        border:3px solid #00e5ff;
-        box-shadow:0 0 60px rgba(0,229,255,0.35), inset 0 0 80px rgba(255,46,200,0.10);
-        overflow:hidden;
-        display:grid;
-        grid-template-rows: auto auto 1fr auto auto;
-        gap:14px;
-        padding:22px 36px 18px;
-        font-family:'Inter',sans-serif;
-      ">
-        <!-- Row 1: xfinity wordmark + NEW SPECIAL badge + compact headline -->
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;">
-          <div style="display:flex; align-items:center; gap:20px;">
-            <div style="font-size:48px; font-weight:900; color:#fff; letter-spacing:-1px; line-height:1;">xfinity</div>
-            <div style="padding:8px 22px; border:2px solid #ff2ec8; border-radius:12px; color:#fff; font-size:18px; font-weight:800; letter-spacing:2px; box-shadow:0 0 18px rgba(255,46,200,0.55);">NEW SPECIAL!</div>
-          </div>
-          <div style="line-height:1; font-weight:900; text-align:right;">
-            <div style="font-size:56px; letter-spacing:-1.5px;">
-              <span style="color:#fff;">MORE </span><span style="font-family:'Brush Script MT', cursive; color:#ff2ec8; font-style:italic; font-weight:400; letter-spacing:1px;">Everything</span>
-              <span style="color:#fff;"> · ONE </span><span style="color:#00e5ff; text-shadow:0 0 22px rgba(0,229,255,0.5);">LOW PRICE.</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 2: BIG 4-column - three product features + $85 price box -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1.2fr; gap:18px;">
-          <!-- GIG SPEED INTERNET -->
-          <div style="border:2.5px solid #00e5ff; border-radius:18px; padding:24px 22px; text-align:center; background:rgba(0,229,255,0.06); box-shadow:0 0 30px rgba(0,229,255,0.28); display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-size:84px; color:#00e5ff; line-height:1; text-shadow:0 0 28px rgba(0,229,255,0.7);">📶</div>
-            <div style="font-size:30px; font-weight:900; color:#00e5ff; letter-spacing:1.5px; margin-top:14px; line-height:1.05;">GIG SPEED<br>INTERNET</div>
-            <div style="font-size:18px; color:#e8f5ff; margin-top:14px; line-height:1.35; font-weight:600;">Lightning fast.<br>Stream. Game. Win.<br>All at once.</div>
-          </div>
-          <!-- NOW TV -->
-          <div style="border:2.5px solid #ff2ec8; border-radius:18px; padding:24px 22px; text-align:center; background:rgba(255,46,200,0.06); box-shadow:0 0 30px rgba(255,46,200,0.28); display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-size:84px; color:#ff2ec8; line-height:1; text-shadow:0 0 28px rgba(255,46,200,0.7);">▶</div>
-            <div style="font-size:30px; font-weight:900; color:#ff2ec8; letter-spacing:1.5px; margin-top:14px; line-height:1.05;">NOW TV<br>125+ CHANNELS</div>
-            <div style="font-size:18px; color:#ffe5f5; margin-top:14px; line-height:1.35; font-weight:600;">Live sports, news,<br>entertainment &amp; more.<br>Stream what you love.</div>
-          </div>
-          <!-- HOME CAMERA -->
-          <div style="border:2.5px solid #a347ff; border-radius:18px; padding:24px 22px; text-align:center; background:rgba(163,71,255,0.06); box-shadow:0 0 30px rgba(163,71,255,0.28); display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-size:84px; color:#a347ff; line-height:1; text-shadow:0 0 28px rgba(163,71,255,0.7);">📷</div>
-            <div style="font-size:30px; font-weight:900; color:#a347ff; letter-spacing:1.5px; margin-top:14px; line-height:1.05;">SMART HOME<br>CAMERA</div>
-            <div style="font-size:18px; color:#f1e5ff; margin-top:14px; line-height:1.35; font-weight:600;">Keep an eye on<br>what matters most,<br>right from your phone.</div>
-          </div>
-          <!-- $85/MO PRICE BOX -->
-          <div style="border:3px solid #d4ff00; border-radius:18px; padding:18px 22px; text-align:center; box-shadow:0 0 40px rgba(212,255,0,0.42); background:rgba(0,0,0,0.4); display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-size:18px; font-weight:800; letter-spacing:2px; color:#fff;">ALL FOR ONLY</div>
-            <div style="font-size:130px; font-weight:900; color:#d4ff00; line-height:1; margin-top:4px; letter-spacing:-4px; text-shadow:0 0 40px rgba(212,255,0,0.6);">$85<span style="font-size:40px; font-weight:700; color:#fff; vertical-align:top; margin-left:4px;">/mo</span></div>
-            <div style="font-size:16px; font-weight:700; color:#fff; margin-top:8px; letter-spacing:1px;">GUARANTEED PRICE</div>
-            <div style="font-size:30px; font-weight:900; color:#d4ff00; margin-top:2px; letter-spacing:1.5px; text-shadow:0 0 18px rgba(212,255,0,0.55);">FOR 5 YEARS!</div>
-            <div style="margin-top:12px; padding:8px 22px; border:2px solid #ff2ec8; border-radius:14px; display:inline-block; color:#ff2ec8; font-size:22px; font-weight:900; letter-spacing:2px; box-shadow:0 0 18px rgba(255,46,200,0.55); align-self:center;">NO CONTRACT!</div>
-          </div>
-        </div>
-
-        <!-- Row 3: BIG full-width Xfinity Pro upsell with feature highlights.
-             Left third = brand + price; right two thirds = 4 key features as a
-             2×2 grid so the team can pitch what Pro actually does. -->
-        <div style="border:3px solid #a347ff; border-radius:18px; padding:20px 28px; box-shadow:0 0 36px rgba(163,71,255,0.45); background:linear-gradient(90deg, rgba(163,71,255,0.22) 0%, rgba(163,71,255,0.06) 100%);">
-          <div style="display:grid; grid-template-columns: 0.7fr 1.6fr; gap:24px; align-items:center;">
-            <!-- LEFT: brand + price -->
-            <div style="text-align:center; padding-right:20px; border-right:2px solid rgba(163,71,255,0.5);">
-              <div style="font-size:16px; color:#e8d6ff; letter-spacing:2.5px; font-weight:800; text-transform:uppercase;">Level up with</div>
-              <div style="font-size:54px; font-weight:900; color:#fff; line-height:1; margin-top:4px; letter-spacing:-1px;">XFINITY</div>
-              <div style="font-size:54px; font-weight:900; color:#d4ff00; line-height:1; text-shadow:0 0 22px rgba(212,255,0,0.55); letter-spacing:-1px;">PRO</div>
-              <div style="font-size:14px; color:#e8d6ff; margin-top:8px; font-weight:700; letter-spacing:1px;">JUST</div>
-              <div style="font-size:62px; font-weight:900; color:#d4ff00; line-height:1; margin-top:2px; text-shadow:0 0 22px rgba(212,255,0,0.6); letter-spacing:-2px;">+$15<span style="font-size:22px; font-weight:700; color:#fff; vertical-align:top; margin-left:4px;">/mo</span></div>
-            </div>
-            <!-- RIGHT: 2x2 feature grid -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:12px;">
-              <!-- 4G LTE Cellular Backup -->
-              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
-                <div style="font-size:42px; line-height:1; flex-shrink:0;">📶</div>
-                <div style="min-width:0;">
-                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">4G LTE CELLULAR BACKUP</div>
-                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Auto-switches to cellular if broadband drops — up to <b style="color:#fff;">30 / 7 Mbps</b>.</div>
-                </div>
-              </div>
-              <!-- Boost a Device -->
-              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
-                <div style="font-size:42px; line-height:1; flex-shrink:0;">⚡</div>
-                <div style="min-width:0;">
-                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">BOOST A DEVICE</div>
-                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Send low-latency WiFi to a specific gaming console or work laptop.</div>
-                </div>
-              </div>
-              <!-- Mesh WiFi 6 Extension -->
-              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
-                <div style="font-size:42px; line-height:1; flex-shrink:0;">📡</div>
-                <div style="min-width:0;">
-                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">MESH WIFI 6 EXTENDERS</div>
-                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Up to <b style="color:#fff;">2 tri-band</b> extenders kill dead spots across the home.</div>
-                </div>
-              </div>
-              <!-- Battery Backup -->
-              <div style="display:flex; gap:14px; align-items:center; padding:10px 14px; background:rgba(163,71,255,0.12); border:1.5px solid rgba(163,71,255,0.5); border-radius:12px;">
-                <div style="font-size:42px; line-height:1; flex-shrink:0;">🔋</div>
-                <div style="min-width:0;">
-                  <div style="font-size:17px; font-weight:900; color:#d4ff00; letter-spacing:1px;">BATTERY BACKUP</div>
-                  <div style="font-size:13px; color:#f1e5ff; margin-top:3px; line-height:1.3; font-weight:600;">Optional plug-in battery keeps you online <b style="color:#fff;">up to 4 hours</b> in a power outage.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 4: three benefit cards -->
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
-          <div style="border:1.5px solid #00e5ff; border-radius:12px; padding:10px 16px; display:flex; gap:12px; align-items:center; box-shadow:0 0 16px rgba(0,229,255,0.25);">
-            <div style="font-size:26px; color:#00e5ff;">🔒</div>
-            <div>
-              <div style="font-size:14px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">PRICE LOCK GUARANTEE</div>
-              <div style="font-size:11px; color:#cdd6e0; margin-top:1px;">Your price is locked in for 5 years.</div>
-            </div>
-          </div>
-          <div style="border:1.5px solid #00e5ff; border-radius:12px; padding:10px 16px; display:flex; gap:12px; align-items:center; box-shadow:0 0 16px rgba(0,229,255,0.25);">
-            <div style="font-size:26px; color:#00e5ff;">📄</div>
-            <div>
-              <div style="font-size:14px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">NO CONTRACT</div>
-              <div style="font-size:11px; color:#cdd6e0; margin-top:1px;">Stay because you love it, not because you're locked in.</div>
-            </div>
-          </div>
-          <div style="border:1.5px solid #00e5ff; border-radius:12px; padding:10px 16px; display:flex; gap:12px; align-items:center; box-shadow:0 0 16px rgba(0,229,255,0.25);">
-            <div style="font-size:26px; color:#00e5ff;">😊</div>
-            <div>
-              <div style="font-size:14px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">ALL THE TECH. ALL THE PERKS.</div>
-              <div style="font-size:11px; color:#cdd6e0; margin-top:1px;">One simple price. Everything you need. Zero stress.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 5: Tagline footer -->
-        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-          <div style="line-height:1.1;">
-            <div style="font-size:22px; font-weight:900; color:#00e5ff; letter-spacing:1.5px;">MORE SPEED. MORE STREAMS. MORE SECURITY.</div>
-            <div style="font-size:28px; font-weight:400; font-family:'Brush Script MT', cursive; color:#ff2ec8; font-style:italic; margin-top:4px;">All for less.</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:34px; font-weight:900; color:#fff; line-height:1; letter-spacing:-1px;">xfinity</div>
-            <div style="font-size:11px; color:#00e5ff; letter-spacing:2.5px; font-weight:700; margin-top:4px;">RELIABLE. SIMPLE. AWESOME.</div>
-          </div>
-        </div>
-      </div>
-    </div>`;
+function promoMissing(img) {
+  img.parentElement.innerHTML = '<div class="promo-missing">🎁<br>Promo card hasn\'t been uploaded yet.<br><span style="font-size:18px;">Add the image to the data folder in the repo.</span></div>';
 }
 
-function renderPromos() {
-  if (state.promos) {
-    const cacheBust = '?t=' + Math.floor(Date.now() / 300000);
-    return `
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
-      <div style="font-size:13px;font-weight:700;letter-spacing:3px;color:#e67e22;text-transform:uppercase;">XM Daily Promotion Card</div>
-      <img src="${state.promos}${cacheBust}"
-           style="max-width:100%;max-height:calc(100vh - 170px);object-fit:contain;border-radius:10px;border:2px solid var(--day-line-2);box-shadow:0 0 40px #e67e2222;"
-           alt="Daily Promotion Card"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
-      <div style="display:none;color:#5a7a9a;font-size:15px;font-style:italic;">Promo card image could not be loaded.</div>
-    </div>`;
+// ============ SLIDESHOW CONTROL (with pause) ============
+function startSlideshow() {
+  if (state.slideTimer) { clearInterval(state.slideTimer); state.slideTimer = null; }
+  if (!state.paused) {
+    state.slideTimer = setInterval(() => {
+      state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
+      render();
+      startCountdown();
+    }, CONFIG.SLIDE_INTERVAL);
   }
-  return `
-    <div class="promo-slide">
-      <div class="promo-title">DAILY PROMOTIONS</div>
-      <div class="promo-badge">
-        <div class="promo-empty">Today's promotion card will appear here automatically once uploaded.</div>
-        <div style="color:#5a7a9a;font-size:12px;margin-top:8px;text-align:center;">Source: Amanda Whiteside via Zapier</div>
-      </div>
-    </div>`;
+  startCountdown();
 }
-
-// -- COUNTDOWN --
 function startCountdown() {
   if (state.countdownTimer) clearInterval(state.countdownTimer);
   state.countdownStart = Date.now();
   state.countdownTimer = setInterval(() => {
-    const elapsed = Date.now() - state.countdownStart;
-    const pct = Math.max(0, 100 - (elapsed / CONFIG.SLIDE_INTERVAL) * 100);
     const bar = document.getElementById('countdownBar');
-    if (bar) bar.style.width = pct + '%';
+    if (!bar) return;
+    if (state.paused) { bar.style.width = '100%'; return; }
+    const elapsed = Date.now() - state.countdownStart;
+    bar.style.width = Math.max(0, 100 - (elapsed / CONFIG.SLIDE_INTERVAL * 100)) + '%';
   }, 100);
 }
-
-// -- SLIDESHOW --
-function startSlideshow() {
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
-
-  // Auto-refresh data
-  if (state.refreshTimer) clearInterval(state.refreshTimer);
-  state.refreshTimer = setInterval(() => {
-    loadData();
-  }, CONFIG.REFRESH_INTERVAL);
-}
-
 function goSlide(i) {
-  state.currentSlide = i;
+  if (!state.totalSlides) return;
+  state.currentSlide = ((i % state.totalSlides) + state.totalSlides) % state.totalSlides;
   render();
-  // Reset auto-advance timer and countdown
-  if (state.slideTimer) clearInterval(state.slideTimer);
-  state.slideTimer = setInterval(() => {
-    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
-    render();
-    startCountdown();
-  }, CONFIG.SLIDE_INTERVAL);
-  startCountdown();
+  startSlideshow();
+}
+function nextSlide() { goSlide(state.currentSlide + 1); }
+function prevSlide() { goSlide(state.currentSlide - 1); }
+function togglePause() {
+  state.paused = !state.paused;
+  render();
+  startSlideshow();
 }
 
-// -- KEYBOARD NAV --
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === ' ') { goSlide((state.currentSlide + 1) % state.totalSlides); }
-  if (e.key === 'ArrowLeft') { goSlide((state.currentSlide - 1 + state.totalSlides) % state.totalSlides); }
+// ============ FIT ANY SCREEN ============
+function fitStage() {
+  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  document.getElementById('stage-scaler').style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+
+// ============ IDLE FADE FOR CONTROLS ============
+let idleTimer = null;
+function wakeControls() {
+  const c = document.getElementById('controls');
+  if (c) c.classList.remove('idle');
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => {
+    const c2 = document.getElementById('controls');
+    if (c2) c2.classList.add('idle');
+  }, 12000);
+}
+['mousemove','mousedown','touchstart','keydown'].forEach(ev =>
+  document.addEventListener(ev, wakeControls, { passive: true }));
+
+// ============ KEYBOARD ============
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); togglePause(); }
+  else if (e.key === 'ArrowRight') nextSlide();
+  else if (e.key === 'ArrowLeft') prevSlide();
 });
 
-// === STAGE SCALER ===
-// Scale the fixed 1920x1080 canvas to fit any viewport while preserving the
-// aspect ratio. The head script already sets the initial scale before first
-// paint via the --fit-scale CSS variable; this function keeps it updated.
-// Runs on: load, DOMContentLoaded, resize, orientationchange, visibility
-// changes, page-show (back/forward cache), and a few timed retries after
-// load to catch slow-rendering TVs whose viewport size settles late.
-function fitStage() {
-  // Prefer the head-script helper since it owns the CSS variables — falls
-  // back to inline calculation if the head script didn't run for some reason.
-  if (window.__fitStage) { window.__fitStage(); return; }
-  const root = document.documentElement;
-  const w = window.innerWidth || root.clientWidth || 1920;
-  const h = window.innerHeight || root.clientHeight || 1080;
-  const r = Math.min(w / 1920, h / 1080);
-  root.style.setProperty('--fit-scale', r);
-  root.style.setProperty('--fit-x', ((w - 1920 * r) / 2) + 'px');
-  root.style.setProperty('--fit-y', ((h - 1080 * r) / 2) + 'px');
-}
-window.addEventListener('resize', fitStage, { passive: true });
-window.addEventListener('orientationchange', () => setTimeout(fitStage, 150));
-window.addEventListener('load', fitStage);
-window.addEventListener('pageshow', fitStage);
-document.addEventListener('DOMContentLoaded', fitStage);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) fitStage(); });
-// Retry a few times after load — some smart-TV browsers report stale viewport
-// dimensions for the first ~second while the page is still settling.
-[50, 250, 750, 1500, 3000].forEach(ms => setTimeout(fitStage, ms));
-// ResizeObserver catches device-rotation, container changes, and Chromecast
-// virtual-display resizes that don't always fire a "resize" event.
-if (window.ResizeObserver) {
-  try { new ResizeObserver(fitStage).observe(document.documentElement); } catch(e) {}
-}
-
-// -- INIT --
-loadPersistedFilters();
+// ============ INIT ============
+window.addEventListener('resize', fitStage);
 applyDayColor();
-scheduleDayColorAtMidnight();
+loadPersistedFilters();
 fitStage();
+wakeControls();
 loadData();
+scheduleDayColorAtMidnight();
+setInterval(() => loadData(), CONFIG.REFRESH_INTERVAL);
 </script>
 </body>
-<!-- v2.1 -->
 </html>
