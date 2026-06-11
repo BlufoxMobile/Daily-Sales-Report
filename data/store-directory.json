@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-11T04:54:15.020Z",
+  "updatedAt": "2026-06-11T17:20:53.000Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -15,13 +15,14 @@
     "Hammond Xfinity Store",
     "Johnson City Xfinity Store",
     "Kildeer Xfinity Store",
+    "Machesney Park",
     "Michigan City Xfinity Store",
     "Oak Ridge Xfinity Store",
     "Round Lake Beach Xfinity Store",
     "Schererville Xfinity Store",
-    "South Skokie Xfinity Store",
     "South Bend Xfinity Store",
     "South Knoxville Xfinity Store",
+    "South Skokie Xfinity Store",
     "Tinley Park Xfinity Store",
     "Uptown Xfinity Store",
     "Valparaiso Xfinity Store"
@@ -84,7 +85,8 @@
     "Valparaiso Xfinity Store": "EWashington@blufoxmobile.com",
     "Bourbonnais Xfinity Store": "jbilbrey@blufoxmobile.com",
     "South Bend Xfinity Store": "jbilbrey@blufoxmobile.com",
-    "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com"
+    "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
+    "Machesney Park": "ZMitchell@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -110,7 +112,8 @@
     "Uptown Xfinity Store": "IDhorajiwala@blufoxmobile.com",
     "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "juCarrillo@blufoxmobile.com",
-    "South Skokie Xfinity Store": "IDhorajiwala@blufoxmobile.com"
+    "South Skokie Xfinity Store": "IDhorajiwala@blufoxmobile.com",
+    "Machesney Park": "IDhorajiwala@blufoxmobile.com"
   },
   "storeManagerNames": {
     "Burbank Xfinity Store": "Zuri Salazar",
@@ -136,7 +139,8 @@
     "South Knoxville Xfinity Store": "Zoe Spradling",
     "Bourbonnais Xfinity Store": "Vacant Position",
     "South Bend Xfinity Store": "Vacant Position",
-    "South Skokie Xfinity Store": "Ozzie Garcia"
+    "South Skokie Xfinity Store": "Ozzie Garcia",
+    "Machesney Park": "ZQ Mitchell"
   },
   "storeAddresses": {
     "Bourbonnais Xfinity Store": "1690 N State Route 50, Suite B, Bourbonnais, IL 60914",
@@ -162,6 +166,7 @@
     "Tinley Park Xfinity Store": "15935 Harlem Ave, Tinley Park, IL 60477",
     "Uptown Xfinity Store": "4401 N. Clarendon Road, Chicago, IL 60640",
     "Valparaiso Xfinity Store": "2710 Laporte Ave, Suite 140, Valparaiso, IN 46383",
-    "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409"
+    "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
+    "Machesney Park": "1556 West Lane Rd, Machesney Park, IL 61115"
   }
 }
