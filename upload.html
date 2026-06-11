@@ -1211,13 +1211,20 @@ function npsSurveyBoxHtml(s){
 // Build the full HTML email + webhook payload for one store.
 function buildNpsPayload(shortName, surveys, salesStores, dir){
   const fullKey = shortName + " Xfinity Store";
-  const smEmail = (dir.storeManagers || {})[fullKey] || "";
-  const dmEmail = (dir.storeDMs || {})[fullKey] || "";
-  const smName  = (dir.storeManagerNames || {})[fullKey] || "";
+  const smEmail  = (dir.storeManagers || {})[fullKey] || "";
+  const asmEmail = (dir.storeAMs || {})[fullKey] || "";
+  const dmEmail  = (dir.storeDMs || {})[fullKey] || "";
+  const smName   = (dir.storeManagerNames || {})[fullKey] || "";
 
-  const to = smEmail || dmEmail || NPS_CONFIG.MY_EMAIL;
-  const cc = Array.from(new Set([dmEmail, NPS_CONFIG.MY_EMAIL]
-    .filter(e => e && e.toLowerCase() !== to.toLowerCase()))).join(",");
+  const to = smEmail || asmEmail || dmEmail || NPS_CONFIG.MY_EMAIL;
+  const seen = new Set([to.toLowerCase()]);
+  const cc = [asmEmail, dmEmail, NPS_CONFIG.MY_EMAIL].filter(e => {
+    if(!e) return false;
+    const k = e.toLowerCase();
+    if(seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  }).join(",");
 
   const good = surveys.filter(s => npsBucket(s.score) === "good");
   const ok   = surveys.filter(s => npsBucket(s.score) === "ok");
