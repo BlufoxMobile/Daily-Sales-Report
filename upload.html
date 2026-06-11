@@ -718,9 +718,8 @@ async function uploadOpenOrdersJson(file) {
 }
 
 
-// === NPS SHARED MODULE (identical copy lives in upload.html + NPS-Report/index.html) ===
+// === NPS SHARED MODULE (identical copy lives in upload.html + NPS-Index---Medallia/index.html) ===
 const NPS_CONFIG = {
-  // Paste your Zapier "Catch Hook" URL here (Webhooks by Zapier trigger).
   WEBHOOK_URL: "https://hooks.zapier.com/hooks/catch/20441079/43t6hby/",
   RESPONSES_PATH: "data/nps-responses.json",
   SENT_LOG_PATH:  "data/nps-sent-log.json",
@@ -877,11 +876,16 @@ async function npsFetchDirectory(){
   return await r.json();
 }
 
+// Reps parsed from the "Rep Rank" sheet — used to resolve NTIDs to real names.
+let NPS_REPS = [];
+
 // Compact version of the DM-Visit-Guide "Store Rank" parser (same header regexes).
+// Also parses "Rep Rank" into NPS_REPS as a side effect (same workbook fetch).
 async function npsFetchSalesStores(){
   const resp = await fetch(NPS_CONFIG.NPS_SALES_REPORT_URL + "?t=" + Date.now(), { cache: "no-store" });
   if(!resp.ok) throw new Error("Sales report HTTP " + resp.status);
   const wb = XLSX.read(await resp.arrayBuffer(), { type: "array" });
+  try { NPS_REPS = npsParseReps(wb); } catch(e){ console.warn("Rep Rank parse failed:", e); }
   const ws = wb.Sheets["Store Rank"];
   if(!ws) return [];
   const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
@@ -933,6 +937,56 @@ async function npsFetchSalesStores(){
   return out;
 }
 
+// Parse "Rep Rank" sheet → [{name, store}] for ALL reps (no RSD filter, so any
+// rep who shows up on a survey can be matched).
+function npsParseReps(wb){
+  const ws = wb.Sheets["Rep Rank"];
+  if(!ws) return [];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+  let hr = -1;
+  for(let i = 0; i < Math.min(20, rows.length); i++){
+    if(rows[i] && rows[i].some(c => c && String(c).trim() === "Rank")){ hr = i; break; }
+  }
+  if(hr < 0) return [];
+  const h = rows[hr].map(c => c == null ? "" : String(c).trim());
+  const iName = h.findIndex(c => c.toLowerCase().includes("employee"));
+  const iLoc  = h.findIndex(c => c.toLowerCase().includes("location"));
+  if(iName < 0) return [];
+  const out = [];
+  for(let i = hr + 1; i < rows.length; i++){
+    const r = rows[i];
+    if(!r || r[iName] == null) continue;
+    const name = String(r[iName]).trim();
+    if(name) out.push({ name: name, store: iLoc >= 0 ? String(r[iLoc] || "").trim() : "" });
+  }
+  return out;
+}
+
+// Resolve an NTID like "bp-aray552" → "Anthony Ray" by matching first initial +
+// last-name prefix against Rep Rank names. Returns "" unless exactly one match.
+function npsRepName(ntid){
+  if(!ntid || !NPS_REPS.length) return "";
+  const m = String(ntid).toLowerCase().match(/^bp-([a-z])([a-z]+?)\d/);
+  if(!m) return "";
+  const ini = m[1], lastPrefix = m[2];
+  const hits = NPS_REPS.filter(rep => {
+    const parts = String(rep.name).trim().toLowerCase().split(/\s+/);
+    if(parts.length < 2) return false;
+    const first = parts[0], last = parts[parts.length - 1];
+    return first.charAt(0) === ini && last.indexOf(lastPrefix) === 0;
+  });
+  if(hits.length === 1) return hits[0].name;
+  // collisions: try narrowing by exact last-name length match
+  if(hits.length > 1){
+    const exact = hits.filter(rep => {
+      const last = String(rep.name).trim().toLowerCase().split(/\s+/).pop();
+      return last === lastPrefix;
+    });
+    if(exact.length === 1) return exact[0].name;
+  }
+  return "";
+}
+
 function npsPctFmt(v){
   const n = Number(v) || 0;
   return (Math.abs(n) <= 1.5 ? n * 100 : n).toFixed(1) + "%";
@@ -946,15 +1000,16 @@ function npsMedian(arr){
   return a.length % 2 ? a[mid] : (a[mid-1] + a[mid]) / 2;
 }
 
+// Fluid metric tile — inline-block so tiles wrap 3-up on desktop, 2-up on phones.
 function npsTileHtml(label, value, tone){
   const bg = tone === "good" ? "#ecfdf5" : tone === "bad" ? "#fef2f2" : "#f8fafc";
   const bd = tone === "good" ? "#a7f3d0" : tone === "bad" ? "#fecaca" : "#e2e8f0";
   const col = tone === "good" ? "#047857" : tone === "bad" ? "#b91c1c" : "#0f172a";
-  return '<td width="33%" style="padding:4px;vertical-align:top;">' +
-    '<div style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:8px;padding:10px 12px;">' +
+  return '<div style="display:inline-block;vertical-align:top;width:33%;min-width:150px;box-sizing:border-box;padding:3px;">' +
+    '<div style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:8px;padding:9px 11px;">' +
     '<div style="font-size:10px;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;font-weight:600;">' + label + '</div>' +
-    '<div style="font-size:18px;font-weight:700;color:' + col + ';margin-top:2px;">' + value + '</div>' +
-    '</div></td>';
+    '<div style="font-size:17px;font-weight:700;color:' + col + ';margin-top:2px;white-space:nowrap;">' + value + '</div>' +
+    '</div></div>';
 }
 
 function npsSurveyBoxHtml(s){
@@ -963,15 +1018,32 @@ function npsSurveyBoxHtml(s){
   const bg     = b === "good" ? "#ecfdf5" : b === "ok" ? "#fffbeb" : "#fef2f2";
   const badge  = b === "good" ? "#10b981" : b === "ok" ? "#f59e0b" : "#ef4444";
   const bw     = b === "bad" ? "2px" : "1px";
-  const meta = [s.txnType, s.ntid, npsPrettyDate(s.txnDate)].filter(Boolean).map(npsEsc).join(" &nbsp;&bull;&nbsp; ");
+
+  const repName = npsRepName(s.ntid);
+  const repHtml = repName
+    ? npsEsc(repName) + ' <span style="color:#94a3b8;font-weight:500;font-size:11px;">(' + npsEsc(s.ntid) + ')</span>'
+    : npsEsc(s.ntid || "Unknown");
+
+  const lr = (label, val) =>
+    '<tr><td style="font-size:10px;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;font-weight:700;padding:2px 10px 2px 0;white-space:nowrap;vertical-align:top;width:1%;">' + label + '</td>' +
+    '<td style="font-size:13px;color:#0f172a;font-weight:600;padding:2px 0;line-height:1.4;">' + val + '</td></tr>';
+
+  const rows =
+    lr("Rep", repHtml) +
+    lr("Date", npsEsc(npsPrettyDate(s.txnDate) || "—")) +
+    lr("Interaction", npsEsc(s.txnType || "—"));
+
   const comment = s.comment
-    ? '<div style="font-size:14px;color:#0f172a;margin-top:6px;line-height:1.5;">&ldquo;' + npsEsc(s.comment) + '&rdquo;</div>'
-    : '<div style="font-size:13px;color:#94a3b8;font-style:italic;margin-top:6px;">No comment left</div>';
-  return '<table width="100%" cellpadding="0" cellspacing="0" style="border:' + bw + ' solid ' + border + ';background:' + bg + ';border-radius:10px;margin:0 0 10px 0;">' +
-    '<tr><td width="56" align="center" style="padding:14px 0 14px 12px;vertical-align:top;">' +
+    ? '<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(100,116,139,0.25);">' +
+      '<div style="font-size:10px;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;font-weight:700;">Customer Said</div>' +
+      '<div style="font-size:14px;color:#0f172a;margin-top:3px;line-height:1.5;">&ldquo;' + npsEsc(s.comment) + '&rdquo;</div></div>'
+    : '<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-top:8px;">No comment left</div>';
+
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:' + bw + ' solid ' + border + ';background:' + bg + ';border-radius:10px;margin:0 0 10px 0;">' +
+    '<tr><td width="52" align="center" style="padding:14px 0 14px 10px;vertical-align:top;">' +
     '<div style="width:40px;height:40px;border-radius:50%;background:' + badge + ';color:#ffffff;font-weight:800;font-size:17px;line-height:40px;text-align:center;">' + s.score + '</div>' +
-    '</td><td style="padding:12px 14px;vertical-align:top;">' +
-    '<div style="font-size:12px;color:#475569;font-weight:600;">' + meta + '</div>' + comment +
+    '</td><td style="padding:12px 14px 12px 12px;vertical-align:top;">' +
+    '<table role="presentation" cellpadding="0" cellspacing="0" width="100%">' + rows + '</table>' + comment +
     '</td></tr></table>';
 }
 
@@ -1007,33 +1079,29 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
       med[k] = npsMedian(salesStores.map(s => s[k]));
     });
     const tone = k => row[k] >= med[k] ? "good" : "bad";
-    const totalRGU = row.newRGU;
     headerHtml =
       '<div style="margin-bottom:10px;"><span style="background:#f97316;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:999px;">RANK #' + row.rank + '</span></div>' +
-      '<div style="color:#ffffff;font-size:26px;font-weight:700;">' + npsEsc(shortName) + '</div>' +
+      '<div style="color:#ffffff;font-size:24px;font-weight:700;">' + npsEsc(shortName) + '</div>' +
       '<div style="color:#cbd5e1;font-size:13px;margin-top:4px;">' + npsEsc(row.region || "") + ' &nbsp;&bull;&nbsp; SM: ' + npsEsc(smName || row.sm || "No Mgr") + ' &nbsp;&bull;&nbsp; DM: ' + npsEsc(row.dm || "") + '</div>' +
-      '<div style="margin-top:12px;"><span style="color:#fb923c;font-size:32px;font-weight:800;">' + npsMoneyFmt(row.gpTrend) + '</span> <span style="color:#94a3b8;font-size:11px;letter-spacing:1px;font-weight:600;">&nbsp;GP TREND</span></div>';
+      '<div style="margin-top:12px;"><span class="nps-gp" style="color:#fb923c;font-size:30px;font-weight:800;">' + npsMoneyFmt(row.gpTrend) + '</span> <span style="color:#94a3b8;font-size:11px;letter-spacing:1px;font-weight:600;">&nbsp;GP TREND</span></div>';
     tilesHtml =
-      '<table width="100%" cellpadding="0" cellspacing="0"><tr>' +
-        npsTileHtml("Total RGU", totalRGU, null) +
+      '<div style="font-size:0;text-align:left;">' +
+        npsTileHtml("Total RGU", row.newRGU, null) +
         npsTileHtml("Mobile", row.mobileMTD, null) +
         npsTileHtml("Tablet / Watch", row.tabletMTD + " / " + row.watchMTD, null) +
-      '</tr><tr>' +
         npsTileHtml("Mob Close Rate", npsPctFmt(row.mobileCR), tone("mobileCR")) +
         npsTileHtml("Fiscal CR", npsPctFmt(row.fiscalCR), tone("fiscalCR")) +
         npsTileHtml("Non-Trad", npsPctFmt(row.nonTrad), tone("nonTrad")) +
-      '</tr><tr>' +
         npsTileHtml("Gig Plans %", npsPctFmt(row.gigPct), tone("gigPct")) +
         npsTileHtml("Plus Mix", npsPctFmt(row.plusMix), tone("plusMix")) +
         npsTileHtml("New &rarr; Upgrade", npsPctFmt(row.newToUpg), tone("newToUpg")) +
-      '</tr><tr>' +
         npsTileHtml("Accessories", npsMoneyFmt(row.accPerDev), tone("accPerDev")) +
         npsTileHtml("Fiscal NPS", npsPctFmt(row.nps), tone("nps")) +
         npsTileHtml("GP Trend", npsMoneyFmt(row.gpTrend), tone("gpTrend")) +
-      '</tr></table>';
+      '</div>';
   } else {
     headerHtml =
-      '<div style="color:#ffffff;font-size:26px;font-weight:700;">' + npsEsc(shortName) + '</div>' +
+      '<div style="color:#ffffff;font-size:24px;font-weight:700;">' + npsEsc(shortName) + '</div>' +
       '<div style="color:#cbd5e1;font-size:13px;margin-top:4px;">SM: ' + npsEsc(smName || "No Mgr") + '</div>';
   }
 
@@ -1044,28 +1112,31 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
   };
 
   const bodyHtml =
-'<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f1f5f9;">' +
-'<div style="background:#f1f5f9;padding:24px 12px;font-family:Segoe UI,Arial,Helvetica,sans-serif;">' +
-'<table width="640" cellpadding="0" cellspacing="0" align="center" style="max-width:640px;width:100%;">' +
-'<tr><td style="background:#1e3a8a;border-radius:14px 14px 0 0;padding:26px 28px;">' + headerHtml + '</td></tr>' +
-(tilesHtml ? '<tr><td style="background:#ffffff;padding:14px 16px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' + tilesHtml + '</td></tr>' : '') +
-'<tr><td style="background:#ffffff;padding:20px 24px 8px 24px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' +
+'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+'<style>@media only screen and (max-width:480px){ .nps-pad{padding-left:14px !important;padding-right:14px !important;} .nps-gp{font-size:24px !important;} }</style>' +
+'</head><body style="margin:0;padding:0;background:#f1f5f9;">' +
+'<div style="background:#f1f5f9;padding:16px 8px;font-family:Segoe UI,Arial,Helvetica,sans-serif;">' +
+'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">' +
+'<table role="presentation" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;">' +
+'<tr><td class="nps-pad" style="background:#1e3a8a;border-radius:14px 14px 0 0;padding:22px 24px;">' + headerHtml + '</td></tr>' +
+(tilesHtml ? '<tr><td style="background:#ffffff;padding:12px 10px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' + tilesHtml + '</td></tr>' : '') +
+'<tr><td class="nps-pad" style="background:#ffffff;padding:20px 22px 8px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' +
 '<div style="font-size:18px;font-weight:800;color:#0f172a;">Yesterday&rsquo;s NPS Surveys</div>' +
 '<div style="font-size:13px;color:#64748b;margin-top:4px;">' + dateLabel + ' &nbsp;&bull;&nbsp; ' + surveys.length + ' response' + (surveys.length === 1 ? "" : "s") + ' &nbsp;&bull;&nbsp; Daily tNPS: <strong style="color:' + (tnps >= 0 ? "#047857" : "#b91c1c") + ';">' + tnps + '</strong></div>' +
-'<div style="margin-top:10px;font-size:12px;color:#475569;">' +
-'<span style="background:#ecfdf5;border:1px solid #10b981;color:#047857;border-radius:999px;padding:3px 10px;font-weight:700;">' + good.length + ' Good (9&ndash;10)</span>&nbsp; ' +
-'<span style="background:#fffbeb;border:1px solid #f59e0b;color:#b45309;border-radius:999px;padding:3px 10px;font-weight:700;">' + ok.length + ' OK (8)</span>&nbsp; ' +
-'<span style="background:#fef2f2;border:1px solid #ef4444;color:#b91c1c;border-radius:999px;padding:3px 10px;font-weight:700;">' + bad.length + ' Needs Attention (0&ndash;7)</span>' +
+'<div style="margin-top:10px;font-size:12px;color:#475569;line-height:2.2;">' +
+'<span style="background:#ecfdf5;border:1px solid #10b981;color:#047857;border-radius:999px;padding:3px 10px;font-weight:700;white-space:nowrap;">' + good.length + ' Good (9&ndash;10)</span>&nbsp; ' +
+'<span style="background:#fffbeb;border:1px solid #f59e0b;color:#b45309;border-radius:999px;padding:3px 10px;font-weight:700;white-space:nowrap;">' + ok.length + ' OK (8)</span>&nbsp; ' +
+'<span style="background:#fef2f2;border:1px solid #ef4444;color:#b91c1c;border-radius:999px;padding:3px 10px;font-weight:700;white-space:nowrap;">' + bad.length + ' Needs Attention (0&ndash;7)</span>' +
 '</div></td></tr>' +
-'<tr><td style="background:#ffffff;padding:6px 24px 22px 24px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' +
+'<tr><td class="nps-pad" style="background:#ffffff;padding:6px 22px 22px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' +
 section("&#9888; Needs Attention", "#b91c1c", bad) +
 section("Almost There", "#b45309", ok) +
 section("Wins", "#047857", good) +
 '</td></tr>' +
-'<tr><td style="background:#0f172a;border-radius:0 0 14px 14px;padding:16px 24px;text-align:center;">' +
+'<tr><td style="background:#0f172a;border-radius:0 0 14px 14px;padding:16px 20px;text-align:center;">' +
 '<a href="' + NPS_CONFIG.DASHBOARD_URL + '" style="color:#60a5fa;font-size:13px;font-weight:600;text-decoration:none;">Open the NPS Report dashboard &rarr;</a>' +
 '<div style="color:#64748b;font-size:11px;margin-top:6px;">Sent automatically from the Blufox Daily Upload</div>' +
-'</td></tr></table></div></body></html>';
+'</td></tr></table></td></tr></table></div></body></html>';
 
   const subject = "NPS Daily Digest — " + shortName + " — " +
     surveys.length + " survey" + (surveys.length === 1 ? "" : "s") +
