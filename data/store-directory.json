@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-01T01:33:28.400Z",
+  "updatedAt": "2026-06-11T04:54:15.020Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -28,6 +28,7 @@
   ],
   "managers": [
     "ABell@blufoxmobile.com",
+    "ayonan@blufoxmobile.com",
     "CCrooks@blufoxmobile.com",
     "dRegan@blufoxmobile.com",
     "ereyes@blufoxmobile.com",
@@ -39,7 +40,6 @@
     "IDhorajiwala@blufoxmobile.com",
     "ISolis@blufoxmobile.com",
     "jbilbrey@blufoxmobile.com",
-    "jGabbara@blufoxmobile.com",
     "jTrentham@blufoxmobile.com",
     "juCarrillo@blufoxmobile.com",
     "kKirkland@blufoxmobile.com",
@@ -67,7 +67,7 @@
     "Dekalb Xfinity Store": "ZMitchell@blufoxmobile.com",
     "Elkhart Xfinity Store": "dRegan@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "mRivera@blufoxmobile.com",
-    "Evanston Xfinity Store": "jGabbara@blufoxmobile.com",
+    "Evanston Xfinity Store": "ayonan@blufoxmobile.com",
     "Frankfort Xfinity Store": "FPedraza-Scalfano@blufoxmobile.com",
     "Glenview Xfinity Store": "tChowdhury@blufoxmobile.com",
     "Greeneville Xfinity Store": "jTrentham@blufoxmobile.com",
@@ -119,7 +119,7 @@
     "Dekalb Xfinity Store": "ZQ Mitchell",
     "Elkhart Xfinity Store": "DJ Regan",
     "Evergreen Park Xfinity Store": "Michael Rivera",
-    "Evanston Xfinity Store": "Jonathan Gabbara",
+    "Evanston Xfinity Store": "Aedo Yonan",
     "Frankfort Xfinity Store": "Frankie Scalfano",
     "Glenview Xfinity Store": "Tanzim Chowdhury",
     "Greeneville Xfinity Store": "Josh Trentham",
