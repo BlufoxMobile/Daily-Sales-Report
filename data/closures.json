@@ -5413,11 +5413,10 @@
     "store": "Evanston"
   },
   "2358772792": {
-    "status": "Pending Install",
-    "ts": "2026-06-09T18:24:44.239Z",
+    "status": "Closed",
+    "ts": "2026-06-12T19:37:55.376Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-06-12"
+    "store": "Oak Ridge"
   },
   "2358890187": {
     "status": "Pending Install",
