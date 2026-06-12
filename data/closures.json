@@ -5373,11 +5373,10 @@
     "store": "Kildeer"
   },
   "2357583414": {
-    "status": "Pending Install",
-    "ts": "2026-06-08T17:46:39.903Z",
+    "status": "Cancelled Order",
+    "ts": "2026-06-12T23:48:54.970Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-06-10"
+    "store": "Hammond"
   },
   "2357709208": {
     "status": "Pending Install",
