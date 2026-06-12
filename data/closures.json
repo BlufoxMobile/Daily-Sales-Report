@@ -5419,11 +5419,10 @@
     "store": "Oak Ridge"
   },
   "2358890187": {
-    "status": "Pending Install",
-    "ts": "2026-06-08T17:46:46.799Z",
+    "status": "Cancelled Order",
+    "ts": "2026-06-12T23:47:55.628Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-06-10"
+    "store": "Hammond"
   },
   "2359116099": {
     "status": "Closed",
