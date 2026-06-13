@@ -7039,5 +7039,17 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville",
     "pendingUntil": "2026-06-20"
+  },
+  "1002286284212058": {
+    "status": "Closed",
+    "ts": "2026-06-13T20:47:36.925Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
+  "1002286278942058": {
+    "status": "Closed",
+    "ts": "2026-06-13T20:47:37.991Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   }
 }
