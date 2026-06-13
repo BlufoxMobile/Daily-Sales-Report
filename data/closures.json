@@ -6784,11 +6784,10 @@
     "store": "Hammond"
   },
   "1001296573382109": {
-    "status": "Pending Install",
-    "ts": "2026-05-29T13:28:18.723Z",
+    "status": "Closed",
+    "ts": "2026-06-13T19:36:54.264Z",
     "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-06-05"
+    "store": "South Knoxville"
   },
   "1002279381942057": {
     "status": "Pending Install",
