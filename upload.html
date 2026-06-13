@@ -222,6 +222,19 @@
     <div class="file-name" id="shopperFileName"></div>
   </div>
 
+
+  <!-- === NPS SURVEYS SECTION === -->
+  <div class="section-label">NPS Surveys</div>
+
+  <div class="upload-zone" id="npsZone">
+    <input type="file" id="npsFile" accept=".xlsx,.xls">
+    <div class="upload-icon">&#128172;</div>
+    <h3>tNPS Responses Export (Excel)</h3>
+    <p>Drop your Responses_*.xlsx &mdash; Store ID (col BE), NTID (col F), score (col J), comments (col L)</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Feeds NPS Report dashboard + auto-emails SM/DM digests via Zapier</p>
+    <div class="file-name" id="npsFileName"></div>
+  </div>
+
   <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadFiles()">
     Upload to Dashboards
   </button>
@@ -252,6 +265,7 @@
     <a href="https://blufoxmobile.github.io/Auto-Punch-Report/" target="_blank">Punch Audit &rarr;</a>
     <a href="https://blufoxmobile.github.io/T-Sheet-Submissions/" target="_blank">T-Sheets &rarr;</a>
     <a href="https://blufoxmobile.github.io/Yesterday-s-Conversion/" target="_blank">Y-Conversion &rarr;</a>
+    <a href="https://blufoxmobile.github.io/NPS-Index---Medallia/" target="_blank">NPS Report &rarr;</a>
   </div>
 </div>
 
@@ -303,6 +317,7 @@ const promoInput      = document.getElementById('promoFile');
 const exceptionsInput = document.getElementById('exceptionsFile');
 const punchInput      = document.getElementById('punchFile');
 const shopperInput    = document.getElementById('shopperFile');
+const npsInput        = document.getElementById('npsFile');
 const uploadBtn       = document.getElementById('uploadBtn');
 
 // File selection handlers
@@ -330,9 +345,10 @@ bindFileZone(promoInput, 'promoZone', 'promoFileName');
 bindFileZone(exceptionsInput, 'exceptionsZone', 'exceptionsFileName');
 bindFileZone(punchInput, 'punchZone', 'punchFileName');
 bindFileZone(shopperInput, 'shopperZone', 'shopperFileName');
+bindFileZone(npsInput, 'npsZone', 'npsFileName');
 
 function checkReady() {
-  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0];
+  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0] || npsInput.files[0];
   const hasToken = !!GITHUB_TOKEN;
   uploadBtn.disabled = !(hasFiles && hasToken);
   if (hasFiles && !hasToken) {
@@ -702,6 +718,927 @@ async function uploadOpenOrdersJson(file) {
 }
 
 
+// === NPS SHARED MODULE (identical copy lives in upload.html + NPS-Index---Medallia/index.html) ===
+const NPS_CONFIG = {
+  WEBHOOK_URL: "https://hooks.zapier.com/hooks/catch/20441079/43t6hby/",
+  RESPONSES_PATH: "data/nps-responses.json",
+  SENT_LOG_PATH:  "data/nps-sent-log.json",
+  RESPONSES_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/nps-responses.json",
+  SENT_LOG_URL:  "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/nps-sent-log.json",
+  DIRECTORY_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/store-directory.json",
+  NPS_SALES_REPORT_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx",
+  TSHEET_URL: "https://script.google.com/macros/s/AKfycbyQaa1yvggLJuw5dcme74vwAW3hSB3BvzCK40IhLThy-F8KZDFOF6gcyl8psNMd3yD-Cg/exec",
+  OPEN_ORDERS_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/open-orders.json",
+  CLOSURES_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/closures.json",
+  FU_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTG0Gp38ba_zBP7jNlGg9GWGgzFsh6946OUVOl9RQp0kL9Amc0qQZg0hMbdw7veg7Y56qKv6tUSFjI7/pub?output=csv",
+  CRM_URL: "https://blufoxmobile.github.io/Daily-Sales-Report/crm.html",
+  DASHBOARD_URL: "https://blufoxmobile.github.io/NPS-Index---Medallia/",
+  RSD_FILTER: "Bilbrey",
+  MY_EMAIL: "jbilbrey@blufoxmobile.com",
+  HISTORY_DAYS: 95
+};
+
+// Store-number → short store name (numbers observed in the tNPS "Store ID" column BE).
+const NPS_STORE_NUM = {
+  "55027": "Bourbonnais",   "55009": "Uptown",          "55005": "Frankfort",
+  "51026": "Schererville",  "55004": "Glenview",        "51011": "Greeneville",
+  "51025": "South Skokie",  "55006": "Elkhart",         "55010": "Evergreen Park",
+  "55000": "Valparaiso",    "51022": "South Knoxville", "51023": "Round Lake Beach",
+  "51031": "Johnson City",  "55002": "Tinley Park",     "55011": "Cicero",
+  "55001": "Kildeer",       "55003": "Dekalb",          "55008": "Evanston",
+  "51009": "Oak Ridge"
+};
+
+// Keyword fallbacks for store numbers we haven't seen yet. Checked in order.
+const NPS_STORE_ALIASES = [
+  ["South Knoxville", ["s. knoxville", "s knoxville", "south knoxville"]],
+  ["South Skokie",    ["south skokie", "s. skokie", "s skokie", "skokie"]],
+  ["South Bend",      ["south bend"]],
+  ["Bourbonnais",     ["bourbonnais", "northfield square"]],
+  ["Elkhart",         ["elkhart", "northfield center"]],
+  ["Glenview",        ["glenview", "patriot marketplace"]],
+  ["Dekalb",          ["dekalb", "oakland shopping"]],
+  ["Kildeer",         ["kildeer"]],
+  ["Uptown",          ["uptown"]],
+  ["Evergreen Park",  ["evergreen park"]],
+  ["Round Lake Beach",["round lake"]],
+  ["Calumet City",    ["calumet"]],
+  ["Michigan City",   ["michigan city"]],
+  ["Tinley Park",     ["tinley"]],
+  ["Johnson City",    ["johnson city"]],
+  ["Greeneville",     ["greeneville"]],
+  ["Oak Ridge",       ["oak ridge"]],
+  ["Schererville",    ["schererville"]],
+  ["Valparaiso",      ["valparaiso"]],
+  ["Frankfort",       ["frankfort"]],
+  ["Evanston",        ["evanston"]],
+  ["Hammond",         ["hammond"]],
+  ["Burbank",         ["burbank"]],
+  ["Cicero",          ["cicero"]]
+];
+
+function npsMapStore(raw){
+  if(!raw) return null;
+  const m = String(raw).match(/^\s*(\d{4,6})/);
+  if(m && NPS_STORE_NUM[m[1]]) return NPS_STORE_NUM[m[1]];
+  const s = String(raw).toLowerCase();
+  for(const [name, keys] of NPS_STORE_ALIASES){
+    if(keys.some(k => s.includes(k))) return name;
+  }
+  return null;
+}
+
+function npsDateStr(v){
+  let d = null;
+  if(v instanceof Date){ d = v; }
+  else if(typeof v === "number"){
+    d = new Date(Math.round((v - 25569) * 86400000));
+    return d.getUTCFullYear() + "-" + String(d.getUTCMonth()+1).padStart(2,"0") + "-" + String(d.getUTCDate()).padStart(2,"0");
+  }
+  else if(v){ const t = new Date(v); if(!isNaN(t.getTime())) d = t; }
+  if(!d || isNaN(d.getTime())) return null;
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+
+function npsPrettyDate(iso){
+  if(!iso) return "";
+  const [y,mo,da] = iso.split("-").map(Number);
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return M[mo-1] + " " + da + ", " + y;
+}
+
+function npsCleanText(v){
+  if(v == null) return "";
+  let s = String(v);
+  // The export writes some unicode as literal "\uXXXX" sequences — decode them.
+  s = s.replace(/\\u([0-9a-fA-F]{4})/g, (m,h) => String.fromCharCode(parseInt(h,16)));
+  return s.trim();
+}
+
+function npsEsc(s){
+  return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// Bucket per Jeff's spec: 9-10 good (green), 8 ok (yellow), 0-7 bad (red).
+function npsBucket(score){ return score >= 9 ? "good" : score === 8 ? "ok" : "bad"; }
+
+// Parse the tNPS Responses export workbook into survey objects.
+function parseNpsWorkbook(wb){
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  if(!ws) throw new Error("Workbook has no sheets");
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+  let hr = -1;
+  for(let i = 0; i < Math.min(15, rows.length); i++){
+    const r = rows[i];
+    if(r && r.some(c => c != null && String(c).trim() === "Employee NTID")){ hr = i; break; }
+  }
+  if(hr < 0) throw new Error('Header row not found (no "Employee NTID" column). Is this the tNPS Responses export?');
+  const h = rows[hr].map(c => c == null ? "" : String(c).trim());
+  const iId       = h.findIndex(c => /^surveyid/i.test(c));
+  const iTxn      = h.findIndex(c => c.toLowerCase() === "transaction date");
+  const iResp     = h.findIndex(c => c.toLowerCase() === "response date");
+  const iNtid     = h.indexOf("Employee NTID");
+  const iScore    = h.findIndex(c => c.toLowerCase() === "sms tnps");       // col J
+  const iScoreAlt = h.findIndex(c => c.toLowerCase() === "tnps");           // col K fallback
+  const iReason   = h.findIndex(c => c.toLowerCase() === "reason for score"); // col L
+  let iType  = h.findIndex(c => /retail interaction/i.test(c));             // col AY
+  if(iType  < 0) iType  = 50;
+  let iStore = h.findIndex(c => c.toLowerCase() === "store id");            // col BE
+  if(iStore < 0) iStore = 56;
+
+  const surveys = [];
+  const unmatched = new Set();
+  for(let i = hr + 1; i < rows.length; i++){
+    const r = rows[i];
+    if(!r) continue;
+    const id = r[iId] != null ? String(r[iId]).trim() : "";
+    let score = r[iScore];
+    if((score == null || score === "") && iScoreAlt >= 0) score = r[iScoreAlt];
+    if(!id || score == null || score === "") continue;
+    score = Number(score);
+    if(isNaN(score)) continue;
+    const rawStore = r[iStore] != null ? String(r[iStore]).trim() : "";
+    const storeKey = npsMapStore(rawStore);
+    if(!storeKey && rawStore) unmatched.add(rawStore);
+    surveys.push({
+      id: id,
+      score: score,
+      txnDate:  npsDateStr(r[iTxn]),
+      respDate: npsDateStr(r[iResp]),
+      ntid:     r[iNtid] != null ? String(r[iNtid]).trim() : "",
+      comment:  npsCleanText(r[iReason]),
+      txnType:  r[iType] != null ? String(r[iType]).trim() : "",
+      storeKey: storeKey,
+      storeRaw: rawStore
+    });
+  }
+  return { surveys: surveys, unmatched: Array.from(unmatched) };
+}
+
+async function npsFetchDirectory(){
+  const r = await fetch(NPS_CONFIG.DIRECTORY_URL + "?t=" + Date.now(), { cache: "no-store" });
+  if(!r.ok) throw new Error("store-directory.json HTTP " + r.status);
+  return await r.json();
+}
+
+// Reps parsed from the "Rep Rank" sheet — used to resolve NTIDs to real names.
+let NPS_REPS = [];
+
+// Compact version of the DM-Visit-Guide "Store Rank" parser (same header regexes).
+// Also parses "Rep Rank" into NPS_REPS as a side effect (same workbook fetch).
+async function npsFetchSalesStores(){
+  const resp = await fetch(NPS_CONFIG.NPS_SALES_REPORT_URL + "?t=" + Date.now(), { cache: "no-store" });
+  if(!resp.ok) throw new Error("Sales report HTTP " + resp.status);
+  const wb = XLSX.read(await resp.arrayBuffer(), { type: "array" });
+  try { NPS_REPS = npsParseReps(wb); } catch(e){ console.warn("Rep Rank parse failed:", e); }
+  const ws = wb.Sheets["Store Rank"];
+  if(!ws) return [];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+  let hr = -1;
+  for(let i = 0; i < Math.min(20, rows.length); i++){
+    if(rows[i] && rows[i].some(c => c && String(c).trim() === "Rank")){ hr = i; break; }
+  }
+  if(hr < 0) return [];
+  const h = rows[hr].map(c => c == null ? "" : String(c).trim());
+  const num = v => { const n = Number(v); return isNaN(n) ? 0 : n; };
+  const idx = {
+    rank:      h.findIndex(c => c.trim() === "Rank"),
+    region:    h.findIndex(c => c.toLowerCase().includes("region")),
+    store:     h.findIndex(c => c.toLowerCase().includes("store")),
+    rsd:       h.findIndex(c => c.toLowerCase().includes("rsd")),
+    dm:        h.findIndex(c => c.trim().toLowerCase() === "dm"),
+    sm:        h.findIndex(c => c.trim().toLowerCase() === "sm"),
+    gpTrend:   h.findIndex(c => /^GP\s*\$\s*Trend$/i.test(c)),
+    mobileCR:  h.findIndex(c => c.toLowerCase().includes("mobile close rate")),
+    fiscalCR:  h.findIndex(c => c.toLowerCase().includes("fiscal close rate")),
+    nonTrad:   h.findIndex(c => c.toLowerCase().includes("non traditional")),
+    gigPct:    h.findIndex(c => /^GIG\s*Plans[\s\S]*%[\s\S]*10\s*Pts/i.test(c)),
+    plusMix:   h.findIndex(c => /Mobile\s*Plus\s*Mix[\s\S]*5\s*Pts/i.test(c)),
+    newToUpg:  h.findIndex(c => /NEW\s*TO\s*UPGR\s*%/i.test(c)),
+    accPerDev: h.findIndex(c => /Accessory.*per\s*Device.*Net/i.test(c)),
+    nps:       h.findIndex(c => c.toLowerCase().includes("fiscal nps") && !c.toLowerCase().includes("last")),
+    newRGU:    h.findIndex(c => /^NEW\s*RGU$/i.test(c)),
+    mobileMTD: h.findIndex(c => /^Mobile\s*MTD$/i.test(c)),
+    tabletMTD: h.findIndex(c => /^Tablet\s*MTD$/i.test(c)),
+    watchMTD:  h.findIndex(c => /^Watches\s*MTD$/i.test(c))
+  };
+  const out = [];
+  for(let i = hr + 1; i < rows.length; i++){
+    const r = rows[i];
+    if(!r || r[idx.rank] == null) break;
+    const rsd = r[idx.rsd];
+    if(!rsd || !String(rsd).includes(NPS_CONFIG.RSD_FILTER)) continue;
+    const g = k => idx[k] >= 0 ? num(r[idx[k]]) : 0;
+    out.push({
+      rank: num(r[idx.rank]),
+      region: r[idx.region] || "", name: r[idx.store] || "",
+      dm: r[idx.dm] || "", sm: r[idx.sm] || "",
+      gpTrend: g("gpTrend"), mobileCR: g("mobileCR"), fiscalCR: g("fiscalCR"),
+      nonTrad: g("nonTrad"), gigPct: g("gigPct"), plusMix: g("plusMix"),
+      newToUpg: g("newToUpg"), accPerDev: g("accPerDev"), nps: g("nps"),
+      newRGU: g("newRGU"), mobileMTD: g("mobileMTD"), tabletMTD: g("tabletMTD"), watchMTD: g("watchMTD")
+    });
+  }
+  return out;
+}
+
+// Parse "Rep Rank" sheet → ALL reps with their MTD stats (no RSD filter, so any
+// rep who shows up on a survey can be matched). Header regexes mirror the
+// DM-Visit-Guide parser.
+function npsParseReps(wb){
+  const ws = wb.Sheets["Rep Rank"];
+  if(!ws) return [];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+  let hr = -1;
+  for(let i = 0; i < Math.min(20, rows.length); i++){
+    if(rows[i] && rows[i].some(c => c && String(c).trim() === "Rank")){ hr = i; break; }
+  }
+  if(hr < 0) return [];
+  const h = rows[hr].map(c => c == null ? "" : String(c).trim());
+  const num = v => { const n = Number(v); return isNaN(n) ? 0 : n; };
+  const iRank   = h.findIndex(c => c.trim() === "Rank");
+  const iName   = h.findIndex(c => c.toLowerCase().includes("employee"));
+  const iLoc    = h.findIndex(c => c.toLowerCase().includes("location"));
+  const iGP     = h.findIndex(c => /^GP\s*\$/i.test(c));
+  const iPlus   = h.findIndex(c => /Mobile\s*Plus\s*Mix[\s\S]*5\s*Pts/i.test(c));
+  const iGig    = h.findIndex(c => /^GIG\s*Plans[\s\S]*commissions\s*plan\)\s*%$/i.test(c));
+  const iMobile = h.findIndex(c => /^Mobile\s*MTD$/i.test(c));
+  const iTablet = h.findIndex(c => /^Tablet\s*MTD$/i.test(c));
+  const iWatch  = h.findIndex(c => /^Watches\s*MTD$/i.test(c));
+  if(iName < 0) return [];
+  const out = [];
+  for(let i = hr + 1; i < rows.length; i++){
+    const r = rows[i];
+    if(!r || r[iName] == null) continue;
+    const name = String(r[iName]).trim();
+    if(!name) continue;
+    out.push({
+      name: name,
+      store: iLoc >= 0 ? String(r[iLoc] || "").trim() : "",
+      rank: iRank >= 0 ? num(r[iRank]) : 0,
+      gp: iGP >= 0 ? num(r[iGP]) : 0,
+      plusMix: iPlus >= 0 ? num(r[iPlus]) : 0,
+      gigPct: iGig >= 0 ? num(r[iGig]) : 0,
+      mobile: iMobile >= 0 ? num(r[iMobile]) : 0,
+      tablet: iTablet >= 0 ? num(r[iTablet]) : 0,
+      watch: iWatch >= 0 ? num(r[iWatch]) : 0
+    });
+  }
+  return out;
+}
+
+// ===== Aux data for the Morning Message (best-effort, never blocks emails) =====
+let NPS_TCHARTS = { byStore: {}, byRep: {}, total: 0, loaded: false };
+let NPS_CRM     = { open: {}, aged: {}, leads: {}, loaded: false };
+
+// Map any raw store string (full name, lead string, order string) → short name.
+function npsShortFromRaw(raw){
+  if(!raw) return null;
+  const stripped = String(raw).replace(/\s+Test\s+Xfinity\s+Store\b/gi, "").replace(/\s+Xfinity\s+Store\b/gi, "").trim();
+  return npsMapStore(raw) || npsMapStore(stripped) || (stripped || null);
+}
+
+// T-Sheet Submissions feed → MTD t-chart counts by store + by rep.
+async function npsFetchTSheets(){
+  const resp = await fetch(NPS_CONFIG.TSHEET_URL + "?_=" + Date.now(), { cache: "no-store" });
+  if(!resp.ok) throw new Error("T-Sheet HTTP " + resp.status);
+  const data = await resp.json();
+  if(!data || !data.success || !Array.isArray(data.submissions)) throw new Error("T-Sheet payload malformed");
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const byStore = {}, byRep = {};
+  let total = 0;
+  for(const s of data.submissions){
+    const ts = Date.parse(s.timestamp);
+    if(!isFinite(ts) || ts < startOfMonth) continue;
+    total++;
+    const shortName = npsShortFromRaw(s.store);
+    if(shortName) byStore[shortName] = (byStore[shortName] || 0) + 1;
+    const rep = String(s.rep_name || "").trim().toLowerCase();
+    if(rep && shortName){
+      const key = rep + "||" + shortName.toLowerCase();
+      byRep[key] = (byRep[key] || 0) + 1;
+    }
+  }
+  NPS_TCHARTS = { byStore: byStore, byRep: byRep, total: total, loaded: true };
+  return NPS_TCHARTS;
+}
+
+// ===== Lunch Punch Audit (best-effort) — missed lunch punches per store =====
+// Mirrors the Auto-Punch-Report "By Store" tab: an employee-day with 1–3 punches
+// (fewer than clock-in / lunch-out / lunch-in / clock-out) is a missed lunch
+// punch. Managers are excluded, exactly like the dashboard. Never blocks emails.
+let NPS_PUNCH = { byStore: {}, total: 0, loaded: false };
+const NPS_PUNCH_URL  = "https://raw.githubusercontent.com/BlufoxMobile/Auto-Punch-Report/main/data/punch-data.xlsx";
+const NPS_MGR_TITLES = ["Store Manager", "DM", "Ops Coordinator"];
+
+// Same logic the punch dashboard uses to read a punch time out of a cell.
+function npsPunchTime(v){
+  if(v == null || v === "") return "";
+  if(v instanceof Date){
+    return String(v.getHours()).padStart(2,"0") + ":" +
+           String(v.getMinutes()).padStart(2,"0") + ":" +
+           String(v.getSeconds()).padStart(2,"0");
+  }
+  const m = String(v).match(/(\d{2}:\d{2}:\d{2})/);
+  return m ? m[1] : "00:00:00";
+}
+
+async function npsFetchPunches(){
+  const resp = await fetch(NPS_PUNCH_URL + "?_=" + Date.now(), { cache: "no-store" });
+  if(!resp.ok) throw new Error("Punch data HTTP " + resp.status);
+  const wb = XLSX.read(await resp.arrayBuffer(), { type: "array", cellDates: true });
+  const sn = wb.SheetNames.find(s => /punch.?status/i.test(s))
+          || wb.SheetNames.find(s => /break.*compliance/i.test(s))
+          || wb.SheetNames.find(s => /punch/i.test(s))
+          || wb.SheetNames[0];
+  const ws = wb.Sheets[sn];
+  if(!ws){ NPS_PUNCH = { byStore: {}, total: 0, loaded: true }; return NPS_PUNCH; }
+  const rows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: true, cellDates: true });
+  if(!rows.length){ NPS_PUNCH = { byStore: {}, total: 0, loaded: true }; return NPS_PUNCH; }
+
+  const H = Object.keys(rows[0]);
+  const findH = re => H.find(h => re.test(String(h).trim()));
+  const cPunchTime = findH(/^punch\s*time$/i);
+
+  // Collapse rows into per-(store, employee, date) day records → punch count.
+  const days = {};
+  if(cPunchTime){
+    // Long form: one row per punch.
+    const cStore = findH(/^store$/i)       || "Store";
+    const cName  = findH(/^name$/i)        || findH(/^employee$/i) || findH(/employee.?name/i) || "Name";
+    const cTitle = findH(/^job\s*title$/i) || findH(/^title$/i)    || "Title";
+    const cDate  = findH(/^date$/i)        || findH(/punch.*in.*date/i) || "Date";
+    rows.forEach(r => {
+      const t = npsPunchTime(r[cPunchTime]);
+      if(!t || t === "00:00:00") return;
+      const k = String(r[cStore]||"") + "||" + String(r[cName]||"") + "||" + String(r[cDate]||"");
+      if(!days[k]) days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), cnt: 0 };
+      days[k].cnt++;
+    });
+  } else {
+    // Wide form: one row per employee-day with up to 4 punch columns.
+    const cStore = findH(/^store$/i)              || "Store";
+    const cEmp   = findH(/^employee$/i)           || findH(/employee.?name/i) || "Employee";
+    const cTitle = findH(/^job\s*title$/i)        || findH(/^title$/i)        || "Job Title";
+    const cDate  = findH(/punch.*in.*date/i)      || findH(/^date$/i)         || "Punch In Date";
+    const cols   = [findH(/punch.?1.*time.*in\b/i) || "Punch 1 Time In",
+                    findH(/punch.?1.*time.*out/i)  || "Punch 1 Time Out",
+                    findH(/punch.?2.*time.*in\b/i) || "Punch 2 Time In",
+                    findH(/punch.?2.*time.*out/i)  || "Punch 2 Time Out"];
+    rows.forEach(r => {
+      let cnt = 0;
+      cols.forEach(c => { const t = npsPunchTime(r[c]); if(t && t !== "00:00:00") cnt++; });
+      if(!cnt) return;
+      const k = String(r[cStore]||"") + "||" + String(r[cEmp]||"") + "||" + String(r[cDate]||"");
+      days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), cnt: cnt };
+    });
+  }
+
+  // Per store: count employee-days with 1–3 punches, managers excluded, keyed by
+  // the same short store name the email loop uses.
+  const byStore = {};
+  let total = 0;
+  Object.keys(days).forEach(k => {
+    const d = days[k];
+    if(NPS_MGR_TITLES.includes(d.title)) return;
+    if(d.cnt >= 1 && d.cnt < 4){
+      const short = npsShortFromRaw(d.store);
+      if(short){ byStore[short] = (byStore[short] || 0) + 1; total++; }
+    }
+  });
+  NPS_PUNCH = { byStore: byStore, total: total, loaded: true };
+  return NPS_PUNCH;
+}
+
+// Minimal CSV parser (same semantics as the CRM's parseFuCSV).
+function npsParseCsv(text){
+  const rows = []; let row = [], f = "", q = false;
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(q){ if(c === '"'){ if(text[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+    else if(c === '"') q = true;
+    else if(c === ","){ row.push(f); f = ""; }
+    else if(c === "\n"){ row.push(f); rows.push(row); row = []; f = ""; }
+    else if(c !== "\r") f += c;
+  }
+  if(f || row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+
+// Same classification the Store CRM uses for credit-escalation leads.
+function npsClassifyLead(responseText){
+  const t = String(responseText || "").replace(/<[^>]*>/g, "").toLowerCase();
+  if(!t) return "pending";
+  if(/\bresubmit\b/i.test(t)) return "resubmit";
+  if(/\bconfirm[a-z]*\b[\s\S]{0,80}\beligible\b/i.test(t)) return "approved";
+  return "denied";
+}
+
+// Open orders (open-orders.json + closures.json) and actionable lead follow-ups
+// (published credit-escalation sheet) per store.
+async function npsFetchCrmActions(){
+  const open = {}, aged = {}, leads = {}, openList = {}, leadList = {};
+  // --- open orders ---
+  try {
+    const [ooR, clR] = await Promise.all([
+      fetch(NPS_CONFIG.OPEN_ORDERS_URL + "?_=" + Date.now(), { cache: "no-store" }),
+      fetch(NPS_CONFIG.CLOSURES_URL + "?_=" + Date.now(), { cache: "no-store" })
+    ]);
+    const oo = ooR.ok ? await ooR.json() : { orders: [] };
+    const cl = clR.ok ? await clR.json() : {};
+    (oo.orders || []).forEach(o => {
+      const c = cl[o.workOrder];
+      const status = (!c || c.status === "Other") ? "Open" : c.status;
+      if(status !== "Open") return;
+      const shortName = npsShortFromRaw(o.store);
+      if(!shortName) return;
+      open[shortName] = (open[shortName] || 0) + 1;
+      if(Number(o.age) >= 30) aged[shortName] = (aged[shortName] || 0) + 1;
+      (openList[shortName] = openList[shortName] || []).push({
+        customer: String(o.customerName || "").trim(),
+        wo: String(o.workOrder || "").trim(),
+        product: String(o.product || "").trim(),
+        rep: String(o.repName || "").trim(),
+        age: Number(o.age) || 0
+      });
+    });
+    Object.keys(openList).forEach(k => {
+      openList[k].sort((a,b) => b.age - a.age);
+      openList[k] = openList[k].slice(0, 50);
+    });
+  } catch(e){ console.warn("open-orders fetch failed:", e); }
+  // --- lead follow-ups ---
+  try {
+    const r = await fetch(NPS_CONFIG.FU_CSV_URL + "&_=" + Date.now(), { cache: "no-store" });
+    if(r.ok){
+      const rows = npsParseCsv(await r.text());
+      const h = (rows[0] || []).map(s => String(s).trim());
+      const col = name => h.indexOf(name);
+      const iStore = col("store"), iResp = col("creditTeamResponse"),
+            iCust = col("customerName"), iPhone = col("phone"), iRep = col("rep");
+      for(let i = 1; i < rows.length; i++){
+        const row = rows[i];
+        if(!row || !row.some(v => v && String(v).trim())) continue;
+        const bucket = npsClassifyLead(iResp >= 0 ? row[iResp] : "");
+        if(bucket !== "approved" && bucket !== "resubmit") continue;
+        const shortName = npsShortFromRaw(iStore >= 0 ? row[iStore] : "");
+        if(!shortName) continue;
+        if(!leads[shortName]) leads[shortName] = { approved: 0, resubmit: 0 };
+        leads[shortName][bucket]++;
+        (leadList[shortName] = leadList[shortName] || []).push({
+          customer: iCust >= 0 ? String(row[iCust] || "").trim() : "",
+          phone: iPhone >= 0 ? String(row[iPhone] || "").trim() : "",
+          rep: iRep >= 0 ? String(row[iRep] || "").trim() : "",
+          bucket: bucket
+        });
+      }
+      // approved (contact now) first, then resubmits
+      Object.keys(leadList).forEach(k => {
+        leadList[k].sort((a,b) => (a.bucket === b.bucket) ? 0 : (a.bucket === "approved" ? -1 : 1));
+        leadList[k] = leadList[k].slice(0, 50);
+      });
+    }
+  } catch(e){ console.warn("lead follow-ups fetch failed:", e); }
+  NPS_CRM = { open: open, aged: aged, leads: leads, openList: openList, leadList: leadList, loaded: true };
+  return NPS_CRM;
+}
+
+// "ALURRALDE,DIANA" → "Alurralde, Diana"
+function npsTitleCase(s){
+  return String(s || "").toLowerCase().replace(/,(?=\S)/g, ", ")
+    .replace(/\b[a-z]/g, c => c.toUpperCase()).trim();
+}
+
+// Resolve an NTID like "bp-aray552" → "Anthony Ray" by matching first initial +
+// last-name prefix against Rep Rank names. Returns "" unless exactly one match.
+function npsRepName(ntid){
+  if(!ntid || !NPS_REPS.length) return "";
+  const m = String(ntid).toLowerCase().match(/^bp-([a-z])([a-z]+?)\d/);
+  if(!m) return "";
+  const ini = m[1], lastPrefix = m[2];
+  const hits = NPS_REPS.filter(rep => {
+    const parts = String(rep.name).trim().toLowerCase().split(/\s+/);
+    if(parts.length < 2) return false;
+    const first = parts[0], last = parts[parts.length - 1];
+    return first.charAt(0) === ini && last.indexOf(lastPrefix) === 0;
+  });
+  if(hits.length === 1) return hits[0].name;
+  // collisions: try narrowing by exact last-name length match
+  if(hits.length > 1){
+    const exact = hits.filter(rep => {
+      const last = String(rep.name).trim().toLowerCase().split(/\s+/).pop();
+      return last === lastPrefix;
+    });
+    if(exact.length === 1) return exact[0].name;
+  }
+  return "";
+}
+
+function npsPctFmt(v){
+  const n = Number(v) || 0;
+  return (Math.abs(n) <= 1.5 ? n * 100 : n).toFixed(1) + "%";
+}
+function npsMoneyFmt(v){ return "$" + Math.round(Number(v) || 0).toLocaleString("en-US"); }
+
+function npsMedian(arr){
+  const a = arr.slice().sort((x,y) => x - y);
+  if(!a.length) return 0;
+  const mid = Math.floor(a.length / 2);
+  return a.length % 2 ? a[mid] : (a[mid-1] + a[mid]) / 2;
+}
+
+// Fluid metric tile — inline-block so tiles wrap 3-up on desktop, 2-up on phones.
+function npsTileHtml(label, value, tone){
+  const bg = tone === "good" ? "#ecfdf5" : tone === "bad" ? "#fef2f2" : "#f8fafc";
+  const bd = tone === "good" ? "#a7f3d0" : tone === "bad" ? "#fecaca" : "#e2e8f0";
+  const col = tone === "good" ? "#047857" : tone === "bad" ? "#b91c1c" : "#0f172a";
+  return '<div style="display:inline-block;vertical-align:top;width:33%;min-width:150px;box-sizing:border-box;padding:3px;">' +
+    '<div style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:8px;padding:9px 11px;">' +
+    '<div style="font-size:10px;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;font-weight:600;">' + label + '</div>' +
+    '<div style="font-size:17px;font-weight:700;color:' + col + ';margin-top:2px;white-space:nowrap;">' + value + '</div>' +
+    '</div></div>';
+}
+
+function npsSurveyBoxHtml(s){
+  const b = npsBucket(s.score);
+  const border = b === "good" ? "#10b981" : b === "ok" ? "#f59e0b" : "#ef4444";
+  const bg     = b === "good" ? "#ecfdf5" : b === "ok" ? "#fffbeb" : "#fef2f2";
+  const badge  = b === "good" ? "#10b981" : b === "ok" ? "#f59e0b" : "#ef4444";
+  const bw     = b === "bad" ? "2px" : "1px";
+
+  const repName = npsRepName(s.ntid);
+  const repHtml = repName
+    ? npsEsc(repName) + ' <span style="color:#94a3b8;font-weight:500;font-size:11px;">(' + npsEsc(s.ntid) + ')</span>'
+    : npsEsc(s.ntid || "Unknown");
+
+  const lr = (label, val) =>
+    '<tr><td style="font-size:10px;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;font-weight:700;padding:2px 10px 2px 0;white-space:nowrap;vertical-align:top;width:1%;">' + label + '</td>' +
+    '<td style="font-size:13px;color:#0f172a;font-weight:600;padding:2px 0;line-height:1.4;">' + val + '</td></tr>';
+
+  const rows =
+    lr("Rep", repHtml) +
+    lr("Date", npsEsc(npsPrettyDate(s.txnDate) || "—")) +
+    lr("Interaction", npsEsc(s.txnType || "—"));
+
+  const comment = s.comment
+    ? '<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(100,116,139,0.25);">' +
+      '<div style="font-size:10px;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;font-weight:700;">Customer Said</div>' +
+      '<div style="font-size:14px;color:#0f172a;margin-top:3px;line-height:1.5;">&ldquo;' + npsEsc(s.comment) + '&rdquo;</div></div>'
+    : '<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-top:8px;">No comment left</div>';
+
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:' + bw + ' solid ' + border + ';background:' + bg + ';border-radius:10px;margin:0 0 10px 0;">' +
+    '<tr><td width="52" align="center" style="padding:14px 0 14px 10px;vertical-align:top;">' +
+    '<div style="width:40px;height:40px;border-radius:50%;background:' + badge + ';color:#ffffff;font-weight:800;font-size:17px;line-height:40px;text-align:center;">' + s.score + '</div>' +
+    '</td><td style="padding:12px 14px 12px 12px;vertical-align:top;">' +
+    '<table role="presentation" cellpadding="0" cellspacing="0" width="100%">' + rows + '</table>' + comment +
+    '</td></tr></table>';
+}
+
+// Build the full HTML email + webhook payload for one store.
+function buildNpsPayload(shortName, surveys, salesStores, dir){
+  const fullKey = shortName + " Xfinity Store";
+  const smEmail  = (dir.storeManagers || {})[fullKey] || "";
+  const asmEmail = (dir.storeAMs || {})[fullKey] || "";
+  const dmEmail  = (dir.storeDMs || {})[fullKey] || "";
+  const smName   = (dir.storeManagerNames || {})[fullKey] || "";
+
+  const to = smEmail || asmEmail || dmEmail || NPS_CONFIG.MY_EMAIL;
+  const seen = new Set([to.toLowerCase()]);
+  const cc = [asmEmail, dmEmail, NPS_CONFIG.MY_EMAIL].filter(e => {
+    if(!e) return false;
+    const k = e.toLowerCase();
+    if(seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  }).join(",");
+
+  const good = surveys.filter(s => npsBucket(s.score) === "good");
+  const ok   = surveys.filter(s => npsBucket(s.score) === "ok");
+  const bad  = surveys.filter(s => npsBucket(s.score) === "bad");
+  const tnps = surveys.length ? Math.round(((good.length - bad.length) / surveys.length) * 100) : 0;
+
+  const dates = surveys.map(s => s.txnDate).filter(Boolean).sort();
+  const dateLabel = dates.length
+    ? (dates[0] === dates[dates.length-1]
+        ? npsPrettyDate(dates[0])
+        : npsPrettyDate(dates[0]) + " &ndash; " + npsPrettyDate(dates[dates.length-1]))
+    : npsPrettyDate(npsDateStr(new Date()));
+
+  // --- Store performance header (from Sales Report "Store Rank") ---
+  const row = (salesStores || []).find(s => String(s.name).trim().toLowerCase() === shortName.toLowerCase());
+  let headerHtml, tilesHtml = "";
+  if(row){
+    const med = {};
+    ["gpTrend","mobileCR","fiscalCR","nonTrad","gigPct","plusMix","newToUpg","accPerDev","nps"].forEach(k => {
+      med[k] = npsMedian(salesStores.map(s => s[k]));
+    });
+    const tone = k => row[k] >= med[k] ? "good" : "bad";
+    headerHtml =
+      '<div style="margin-bottom:10px;"><span style="background:#f97316;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:999px;">RANK #' + row.rank + '</span></div>' +
+      '<div style="color:#ffffff;font-size:24px;font-weight:700;">' + npsEsc(shortName) + '</div>' +
+      '<div style="color:#cbd5e1;font-size:13px;margin-top:4px;">' + npsEsc(row.region || "") + ' &nbsp;&bull;&nbsp; SM: ' + npsEsc(smName || row.sm || "No Mgr") + ' &nbsp;&bull;&nbsp; DM: ' + npsEsc(row.dm || "") + '</div>' +
+      '<div style="margin-top:12px;"><span class="nps-gp" style="color:#fb923c;font-size:30px;font-weight:800;">' + npsMoneyFmt(row.gpTrend) + '</span> <span style="color:#94a3b8;font-size:11px;letter-spacing:1px;font-weight:600;">&nbsp;GP TREND</span></div>';
+    const storeTCharts = (NPS_TCHARTS.byStore || {})[shortName];
+    tilesHtml =
+      '<div style="font-size:0;text-align:left;">' +
+        npsTileHtml("Total RGU", row.newRGU, null) +
+        npsTileHtml("Mobile", row.mobileMTD, null) +
+        npsTileHtml("Tablet / Watch", row.tabletMTD + " / " + row.watchMTD, null) +
+        (storeTCharts != null ? npsTileHtml("T-Charts MTD", storeTCharts, null) : "") +
+        npsTileHtml("Mob Close Rate", npsPctFmt(row.mobileCR), tone("mobileCR")) +
+        npsTileHtml("Fiscal CR", npsPctFmt(row.fiscalCR), tone("fiscalCR")) +
+        npsTileHtml("Non-Trad", npsPctFmt(row.nonTrad), tone("nonTrad")) +
+        npsTileHtml("Gig Plans %", npsPctFmt(row.gigPct), tone("gigPct")) +
+        npsTileHtml("Plus Mix", npsPctFmt(row.plusMix), tone("plusMix")) +
+        npsTileHtml("New &rarr; Upgrade", npsPctFmt(row.newToUpg), tone("newToUpg")) +
+        npsTileHtml("Accessories", npsMoneyFmt(row.accPerDev), tone("accPerDev")) +
+        npsTileHtml("Fiscal NPS", npsPctFmt(row.nps), tone("nps")) +
+        npsTileHtml("GP Trend", npsMoneyFmt(row.gpTrend), tone("gpTrend")) +
+      '</div>';
+  } else {
+    headerHtml =
+      '<div style="color:#ffffff;font-size:24px;font-weight:700;">' + npsEsc(shortName) + '</div>' +
+      '<div style="color:#cbd5e1;font-size:13px;margin-top:4px;">SM: ' + npsEsc(smName || "No Mgr") + '</div>';
+  }
+
+  const section = (title, color, list) => {
+    if(!list.length) return "";
+    return '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:' + color + ';margin:18px 0 8px 0;text-transform:uppercase;">' + title + ' (' + list.length + ')</div>' +
+      list.map(npsSurveyBoxHtml).join("");
+  };
+
+  // --- Team table (Rep Rank, same columns as the DM Visit Guide minus wage) ---
+  let teamHtml = "";
+  const allowedStores = new Set((salesStores || []).map(s => String(s.name).trim().toLowerCase()));
+  const pool = (NPS_REPS || []).filter(r => allowedStores.has(String(r.store).trim().toLowerCase()));
+  const storeReps = pool.filter(r => String(r.store).trim().toLowerCase() === shortName.toLowerCase())
+    .sort((a,b) => a.rank - b.rank);
+  if(storeReps.length){
+    const repTc = r => (NPS_TCHARTS.byRep || {})[String(r.name).trim().toLowerCase() + "||" + shortName.toLowerCase()] || 0;
+    const medGP   = npsMedian(pool.map(r => r.gp));
+    const medPlus = npsMedian(pool.map(r => r.plusMix));
+    const medGig  = npsMedian(pool.map(r => r.gigPct));
+    const medTc   = npsMedian(pool.map(r => (NPS_TCHARTS.byRep || {})[String(r.name).trim().toLowerCase() + "||" + String(r.store).trim().toLowerCase()] || 0));
+    const cv = (v, med) => v >= med ? "#047857" : "#b91c1c";
+    const th = (t, ctr) => '<td style="background:#0f172a;color:#cbd5e1;font-size:9px;letter-spacing:0.5px;text-transform:uppercase;font-weight:700;padding:6px 4px;white-space:nowrap;' + (ctr ? "text-align:center;" : "") + '">' + t + '</td>';
+    const td = (v, color, extra) => '<td style="font-size:12px;padding:6px 4px;border-bottom:1px solid #e2e8f0;color:' + (color || "#0f172a") + ';white-space:nowrap;' + (extra || "") + '">' + v + '</td>';
+    const ctr = "text-align:center;";
+    const rowsHtml = storeReps.map(r =>
+      '<tr>' +
+      td('#' + r.rank, "#2563eb", "font-weight:700;") +
+      td(npsEsc(r.name), "#0f172a", "font-weight:700;white-space:normal;min-width:96px;") +
+      td(npsMoneyFmt(r.gp), cv(r.gp, medGP), "font-weight:700;") +
+      td(npsPctFmt(r.plusMix), cv(r.plusMix, medPlus)) +
+      td(npsPctFmt(r.gigPct), cv(r.gigPct, medGig)) +
+      td(r.mobile, "#0f172a", ctr + "font-weight:700;") +
+      td(r.tablet, "#475569", ctr) +
+      td(r.watch, "#475569", ctr) +
+      td(repTc(r), cv(repTc(r), medTc), ctr + "font-weight:700;") +
+      '</tr>').join("");
+    teamHtml =
+      '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f172a;margin:4px 0 8px 0;text-transform:uppercase;">Team &mdash; MTD Performance (' + storeReps.length + ')</div>' +
+      '<div style="font-size:11px;color:#64748b;margin-bottom:8px;">National rank &bull; green = top half of our reps, red = bottom half &bull; XM / Tab / Watch = devices sold MTD &bull; T-Charts = traffic sheets submitted MTD</div>' +
+      '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;min-width:520px;">' +
+      '<tr>' + th("Nat&rsquo;l #") + th("Rep") + th("GP $") + th("Plus %") + th("Gig %") + th("XM", 1) + th("Tab", 1) + th("Watch", 1) + th("T-Charts", 1) + '</tr>' +
+      rowsHtml + '</table></div>';
+  }
+
+  // --- Action items: open orders + lead follow-ups ---
+  const openCount = (NPS_CRM.open  || {})[shortName] || 0;
+  const agedCount = (NPS_CRM.aged  || {})[shortName] || 0;
+  const leadObj   = (NPS_CRM.leads || {})[shortName] || { approved: 0, resubmit: 0 };
+  const leadCount = (leadObj.approved || 0) + (leadObj.resubmit || 0);
+  const crmLoaded   = NPS_CRM.loaded;
+  const punchCount  = (NPS_PUNCH.byStore || {})[shortName] || 0;
+  const punchLoaded = NPS_PUNCH.loaded;
+  let actionHtml = "";
+  if(crmLoaded || punchLoaded){
+    const SHOW_MAX = 5;
+    const openItems = ((NPS_CRM.openList || {})[shortName] || []);
+    const leadItems = ((NPS_CRM.leadList || {})[shortName] || []);
+    const allClear = openCount === 0 && leadCount === 0 && punchCount === 0;
+
+    const subHead = (n, label, sub) =>
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px;"><tr>' +
+      '<td width="50" align="center" style="vertical-align:top;"><div style="font-size:26px;font-weight:800;color:' + (n ? "#ea580c" : "#047857") + ';line-height:1.1;">' + n + '</div></td>' +
+      '<td style="vertical-align:top;padding-left:6px;"><div style="font-size:13px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
+      (sub ? '<div style="font-size:12px;color:#64748b;margin-top:1px;">' + sub + '</div>' : '') + '</td></tr></table>';
+
+    const orderLine = o =>
+      '<div style="padding:7px 0 7px 56px;border-bottom:1px solid #fde4cf;">' +
+      '<div style="font-size:13px;font-weight:700;color:#0f172a;">' + npsEsc(npsTitleCase(o.customer) || "Unknown Customer") +
+      ' <span style="font-weight:500;color:#94a3b8;font-size:11px;">WO ' + npsEsc(o.wo) + '</span></div>' +
+      '<div style="font-size:12px;color:#64748b;margin-top:1px;">' + npsEsc(o.product || "") +
+      (o.rep ? ' &bull; sold by ' + npsEsc(o.rep) : '') +
+      ' &bull; <span style="font-weight:700;color:' + (o.age >= 30 ? "#b91c1c" : "#9a3412") + ';">' + o.age + ' days open</span></div></div>';
+
+    const leadLine = l =>
+      '<div style="padding:7px 0 7px 56px;border-bottom:1px solid #fde4cf;">' +
+      '<div style="font-size:13px;font-weight:700;color:#0f172a;">' + npsEsc(npsTitleCase(l.customer) || "Unknown Customer") + ' ' +
+      (l.bucket === "approved"
+        ? '<span style="background:#ecfdf5;border:1px solid #10b981;color:#047857;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:800;letter-spacing:0.5px;">APPROVED &mdash; CALL TO SELL</span>'
+        : '<span style="background:#fffbeb;border:1px solid #f59e0b;color:#b45309;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:800;letter-spacing:0.5px;">RESUBMIT TO CREDIT TEAM</span>') +
+      '</div>' +
+      '<div style="font-size:12px;color:#64748b;margin-top:1px;">' + npsEsc(l.phone || "no phone on file") +
+      (l.rep ? ' &bull; submitted by ' + npsEsc(l.rep) : '') + '</div></div>';
+
+    const moreLine = n => n > 0
+      ? '<div style="font-size:12px;color:#9a3412;font-weight:700;padding:7px 0 0 56px;">+ ' + n + ' more in the Store CRM</div>'
+      : '';
+
+    let detail = "";
+    if(!allClear){
+      detail += subHead(openCount, "Open Orders to close out",
+        openCount ? "Oldest first" + (agedCount ? ' &bull; <span style="color:#b91c1c;font-weight:700;">' + agedCount + ' aged 30+ days</span>' : "") : "Nothing pending &mdash; clear");
+      detail += openItems.slice(0, SHOW_MAX).map(orderLine).join("") + moreLine(openCount - Math.min(openItems.length, SHOW_MAX));
+      detail += subHead(leadCount, "Lead Follow-Ups to work",
+        leadCount ? (leadObj.approved || 0) + " approved to contact &bull; " + (leadObj.resubmit || 0) + " to resubmit" : "Nothing pending &mdash; clear");
+      detail += leadItems.slice(0, SHOW_MAX).map(leadLine).join("") + moreLine(leadCount - Math.min(leadItems.length, SHOW_MAX));
+      if(punchLoaded){
+        detail += subHead(punchCount, "Missed Lunch Punches",
+          punchCount ? "Employee-days with fewer than 4 punches (managers excluded) &mdash; fix in the Punch Audit"
+                     : "No missed lunch punches &mdash; clear");
+      }
+    }
+
+    actionHtml =
+      '<div style="margin-top:4px;border:2px solid ' + (allClear ? "#10b981" : "#f97316") + ';background:' + (allClear ? "#ecfdf5" : "#fff7ed") + ';border-radius:12px;padding:14px 16px;">' +
+      '<div style="font-size:13px;font-weight:800;letter-spacing:1px;color:' + (allClear ? "#047857" : "#9a3412") + ';text-transform:uppercase;">&#9889; Action Items Needed To Complete Today</div>' +
+      (allClear
+        ? '<div style="font-size:13px;color:#047857;font-weight:600;margin-top:8px;">All caught up &mdash; no open orders and no lead follow-ups. Nice work.</div>'
+        : detail) +
+      '<div style="margin-top:14px;"><a href="' + NPS_CONFIG.CRM_URL + '" style="background:#ea580c;color:#ffffff;padding:10px 18px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;text-decoration:none;margin:0 6px 6px 0;">Close them out in the Store CRM &rarr;</a>' +
+      (punchLoaded ? '<a href="https://blufoxmobile.github.io/Auto-Punch-Report/" style="background:#0f172a;color:#ffffff;padding:10px 18px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;text-decoration:none;margin:0 6px 6px 0;">Open the Lunch Punch Audit &rarr;</a>' : '') +
+      '</div>' +
+      '</div>';
+  }
+
+  const bodyHtml =
+'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+'<style>@media only screen and (max-width:480px){ .nps-pad{padding-left:14px !important;padding-right:14px !important;} .nps-gp{font-size:24px !important;} }</style>' +
+'</head><body style="margin:0;padding:0;background:#f1f5f9;">' +
+'<div style="background:#f1f5f9;padding:16px 8px;font-family:Segoe UI,Arial,Helvetica,sans-serif;">' +
+'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">' +
+'<table role="presentation" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;">' +
+'<tr><td class="nps-pad" style="background:#1e3a8a;border-radius:14px 14px 0 0;padding:22px 24px;">' + headerHtml + '</td></tr>' +
+(tilesHtml ? '<tr><td style="background:#ffffff;padding:12px 10px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' + tilesHtml + '</td></tr>' : '') +
+(teamHtml ? '<tr><td class="nps-pad" style="background:#ffffff;padding:14px 22px 6px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' + teamHtml + '</td></tr>' : '') +
+'<tr><td class="nps-pad" style="background:#ffffff;padding:20px 22px 8px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' +
+'<div style="font-size:18px;font-weight:800;color:#0f172a;">Yesterday&rsquo;s NPS Surveys</div>' +
+'<div style="font-size:13px;color:#64748b;margin-top:4px;">' + dateLabel + ' &nbsp;&bull;&nbsp; ' + surveys.length + ' response' + (surveys.length === 1 ? "" : "s") + ' &nbsp;&bull;&nbsp; Daily tNPS: <strong style="color:' + (tnps >= 0 ? "#047857" : "#b91c1c") + ';">' + tnps + '</strong></div>' +
+'<div style="margin-top:10px;font-size:12px;color:#475569;line-height:2.2;">' +
+'<span style="background:#ecfdf5;border:1px solid #10b981;color:#047857;border-radius:999px;padding:3px 10px;font-weight:700;white-space:nowrap;">' + good.length + ' Good (9&ndash;10)</span>&nbsp; ' +
+'<span style="background:#fffbeb;border:1px solid #f59e0b;color:#b45309;border-radius:999px;padding:3px 10px;font-weight:700;white-space:nowrap;">' + ok.length + ' OK (8)</span>&nbsp; ' +
+'<span style="background:#fef2f2;border:1px solid #ef4444;color:#b91c1c;border-radius:999px;padding:3px 10px;font-weight:700;white-space:nowrap;">' + bad.length + ' Needs Attention (0&ndash;7)</span>' +
+'</div></td></tr>' +
+'<tr><td class="nps-pad" style="background:#ffffff;padding:6px 22px 22px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' +
+section("&#127942; Wins", "#047857", good) +
+section("Almost There", "#b45309", ok) +
+section("&#9888; Needs Attention", "#b91c1c", bad) +
+'</td></tr>' +
+(actionHtml ? '<tr><td class="nps-pad" style="background:#ffffff;padding:8px 22px 22px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' + actionHtml + '</td></tr>' : '') +
+'<tr><td style="background:#0f172a;border-radius:0 0 14px 14px;padding:16px 20px;text-align:center;">' +
+'<a href="' + NPS_CONFIG.DASHBOARD_URL + '" style="color:#60a5fa;font-size:13px;font-weight:600;text-decoration:none;">Open the NPS Report dashboard &rarr;</a>' +
+'<div style="color:#64748b;font-size:11px;margin-top:6px;">Sent automatically from the Blufox Daily Upload</div>' +
+'</td></tr></table></td></tr></table></div></body></html>';
+
+  const actionTotal = openCount + leadCount + punchCount;
+  const subject = "Morning Message for " + shortName + " — " +
+    surveys.length + " NPS survey" + (surveys.length === 1 ? "" : "s") +
+    (bad.length ? " (" + bad.length + " need attention)" : " (all clear)") +
+    ((crmLoaded || punchLoaded) && actionTotal ? " • " + actionTotal + " action items" : "");
+
+  return {
+    store: shortName, store_full: fullKey,
+    to: to, cc: cc, subject: subject, body_html: bodyHtml,
+    good: good.length, ok: ok.length, bad: bad.length,
+    total: surveys.length, tnps: tnps,
+    open_orders: openCount, aged_orders: agedCount, follow_ups: leadCount,
+    missed_lunch_punches: punchCount,
+    tcharts: (NPS_TCHARTS.byStore || {})[shortName] || 0,
+    date: npsDateStr(new Date())
+  };
+}
+
+function npsHookReady(){
+  return /^https:\/\/hooks\.zapier\.com\//.test(NPS_CONFIG.WEBHOOK_URL);
+}
+
+async function npsPostWebhook(payload){
+  // text/plain keeps this a "simple" CORS request so Zapier's catch hook
+  // accepts it without a preflight (same trick as the DM Visit Guide).
+  const resp = await fetch(NPS_CONFIG.WEBHOOK_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=UTF-8" },
+    body: JSON.stringify(payload)
+  });
+  if(!resp.ok) throw new Error("Webhook HTTP " + resp.status);
+}
+
+// Group surveys by storeKey, build a payload per store, POST each to Zapier.
+// Returns { sent, errors:[] }
+async function npsSendEmails(surveys, salesStores, dir){
+  // Best-effort aux data (t-charts, open orders, lead follow-ups). Failures
+  // never block the NPS email itself.
+  await Promise.all([
+    npsFetchTSheets().catch(e => console.warn("t-sheets unavailable:", e)),
+    npsFetchCrmActions().catch(e => console.warn("crm actions unavailable:", e)),
+    npsFetchPunches().catch(e => console.warn("punch data unavailable:", e))
+  ]);
+  const groups = {};
+  surveys.forEach(s => { if(s.storeKey){ (groups[s.storeKey] = groups[s.storeKey] || []).push(s); } });
+  let sent = 0; const errors = [];
+  for(const shortName of Object.keys(groups).sort()){
+    try {
+      const payload = buildNpsPayload(shortName, groups[shortName], salesStores, dir);
+      await npsPostWebhook(payload);
+      sent++;
+    } catch(e){ errors.push(shortName + ": " + e.message); }
+  }
+  return { sent: sent, errors: errors, storeCount: Object.keys(groups).length };
+}
+// === END NPS SHARED MODULE ===
+
+// === NPS UPLOAD HANDLER ================================
+function npsToB64(str){
+  const bytes = new TextEncoder().encode(str);
+  let binary = "";
+  for(let i = 0; i < bytes.length; i += 8192){
+    binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+  }
+  return btoa(binary);
+}
+
+async function uploadNpsFile(file){
+  setStatus('Reading NPS survey export...', 'info');
+  const buf = await readFileAsArrayBuffer(file);
+  const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+  const parsed = parseNpsWorkbook(wb);
+  if(!parsed.surveys.length) throw new Error('No survey rows found in the file');
+
+  // 1) Load the sent log — anything already emailed is skipped (dedupe by Survey ID).
+  let sentLog = { sentIds: [], batches: [] };
+  try {
+    const r = await fetch(NPS_CONFIG.SENT_LOG_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if(r.ok) sentLog = await r.json();
+  } catch(e){ /* first run — no log yet */ }
+  const sentSet = new Set(sentLog.sentIds || []);
+  const fresh = parsed.surveys.filter(s => !sentSet.has(s.id));
+
+  // 2) Merge into rolling history (powers the dashboard's Yesterday + MTD tabs).
+  let hist = { surveys: [] };
+  try {
+    const r = await fetch(NPS_CONFIG.RESPONSES_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if(r.ok) hist = await r.json();
+  } catch(e){ /* first run */ }
+  const byId = new Map((hist.surveys || []).map(s => [s.id, s]));
+  parsed.surveys.forEach(s => byId.set(s.id, s));
+  const cutoff = npsDateStr(new Date(Date.now() - NPS_CONFIG.HISTORY_DAYS * 86400000));
+  const merged = Array.from(byId.values()).filter(s => !s.txnDate || s.txnDate >= cutoff);
+  merged.sort((a,b) => String(b.txnDate || '').localeCompare(String(a.txnDate || '')));
+
+  const today = npsDateStr(new Date());
+  setStatus('Saving NPS data (' + fresh.length + ' new of ' + parsed.surveys.length + ' in file)...', 'info');
+  await pushToGitHub(REPOS.sales, NPS_CONFIG.RESPONSES_PATH, npsToB64(JSON.stringify({
+    updatedAt: new Date().toISOString(),
+    lastBatchDate: today,
+    lastBatchIds: fresh.map(s => s.id),
+    unmatched: parsed.unmatched,
+    surveys: merged
+  })), 'Update NPS responses — ' + new Date().toLocaleDateString());
+
+  // 3) Fire one email per store with new surveys.
+  let sent = 0, storeCount = 0, errors = [];
+  const hookReady = npsHookReady();
+  if(fresh.length && hookReady){
+    setStatus('Building & sending NPS emails...', 'info');
+    const dir = await npsFetchDirectory();
+    let salesStores = [];
+    try { salesStores = await npsFetchSalesStores(); }
+    catch(e){ console.warn('Sales report unavailable for email header:', e); }
+    const res = await npsSendEmails(fresh, salesStores, dir);
+    sent = res.sent; storeCount = res.storeCount; errors = res.errors;
+
+    // 4) Record what we sent so tomorrow's upload doesn't repeat it.
+    const allIds = Array.from(sentSet);
+    fresh.forEach(s => allIds.push(s.id));
+    await pushToGitHub(REPOS.sales, NPS_CONFIG.SENT_LOG_PATH, npsToB64(JSON.stringify({
+      sentIds: allIds.slice(-6000),
+      lastSentAt: new Date().toISOString(),
+      batches: (sentLog.batches || []).slice(-30).concat([{ date: today, surveys: fresh.length, emailsSent: sent }])
+    })), 'NPS sent log — ' + today);
+  }
+
+  return {
+    total: parsed.surveys.length, fresh: fresh.length,
+    sent: sent, storeCount: storeCount,
+    unmatched: parsed.unmatched, hookReady: hookReady, errors: errors
+  };
+}
+// === END NPS UPLOAD HANDLER ============================
+
 // === MAIN UPLOAD ======================================
 
 async function uploadFiles() {
@@ -804,6 +1741,30 @@ async function uploadFiles() {
         parts.push('ShopperTrack');
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('ShopperTrack: ' + e.message); }
+    });
+  }
+
+  if (npsInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        const res = await uploadNpsFile(npsInput.files[0]);
+        completed++;
+        let label = `NPS Surveys (${res.fresh} new of ${res.total}`;
+        if (res.hookReady) {
+          label += `, ${res.sent} email${res.sent === 1 ? '' : 's'} sent)`;
+        } else {
+          label += ', emails OFF — paste your Zapier hook URL in NPS_CONFIG)';
+        }
+        if (res.unmatched.length) {
+          label += ` — ⚠ unmatched store(s): ${res.unmatched.join('; ')}`;
+        }
+        if (res.errors.length) {
+          label += ` — ⚠ email errors: ${res.errors.join('; ')}`;
+        }
+        parts.push(label);
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('NPS Surveys: ' + e.message); }
     });
   }
 
