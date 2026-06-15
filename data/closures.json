@@ -5616,6 +5616,12 @@
     "store": "Hammond",
     "pendingUntil": "2026-06-15"
   },
+  "2365267292": {
+    "status": "Closed",
+    "ts": "2026-06-15T23:35:28.583Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
+  },
   "2365293076": {
     "status": "Pending Install",
     "ts": "2026-06-12T23:37:22.170Z",
