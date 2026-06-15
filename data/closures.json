@@ -3971,11 +3971,10 @@
     "store": "Hammond"
   },
   "2333076256": {
-    "status": "Pending Install",
-    "ts": "2026-05-23T18:07:36.996Z",
+    "status": "Closed",
+    "ts": "2026-06-15T14:22:07.382Z",
     "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-05-30"
+    "store": "Tinley Park"
   },
   "2333077936": {
     "status": "Closed",
