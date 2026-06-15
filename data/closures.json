@@ -7188,5 +7188,12 @@
     "ts": "2026-06-15T21:42:34.475Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "1002285700472056": {
+    "status": "Pending Install",
+    "ts": "2026-06-15T23:20:39.155Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-06-20"
   }
 }
