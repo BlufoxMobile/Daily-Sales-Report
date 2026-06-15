@@ -738,6 +738,27 @@ const NPS_CONFIG = {
   HISTORY_DAYS: 95
 };
 
+// --- Freshness helpers: read each GitHub file at its NEWEST commit so we bypass
+// the raw.githubusercontent CDN lag that otherwise serves yesterday's copy for
+// minutes after an upload. NPS_FRESH records the commit date for the readiness gate.
+const NPS_FRESH = {};
+function npsLocalYMD(d){ d = d || new Date(); const z = n => String(n).padStart(2,"0"); return d.getFullYear() + "-" + z(d.getMonth()+1) + "-" + z(d.getDate()); }
+async function npsPinnedUrl(repo, path){
+  try {
+    const api = "https://api.github.com/repos/BlufoxMobile/" + repo + "/commits?path=" + encodeURIComponent(path) + "&per_page=1&_=" + Date.now();
+    const r = await fetch(api, { cache: "no-store", headers: { "Accept": "application/vnd.github+json" } });
+    if(r.ok){
+      const j = await r.json();
+      if(j && j[0] && j[0].sha){
+        const iso = j[0].commit && j[0].commit.committer && j[0].commit.committer.date;
+        NPS_FRESH[path] = { sha: j[0].sha, date: iso ? npsLocalYMD(new Date(iso)) : null };
+        return "https://raw.githubusercontent.com/BlufoxMobile/" + repo + "/" + j[0].sha + "/" + path.split("/").map(encodeURIComponent).join("/");
+      }
+    }
+  } catch(e){ console.warn("pin lookup failed:", repo, path, e); }
+  return null;
+}
+
 // Store-number → short store name (numbers observed in the tNPS "Store ID" column BE).
 const NPS_STORE_NUM = {
   "55027": "Bourbonnais",   "55009": "Uptown",          "55005": "Frankfort",
@@ -887,7 +908,8 @@ let NPS_REPS = [];
 // Compact version of the DM-Visit-Guide "Store Rank" parser (same header regexes).
 // Also parses "Rep Rank" into NPS_REPS as a side effect (same workbook fetch).
 async function npsFetchSalesStores(){
-  const resp = await fetch(NPS_CONFIG.NPS_SALES_REPORT_URL + "?t=" + Date.now(), { cache: "no-store" });
+  const salesUrl = (await npsPinnedUrl("Daily-Sales-Report","data/Sales Report.xlsx")) || NPS_CONFIG.NPS_SALES_REPORT_URL;
+  const resp = await fetch(salesUrl + "?t=" + Date.now(), {cache:"no-store"});
   if(!resp.ok) throw new Error("Sales report HTTP " + resp.status);
   const wb = XLSX.read(await resp.arrayBuffer(), { type: "array" });
   try { NPS_REPS = npsParseReps(wb); } catch(e){ console.warn("Rep Rank parse failed:", e); }
@@ -1028,7 +1050,7 @@ async function npsFetchTSheets(){
 // Mirrors the Auto-Punch-Report "By Store" tab: an employee-day with 1–3 punches
 // (fewer than clock-in / lunch-out / lunch-in / clock-out) is a missed lunch
 // punch. Managers are excluded, exactly like the dashboard. Never blocks emails.
-let NPS_PUNCH = { byStore: {}, total: 0, loaded: false };
+let NPS_PUNCH = { byStore: {}, total: 0, detail: {}, loaded: false };
 const NPS_PUNCH_URL  = "https://raw.githubusercontent.com/BlufoxMobile/Auto-Punch-Report/main/data/punch-data.xlsx";
 const NPS_MGR_TITLES = ["Store Manager", "DM", "Ops Coordinator"];
 
@@ -1045,7 +1067,8 @@ function npsPunchTime(v){
 }
 
 async function npsFetchPunches(){
-  const resp = await fetch(NPS_PUNCH_URL + "?_=" + Date.now(), { cache: "no-store" });
+  const purl = (await npsPinnedUrl("Auto-Punch-Report","data/punch-data.xlsx")) || NPS_PUNCH_URL;
+  const resp = await fetch(purl + "?t=" + Date.now(), { cache: "no-store" });
   if(!resp.ok) throw new Error("Punch data HTTP " + resp.status);
   const wb = XLSX.read(await resp.arrayBuffer(), { type: "array", cellDates: true });
   const sn = wb.SheetNames.find(s => /punch.?status/i.test(s))
@@ -1053,9 +1076,9 @@ async function npsFetchPunches(){
           || wb.SheetNames.find(s => /punch/i.test(s))
           || wb.SheetNames[0];
   const ws = wb.Sheets[sn];
-  if(!ws){ NPS_PUNCH = { byStore: {}, total: 0, loaded: true }; return NPS_PUNCH; }
+  if(!ws){ NPS_PUNCH = { byStore: {}, total: 0, detail: {}, loaded: true }; return NPS_PUNCH; }
   const rows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: true, cellDates: true });
-  if(!rows.length){ NPS_PUNCH = { byStore: {}, total: 0, loaded: true }; return NPS_PUNCH; }
+  if(!rows.length){ NPS_PUNCH = { byStore: {}, total: 0, detail: {}, loaded: true }; return NPS_PUNCH; }
 
   const H = Object.keys(rows[0]);
   const findH = re => H.find(h => re.test(String(h).trim()));
@@ -1072,9 +1095,11 @@ async function npsFetchPunches(){
     rows.forEach(r => {
       const t = npsPunchTime(r[cPunchTime]);
       if(!t || t === "00:00:00") return;
-      const k = String(r[cStore]||"") + "||" + String(r[cName]||"") + "||" + String(r[cDate]||"");
-      if(!days[k]) days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), cnt: 0 };
+      const dstr = npsDateStr(r[cDate]) || String(r[cDate]||"").slice(0,10);
+      const k = String(r[cStore]||"") + "||" + String(r[cName]||"") + "||" + dstr;
+      if(!days[k]) days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), name: String(r[cName]||""), date: dstr, times: [], cnt: 0 };
       days[k].cnt++;
+      days[k].times.push(t);
     });
   } else {
     // Wide form: one row per employee-day with up to 4 punch columns.
@@ -1087,27 +1112,32 @@ async function npsFetchPunches(){
                     findH(/punch.?2.*time.*in\b/i) || "Punch 2 Time In",
                     findH(/punch.?2.*time.*out/i)  || "Punch 2 Time Out"];
     rows.forEach(r => {
-      let cnt = 0;
-      cols.forEach(c => { const t = npsPunchTime(r[c]); if(t && t !== "00:00:00") cnt++; });
+      let cnt = 0; const tms = [];
+      cols.forEach(c => { const t = npsPunchTime(r[c]); if(t && t !== "00:00:00"){ cnt++; tms.push(t); } });
       if(!cnt) return;
-      const k = String(r[cStore]||"") + "||" + String(r[cEmp]||"") + "||" + String(r[cDate]||"");
-      days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), cnt: cnt };
+      const dstr = npsDateStr(r[cDate]) || String(r[cDate]||"").slice(0,10);
+      const k = String(r[cStore]||"") + "||" + String(r[cEmp]||"") + "||" + dstr;
+      days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), name: String(r[cEmp]||""), date: dstr, times: tms, cnt: cnt };
     });
   }
 
   // Per store: count employee-days with 1–3 punches, managers excluded, keyed by
   // the same short store name the email loop uses.
   const byStore = {};
+  const detail = {};
   let total = 0;
   Object.keys(days).forEach(k => {
     const d = days[k];
     if(NPS_MGR_TITLES.includes(d.title)) return;
     if(d.cnt >= 1 && d.cnt < 4){
       const short = npsShortFromRaw(d.store);
-      if(short){ byStore[short] = (byStore[short] || 0) + 1; total++; }
+      if(short){
+        byStore[short] = (byStore[short] || 0) + 1; total++;
+        (detail[short] = detail[short] || []).push({ rep: d.name, date: d.date, punches: d.cnt, clockOut: (d.times.length ? d.times.slice().sort().pop() : "") });
+      }
     }
   });
-  NPS_PUNCH = { byStore: byStore, total: total, loaded: true };
+  NPS_PUNCH = { byStore: byStore, total: total, detail: detail, loaded: true };
   return NPS_PUNCH;
 }
 
@@ -1475,6 +1505,39 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
       '</div>';
   }
 
+  const _lunch = (NPS_PUNCH.detail || {})[shortName] || [];
+  // group by rep
+  const _byRep = {};
+  _lunch.forEach(x => { (_byRep[x.rep] = _byRep[x.rep] || []).push(x); });
+  const _repNames = Object.keys(_byRep).sort();
+  let lunchBoxHtml = "";
+  if(NPS_PUNCH.loaded){
+    if(_repNames.length === 0){
+      lunchBoxHtml =
+        '<div style="margin-top:4px;border:2px solid #10b981;background:#ecfdf5;border-radius:12px;padding:14px 16px;">' +
+        '<div style="font-size:13px;font-weight:800;letter-spacing:1px;color:#047857;text-transform:uppercase;">&#9201; Missed Lunch Punches &mdash; ' + npsEsc(shortName) + '</div>' +
+        '<div style="font-size:13px;color:#065f46;margin-top:6px;">All lunch punches clear this month &mdash; nothing to fix.</div>' +
+        '</div>';
+    } else {
+      let rowsH = "";
+      _repNames.forEach(rep => {
+        const days = _byRep[rep].slice().sort((a,b)=> String(a.date).localeCompare(String(b.date)));
+        const daysH = days.map(d => '<div style="font-size:12px;color:#7c2d12;margin-top:2px;">' + npsEsc(String(d.date)) + ' &mdash; clocked out ' + npsEsc(d.clockOut || "\u2014") + ' <span style="color:#9a3412;">(' + d.punches + ' punches)</span></div>').join("");
+        rowsH +=
+          '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;"><tr>' +
+          '<td style="vertical-align:top;"><div style="font-size:14px;font-weight:800;color:#0f172a;">' + npsEsc(rep) + '</div>' + daysH + '</td>' +
+          '<td width="60" align="right" style="vertical-align:top;"><div style="font-size:22px;font-weight:800;color:#ea580c;">' + days.length + '</div><div style="font-size:9px;color:#9a3412;text-transform:uppercase;letter-spacing:0.5px;">day' + (days.length===1?"":"s") + '</div></td>' +
+          '</tr></table>';
+      });
+      lunchBoxHtml =
+        '<div style="margin-top:4px;border:2px solid #f97316;background:#fff7ed;border-radius:12px;padding:14px 16px;">' +
+        '<div style="font-size:13px;font-weight:800;letter-spacing:1px;color:#9a3412;text-transform:uppercase;">&#9201; Missed Lunch Punches &mdash; ' + npsEsc(shortName) + '</div>' +
+        '<div style="font-size:11px;color:#9a3412;margin-top:2px;">Reps with fewer than 4 punches on a day this month (managers excluded). Fix clock-outs in the Punch Audit.</div>' +
+        rowsH +
+        '</div>';
+    }
+  }
+
   const bodyHtml =
 '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
 '<style>@media only screen and (max-width:480px){ .nps-pad{padding-left:14px !important;padding-right:14px !important;} .nps-gp{font-size:24px !important;} }</style>' +
@@ -1499,6 +1562,7 @@ section("Almost There", "#b45309", ok) +
 section("&#9888; Needs Attention", "#b91c1c", bad) +
 '</td></tr>' +
 (actionHtml ? '<tr><td class="nps-pad" style="background:#ffffff;padding:8px 22px 22px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' + actionHtml + '</td></tr>' : '') +
+(lunchBoxHtml ? '<tr><td class="nps-pad" style="background:#ffffff;padding:8px 22px 22px 22px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">' + lunchBoxHtml + '</td></tr>' : '') +
 '<tr><td style="background:#0f172a;border-radius:0 0 14px 14px;padding:16px 20px;text-align:center;">' +
 '<a href="' + NPS_CONFIG.DASHBOARD_URL + '" style="color:#60a5fa;font-size:13px;font-weight:600;text-decoration:none;">Open the NPS Report dashboard &rarr;</a>' +
 '<div style="color:#64748b;font-size:11px;margin-top:6px;">Sent automatically from the Blufox Daily Upload</div>' +
@@ -1547,6 +1611,16 @@ async function npsSendEmails(surveys, salesStores, dir){
     npsFetchCrmActions().catch(e => console.warn("crm actions unavailable:", e)),
     npsFetchPunches().catch(e => console.warn("punch data unavailable:", e))
   ]);
+  const _today = npsLocalYMD(new Date());
+  const _sales = NPS_FRESH["data/Sales Report.xlsx"];
+  const _punch = NPS_FRESH["data/punch-data.xlsx"];
+  const _stale = [];
+  if(_sales && _sales.date && _sales.date !== _today) _stale.push("Sales Report (" + _sales.date + ")");
+  if(_punch && _punch.date && _punch.date !== _today) _stale.push("Punch data (" + _punch.date + ")");
+  if(_stale.length){
+    console.warn("NPS send skipped \u2014 data not current for today (" + _today + "): " + _stale.join(", ") + ". Will send on next upload once updated.");
+    return { sent: 0, storeCount: 0, errors: [], skipped: true, stale: _stale };
+  }
   const groups = {};
   surveys.forEach(s => { if(s.storeKey){ (groups[s.storeKey] = groups[s.storeKey] || []).push(s); } });
   let sent = 0; const errors = [];
@@ -1619,16 +1693,23 @@ async function uploadNpsFile(file){
     try { salesStores = await npsFetchSalesStores(); }
     catch(e){ console.warn('Sales report unavailable for email header:', e); }
     const res = await npsSendEmails(fresh, salesStores, dir);
-    sent = res.sent; storeCount = res.storeCount; errors = res.errors;
+    sent = res.sent; storeCount = res.storeCount || 0; errors = res.errors || [];
 
-    // 4) Record what we sent so tomorrow's upload doesn't repeat it.
-    const allIds = Array.from(sentSet);
-    fresh.forEach(s => allIds.push(s.id));
-    await pushToGitHub(REPOS.sales, NPS_CONFIG.SENT_LOG_PATH, npsToB64(JSON.stringify({
-      sentIds: allIds.slice(-6000),
-      lastSentAt: new Date().toISOString(),
-      batches: (sentLog.batches || []).slice(-30).concat([{ date: today, surveys: fresh.length, emailsSent: sent }])
-    })), 'NPS sent log — ' + today);
+    if(res.skipped){
+      // Today's data isn't fully updated yet — hold the send and do NOT mark these
+      // surveys as sent, so they go out automatically on the next upload once the
+      // missing data (e.g. today's Sales Report / Punch data) has been uploaded.
+      setStatus("Emails held \u2014 waiting for today's " + (res.stale || []).join(" & ") + ". They'll send automatically on your next upload once that data is current.", 'info');
+    } else {
+      // 4) Record what we sent so tomorrow's upload doesn't repeat it.
+      const allIds = Array.from(sentSet);
+      fresh.forEach(s => allIds.push(s.id));
+      await pushToGitHub(REPOS.sales, NPS_CONFIG.SENT_LOG_PATH, npsToB64(JSON.stringify({
+        sentIds: allIds.slice(-6000),
+        lastSentAt: new Date().toISOString(),
+        batches: (sentLog.batches || []).slice(-30).concat([{ date: today, surveys: fresh.length, emailsSent: sent }])
+      })), 'NPS sent log — ' + today);
+    }
   }
 
   return {
