@@ -5226,8 +5226,8 @@
     "store": "Johnson City"
   },
   "2352972457": {
-    "status": "Can Not Close",
-    "ts": "2026-06-16T21:59:35.275Z",
+    "status": "Closed",
+    "ts": "2026-06-16T22:01:42.432Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
@@ -5238,8 +5238,8 @@
     "store": "Kildeer"
   },
   "2353003648": {
-    "status": "Can Not Close",
-    "ts": "2026-06-16T22:00:18.869Z",
+    "status": "Closed",
+    "ts": "2026-06-16T22:01:44.003Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
