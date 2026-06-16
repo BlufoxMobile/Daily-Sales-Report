@@ -5680,6 +5680,13 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2366813670": {
+    "status": "Pending Install",
+    "ts": "2026-06-16T16:52:42.627Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart",
+    "pendingUntil": "2026-06-19"
+  },
   "2366870492": {
     "status": "Closed",
     "ts": "2026-06-15T21:44:31.515Z",
