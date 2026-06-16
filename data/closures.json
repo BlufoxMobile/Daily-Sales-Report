@@ -5463,11 +5463,10 @@
     "store": "South Skokie"
   },
   "2358582077": {
-    "status": "Pending Install",
-    "ts": "2026-06-09T21:29:42.586Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-16T16:58:38.304Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-06-12"
+    "store": "Elkhart"
   },
   "2358614369": {
     "status": "Pending Install",
