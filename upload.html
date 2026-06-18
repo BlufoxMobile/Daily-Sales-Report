@@ -1333,9 +1333,9 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
   const dmEmail  = (dir.storeDMs || {})[fullKey] || "";
   const smName   = (dir.storeManagerNames || {})[fullKey] || "";
 
-  const to = smEmail || asmEmail || dmEmail || NPS_CONFIG.MY_EMAIL;
+  const repEmails = (dir.storeEmployees || {})[fullKey] || [];  const to = smEmail || asmEmail || dmEmail || (repEmails[0] || "") || NPS_CONFIG.MY_EMAIL;
   const seen = new Set([to.toLowerCase()]);
-  const cc = [asmEmail, dmEmail, NPS_CONFIG.MY_EMAIL].filter(e => {
+  const cc = [asmEmail, dmEmail, ...repEmails, NPS_CONFIG.MY_EMAIL].filter(e => {
     if(!e) return false;
     const k = e.toLowerCase();
     if(seen.has(k)) return false;
