@@ -26,7 +26,7 @@
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
     "Machesney Park": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
-  "updatedAt": "2026-06-16T21:28:06.025Z",
+  "updatedAt": "2026-06-18T21:30:14.630Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -186,5 +186,193 @@
     "South Bend Xfinity Store": "Vacant Position",
     "South Skokie Xfinity Store": "Ozzie Garcia",
     "Machesney Park": "ZQ Mitchell"
+  },
+  "storeEmployees": {
+    "Greeneville Xfinity Store": [
+      "ahahn@blufoxmobile.com",
+      "aharned@blufoxmobile.com",
+      "ahoward@blufoxmobile.com",
+      "darwood@blufoxmobile.com",
+      "dfox@blufoxmobile.com",
+      "jhuerto@blufoxmobile.com",
+      "jreaves@blufoxmobile.com",
+      "ngilland@blufoxmobile.com",
+      "nsamuel@blufoxmobile.com"
+    ],
+    "Johnson City Xfinity Store": [
+      "demitchell@blufoxmobile.com",
+      "josjones@blufoxmobile.com",
+      "jwyatt@blufoxmobile.com",
+      "rajohnson@blufoxmobile.com"
+    ],
+    "Oak Ridge Xfinity Store": [
+      "adavidson@blufoxmobile.com",
+      "cmcilwain@blufoxmobile.com",
+      "drogers@blufoxmobile.com",
+      "jajones@blufoxmobile.com",
+      "lbruce@blufoxmobile.com",
+      "mwade@blufoxmobile.com",
+      "qfurlong@blufoxmobile.com",
+      "smurrell-onley@blufoxmobile.com",
+      "syoho@blufoxmobile.com"
+    ],
+    "South Knoxville Xfinity Store": [
+      "dfesperman@blufoxmobile.com",
+      "gmartin@blufoxmobile.com",
+      "jsimon@blufoxmobile.com"
+    ],
+    "Bourbonnais Xfinity Store": [
+      "aray@blufoxmobile.com",
+      "elmendoza@blufoxmobile.com",
+      "jmarsh@blufoxmobile.com",
+      "joquintanilla@blufoxmobile.com",
+      "lyiakos@blufoxmobile.com"
+    ],
+    "Burbank Xfinity Store": [
+      "acahue@blufoxmobile.com",
+      "acarradine@blufoxmobile.com",
+      "ccoleman@blufoxmobile.com",
+      "ebartkowiak@blufoxmobile.com",
+      "jbenitez@blufoxmobile.com",
+      "jlogan@blufoxmobile.com",
+      "obustamante@blufoxmobile.com"
+    ],
+    "Calumet City Xfinity Store": [
+      "eflowers@blufoxmobile.com",
+      "kathomas@blufoxmobile.com",
+      "nharris@blufoxmobile.com",
+      "psaffold@blufoxmobile.com"
+    ],
+    "Uptown Xfinity Store": [
+      "jberry@blufoxmobile.com",
+      "kbanks@blufoxmobile.com",
+      "okostenko@blufoxmobile.com",
+      "rllivi@blufoxmobile.com",
+      "shperez@blufoxmobile.com"
+    ],
+    "Cicero Xfinity Store": [
+      "cloredo@blufoxmobile.com",
+      "jairodriguez@blufoxmobile.com",
+      "jal-ali@blufoxmobile.com",
+      "jariza@blufoxmobile.com",
+      "kmorales@blufoxmobile.com",
+      "lzavala@blufoxmobile.com",
+      "rgomez@blufoxmobile.com",
+      "wperez-arellano@blufoxmobile.com"
+    ],
+    "Dekalb Xfinity Store": [
+      "cgreen@blufoxmobile.com",
+      "kedwards@blufoxmobile.com",
+      "mdelgado@blufoxmobile.com",
+      "pjones@blufoxmobile.com"
+    ],
+    "Elkhart Xfinity Store": [
+      "aldavis@blufoxmobile.com",
+      "alrosales@blufoxmobile.com",
+      "esoto-moreno@blufoxmobile.com",
+      "faguilera@blufoxmobile.com",
+      "jsalazar@blufoxmobile.com",
+      "kheltzel@blufoxmobile.com",
+      "kkirkman@blufoxmobile.com",
+      "kthaxton@blufoxmobile.com",
+      "shellis@blufoxmobile.com"
+    ],
+    "Evanston Xfinity Store": [
+      "apayne@blufoxmobile.com",
+      "arahman@blufoxmobile.com",
+      "sullah@blufoxmobile.com"
+    ],
+    "Evergreen Park Xfinity Store": [
+      "abustamante@blufoxmobile.com",
+      "ahall@blufoxmobile.com",
+      "avaldez@blufoxmobile.com",
+      "crperez@blufoxmobile.com",
+      "jromo@blufoxmobile.com",
+      "msykes@blufoxmobile.com",
+      "tyjohnson@blufoxmobile.com",
+      "vavila@blufoxmobile.com",
+      "wbacilio@blufoxmobile.com"
+    ],
+    "Frankfort Xfinity Store": [
+      "abolhuis@blufoxmobile.com",
+      "agast@blufoxmobile.com",
+      "dmoore@blufoxmobile.com",
+      "ersmith@blufoxmobile.com",
+      "ncleveland@blufoxmobile.com",
+      "tywilson@blufoxmobile.com"
+    ],
+    "Glenview Xfinity Store": [
+      "agreer@blufoxmobile.com",
+      "alflores@blufoxmobile.com",
+      "ergonzalez@blufoxmobile.com",
+      "haldhahri@blufoxmobile.com",
+      "operkins@blufoxmobile.com",
+      "rmuchler@blufoxmobile.com"
+    ],
+    "Hammond Xfinity Store": [
+      "dcharles@blufoxmobile.com",
+      "dwhite@blufoxmobile.com",
+      "jborders@blufoxmobile.com",
+      "jewatson@blufoxmobile.com",
+      "mgallardo@blufoxmobile.com",
+      "rsalgado@blufoxmobile.com",
+      "tbankston@blufoxmobile.com",
+      "vdeleon@blufoxmobile.com"
+    ],
+    "Kildeer Xfinity Store": [
+      "awallace@blufoxmobile.com",
+      "ebuckley@blufoxmobile.com",
+      "jgomez@blufoxmobile.com",
+      "mchino@blufoxmobile.com",
+      "msak@blufoxmobile.com"
+    ],
+    "Michigan City Xfinity Store": [
+      "dhogan@blufoxmobile.com",
+      "emoses@blufoxmobile.com",
+      "kcanada@blufoxmobile.com",
+      "klimon@blufoxmobile.com"
+    ],
+    "Round Lake Beach Xfinity Store": [
+      "bphillips@blufoxmobile.com",
+      "jmurillo@blufoxmobile.com",
+      "johrivera@blufoxmobile.com",
+      "jomaldonado@blufoxmobile.com",
+      "jupadilla@blufoxmobile.com",
+      "jvasquez@blufoxmobile.com"
+    ],
+    "Schererville Xfinity Store": [
+      "majackson@blufoxmobile.com",
+      "mijackson@blufoxmobile.com",
+      "tmanuel@blufoxmobile.com",
+      "vmoore@blufoxmobile.com"
+    ],
+    "South Bend Xfinity Store": [
+      "cestrada@blufoxmobile.com",
+      "ggill@blufoxmobile.com",
+      "jtafoya@blufoxmobile.com"
+    ],
+    "South Skokie Xfinity Store": [
+      "alerodriguez@blufoxmobile.com",
+      "ayonan@blufoxmobile.com",
+      "ddelgado@blufoxmobile.com",
+      "smukhi@blufoxmobile.com",
+      "sqaryo@blufoxmobile.com",
+      "tachowdhury@blufoxmobile.com"
+    ],
+    "Tinley Park Xfinity Store": [
+      "csykes@blufoxmobile.com",
+      "datownsend@blufoxmobile.com",
+      "eguzman@blufoxmobile.com",
+      "fdiaz@blufoxmobile.com",
+      "kbattle@blufoxmobile.com"
+    ],
+    "Valparaiso Xfinity Store": [
+      "adelrisco@blufoxmobile.com",
+      "agiglio@blufoxmobile.com",
+      "aiyoung@blufoxmobile.com",
+      "asuleski@blufoxmobile.com",
+      "dlong@blufoxmobile.com",
+      "nbrogdon@blufoxmobile.com"
+    ]
   }
 }
