@@ -5754,6 +5754,18 @@
     "store": "Elkhart",
     "pendingUntil": "2026-06-19"
   },
+  "2371452711": {
+    "status": "Closed",
+    "ts": "2026-06-18T15:26:55.098Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
+  },
+  "2371530620": {
+    "status": "Closed",
+    "ts": "2026-06-18T15:26:53.778Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
