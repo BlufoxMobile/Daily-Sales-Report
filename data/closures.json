@@ -5772,6 +5772,13 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
+  "2372639351": {
+    "status": "Pending Install",
+    "ts": "2026-06-19T19:01:33.432Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-06-23"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
