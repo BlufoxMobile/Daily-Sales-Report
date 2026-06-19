@@ -7359,5 +7359,12 @@
     "ts": "2026-06-19T14:52:24.755Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "1002287628882051": {
+    "status": "Pending Install",
+    "ts": "2026-06-19T19:04:12.098Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-06-24"
   }
 }
