@@ -3097,11 +3097,10 @@
     "store": "Evanston"
   },
   "2323905732": {
-    "status": "Pending Install",
-    "ts": "2026-06-22T17:51:31.602Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-22T17:52:02.780Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-06-29"
+    "store": "Evanston"
   },
   "2323906877": {
     "status": "Pending Install",
