@@ -7982,5 +7982,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-06-29"
+  },
+  "1002288539682051": {
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:47:16.324Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
   }
 }
