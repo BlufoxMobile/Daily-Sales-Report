@@ -5924,6 +5924,13 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2373844969": {
+    "status": "Pending Install",
+    "ts": "2026-06-22T18:33:13.460Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-06-29"
+  },
   "2374057256": {
     "status": "Closed",
     "ts": "2026-06-20T23:01:32.490Z",
