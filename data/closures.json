@@ -6126,10 +6126,11 @@
     "store": "Johnson City"
   },
   "2374864688": {
-    "status": "Closed",
-    "ts": "2026-06-22T22:24:37.037Z",
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:24:42.571Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
   },
   "2375169512": {
     "status": "Closed",
