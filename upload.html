@@ -235,6 +235,26 @@
     <div class="file-name" id="npsFileName"></div>
   </div>
 
+  <!-- === MONTH-TO-DATE NPS SECTION === -->
+  <div class="section-label">Month-to-Date NPS</div>
+
+  <div class="upload-zone" id="mtdExpressZone">
+    <input type="file" id="mtdExpressFile" accept=".xlsx,.xls">
+    <div class="upload-icon">&#127942;</div>
+    <h3>Express Report (Rep Scores)</h3>
+    <p>Drop your ExpressReport*.xlsx &mdash; official SMS tNPS per employee (Rank: Employee)</p>
+    <div class="file-name" id="mtdExpressFileName"></div>
+  </div>
+
+  <div class="upload-zone" id="mtdRespZone">
+    <input type="file" id="mtdRespFile" accept=".xlsx,.xls">
+    <div class="upload-icon">&#128202;</div>
+    <h3>Monthly Responses Export</h3>
+    <p>Drop the month's Responses_*.xlsx &mdash; the comments shown on the MTD tab</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Feeds the NPS Report &ldquo;Month to Date&rdquo; tab &middot; does NOT send emails</p>
+    <div class="file-name" id="mtdRespFileName"></div>
+  </div>
+
   <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadFiles()">
     Upload to Dashboards
   </button>
@@ -318,6 +338,8 @@ const exceptionsInput = document.getElementById('exceptionsFile');
 const punchInput      = document.getElementById('punchFile');
 const shopperInput    = document.getElementById('shopperFile');
 const npsInput        = document.getElementById('npsFile');
+const mtdExpressInput = document.getElementById('mtdExpressFile');
+const mtdRespInput    = document.getElementById('mtdRespFile');
 const uploadBtn       = document.getElementById('uploadBtn');
 
 // File selection handlers
@@ -346,9 +368,11 @@ bindFileZone(exceptionsInput, 'exceptionsZone', 'exceptionsFileName');
 bindFileZone(punchInput, 'punchZone', 'punchFileName');
 bindFileZone(shopperInput, 'shopperZone', 'shopperFileName');
 bindFileZone(npsInput, 'npsZone', 'npsFileName');
+bindFileZone(mtdExpressInput, 'mtdExpressZone', 'mtdExpressFileName');
+bindFileZone(mtdRespInput, 'mtdRespZone', 'mtdRespFileName');
 
 function checkReady() {
-  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0] || npsInput.files[0];
+  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0] || npsInput.files[0] || mtdExpressInput.files[0] || mtdRespInput.files[0];
   const hasToken = !!GITHUB_TOKEN;
   uploadBtn.disabled = !(hasFiles && hasToken);
   if (hasFiles && !hasToken) {
@@ -767,7 +791,8 @@ const NPS_STORE_NUM = {
   "55000": "Valparaiso",    "51022": "South Knoxville", "51023": "Round Lake Beach",
   "51031": "Johnson City",  "55002": "Tinley Park",     "55011": "Cicero",
   "55001": "Kildeer",       "55003": "Dekalb",          "55008": "Evanston",
-  "51009": "Oak Ridge"
+  "51009": "Oak Ridge",     "51032": "Burbank",         "51033": "Michigan City",
+  "51017": "Hammond",       "51035": "South Bend",      "51041": "Calumet City"
 };
 
 // Keyword fallbacks for store numbers we haven't seen yet. Checked in order.
@@ -1722,6 +1747,66 @@ async function uploadNpsFile(file){
 
 // === MAIN UPLOAD ======================================
 
+// === MONTH-TO-DATE NPS UPLOAD (Express scores + Responses) -> data/nps-mtd.json. NO emails. ===
+const MTD_NPS_PATH = "data/nps-mtd.json";
+function mtdTnps(L){ if(!L.length) return 0; const p=L.filter(s=>s.score>=9).length, d=L.filter(s=>s.score<=7).length; return Math.round((p-d)/L.length*100); }
+function mtdSplitName(name){ let last, first; if(String(name).indexOf(",")>=0){ const a=name.split(","); last=a[0]; first=a[1]; } else { const p=String(name).split(/\s+/); first=p[0]; last=p.slice(1).join(" "); } return { first:(first||"").trim(), last:(last||"").trim() }; }
+// Parse the Express Report (Rank: Employee) -> { period, reps:[{name,rank,records,tnps,issueResolved,waitPct}] }
+function parseExpressReport(wb){
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+  let period = "";
+  for(let i=0;i<6;i++){ const r=rows[i]; if(r) for(const c of r){ if(c && /Timeperiod:/i.test(String(c))){ const m=String(c).match(/Timeperiod:\s*([^)]+)\)/i); if(m) period=m[1].trim(); } } }
+  let hr=-1; for(let i=0;i<12;i++){ if(rows[i] && rows[i].some(c=>c!=null && String(c).trim()==="SMS tNPS")){ hr=i; break; } }
+  if(hr<0) throw new Error('Express Report: no "SMS tNPS" column (is this the Express Report, Rank: Employee?)');
+  const h = rows[hr].map(c=>c==null?"":String(c).trim());
+  const iEmp=h.indexOf("Employee"), iRank=h.indexOf("Rank"), iRec=h.indexOf("# of records"), iT=h.indexOf("SMS tNPS"),
+        iIR=h.findIndex(c=>/Issue Resolved/i.test(c)), iWait=h.findIndex(c=>/Wait time/i.test(c));
+  const reps=[];
+  for(let i=hr+1;i<rows.length;i++){
+    const r=rows[i]; if(!r||r[iEmp]==null) continue; const name=String(r[iEmp]).trim(); if(!name) continue;
+    reps.push({ name, rank:Number(r[iRank])||null, records:Number(r[iRec])||0,
+      tnps:(r[iT]==null||r[iT]==="")?null:Math.round(Number(r[iT])),
+      issueResolved:(iIR>=0&&r[iIR]!=null&&r[iIR]!=="")?Math.round(Number(r[iIR])):null,
+      waitPct:(iWait>=0&&r[iWait]!=null&&r[iWait]!=="")?Math.round(Number(r[iWait])):null });
+  }
+  return { period, reps };
+}
+// Resolve a Responses NTID (bp-<initial><lastprefix><digits>) to one Express rep.
+function mtdMatchNtid(ntid, reps){
+  const m=String(ntid).toLowerCase().match(/^bp-([a-z])([a-z]+?)\d/); if(!m) return null;
+  const ini=m[1], lp=m[2];
+  const hits=reps.filter(e=>{ const s=mtdSplitName(e.name); const lastCore=s.last.toLowerCase().replace(/\s+(jr|sr|ii|iii|iv)\.?$/,"").trim(); return s.first[0] && s.first[0].toLowerCase()===ini && lastCore.indexOf(lp)===0; });
+  if(hits.length===1) return hits[0];
+  if(hits.length>1){ const ex=hits.filter(e=>mtdSplitName(e.name).last.toLowerCase().split(/\s+/)[0].replace(/[.,]/g,"")===lp); if(ex.length===1) return ex[0]; }
+  return null;  // collisions/none -> rep falls back to a computed score in the report
+}
+async function uploadMtdNps(expressFile, respFile){
+  setStatus("Reading Month-to-Date NPS files...", "info");
+  let express = { period:"", reps:[] };
+  if(expressFile){ const wb = XLSX.read(await readFileAsArrayBuffer(expressFile), { type:"array", cellDates:true }); express = parseExpressReport(wb); }
+  let parsed = { surveys:[], unmatched:[] };
+  if(respFile){ const wb = XLSX.read(await readFileAsArrayBuffer(respFile), { type:"array", cellDates:true }); parsed = parseNpsWorkbook(wb); }
+  if(!parsed.surveys.length && !express.reps.length) throw new Error("No usable rows in the MTD files");
+  const surveys = parsed.surveys.map(s => ({ id:s.id, score:s.score, txnDate:s.txnDate, ntid:s.ntid, comment:s.comment, txnType:s.txnType, storeKey:s.storeKey, storeRaw:s.storeRaw }));
+  const dates = surveys.map(s=>s.txnDate).filter(Boolean).sort();
+  const window = { startYMD:dates[0]||null, endYMD:dates[dates.length-1]||null };
+  const byEmp={}; surveys.forEach(s=>{ if(s.ntid)(byEmp[s.ntid]=byEmp[s.ntid]||[]).push(s); });
+  const employees={}; let scored=0;
+  Object.keys(byEmp).forEach(nt=>{ const L=byEmp[nt]; const e=mtdMatchNtid(nt, express.reps); if(e&&e.tnps!=null) scored++;
+    employees[nt]={ name:e?e.name:null, officialTnps:e?e.tnps:null, records:e?e.records:null, issueResolved:e?e.issueResolved:null, waitPct:e?e.waitPct:null,
+      respTotal:L.length, respTnps:mtdTnps(L), good:L.filter(s=>s.score>=9).length, ok:L.filter(s=>s.score===8).length, bad:L.filter(s=>s.score<=7).length }; });
+  const byStore={}; surveys.forEach(s=>{ if(s.storeKey)(byStore[s.storeKey]=byStore[s.storeKey]||[]).push(s); });
+  const stores={}; Object.keys(byStore).forEach(k=>{ const L=byStore[k]; stores[k]={ tnps:mtdTnps(L), total:L.length, good:L.filter(s=>s.score>=9).length, ok:L.filter(s=>s.score===8).length, bad:L.filter(s=>s.score<=7).length }; });
+  const payload={ updatedAt:new Date().toISOString(), window, period:express.period||"",
+    generatedFrom:{ express:expressFile?expressFile.name:null, responses:respFile?respFile.name:null },
+    count:surveys.length, unmatched:parsed.unmatched, surveys, employees,
+    expressAll:express.reps.map(e=>({ name:e.name, rank:e.rank, tnps:e.tnps, records:e.records, issueResolved:e.issueResolved, waitPct:e.waitPct })), stores };
+  setStatus("Saving MTD NPS (" + surveys.length + " responses, " + scored + " reps scored)...", "info");
+  await pushToGitHub(REPOS.sales, MTD_NPS_PATH, npsToB64(JSON.stringify(payload)), "Update MTD NPS — " + new Date().toLocaleDateString());
+  return { responses:surveys.length, reps:Object.keys(employees).length, scored:scored, stores:Object.keys(stores).length, unmatched:parsed.unmatched };
+}
+
 async function uploadFiles() {
   uploadBtn.disabled = true;
   uploadBtn.textContent = 'Uploading...';
@@ -1846,6 +1931,20 @@ async function uploadFiles() {
         parts.push(label);
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('NPS Surveys: ' + e.message); }
+    });
+  }
+
+  if (mtdExpressInput.files[0] || mtdRespInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        const res = await uploadMtdNps(mtdExpressInput.files[0] || null, mtdRespInput.files[0] || null);
+        completed++;
+        let label = `MTD NPS (${res.responses} response${res.responses === 1 ? '' : 's'}, ${res.scored} rep${res.scored === 1 ? '' : 's'} scored)`;
+        if (res.unmatched.length) { label += ` — ⚠ unmatched store(s): ${res.unmatched.join('; ')}`; }
+        parts.push(label);
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('MTD NPS: ' + e.message); }
     });
   }
 
