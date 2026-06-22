@@ -7644,5 +7644,12 @@
     "ts": "2026-06-22T18:33:29.910Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "1002288374832050": {
+    "status": "Pending Install",
+    "ts": "2026-06-22T19:29:58.051Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-06-24"
   }
 }
