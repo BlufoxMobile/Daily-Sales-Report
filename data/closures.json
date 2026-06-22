@@ -6175,6 +6175,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2376841411": {
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:27:07.721Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
+  },
   "2376989932": {
     "status": "Closed",
     "ts": "2026-06-22T22:16:58.551Z",
