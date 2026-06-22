@@ -7943,5 +7943,12 @@
     "ts": "2026-06-22T22:00:19.010Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "1002287605532059": {
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:43:45.844Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-06-29"
   }
 }
