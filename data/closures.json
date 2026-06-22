@@ -5949,6 +5949,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2374318694": {
+    "status": "Pending Install",
+    "ts": "2026-06-22T18:33:21.957Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-06-29"
+  },
   "2374859287": {
     "status": "Closed",
     "ts": "2026-06-22T15:55:37.253Z",
