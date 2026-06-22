@@ -7657,5 +7657,11 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais",
     "pendingUntil": "2026-06-24"
+  },
+  "1002284971832056": {
+    "status": "Cancelled Order",
+    "ts": "2026-06-22T21:45:38.436Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   }
 }
