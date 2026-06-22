@@ -6089,6 +6089,18 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2375169512": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:19.952Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2375280861": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:22.563Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2375457351": {
     "status": "Closed",
     "ts": "2026-06-22T15:48:41.376Z",
@@ -6113,6 +6125,18 @@
     "ts": "2026-06-22T17:46:31.243Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2377336671": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:23.949Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2377357697": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:21.283Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "1001290369922103": {
     "status": "Pending Install",
@@ -7797,5 +7821,11 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-06-23"
+  },
+  "1002288340962056": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:19.010Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   }
 }
