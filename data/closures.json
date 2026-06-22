@@ -5735,6 +5735,18 @@
     "store": "Hammond",
     "pendingUntil": "2026-06-15"
   },
+  "2365090508": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:12.402Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2365160974": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:10.602Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2365267292": {
     "status": "Closed",
     "ts": "2026-06-15T23:35:28.583Z",
@@ -5880,6 +5892,12 @@
     "store": "Elkhart",
     "pendingUntil": "2026-06-19"
   },
+  "2369398431": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:13.347Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2369640615": {
     "status": "Closed",
     "ts": "2026-06-19T14:48:36.857Z",
@@ -5921,6 +5939,12 @@
     "ts": "2026-06-22T21:57:29.170Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
+  },
+  "2370600702": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:14.404Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2370670462": {
     "status": "Pending Install",
@@ -6028,6 +6052,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2374076757": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:15.609Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2374081277": {
     "status": "Closed",
     "ts": "2026-06-22T16:35:03.716Z",
@@ -6046,6 +6076,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-06-29"
+  },
+  "2374482134": {
+    "status": "Closed",
+    "ts": "2026-06-22T22:00:17.127Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2374859287": {
     "status": "Closed",
