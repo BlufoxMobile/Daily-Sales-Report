@@ -6062,6 +6062,13 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2373071282": {
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:46:48.548Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-06-24"
+  },
   "2373558475": {
     "status": "Closed",
     "ts": "2026-06-20T23:01:21.481Z",
