@@ -6424,6 +6424,13 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2379595922": {
+    "status": "Pending Install",
+    "ts": "2026-06-23T22:02:54.288Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-06-30"
+  },
   "2379609496": {
     "status": "Closed",
     "ts": "2026-06-23T21:55:58.828Z",
