@@ -4934,11 +4934,10 @@
     "store": "Hammond"
   },
   "2347826716": {
-    "status": "Pending Install",
-    "ts": "2026-06-08T23:24:44.414Z",
+    "status": "Cancelled Order",
+    "ts": "2026-06-23T21:43:54.350Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-06-15"
+    "store": "Uptown"
   },
   "2348070651": {
     "status": "Closed",
