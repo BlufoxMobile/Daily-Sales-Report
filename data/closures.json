@@ -6411,6 +6411,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2378696795": {
+    "status": "Pending Install",
+    "ts": "2026-06-23T22:02:49.408Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-06-30"
+  },
   "2379335319": {
     "status": "Closed",
     "ts": "2026-06-23T18:08:43.056Z",
