@@ -6154,10 +6154,11 @@
     "store": "Burbank"
   },
   "2373843633": {
-    "status": "Closed",
-    "ts": "2026-06-24T11:44:36.026Z",
+    "status": "Pending Install",
+    "ts": "2026-06-24T17:50:24.840Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-01"
   },
   "2373844969": {
     "status": "Pending Install",
