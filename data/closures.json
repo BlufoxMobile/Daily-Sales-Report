@@ -8261,8 +8261,8 @@
     "pendingUntil": "2026-07-01"
   },
   "1001297142282101": {
-    "status": "Closed",
-    "ts": "2026-06-24T13:37:45.134Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-24T13:38:09.562Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   }
