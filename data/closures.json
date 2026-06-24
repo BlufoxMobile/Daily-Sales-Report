@@ -6442,6 +6442,12 @@
     "store": "Oak Ridge",
     "pendingUntil": "2026-06-30"
   },
+  "2379166706": {
+    "status": "Can Not Close",
+    "ts": "2026-06-24T14:40:03.387Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2379335319": {
     "status": "Closed",
     "ts": "2026-06-23T18:08:43.056Z",
@@ -6467,6 +6473,12 @@
     "ts": "2026-06-23T21:55:58.828Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2379614075": {
+    "status": "Can Not Close",
+    "ts": "2026-06-24T14:40:01.691Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "1001290369922103": {
     "status": "Pending Install",
