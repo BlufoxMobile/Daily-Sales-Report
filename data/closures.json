@@ -6116,6 +6116,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-06-23"
   },
+  "2372752766": {
+    "status": "Can Not Close",
+    "ts": "2026-06-24T13:34:27.795Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2373061985": {
     "status": "Closed",
     "ts": "2026-06-19T20:57:49.632Z",
