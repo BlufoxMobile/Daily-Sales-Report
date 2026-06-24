@@ -8348,5 +8348,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank",
     "pendingUntil": "2026-07-02"
+  },
+  "1001301831422109": {
+    "status": "Pending Install",
+    "ts": "2026-06-24T17:50:48.708Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-01"
   }
 }
