@@ -5842,8 +5842,8 @@
     "store": "South Skokie"
   },
   "2366520323": {
-    "status": "Closed",
-    "ts": "2026-06-15T21:42:24.371Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-25T17:54:36.556Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -5873,8 +5873,8 @@
     "store": "Tinley Park"
   },
   "2366891237": {
-    "status": "Closed",
-    "ts": "2026-06-15T21:42:38.971Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-25T17:54:34.900Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
