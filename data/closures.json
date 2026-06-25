@@ -6187,10 +6187,11 @@
     "store": "Hammond"
   },
   "2374076757": {
-    "status": "Closed",
-    "ts": "2026-06-22T22:00:15.609Z",
+    "status": "Pending Install",
+    "ts": "2026-06-25T15:30:21.173Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-05"
   },
   "2374081277": {
     "status": "Closed",
