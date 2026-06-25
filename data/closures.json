@@ -6588,6 +6588,12 @@
     "store": "Kildeer",
     "pendingUntil": "2026-07-02"
   },
+  "2381159941": {
+    "status": "Closed",
+    "ts": "2026-06-25T18:36:21.368Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2382092320": {
     "status": "Pending Install",
     "ts": "2026-06-25T16:17:06.789Z",
