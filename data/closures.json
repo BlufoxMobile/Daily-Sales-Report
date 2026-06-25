@@ -6545,6 +6545,12 @@
     "store": "Kildeer",
     "pendingUntil": "2026-07-02"
   },
+  "2382371449": {
+    "status": "Can Not Close",
+    "ts": "2026-06-25T15:54:02.388Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
