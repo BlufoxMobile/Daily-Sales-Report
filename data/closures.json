@@ -8518,5 +8518,12 @@
     "ts": "2026-06-25T18:14:33.161Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "1002288915832056": {
+    "status": "Pending Install",
+    "ts": "2026-06-25T18:22:37.972Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond",
+    "pendingUntil": "2026-07-02"
   }
 }
