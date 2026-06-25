@@ -26,7 +26,7 @@
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
     "Machesney Park": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
-  "updatedAt": "2026-06-25T05:49:57.327Z",
+  "updatedAt": "2026-06-25T05:52:54.211Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -113,7 +113,7 @@
     "Bourbonnais Xfinity Store": "jSoto@blufoxmobile.com",
     "South Bend Xfinity Store": "jbilbrey@blufoxmobile.com",
     "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
-    "Machesney Park": "ZMitchell@blufoxmobile.com"
+    "Machesney Park": "jbilbrey@blufoxmobile.com"
   },
   "storeAMs": {
     "Bourbonnais Xfinity Store": "NTrombley@blufoxmobile.com",
@@ -131,7 +131,10 @@
     "Michigan City Xfinity Store": "aEvans@blufoxmobile.com",
     "Oak Ridge Xfinity Store": "eMcFall@blufoxmobile.com",
     "Schererville Xfinity Store": "apVasquez@blufoxmobile.com",
-    "South Knoxville Xfinity Store": "dMcKamey@blufoxmobile.com"
+    "South Knoxville Xfinity Store": "dMcKamey@blufoxmobile.com",
+    "Elkhart Xfinity Store": "jLilly@blufoxmobile.com",
+    "Hammond Xfinity Store": "dCharles@blufoxmobile.com",
+    "Burbank Xfinity Store": "jBenitez@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -185,7 +188,7 @@
     "Bourbonnais Xfinity Store": "Jamil Soto",
     "South Bend Xfinity Store": "Vacant Position",
     "South Skokie Xfinity Store": "Ozzie Garcia",
-    "Machesney Park": "ZQ Mitchell"
+    "Machesney Park": "Jeff Bilbrey"
   },
   "storeEmployees": {
     "Greeneville Xfinity Store": [
