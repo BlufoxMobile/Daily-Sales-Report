@@ -8196,10 +8196,11 @@
     "pendingUntil": "2026-06-23"
   },
   "1002288340962056": {
-    "status": "Closed",
-    "ts": "2026-06-22T22:00:19.010Z",
+    "status": "Pending Install",
+    "ts": "2026-06-25T15:40:22.688Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-06-26"
   },
   "1002287605532059": {
     "status": "Pending Install",
