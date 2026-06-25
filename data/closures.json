@@ -6580,6 +6580,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2380350232": {
+    "status": "Closed",
+    "ts": "2026-06-25T18:37:42.711Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2380368717": {
     "status": "Pending Install",
     "ts": "2026-06-25T15:50:47.598Z",
@@ -6593,6 +6599,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer",
     "pendingUntil": "2026-07-02"
+  },
+  "2380603164": {
+    "status": "Closed",
+    "ts": "2026-06-25T18:37:41.294Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   },
   "2381142970": {
     "status": "Closed",
