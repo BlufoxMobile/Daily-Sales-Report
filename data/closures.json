@@ -6468,6 +6468,13 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2379166684": {
+    "status": "Pending Install",
+    "ts": "2026-06-25T15:48:54.495Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-02"
+  },
   "2379166706": {
     "status": "Can Not Close",
     "ts": "2026-06-24T14:40:03.387Z",
