@@ -8672,5 +8672,12 @@
     "ts": "2026-06-25T18:40:02.511Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "1002289262562056": {
+    "status": "Pending Install",
+    "ts": "2026-06-26T14:43:11.775Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-07-01"
   }
 }
