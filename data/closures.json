@@ -8531,11 +8531,10 @@
     "pendingUntil": "2026-06-30"
   },
   "1001301040172107": {
-    "status": "Pending Install",
-    "ts": "2026-06-23T22:02:30.600Z",
+    "status": "Closed",
+    "ts": "2026-06-26T14:58:33.445Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-06-25"
+    "store": "Oak Ridge"
   },
   "1001301632792106": {
     "status": "Pending Install",
