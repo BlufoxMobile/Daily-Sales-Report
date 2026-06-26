@@ -6376,6 +6376,13 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2374954749": {
+    "status": "Pending Install",
+    "ts": "2026-06-26T20:53:06.155Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City",
+    "pendingUntil": "2026-06-28"
+  },
   "2374976782": {
     "status": "Closed",
     "ts": "2026-06-22T22:47:08.063Z",
