@@ -8821,5 +8821,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-07-09"
+  },
+  "1002288935622057": {
+    "status": "Pending Install",
+    "ts": "2026-06-26T20:54:13.067Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City",
+    "pendingUntil": "2026-06-30"
   }
 }
