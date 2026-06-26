@@ -6666,6 +6666,13 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2381832784": {
+    "status": "Pending Install",
+    "ts": "2026-06-26T14:38:37.373Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart",
+    "pendingUntil": "2026-06-27"
+  },
   "2381833315": {
     "status": "Closed",
     "ts": "2026-06-25T18:39:55.959Z",
