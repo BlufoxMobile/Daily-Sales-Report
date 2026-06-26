@@ -8722,5 +8722,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-06-27"
+  },
+  "1001301819842104": {
+    "status": "Pending Install",
+    "ts": "2026-06-26T15:00:11.857Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-03"
   }
 }
