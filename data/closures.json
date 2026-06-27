@@ -6924,6 +6924,12 @@
     "store": "Kildeer",
     "pendingUntil": "2026-07-02"
   },
+  "2380538483": {
+    "status": "Closed",
+    "ts": "2026-06-27T22:58:06.924Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach"
+  },
   "2380601630": {
     "status": "Pending Install",
     "ts": "2026-06-25T15:50:50.988Z",
@@ -6954,6 +6960,12 @@
     "ts": "2026-06-25T18:36:21.368Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "2381163642": {
+    "status": "Closed",
+    "ts": "2026-06-27T22:58:08.653Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach"
   },
   "2381420974": {
     "status": "Closed",
