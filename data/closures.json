@@ -5631,11 +5631,10 @@
     "store": "Elkhart"
   },
   "2358614369": {
-    "status": "Pending Install",
-    "ts": "2026-06-08T22:35:25.216Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-27T23:00:59.335Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Round Lake Beach",
-    "pendingUntil": "2026-06-19"
+    "store": "Round Lake Beach"
   },
   "2358756746": {
     "status": "Closed",
