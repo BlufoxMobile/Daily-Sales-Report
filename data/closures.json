@@ -5151,11 +5151,23 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2351212212": {
+    "status": "Closed",
+    "ts": "2026-06-27T00:15:37.023Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2351266874": {
     "status": "Closed",
     "ts": "2026-06-06T20:20:56.645Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2351305069": {
+    "status": "Closed",
+    "ts": "2026-06-27T00:15:38.175Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2351342757": {
     "status": "Closed",
