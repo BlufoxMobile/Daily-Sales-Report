@@ -5978,6 +5978,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2366287328": {
+    "status": "Closed",
+    "ts": "2026-06-27T00:44:02.775Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2366288994": {
     "status": "Closed",
     "ts": "2026-06-22T21:52:07.310Z",
@@ -6002,6 +6008,12 @@
     "ts": "2026-06-22T21:54:57.394Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "2366489521": {
+    "status": "Closed",
+    "ts": "2026-06-27T00:44:01.481Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2366520323": {
     "status": "Can Not Close",
