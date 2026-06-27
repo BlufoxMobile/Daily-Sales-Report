@@ -6811,6 +6811,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2378914844": {
+    "status": "Cancelled Order",
+    "ts": "2026-06-27T22:59:40.333Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Round Lake Beach"
+  },
   "2379166684": {
     "status": "Pending Install",
     "ts": "2026-06-25T15:48:54.495Z",
