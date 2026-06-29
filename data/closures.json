@@ -7015,11 +7015,10 @@
     "store": "Burbank"
   },
   "2381832784": {
-    "status": "Pending Install",
-    "ts": "2026-06-26T14:38:37.373Z",
+    "status": "Closed",
+    "ts": "2026-06-29T14:52:32.004Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-06-27"
+    "store": "Elkhart"
   },
   "2381833315": {
     "status": "Closed",
