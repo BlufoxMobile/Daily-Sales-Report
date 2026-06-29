@@ -9163,5 +9163,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-07-15"
+  },
+  "1002290092852055": {
+    "status": "Pending Install",
+    "ts": "2026-06-29T20:39:06.118Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-07-02"
   }
 }
