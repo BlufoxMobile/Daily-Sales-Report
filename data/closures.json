@@ -9170,5 +9170,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank",
     "pendingUntil": "2026-07-02"
+  },
+  "1002290288352050": {
+    "status": "Pending Install",
+    "ts": "2026-06-29T20:40:18.593Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-07-06"
   }
 }
