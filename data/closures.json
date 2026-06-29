@@ -6934,6 +6934,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2380269948": {
+    "status": "Closed",
+    "ts": "2026-06-29T21:56:58.252Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
   "2380350232": {
     "status": "Closed",
     "ts": "2026-06-25T18:37:42.711Z",
@@ -6965,6 +6971,18 @@
     "ts": "2026-06-25T18:37:41.294Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "2380798779": {
+    "status": "Closed",
+    "ts": "2026-06-29T21:56:59.537Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
+  "2380885753": {
+    "status": "Closed",
+    "ts": "2026-06-29T21:57:01.024Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
   },
   "2380889290": {
     "status": "Can Not Close",
