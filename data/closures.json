@@ -9213,5 +9213,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank",
     "pendingUntil": "2026-07-06"
+  },
+  "1002289693752052": {
+    "status": "Pending Install",
+    "ts": "2026-06-29T21:59:56.294Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City",
+    "pendingUntil": "2026-07-06"
   }
 }
