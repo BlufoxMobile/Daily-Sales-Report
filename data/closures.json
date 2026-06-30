@@ -7313,6 +7313,13 @@
     "store": "Kildeer",
     "pendingUntil": "2026-07-11"
   },
+  "2388476087": {
+    "status": "Pending Install",
+    "ts": "2026-06-30T20:07:18.837Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero",
+    "pendingUntil": "2026-07-02"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
