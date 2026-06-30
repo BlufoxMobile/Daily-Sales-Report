@@ -7255,6 +7255,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2388179119": {
+    "status": "Pending Install",
+    "ts": "2026-06-30T19:49:44.067Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-07-11"
+  },
   "2388205115": {
     "status": "Closed",
     "ts": "2026-06-30T18:56:16.489Z",
