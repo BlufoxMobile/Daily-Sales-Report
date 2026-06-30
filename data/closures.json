@@ -9608,5 +9608,11 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais",
     "pendingUntil": "2026-07-10"
+  },
+  "1001358356232115": {
+    "status": "Can Not Close",
+    "ts": "2026-06-30T21:31:15.350Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   }
 }
