@@ -7170,6 +7170,12 @@
     "store": "Greeneville",
     "pendingUntil": "2026-07-07"
   },
+  "2388079267": {
+    "status": "Closed",
+    "ts": "2026-06-30T13:48:36.192Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
