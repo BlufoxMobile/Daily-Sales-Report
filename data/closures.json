@@ -7398,6 +7398,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-07-04"
   },
+  "2387826150": {
+    "status": "Closed",
+    "ts": "2026-06-30T22:07:55.334Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2387880765": {
     "status": "Pending Install",
     "ts": "2026-06-30T20:10:07.589Z",
