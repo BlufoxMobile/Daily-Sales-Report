@@ -5241,6 +5241,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2351656694": {
+    "status": "Cancelled Order",
+    "ts": "2026-06-30T20:31:21.614Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
+  },
   "2351660248": {
     "status": "Can Not Close",
     "ts": "2026-06-09T14:49:20.431Z",
