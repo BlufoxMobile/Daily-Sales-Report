@@ -9297,5 +9297,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-07-06"
+  },
+  "1002290492292050": {
+    "status": "Pending Install",
+    "ts": "2026-06-30T15:08:58.917Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-03"
   }
 }
