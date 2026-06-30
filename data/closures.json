@@ -7292,11 +7292,10 @@
     "store": "Elkhart"
   },
   "2387935496": {
-    "status": "Pending Install",
-    "ts": "2026-06-30T13:35:31.274Z",
+    "status": "Closed",
+    "ts": "2026-06-30T21:06:09.463Z",
     "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-07-07"
+    "store": "Greeneville"
   },
   "2388036014": {
     "status": "Closed",
