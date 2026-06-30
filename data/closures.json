@@ -7186,6 +7186,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2384254682": {
+    "status": "Pending Install",
+    "ts": "2026-06-30T20:11:56.069Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero",
+    "pendingUntil": "2026-07-02"
+  },
   "2384573078": {
     "status": "Can Not Close",
     "ts": "2026-06-29T14:54:11.757Z",
