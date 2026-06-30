@@ -6981,6 +6981,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2379863176": {
+    "status": "Cancelled Order",
+    "ts": "2026-06-30T21:28:12.062Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
   "2379893294": {
     "status": "Closed",
     "ts": "2026-06-24T23:15:33.866Z",
