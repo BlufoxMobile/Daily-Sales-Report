@@ -7182,6 +7182,12 @@
     "store": "Greeneville",
     "pendingUntil": "2026-07-07"
   },
+  "2387931782": {
+    "status": "Closed",
+    "ts": "2026-06-30T15:37:55.613Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2387935496": {
     "status": "Pending Install",
     "ts": "2026-06-30T13:35:31.274Z",
