@@ -6918,6 +6918,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2378824527": {
+    "status": "Closed",
+    "ts": "2026-06-30T21:44:34.461Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2378914844": {
     "status": "Cancelled Order",
     "ts": "2026-06-27T22:59:40.333Z",
@@ -6943,11 +6949,23 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2379287837": {
+    "status": "Closed",
+    "ts": "2026-06-30T21:44:31.941Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2379335319": {
     "status": "Closed",
     "ts": "2026-06-23T18:08:43.056Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2379481144": {
+    "status": "Closed",
+    "ts": "2026-06-30T21:44:32.941Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2379485109": {
     "status": "Closed",
