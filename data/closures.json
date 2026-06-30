@@ -9589,5 +9589,12 @@
     "ts": "2026-06-30T20:10:36.987Z",
     "dm": "Jacob Cabrales",
     "store": "Cicero"
+  },
+  "1002289610232055": {
+    "status": "Pending Install",
+    "ts": "2026-06-30T21:29:22.127Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-07-10"
   }
 }
