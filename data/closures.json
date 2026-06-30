@@ -8911,11 +8911,10 @@
     "pendingUntil": "2026-06-26"
   },
   "1002287605532059": {
-    "status": "Pending Install",
-    "ts": "2026-06-22T22:43:45.844Z",
+    "status": "Closed",
+    "ts": "2026-06-30T17:55:56.267Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-06-29"
+    "store": "Schererville"
   },
   "1002288539682051": {
     "status": "Pending Install",
