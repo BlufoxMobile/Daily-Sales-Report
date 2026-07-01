@@ -7535,6 +7535,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-07-02"
   },
+  "2389442361": {
+    "status": "Can Not Close",
+    "ts": "2026-07-01T16:52:08.736Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2389800148": {
     "status": "Pending Install",
     "ts": "2026-07-01T16:41:34.705Z",
