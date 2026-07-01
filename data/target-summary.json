@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-01T02:31:40.790Z",
-  "month": "May",
+  "updatedAt": "2026-07-01T13:10:30.965Z",
+  "month": "July",
   "year": 2026,
   "source": "Jeffrey Bilbrey (cols A–F)",
   "stores": {
@@ -9,175 +9,175 @@
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 36000
+      "gp": 45900
     },
     "Glenview": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 63900
+      "gp": 66600
     },
     "Kildeer": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 45000
+      "gp": 42300
     },
     "Machesney Park": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
-      "closeRate": "NA",
-      "gp": 6300
+      "closeRate": null,
+      "gp": 18000
     },
     "Round Lake Beach": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9,
-      "gp": 22500
+      "gp": 27000
     },
     "South Skokie": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 52200
+      "gp": 49500
     },
     "Uptown": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 36900
+      "gp": 40500
     },
     "Cicero": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.25,
-      "gp": 76500
+      "gp": 77400
     },
     "Elkhart": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9,
-      "gp": 52200
+      "gp": 57600
     },
     "Hammond": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.25,
-      "gp": 56700
+      "gp": 58500
     },
     "Michigan City": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
-      "closeRate": 9.25,
-      "gp": 31500
+      "closeRate": 9.75,
+      "gp": 39600
     },
     "Schererville": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 47700
+      "gp": 46800
     },
     "South Bend": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.25,
-      "gp": 22500
+      "gp": 18000
     },
     "Valparaiso": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 48600
+      "gp": 65700
     },
     "Bourbonnais": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.25,
-      "gp": 48600
+      "gp": 45900
     },
     "Burbank": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
-      "closeRate": 9.75,
-      "gp": 55800
+      "closeRate": 10,
+      "gp": 53100
     },
     "Calumet City": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
-      "closeRate": "NA",
-      "gp": 18900
+      "closeRate": 9.5,
+      "gp": 27000
     },
     "Dekalb": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 31500
+      "gp": 37800
     },
     "Evergreen Park": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 68400
+      "gp": 74700
     },
     "Frankfort": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.75,
-      "gp": 46800
+      "gp": 49500
     },
     "Tinley Park": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 41400
+      "gp": 45000
     },
     "Greeneville": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 74700
+      "gp": 81000
     },
     "Johnson City": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 38700
+      "gp": 40500
     },
     "Oak Ridge": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 72000
+      "gp": 84600
     },
     "South Knoxville": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 29700
+      "gp": 34200
     }
   }
 }
