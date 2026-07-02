@@ -893,7 +893,7 @@ function buildSlides() {
 
   const promoSlide   = { type: 'promos',        title: 'DAILY PROMOTIONS',        label: 'Promotions' };
   const xfinitySlide = { type: 'xfinity-promo', title: 'XFINITY MORE EVERYTHING', label: 'Xfinity Special' };
-  const pushPromoPair = arr => { arr.push(promoSlide); arr.push(xfinitySlide); };
+  const pushPromoPair = arr => { if (PROMO_AVAILABLE.promos) arr.push(promoSlide); if (PROMO_AVAILABLE.xfinity) arr.push(xfinitySlide); };
   const N = CONFIG.PROMO_EVERY_N || 4;
   const interleaved = [];
   for (let si = 0; si < state.slides.length; si++) {
@@ -901,13 +901,27 @@ function buildSlides() {
     if ((si + 1) % N === 0) pushPromoPair(interleaved);
   }
   const last = interleaved[interleaved.length - 1];
-  if (interleaved.length === 0 || (last && last.type !== 'xfinity-promo')) {
+  if (interleaved.length === 0 || (last && last.type !== 'xfinity-promo' && last.type !== 'promos')) {
     pushPromoPair(interleaved);
   }
   state.slides = interleaved;
   state.totalSlides = state.slides.length;
   state.currentSlide = 0;
 }
+// Skip promo slides whose image hasn't been uploaded (probe every 30 min).
+const PROMO_AVAILABLE = { promos: true, xfinity: true };
+function probePromos() {
+  [['promos', CONFIG.PROMO_URL], ['xfinity', CONFIG.XFINITY_PROMO_URL]].forEach(pair => {
+    const key = pair[0], url = pair[1];
+    const im = new Image();
+    im.onload = function () { if (!PROMO_AVAILABLE[key]) { PROMO_AVAILABLE[key] = true; buildSlides(); } };
+    im.onerror = function () { if (PROMO_AVAILABLE[key]) { PROMO_AVAILABLE[key] = false; buildSlides(); } };
+    im.src = url + '?probe=' + Math.floor(Date.now() / 600000);
+  });
+}
+probePromos();
+setInterval(probePromos, 1800000);
+
 // Cheap fingerprint of the downloaded workbook so we can tell whether the
 // file on GitHub actually changed since the last check.
 function bufferSignature(buf) {
