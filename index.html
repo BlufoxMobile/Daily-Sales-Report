@@ -342,7 +342,6 @@ const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
   EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
   PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
-  XFINITY_PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/more-everything.jpg',
   SLIDE_INTERVAL: 15000,     // 15 seconds per slide
   // Auto-refresh window: look for a newly uploaded Sales Report every
   // `everyMin` minutes between startMin and endMin (minutes since midnight).
@@ -892,8 +891,7 @@ function buildSlides() {
   }
 
   const promoSlide   = { type: 'promos',        title: 'DAILY PROMOTIONS',        label: 'Promotions' };
-  const xfinitySlide = { type: 'xfinity-promo', title: 'XFINITY MORE EVERYTHING', label: 'Xfinity Special' };
-  const pushPromoPair = arr => { if (PROMO_AVAILABLE.promos) arr.push(promoSlide); if (PROMO_AVAILABLE.xfinity) arr.push(xfinitySlide); };
+  const pushPromoPair = arr => { if (PROMO_AVAILABLE.promos) arr.push(promoSlide); };
   const N = CONFIG.PROMO_EVERY_N || 4;
   const interleaved = [];
   for (let si = 0; si < state.slides.length; si++) {
@@ -901,7 +899,7 @@ function buildSlides() {
     if ((si + 1) % N === 0) pushPromoPair(interleaved);
   }
   const last = interleaved[interleaved.length - 1];
-  if (interleaved.length === 0 || (last && last.type !== 'xfinity-promo' && last.type !== 'promos')) {
+  if (interleaved.length === 0 || (last && last.type !== 'promos')) {
     pushPromoPair(interleaved);
   }
   state.slides = interleaved;
@@ -909,9 +907,9 @@ function buildSlides() {
   state.currentSlide = 0;
 }
 // Skip promo slides whose image hasn't been uploaded (probe every 30 min).
-const PROMO_AVAILABLE = { promos: true, xfinity: true };
+const PROMO_AVAILABLE = { promos: true };
 function probePromos() {
-  [['promos', CONFIG.PROMO_URL], ['xfinity', CONFIG.XFINITY_PROMO_URL]].forEach(pair => {
+  [['promos', CONFIG.PROMO_URL]].forEach(pair => {
     const key = pair[0], url = pair[1];
     const im = new Image();
     im.onload = function () { if (!PROMO_AVAILABLE[key]) { PROMO_AVAILABLE[key] = true; buildSlides(); } };
@@ -953,7 +951,6 @@ const SLIDE_SUBTITLES = {
   'dm-rank': 'How all district managers stack up across the company',
   'region-rank': 'How the regions stack up — ours are highlighted',
   'promos': "Today's deals to lead with",
-  'xfinity-promo': 'More Everything — one low price',
 };
 
 // Animated count-up for any element with class "count"
@@ -999,9 +996,6 @@ function render() {
   } else if (slide.type === 'promos') {
     slideTitle = 'DAILY PROMOTIONS';
     slideContent = renderPromoImage(CONFIG.PROMO_URL);
-  } else if (slide.type === 'xfinity-promo') {
-    slideTitle = 'XFINITY MORE EVERYTHING';
-    slideContent = renderPromoImage(CONFIG.XFINITY_PROMO_URL);
   } else if (slide.type === 'yesterday') {
     slideTitle = 'YESTERDAY — ' + slide.district.label.toUpperCase();
     slideContent = renderYesterday(slide.district, slide.stores);

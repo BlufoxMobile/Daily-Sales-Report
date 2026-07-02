@@ -268,13 +268,13 @@
   <!-- === TOKEN SECTION (collapsed after first save) === -->
   <div id="tokenSection" style="display:none;">
     <details id="tokenDetails">
-      <summary style="color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:8px;">GitHub Token Settings</summary>
+      <summary style="color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:8px;">Upload Key Settings</summary>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="password" id="tokenInput" placeholder="Paste your GitHub PAT here"
+        <input type="password" id="tokenInput" placeholder="Paste your upload key here"
           style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#e2e8f0;font-size:13px;font-family:monospace;">
         <button onclick="saveToken()" style="padding:10px 16px;border-radius:8px;border:none;background:#22c55e;color:white;font-weight:600;cursor:pointer;font-size:13px;white-space:nowrap;">Save</button>
       </div>
-      <p style="color:#64748b;font-size:11px;margin-top:6px;">Your token is stored only in this browser. It never leaves your machine except to call the GitHub API.</p>
+      <p style="color:#64748b;font-size:11px;margin-top:6px;">Your upload key is stored only in this browser and is sent only to the Blufox upload proxy. No GitHub token exists in this page.</p>
     </details>
     <div id="tokenStatus" style="display:none;color:#22c55e;font-size:12px;margin-top:4px;"></div>
   </div>
@@ -291,23 +291,62 @@
 
 <script>
 // === CONFIG ===========================================
-const _d = [5,5,1,14,26,26,61,28,20,18,48,73,83,47,52,46,45,76,85,61,69,14,93,0,51,59,66,53,90,48,53,35,22,57,32,10,17,88,71,86,1,46,16,58,3,15,29,32,59,26,1,50,34,21,17,5,48,55,31,11,49,10,61,62,45,8,49,30,58,21,43,8,27,57,24,28,31,34,42,63,58,85,46,63,39,4,23,52,89,57,48,15,63];
-    const _k = 'blufox';
-    let GITHUB_TOKEN = _d.map((c,i) => String.fromCharCode(c ^ _k.charCodeAt(i % _k.length))).join('');
+// All GitHub WRITES go through the Blufox upload proxy — a Google Apps Script
+// web app (github-upload-proxy.gs in this repo). No GitHub token appears
+// anywhere in this page; the token lives only in the proxy's Script Properties.
+//
+// DEPLOYMENT: script.google.com -> New project -> paste github-upload-proxy.gs
+//   -> Script Properties: GITHUB_TOKEN + UPLOAD_KEY -> Deploy -> Web app
+//   (Execute as: Me / Who has access: Anyone) -> paste the /exec URL below.
+const PROXY_URL = 'PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE';
+
 const REPO_OWNER   = 'BlufoxMobile';
 const BRANCH       = 'main';
 
-function saveToken() {}
+// --- Upload key (the proxy passphrase) — kept per-browser in localStorage ---
+const UPLOAD_KEY_STORAGE = 'blufoxUploadKey';
+
+function getUploadKey(forcePrompt) {
+  let key = localStorage.getItem(UPLOAD_KEY_STORAGE);
+  if (!key || forcePrompt) {
+    key = prompt('Enter the Blufox upload key (asked once per browser):');
+    if (key && key.trim()) {
+      key = key.trim();
+      localStorage.setItem(UPLOAD_KEY_STORAGE, key);
+    } else {
+      key = null;
+    }
+  }
+  return key;
+}
+
+function clearUploadKey() {
+  localStorage.removeItem(UPLOAD_KEY_STORAGE);
+}
+
+// "Save" button in the (hidden) settings section — stores the upload key.
+function saveToken() {
+  const el = document.getElementById('tokenInput');
+  const v = el ? el.value.trim() : '';
+  const ts = document.getElementById('tokenStatus');
+  if (v) {
+    localStorage.setItem(UPLOAD_KEY_STORAGE, v);
+    if (ts) { ts.style.display = 'block'; ts.textContent = 'Upload key saved in this browser.'; }
+  } else {
+    clearUploadKey();
+    if (ts) { ts.style.display = 'block'; ts.textContent = 'Upload key cleared.'; }
+  }
+}
 
 // Pre-fill status on load
-if (GITHUB_TOKEN) {
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem(UPLOAD_KEY_STORAGE)) {
     const ts = document.getElementById('tokenStatus');
     ts.style.display = 'block';
-    ts.textContent = 'Token loaded from browser storage.';
+    ts.textContent = 'Upload key loaded from browser storage.';
     setTimeout(() => { ts.style.display = 'none'; }, 2000);
-  });
-}
+  }
+});
 
 const REPOS = {
   sales:      'Daily-Sales-Report',
@@ -373,11 +412,7 @@ bindFileZone(mtdRespInput, 'mtdRespZone', 'mtdRespFileName');
 
 function checkReady() {
   const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0] || npsInput.files[0] || mtdExpressInput.files[0] || mtdRespInput.files[0];
-  const hasToken = !!GITHUB_TOKEN;
-  uploadBtn.disabled = !(hasFiles && hasToken);
-  if (hasFiles && !hasToken) {
-    setStatus('Please save your GitHub token first (expand settings below).', 'info');
-  }
+  uploadBtn.disabled = !hasFiles;
 }
 
 function setStatus(msg, type) {
@@ -411,31 +446,12 @@ function readFileAsArrayBuffer(file) {
   });
 }
 
-async function getFileSHA(repoName, filePath) {
-  try {
-    const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
-    const resp = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      return data.sha;
-    }
-    return null;
-  } catch { return null; }
-}
-
 async function getFileContent(repoName, filePath) {
   // Get SHA from API
   const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}?ref=${BRANCH}`;
+  // Unauthenticated read — the repo is public; no token lives in this page.
   const apiResp = await fetch(apiUrl, {
-    headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json'
-    }
+    headers: { 'Accept': 'application/vnd.github.v3+json' }
   });
   if (!apiResp.ok) throw new Error('Could not fetch file info for ' + filePath);
   const apiData = await apiResp.json();
@@ -451,84 +467,64 @@ async function getFileContent(repoName, filePath) {
 }
 
 
-    async function pushViaBlobs(repoName, filePath, base64Content, message) {
-      const apiBase = 'https://api.github.com/repos/' + REPO_OWNER + '/' + repoName;
-      const headers = {
-        'Authorization': 'Bearer ' + GITHUB_TOKEN,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      };
-
-      // 1. Create blob
-      const blobResp = await fetch(apiBase + '/git/blobs', {
-        method: 'POST', headers,
-        body: JSON.stringify({ content: base64Content, encoding: 'base64' })
+    /* ---- WRITE TRANSPORT ------------------------------------------------
+       Every GitHub write goes through the Apps Script proxy. Payload contract
+       (must match github-upload-proxy.gs doPost):
+         { key: <upload key>, files: [{ repo, path, contentBase64, message }] }
+       The body is POSTed with Content-Type text/plain so the browser skips
+       the CORS preflight (Apps Script web apps don't answer OPTIONS); the
+       proxy parses e.postData.contents as JSON either way. fetch() follows
+       the script.google.com 302 redirect automatically. ------------------ */
+    async function proxyPost(payload) {
+      if (!PROXY_URL || PROXY_URL.indexOf('PASTE_') === 0) {
+        throw new Error('Upload proxy not configured — deploy github-upload-proxy.gs and set PROXY_URL at the top of this page.');
+      }
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
       });
-      if (!blobResp.ok) throw new Error('Blob create failed: ' + (await blobResp.json()).message);
-      const blob = await blobResp.json();
+      if (!res.ok) throw new Error('Proxy HTTP ' + res.status);
+      return await res.json();
+    }
 
-      // 2. Get current ref
-      const refResp = await fetch(apiBase + '/git/ref/heads/' + BRANCH, { headers });
-      if (!refResp.ok) throw new Error('Ref fetch failed');
-      const ref = await refResp.json();
-
-      // 3. Get current commit to find tree
-      const commitResp = await fetch(apiBase + '/git/commits/' + ref.object.sha, { headers });
-      const currentCommit = await commitResp.json();
-
-      // 4. Create new tree
-      const treeResp = await fetch(apiBase + '/git/trees', {
-        method: 'POST', headers,
-        body: JSON.stringify({
-          base_tree: currentCommit.tree.sha,
-          tree: [{ path: filePath, mode: '100644', type: 'blob', sha: blob.sha }]
-        })
+    // Collapse the proxy's per-repo / per-file results into one error string.
+    function proxyErrorText(resp) {
+      const errs = [];
+      (resp.results || []).forEach(r => {
+        if (Array.isArray(r.files) && r.files.length) {
+          r.files.forEach(f => { if (!f.ok) errs.push(r.repo + '/' + f.path + ' — ' + (f.error || 'failed')); });
+        } else if (!r.ok) {
+          errs.push(r.repo + ' — ' + (r.error || 'failed'));
+        }
       });
-      if (!treeResp.ok) throw new Error('Tree create failed: ' + (await treeResp.json()).message);
-      const tree = await treeResp.json();
+      return errs.length ? errs.join('; ') : (resp.error || 'Upload failed');
+    }
 
-      // 5. Create commit
-      const newCommitResp = await fetch(apiBase + '/git/commits', {
-        method: 'POST', headers,
-        body: JSON.stringify({
-          message: message,
-          tree: tree.sha,
-          parents: [ref.object.sha]
-        })
-      });
-      if (!newCommitResp.ok) throw new Error('Commit create failed');
-      const newCommit = await newCommitResp.json();
-
-      // 6. Update ref
-      const updateResp = await fetch(apiBase + '/git/refs/heads/' + BRANCH, {
-        method: 'PATCH', headers,
-        body: JSON.stringify({ sha: newCommit.sha })
-      });
-      if (!updateResp.ok) throw new Error('Ref update failed');
-      return await updateResp.json();
+    async function proxyUpload(files) {
+      let key = getUploadKey(false);
+      if (!key) throw new Error('Upload key required — reload and enter the key when prompted.');
+      let resp = await proxyPost({ key: key, files: files });
+      if (!resp.ok && /bad key|unauthorized/i.test(String(resp.error || ''))) {
+        // Stored key was wrong — clear it and re-prompt exactly once.
+        clearUploadKey();
+        key = getUploadKey(true);
+        if (!key) throw new Error('Upload key required');
+        resp = await proxyPost({ key: key, files: files });
+      }
+      if (!resp.ok) throw new Error(proxyErrorText(resp));
+      return resp;
     }
 
     async function pushToGitHub(repoName, filePath, base64Content, message) {
-  const sha = await getFileSHA(repoName, filePath);
-  const body = { message, content: base64Content, branch: BRANCH };
-  if (sha) body.sha = sha;
+      return proxyUpload([{ repo: repoName, path: filePath, contentBase64: base64Content, message: message }]);
+    }
 
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${repoName}/contents/${filePath.split('/').map(encodeURIComponent).join('/')}`;
-  const resp = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  if (!resp.ok) {
-    const err = await resp.json();
-    throw new Error((err.message || 'Unknown') + ` (HTTP ${resp.status})`);
-  }
-  return await resp.json();
-}
+    // Historical alias — big files used the git-data (blob) flow client-side;
+    // the proxy does that server-side now, so both share one transport.
+    async function pushViaBlobs(repoName, filePath, base64Content, message) {
+      return pushToGitHub(repoName, filePath, base64Content, message);
+    }
 
 // === EXCEPTION REPORT LOGIC ===========================
 
@@ -621,24 +617,11 @@ async function uploadExceptionReport(file) {
 
   const b64 = toBase64(updatedHtml);
 
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPOS.exceptions}/contents/${encodeURIComponent(FILE_PATHS.exceptionsHtml)}`;
-  const resp = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      message: 'Update exception data - ' + new Date().toLocaleDateString(),
-      content: b64,
-      sha: sha,
-      branch: BRANCH
-    })
-  });
-  if (!resp.ok) {
-    const err = await resp.json();
-    throw new Error('Exception Report push failed: ' + (err.message || `HTTP ${resp.status}`));
+  try {
+    await pushToGitHub(REPOS.exceptions, FILE_PATHS.exceptionsHtml, b64,
+      'Update exception data - ' + new Date().toLocaleDateString());
+  } catch (e) {
+    throw new Error('Exception Report push failed: ' + e.message);
   }
 
   return { exceptions: rawData.length, cancellations: cancelData.length };
