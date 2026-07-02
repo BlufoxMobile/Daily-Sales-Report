@@ -1,0 +1,4 @@
+# GitHub Pages (Jekyll) build configuration
+# Keeps heavy data out of the published site so Pages deploys stay small and fast.
+# These files stay in the repo and are still read via api.github.com / raw.githubusercontent.com.
+exclude: [data/monday-ops-submissions, data/target-pdfs, reports, scripts, github-upload-proxy.gs]
