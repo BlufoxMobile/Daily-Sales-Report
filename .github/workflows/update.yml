@@ -5,6 +5,10 @@ on:
     paths:
       - 'reports/**'
       - 'data/**'
+      # Monday Ops checklist files are read via raw URLs, not Pages — no
+      # rebuild needed, and skipping them stops deploy races on Mondays.
+      - '!data/monday-ops-submissions/**'
+      - '!data/monday-ops-photos/**'
       - 'index.html'
   schedule:
     - cron: '15 14 * * 1-5'
