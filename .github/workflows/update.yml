@@ -4,10 +4,17 @@ on:
   push:
     paths:
       - 'reports/**'
+      - 'data/**'
       - 'index.html'
   schedule:
     - cron: '15 14 * * 1-5'
   workflow_dispatch:
+
+# Queue simultaneous runs instead of letting them collide on the Pages deploy.
+# cancel-in-progress is false so an in-flight commit/deploy is never aborted.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
