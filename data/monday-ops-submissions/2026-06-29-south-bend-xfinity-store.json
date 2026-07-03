@@ -1,5 +1,5 @@
 {
-  "submittedAt": "2026-07-03T05:16:37.211Z",
+  "submittedAt": "2026-07-03T05:28:26.263Z",
   "store": "South Bend Xfinity Store",
   "name": "Vacant Position",
   "email": "jbilbrey@blufoxmobile.com",
@@ -11,15 +11,15 @@
     "depositBags": "Yes",
     "pciChecklist": "Yes",
     "scheduleWeeks": "Yes",
-    "uniformsNeeded": "No",
+    "uniformsNeeded": "Yes",
     "cashFloat": "Yes",
     "returnsShipped": "Yes"
   },
-  "notes": "",
+  "notes": "Test",
   "linksOpened": {
     "depositOrderForm": true,
     "pciChecklist": false,
-    "uniformOrderForm": false,
+    "uniformOrderForm": true,
     "cashFloatTracker": false
   },
   "photoUrls": {
@@ -29,6 +29,7 @@
     "week4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/week4.jpg",
     "upgrades": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/upgrades.jpg",
     "tradeins": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/tradeins.jpg",
-    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/brinks.jpg"
+    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/brinks.jpg",
+    "facility1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/facility1.jpg"
   }
 }
