@@ -109,10 +109,29 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      # Assemble a lean Pages artifact. Uploading the whole repo (path: '.')
+      # pulled in the .git history (thousands of objects) plus bulky data
+      # folders that no dashboard reads over github.io — that volume of files
+      # made the Pages "syncing_files" stage fail. Everything excluded here is
+      # still in the repo and still reachable via the GitHub API / raw URLs.
+      - name: Assemble Pages site
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='_site' \
+            --exclude='reports' \
+            --exclude='scripts' \
+            --exclude='data/monday-ops-submissions' \
+            --exclude='data/monday-ops-photos' \
+            --exclude='data/target-pdfs' \
+            ./ _site/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
