@@ -1,5 +1,5 @@
 {
-  "submittedAt": "2026-07-03T05:04:58.059Z",
+  "submittedAt": "2026-07-03T05:16:37.211Z",
   "store": "South Bend Xfinity Store",
   "name": "Vacant Position",
   "email": "jbilbrey@blufoxmobile.com",
@@ -16,6 +16,12 @@
     "returnsShipped": "Yes"
   },
   "notes": "",
+  "linksOpened": {
+    "depositOrderForm": true,
+    "pciChecklist": false,
+    "uniformOrderForm": false,
+    "cashFloatTracker": false
+  },
   "photoUrls": {
     "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/week1.jpg",
     "week2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-06-29-south-bend-xfinity-store/week2.jpg",
