@@ -78,6 +78,13 @@ jobs:
               print('No promo card found - using existing')
           PYEOF
 
+      # FIXED (2026-07-04): the old two-liner
+      #     git diff --staged --quiet || git commit -m "..."
+      #     git diff --staged --quiet 2>/dev/null || git push
+      # never pushed anything — after `git commit` the staging area is clean,
+      # so the second check always succeeded and `git push` was skipped.
+      # Commits were created inside the runner and thrown away, which is why
+      # raw.githubusercontent.com kept serving a stale rep-roster.json.
       - name: Commit decoded data and clean up reports
         run: |
           git config user.email "actions@github.com"
@@ -87,10 +94,16 @@ jobs:
           # Remove processed report files so next Zapier upload is a fresh create (no SHA needed)
           git rm -f reports/sales-report*.txt 2>/dev/null || true
           git rm -f reports/promo-card*.txt 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Auto: update data files and clean reports [skip ci]"
-          git diff --staged --quiet 2>/dev/null || git push
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto: update data files and clean reports [skip ci]"
+            for i in 1 2 3; do
+              git push && break
+              git pull --rebase origin main || true
+              sleep 3
+            done
+          fi
 
-      # --- NEW: build the per-store rep roster the quote sheets read ---
+      # --- build the per-store rep roster the quote sheets read ---
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -102,13 +115,21 @@ jobs:
       - name: Build rep roster (store -> rep names)
         run: python3 scripts/build-roster.py
 
+      # Same push fix as above. The retry loop handles another upload landing
+      # a commit on main while this run is in flight (pull --rebase, push again).
       - name: Commit rep roster
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           git add -f data/rep-roster.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Auto: refresh rep-roster.json [skip ci]"
-          git diff --staged --quiet 2>/dev/null || git push
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto: refresh rep-roster.json [skip ci]"
+            for i in 1 2 3; do
+              git push && break
+              git pull --rebase origin main || true
+              sleep 3
+            done
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
