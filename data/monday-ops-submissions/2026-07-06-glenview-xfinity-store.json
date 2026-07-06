@@ -1,0 +1,34 @@
+{
+  "submittedAt": "2026-07-06T15:02:40.068Z",
+  "store": "Glenview Xfinity Store",
+  "name": "Tanzim Chowdhury",
+  "email": "tChowdhury@blufoxmobile.com",
+  "dm": "IDhorajiwala@blufoxmobile.com",
+  "dmEmail": "IDhorajiwala@blufoxmobile.com",
+  "asmEmail": "LWeeks@blufoxmobile.com",
+  "date": "2026-07-06",
+  "answers": {
+    "depositBags": "Yes",
+    "pciChecklist": "Yes",
+    "scheduleWeeks": "Yes",
+    "uniformsNeeded": "No",
+    "cashFloat": "No",
+    "returnsShipped": "Yes"
+  },
+  "notes": "",
+  "linksOpened": {
+    "depositOrderForm": false,
+    "pciChecklist": false,
+    "uniformOrderForm": false,
+    "cashFloatTracker": false
+  },
+  "photoUrls": {
+    "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-glenview-xfinity-store/week1.jpg",
+    "week2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-glenview-xfinity-store/week2.jpg",
+    "week3": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-glenview-xfinity-store/week3.jpg",
+    "week4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-glenview-xfinity-store/week4.jpg",
+    "upgrades": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-glenview-xfinity-store/upgrades.jpg",
+    "tradeins": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-glenview-xfinity-store/tradeins.jpg",
+    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-glenview-xfinity-store/brinks.jpg"
+  }
+}
