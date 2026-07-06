@@ -1,0 +1,36 @@
+{
+  "submittedAt": "2026-07-06T13:30:32.431Z",
+  "store": "South Knoxville Xfinity Store",
+  "name": "Zoe Spradling",
+  "email": "zSpradling@blufoxmobile.com",
+  "dm": "mbrooks@blufoxmobile.com",
+  "dmEmail": "mbrooks@blufoxmobile.com",
+  "asmEmail": "dMcKamey@blufoxmobile.com",
+  "date": "2026-07-06",
+  "answers": {
+    "depositBags": "Yes",
+    "pciChecklist": "Yes",
+    "scheduleWeeks": "Yes",
+    "uniformsNeeded": "No",
+    "cashFloat": "Yes",
+    "returnsShipped": "Yes"
+  },
+  "notes": "Someone to come fix the watch display for the Samsung watch that’s been down for almost a month and someone to fix the ceiling in the office ",
+  "linksOpened": {
+    "depositOrderForm": false,
+    "pciChecklist": false,
+    "uniformOrderForm": false,
+    "cashFloatTracker": false
+  },
+  "photoUrls": {
+    "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/week1.jpg",
+    "week2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/week2.jpg",
+    "week3": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/week3.jpg",
+    "week4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/week4.jpg",
+    "upgrades": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/upgrades.jpg",
+    "tradeins": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/tradeins.jpg",
+    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/brinks.jpg",
+    "facility1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/facility1.jpg",
+    "facility2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-south-knoxville-xfinity-store/facility2.jpg"
+  }
+}
