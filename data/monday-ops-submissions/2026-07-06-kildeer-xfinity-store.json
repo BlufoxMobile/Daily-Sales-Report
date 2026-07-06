@@ -1,0 +1,34 @@
+{
+  "submittedAt": "2026-07-06T14:57:34.232Z",
+  "store": "Kildeer Xfinity Store",
+  "name": "Gavin Williams",
+  "email": "GWilliams@blufoxmobile.com",
+  "dm": "IDhorajiwala@blufoxmobile.com",
+  "dmEmail": "IDhorajiwala@blufoxmobile.com",
+  "asmEmail": "ISolis@blufoxmobile.com",
+  "date": "2026-07-06",
+  "answers": {
+    "depositBags": "Yes",
+    "pciChecklist": "Yes",
+    "scheduleWeeks": "Yes",
+    "uniformsNeeded": "No",
+    "cashFloat": "Yes",
+    "returnsShipped": "No"
+  },
+  "notes": "",
+  "linksOpened": {
+    "depositOrderForm": false,
+    "pciChecklist": true,
+    "uniformOrderForm": false,
+    "cashFloatTracker": true
+  },
+  "photoUrls": {
+    "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-kildeer-xfinity-store/week1.jpg",
+    "week2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-kildeer-xfinity-store/week2.jpg",
+    "week3": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-kildeer-xfinity-store/week3.jpg",
+    "week4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-kildeer-xfinity-store/week4.jpg",
+    "upgrades": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-kildeer-xfinity-store/upgrades.jpg",
+    "tradeins": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-kildeer-xfinity-store/tradeins.jpg",
+    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-kildeer-xfinity-store/brinks.jpg"
+  }
+}
