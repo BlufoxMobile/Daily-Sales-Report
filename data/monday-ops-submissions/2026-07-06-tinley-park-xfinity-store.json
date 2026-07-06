@@ -1,0 +1,34 @@
+{
+  "submittedAt": "2026-07-06T14:15:50.737Z",
+  "store": "Tinley Park Xfinity Store",
+  "name": "Sebas Orozco",
+  "email": "sOrozco@blufoxmobile.com",
+  "dm": "juCarrillo@blufoxmobile.com",
+  "dmEmail": "juCarrillo@blufoxmobile.com",
+  "asmEmail": "eGuzman@blufoxmobile.com",
+  "date": "2026-07-06",
+  "answers": {
+    "depositBags": "Yes",
+    "pciChecklist": "Yes",
+    "scheduleWeeks": "Yes",
+    "uniformsNeeded": "Yes",
+    "cashFloat": "Yes",
+    "returnsShipped": "Yes"
+  },
+  "notes": "",
+  "linksOpened": {
+    "depositOrderForm": false,
+    "pciChecklist": false,
+    "uniformOrderForm": true,
+    "cashFloatTracker": false
+  },
+  "photoUrls": {
+    "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-tinley-park-xfinity-store/week1.jpg",
+    "week2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-tinley-park-xfinity-store/week2.jpg",
+    "week3": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-tinley-park-xfinity-store/week3.jpg",
+    "week4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-tinley-park-xfinity-store/week4.jpg",
+    "upgrades": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-tinley-park-xfinity-store/upgrades.jpg",
+    "tradeins": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-tinley-park-xfinity-store/tradeins.jpg",
+    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-06-tinley-park-xfinity-store/brinks.jpg"
+  }
+}
