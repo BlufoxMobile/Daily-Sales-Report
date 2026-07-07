@@ -6757,6 +6757,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2376342835": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:29.605Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2376346294": {
     "status": "Pending Install",
     "ts": "2026-06-22T16:39:01.247Z",
@@ -6916,6 +6922,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
+  "2378597295": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:28.381Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2378696795": {
     "status": "Pending Install",
     "ts": "2026-06-23T22:02:49.408Z",
@@ -6929,11 +6941,23 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2378733239": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:27.389Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2378824527": {
     "status": "Closed",
     "ts": "2026-06-30T21:44:34.461Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "2378831149": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:26.509Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2378914844": {
     "status": "Cancelled Order",
@@ -7138,6 +7162,12 @@
     "ts": "2026-06-30T21:46:52.111Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "2380869005": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:30.550Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2380885753": {
     "status": "Closed",
