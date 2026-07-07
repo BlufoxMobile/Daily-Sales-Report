@@ -6888,8 +6888,8 @@
     "store": "Michigan City"
   },
   "2378025369": {
-    "status": "Closed",
-    "ts": "2026-06-30T21:42:05.800Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-07T22:31:53.109Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7024,8 +7024,8 @@
     "store": "Glenview"
   },
   "2379777668": {
-    "status": "Closed",
-    "ts": "2026-06-30T22:14:25.046Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-07T22:31:54.357Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7129,8 +7129,8 @@
     "store": "Michigan City"
   },
   "2380853262": {
-    "status": "Closed",
-    "ts": "2026-06-30T21:46:52.111Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-07T22:31:50.614Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -9781,14 +9781,14 @@
     "pendingUntil": "2026-07-10"
   },
   "1002288936752051": {
-    "status": "Closed",
-    "ts": "2026-06-30T21:34:22.922Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-07T22:31:51.814Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
   "1002289424022056": {
-    "status": "Closed",
-    "ts": "2026-06-30T21:54:23.885Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-07T22:31:49.319Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
