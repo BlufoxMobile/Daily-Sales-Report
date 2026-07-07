@@ -6433,8 +6433,8 @@
     "store": "Glenview"
   },
   "2372317343": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:26:04.648Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:54:32.004Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6451,8 +6451,8 @@
     "store": "Valparaiso"
   },
   "2372377982": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:26:07.464Z",
+    "status": "Closed",
+    "ts": "2026-06-27T22:24:58.298Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6577,8 +6577,8 @@
     "store": "Hammond"
   },
   "2374105051": {
-    "status": "Closed",
-    "ts": "2026-06-27T22:33:53.288Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-07T22:26:10.039Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
