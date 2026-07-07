@@ -7658,6 +7658,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2395757397": {
+    "status": "Closed",
+    "ts": "2026-07-07T23:00:47.901Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2396775240": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:46.309Z",
@@ -10009,6 +10015,12 @@
   "1002291009662058": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:37.766Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "1002292031742058": {
+    "status": "Closed",
+    "ts": "2026-07-07T23:00:50.453Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   }
