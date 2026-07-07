@@ -7536,6 +7536,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2388079952": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:40.293Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2388109901": {
     "status": "Closed",
     "ts": "2026-06-30T15:03:50.079Z",
@@ -9933,6 +9939,12 @@
   "1002289872852053": {
     "status": "Closed",
     "ts": "2026-07-07T22:59:36.381Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "1002290535532058": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:41.765Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   }
