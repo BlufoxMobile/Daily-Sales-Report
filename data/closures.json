@@ -5913,8 +5913,8 @@
     "store": "Burbank"
   },
   "2363552164": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:28:09.789Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:43:17.285Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6452,7 +6452,7 @@
   },
   "2372377982": {
     "status": "Closed",
-    "ts": "2026-06-27T22:24:58.298Z",
+    "ts": "2026-07-07T22:28:14.981Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
