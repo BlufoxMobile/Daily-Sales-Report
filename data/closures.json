@@ -1841,7 +1841,7 @@
   },
   "2306857753": {
     "status": "Closed",
-    "ts": "2026-07-07T22:56:54.845Z",
+    "ts": "2026-06-22T17:46:07.773Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6589,11 +6589,10 @@
     "store": "Glenview"
   },
   "2374318694": {
-    "status": "Pending Install",
-    "ts": "2026-06-22T18:33:21.957Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:56:59.757Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-06-29"
+    "store": "Evanston"
   },
   "2374482134": {
     "status": "Closed",
