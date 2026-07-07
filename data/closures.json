@@ -6815,11 +6815,10 @@
     "store": "Glenview"
   },
   "2376841411": {
-    "status": "Pending Install",
-    "ts": "2026-06-22T22:27:07.721Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:28:46.027Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-06-29"
+    "store": "Glenview"
   },
   "2376959630": {
     "status": "Closed",
@@ -6889,7 +6888,7 @@
   },
   "2378025369": {
     "status": "Closed",
-    "ts": "2026-07-07T22:28:40.036Z",
+    "ts": "2026-06-30T21:42:05.800Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7130,7 +7129,7 @@
   },
   "2380853262": {
     "status": "Closed",
-    "ts": "2026-07-07T22:28:37.533Z",
+    "ts": "2026-06-30T21:46:52.111Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7459,12 +7458,6 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
-  "2387995708": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:28:33.263Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2388036014": {
     "status": "Closed",
     "ts": "2026-06-30T18:05:43.897Z",
@@ -7524,12 +7517,6 @@
   "2388410714": {
     "status": "Closed",
     "ts": "2026-06-30T22:08:07.779Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "2388412403": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:28:35.174Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -9794,7 +9781,7 @@
   },
   "1002288936752051": {
     "status": "Closed",
-    "ts": "2026-07-07T22:28:39.037Z",
+    "ts": "2026-06-30T21:34:22.922Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -9854,7 +9841,7 @@
   },
   "1002290501532058": {
     "status": "Closed",
-    "ts": "2026-07-07T22:28:31.215Z",
+    "ts": "2026-06-30T22:07:45.520Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   }
