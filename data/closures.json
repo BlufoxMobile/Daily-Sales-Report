@@ -6427,8 +6427,8 @@
     "store": "Evanston"
   },
   "2372279639": {
-    "status": "Closed",
-    "ts": "2026-06-27T22:29:33.971Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-07T22:25:52.141Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6451,8 +6451,8 @@
     "store": "Valparaiso"
   },
   "2372377982": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:25:47.606Z",
+    "status": "Closed",
+    "ts": "2026-06-27T22:24:58.298Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6815,10 +6815,11 @@
     "store": "Glenview"
   },
   "2376841411": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:25:45.654Z",
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:27:07.721Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
   },
   "2376959630": {
     "status": "Closed",
