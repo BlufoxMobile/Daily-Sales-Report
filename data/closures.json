@@ -5308,8 +5308,8 @@
     "store": "Uptown"
   },
   "2352398868": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:26:38.327Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:25:12.283Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -9843,6 +9843,12 @@
   "1002290501532058": {
     "status": "Closed",
     "ts": "2026-06-30T22:07:45.520Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
+  "1002292062942056": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:26:50.580Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   }
