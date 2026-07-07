@@ -7606,6 +7606,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-07-02"
   },
+  "2389309095": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:48.718Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2389442361": {
     "status": "Can Not Close",
     "ts": "2026-07-01T16:52:08.736Z",
@@ -7625,6 +7631,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City",
     "pendingUntil": "2026-07-08"
+  },
+  "2390794488": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:49.957Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "1001290369922103": {
     "status": "Pending Install",
@@ -9945,6 +9957,18 @@
   "1002290535532058": {
     "status": "Closed",
     "ts": "2026-07-07T22:59:41.765Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "1002290532162057": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:47.845Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "1002291041102055": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:51.270Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   }
