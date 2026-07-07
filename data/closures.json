@@ -5913,8 +5913,8 @@
     "store": "Burbank"
   },
   "2363552164": {
-    "status": "Closed",
-    "ts": "2026-06-27T00:43:17.285Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-07T22:28:09.789Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6577,8 +6577,8 @@
     "store": "Hammond"
   },
   "2374105051": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:28:03.631Z",
+    "status": "Closed",
+    "ts": "2026-06-27T22:33:53.288Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6627,10 +6627,11 @@
     "store": "Johnson City"
   },
   "2374864688": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:28:01.119Z",
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:24:42.571Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
   },
   "2374905890": {
     "status": "Can Not Close",
@@ -6814,10 +6815,11 @@
     "store": "Glenview"
   },
   "2376841411": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:28:02.031Z",
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:27:07.721Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
   },
   "2376959630": {
     "status": "Closed",
@@ -6887,7 +6889,7 @@
   },
   "2378025369": {
     "status": "Closed",
-    "ts": "2026-07-07T22:27:57.201Z",
+    "ts": "2026-06-30T21:42:05.800Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7017,13 +7019,13 @@
   },
   "2379706756": {
     "status": "Closed",
-    "ts": "2026-07-07T22:27:59.480Z",
+    "ts": "2026-06-30T22:14:26.038Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
   "2379777668": {
     "status": "Closed",
-    "ts": "2026-07-07T22:27:58.408Z",
+    "ts": "2026-06-30T22:14:25.046Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7128,7 +7130,7 @@
   },
   "2380853262": {
     "status": "Closed",
-    "ts": "2026-07-07T22:27:55.041Z",
+    "ts": "2026-06-30T21:46:52.111Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -9780,13 +9782,13 @@
   },
   "1002288936752051": {
     "status": "Closed",
-    "ts": "2026-07-07T22:27:56.145Z",
+    "ts": "2026-06-30T21:34:22.922Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
   "1002289424022056": {
     "status": "Closed",
-    "ts": "2026-07-07T22:27:53.226Z",
+    "ts": "2026-06-30T21:54:23.885Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
