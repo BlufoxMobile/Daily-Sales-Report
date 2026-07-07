@@ -768,7 +768,7 @@
 /* =====================================================
    CONFIGURATION
    ===================================================== */
-const CONFIG = {
+const BUILD_VERSION = '2026-07-07T18'; const CONFIG = {
   PASSWORD: 'Xf!nity250',
   REPO_OWNER: 'BlufoxMobile',
   REPO_NAME: 'Daily-Sales-Report',
@@ -1089,7 +1089,7 @@ async function flushChanges() {
 /* =====================================================
    POLLING
    ===================================================== */
-function startPolling() {
+async function checkForUpdate(){try{const res=await fetch("https://raw.githubusercontent.com/"+CONFIG.REPO_OWNER+"/"+CONFIG.REPO_NAME+"/"+CONFIG.BRANCH+"/version.json?cb="+Date.now(),{cache:"no-store"});if(!res.ok)return;const v=await res.json();const pending=(window.state&&state.pendingChanges)?Object.keys(state.pendingChanges).length:0;const tried=sessionStorage.getItem("blufox_reload_for");if(v&&v.crm&&v.crm!==BUILD_VERSION&&pending===0&&tried!==v.crm){sessionStorage.setItem("blufox_reload_for",v.crm);location.reload();}}catch(e){}} setInterval(checkForUpdate,300000); function startPolling() {
   clearInterval(state.pollTimer);
   state.pollTimer = setInterval(async () => {
     // only poll closures (orders only change once a day on upload)
