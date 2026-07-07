@@ -5308,8 +5308,8 @@
     "store": "Uptown"
   },
   "2352398868": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:26:17.189Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:25:12.283Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7458,6 +7458,12 @@
     "ts": "2026-07-01T16:36:56.002Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
+  },
+  "2387995708": {
+    "status": "Can Not Close",
+    "ts": "2026-07-07T22:26:27.475Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2388036014": {
     "status": "Closed",
