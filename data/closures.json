@@ -5326,8 +5326,8 @@
     "store": "Oak Ridge"
   },
   "2352686874": {
-    "status": "Closed",
-    "ts": "2026-06-27T22:41:57.919Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-07T22:26:34.080Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7458,12 +7458,6 @@
     "ts": "2026-07-01T16:36:56.002Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
-  },
-  "2387995708": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:26:27.475Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
   },
   "2388036014": {
     "status": "Closed",
@@ -9847,8 +9841,8 @@
     "store": "Tinley Park"
   },
   "1002290501532058": {
-    "status": "Can Not Close",
-    "ts": "2026-07-07T22:26:29.131Z",
+    "status": "Closed",
+    "ts": "2026-06-30T22:07:45.520Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   }
