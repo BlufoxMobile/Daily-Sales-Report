@@ -7537,10 +7537,11 @@
     "store": "Greeneville"
   },
   "2388079952": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:40.293Z",
+    "status": "Pending Install",
+    "ts": "2026-07-07T23:00:12.691Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2388109901": {
     "status": "Closed",
