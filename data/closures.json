@@ -7326,6 +7326,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2383178410": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:35.373Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2383220987": {
     "status": "Pending Install",
     "ts": "2026-06-29T16:57:58.782Z",
@@ -7345,6 +7351,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-07-03"
+  },
+  "2383387839": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:34.045Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2383410453": {
     "status": "Closed",
@@ -7437,6 +7449,12 @@
     "dm": "Jacob Cabrales",
     "store": "Cicero"
   },
+  "2387153996": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:37.390Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2387675725": {
     "status": "Closed",
     "ts": "2026-06-30T20:00:01.799Z",
@@ -7481,6 +7499,12 @@
     "dm": "Jacob Cabrales",
     "store": "Cicero",
     "pendingUntil": "2026-07-02"
+  },
+  "2387894858": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:38.549Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2387931782": {
     "status": "Closed",
@@ -9905,5 +9929,11 @@
     "ts": "2026-07-07T22:36:27.608Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "1002289872852053": {
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:36.381Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   }
 }
