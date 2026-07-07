@@ -6627,11 +6627,10 @@
     "store": "Johnson City"
   },
   "2374864688": {
-    "status": "Pending Install",
-    "ts": "2026-06-22T22:24:42.571Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:28:01.119Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-06-29"
+    "store": "Glenview"
   },
   "2374905890": {
     "status": "Can Not Close",
@@ -6815,11 +6814,10 @@
     "store": "Glenview"
   },
   "2376841411": {
-    "status": "Pending Install",
-    "ts": "2026-06-22T22:27:07.721Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:28:02.031Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-06-29"
+    "store": "Glenview"
   },
   "2376959630": {
     "status": "Closed",
