@@ -6923,10 +6923,11 @@
     "store": "Valparaiso"
   },
   "2378597295": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:28.381Z",
+    "status": "Pending Install",
+    "ts": "2026-07-08T14:40:36.796Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-17"
   },
   "2378696795": {
     "status": "Pending Install",
@@ -6954,11 +6955,10 @@
     "store": "Glenview"
   },
   "2378831149": {
-    "status": "Pending Install",
-    "ts": "2026-07-08T14:40:25.292Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:26.509Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-17"
+    "store": "Evanston"
   },
   "2378914844": {
     "status": "Cancelled Order",
