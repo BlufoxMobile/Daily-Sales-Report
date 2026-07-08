@@ -7718,18 +7718,18 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2398661088": {
+    "status": "Pending Install",
+    "ts": "2026-07-08T16:35:28.448Z",
+    "dm": "Juan Carrillo",
+    "store": "Calumet City",
+    "pendingUntil": "2026-07-10"
+  },
   "2399076600": {
     "status": "Closed",
     "ts": "2026-07-08T16:30:37.049Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
-  },
-  "2399531881": {
-    "status": "Pending Install",
-    "ts": "2026-07-08T16:35:16.209Z",
-    "dm": "Juan Carrillo",
-    "store": "Calumet City",
-    "pendingUntil": "2026-07-10"
   },
   "1001290369922103": {
     "status": "Pending Install",
