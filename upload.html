@@ -953,6 +953,20 @@ async function npsFetchSalesStores(){
     tabletMTD: h.findIndex(c => /^Tablet\s*MTD$/i.test(c)),
     watchMTD:  h.findIndex(c => /^Watches\s*MTD$/i.test(c))
   };
+  /* BFX SMART TARGETS: extra Store Rank columns for the daily-target engine.
+     Header regex first; fixed-index fallback (fiscal installs AM/38, fiscal
+     mobile AN/39, accessory net $ CD/81) only when the header text there
+     passes a sanity check — otherwise -1 and the engine estimates instead. */
+  const bfxCol = (pred, fixedIdx, sanityRe) => {
+    const byName = h.findIndex(c => c && pred(String(c)));
+    if(byName >= 0) return byName;
+    const at = (h[fixedIdx] != null) ? String(h[fixedIdx]) : "";
+    return sanityRe.test(at) ? fixedIdx : -1;
+  };
+  idx.fMob   = bfxCol(c => /mobile/i.test(c) && /install/i.test(c), 39, /mobile/i);
+  idx.fInst  = bfxCol(c => /install/i.test(c) && !/mobile/i.test(c), 38, /install|rgu/i);
+  idx.accNet = bfxCol(c => /access/i.test(c) && /net/i.test(c) && !/device/i.test(c), 81, /access/i);
+  idx.trafBfx = h.findIndex(c => c && /shopper\s*trak\s*daily\s*avg/i.test(String(c)));
   const out = [];
   for(let i = hr + 1; i < rows.length; i++){
     const r = rows[i];
@@ -967,9 +981,21 @@ async function npsFetchSalesStores(){
       gpTrend: g("gpTrend"), mobileCR: g("mobileCR"), fiscalCR: g("fiscalCR"),
       nonTrad: g("nonTrad"), gigPct: g("gigPct"), plusMix: g("plusMix"),
       newToUpg: g("newToUpg"), accPerDev: g("accPerDev"), nps: g("nps"),
-      newRGU: g("newRGU"), mobileMTD: g("mobileMTD"), tabletMTD: g("tabletMTD"), watchMTD: g("watchMTD")
+      newRGU: g("newRGU"), mobileMTD: g("mobileMTD"), tabletMTD: g("tabletMTD"), watchMTD: g("watchMTD"),
+      /* BFX SMART TARGETS: engine inputs (null when the column wasn't found) */
+      fMob: idx.fMob >= 0 ? num(r[idx.fMob]) : null,
+      fInst: idx.fInst >= 0 ? num(r[idx.fInst]) : null,
+      accTotal: idx.accNet >= 0 ? num(r[idx.accNet]) : null
     });
+    /* BFX SMART TARGETS: capture shopper-trak daily avg here too, so targets
+       work even when npsFetchConversion hasn't run yet. */
+    if(idx.trafBfx >= 0){
+      const tv = num(r[idx.trafBfx]);
+      const snB = npsShortFromRaw(r[idx.store]);
+      if(snB && tv > 0) NPS_DAILY[snB.toLowerCase()] = Math.round(tv);
+    }
   }
+  BFX_SALES_ROWS = out; /* BFX SMART TARGETS: cache for goal helpers */
   return out;
 }
 
@@ -1425,6 +1451,334 @@ async function npsFetchConversion(){
   return NPS_CONV;
 }
 
+/* BFX SMART TARGETS ========================================================
+   Everything from here to "END BFX SMART TARGETS" is new and IDENTICAL in
+   upload.html + NPS-Index---Medallia/index.html (it lives inside the shared
+   NPS module). It embeds the Blufox Smart Goal Engine VERBATIM, then renders
+   the "🎯 TODAY'S TARGETS" panel used by the morning-briefing email and the
+   NPS Index per-store dashboard cards. */
+/* ============================================================
+   BLUFOX SMART GOAL ENGINE  v1.0  (shared module)
+   Embed this block VERBATIM in:
+     - Daily-Goals-Sheet/index.html
+     - One-On-One-Form/index.html
+     - NPS email module (NPS-Index---Medallia/index.html + Daily-Sales-Report/upload.html)
+   ------------------------------------------------------------
+   DESIGN (agreed with Jeff, July 2026):
+   - DUAL PERIOD:
+       * FISCAL month (22nd -> 21st): drives MCR / FCR / NPS pacing,
+         because close rates are measured fiscally.
+       * CALENDAR month: drives GP $, Accessory $, Watch/Tablet units,
+         because the sales report counts those units calendar-MTD and
+         the Monthly Target Planner assigns calendar-month goals.
+   - PACING: need = goal - MTD actual; daily = ceil(need / daysRemaining)
+     where daysRemaining INCLUDES today (old sheet excluded today -> inflated goals).
+   - DAY MATH: computed from calendar dates at midnight (old sheet used
+     clock time, so goals flipped at noon).
+   - OVER-PACE RULE: if a store's trending close rate beats the minimum
+     (7% MCR / 10% FCR), the goal RISES to maintain their trend, flagged
+     stretch:true. Same for GP when gpTrend > assigned target.
+   - GOAL HIT: when need <= 0, status 'hit' and daily = maintenance pace
+     (what it takes per day to keep the achieved rate), never a fake 1.
+   ============================================================ */
+var BFX = (function(){
+  'use strict';
+
+  // ---- Company standards (single source of truth) ----
+  var STD = {
+    MCR_MIN: 7,        // % mobile close rate, fiscal
+    FCR_MIN: 10,       // % fiscal close rate (RGUs), fiscal
+    NPS_GOAL: 80,      // tNPS
+    GIG_GOAL: 80,      // % of internet sales on Gig
+    PLUS_GOAL: 75,     // % of mobile lines on Plus
+    ACC_PER_BOX: 20,   // $ accessory per mobile box (was $30 on old daily sheet — wrong)
+    WT_RATE: 2,        // % of traffic -> watch/tablet
+    TSHEET_RATE: 20    // % of traffic -> t-sheets
+  };
+
+  var DAY = 86400000;
+  function mid(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function ceil(x){ return Math.ceil(x - 1e-9); }
+
+  // ---- Period math (date-based, stable all day) ----
+  // Fiscal month: 22nd -> 21st. rem INCLUDES today.
+  function fiscalPeriod(now, dayOverride){
+    var t = mid(now||new Date()), y=t.getFullYear(), m=t.getMonth(), d=t.getDate();
+    var s = (d>=22) ? new Date(y,m,22) : new Date(y,m-1,22);
+    var e = (d>=22) ? new Date(y,m+1,21) : new Date(y,m,21);
+    var tot = Math.round((e-s)/DAY)+1;
+    var el  = dayOverride>0 ? dayOverride : Math.round((t-s)/DAY)+1;
+    el = Math.min(Math.max(el,1), tot);
+    return { start:s, end:e, tot:tot, el:el, rem: tot-el+1 };
+  }
+  function calendarPeriod(now, dayOverride){
+    var t = mid(now||new Date()), y=t.getFullYear(), m=t.getMonth();
+    var tot = new Date(y, m+1, 0).getDate();
+    var el  = dayOverride>0 ? dayOverride : t.getDate();
+    el = Math.min(Math.max(el,1), tot);
+    return { tot:tot, el:el, rem: tot-el+1 };
+  }
+
+  /* ---- Rate-driven unit goal (MCR -> mobile, FCR -> RGU). FISCAL basis.
+     in: { trafDay, mtdUnits, minRate(%), per: fiscalPeriod() }
+     Traffic to date approximated trafDay*el (report gives daily avg, not fiscal MTD).
+     out: { rate, trend, stretch, monthGoal, mtd, need, daily, maintain, status, pct } */
+  function rateGoal(o){
+    var p = o.per, trafDay = o.trafDay>0 ? o.trafDay : 0;
+    if(!trafDay) return { noTraffic:true, rate:o.minRate, trend:0, stretch:false,
+      monthGoal:0, mtd:o.mtdUnits||0, need:0, daily:0, maintain:0, status:'no-data', pct:0 };
+    var trafToDate = trafDay * p.el;
+    var projTraf   = trafDay * p.tot;
+    var mtd   = o.mtdUnits||0;
+    var trend = trafToDate>0 ? (mtd/trafToDate)*100 : 0;
+    var stretch = trend > o.minRate;
+    var rate  = Math.max(o.minRate, trend);          // over-pace rule: raise to trend
+    var monthGoal = ceil((rate/100)*projTraf);       // always round UP
+    var need  = Math.max(0, monthGoal - mtd);
+    var maintain = Math.max(1, ceil((rate/100)*trafDay)); // per-day pace to hold the rate
+    var daily = need>0 ? ceil(need/p.rem) : maintain;
+    var status = need<=0 ? 'hit' : (mtd >= (rate/100)*trafToDate - 1e-9 ? 'on-pace' : 'behind');
+    return { rate:rate, trend:trend, stretch:stretch, monthGoal:monthGoal, mtd:mtd,
+             need:need, daily:daily, maintain:maintain, status:status,
+             pct: monthGoal>0 ? Math.min(100,(mtd/monthGoal)*100) : 0 };
+  }
+
+  /* ---- Amount goal (GP $, Accessory $, W/T units). CALENDAR basis.
+     in: { monthGoal, trendGoal(optional, e.g. gpTrend), mtd, per: calendarPeriod(), roundTo }
+     Jeff's example: goal $50,000, trending $48,000 -> gap $2,000 / days left
+     is added on top of pace. Implemented as need/rem which is equivalent. */
+  function amountGoal(o){
+    var p = o.per;
+    var base = o.monthGoal||0;
+    var stretch = (o.trendGoal||0) > base;
+    var goal = Math.max(base, o.trendGoal||0);       // over-pace rule
+    var mtd  = o.mtd||0;
+    var need = Math.max(0, goal - mtd);
+    var maintain = Math.max(0, ceil(goal/p.tot));
+    var daily = need>0 ? ceil(need/p.rem) : maintain;
+    var paceMTD = goal*(p.el/p.tot);
+    var status = need<=0 ? 'hit' : (mtd >= paceMTD-1e-9 ? 'on-pace' : 'behind');
+    if(o.roundTo){ daily = Math.ceil(daily/o.roundTo)*o.roundTo; }
+    return { goal:goal, stretch:stretch, mtd:mtd, need:need, daily:daily,
+             maintain:maintain, status:status,
+             pct: goal>0 ? Math.min(100,(mtd/goal)*100) : 0,
+             gapToPace: Math.max(0, paceMTD-mtd) };
+  }
+
+  /* ---- Mix goal (NPS, Gig %, Plus %): how many more "good" outcomes
+     in a row to reach the goal share. n = ceil((g*base - num)/(1-g)).
+     NPS: num = promoters - detractors, base = total surveys, g = 0.80.
+     Gig: num = gig sales, base = internet sales. Plus: plus lines / mobile lines. */
+  function mixGoal(o){
+    var g = (o.goalPct||0)/100, num = o.num||0, base = o.base||0;
+    var cur = base>0 ? (num/base)*100 : null;
+    if(cur===null) return { cur:null, needed:null, status:'no-data', goalPct:o.goalPct };
+    if(cur >= o.goalPct) return { cur:cur, needed:0, status:'hit', goalPct:o.goalPct };
+    var needed = g>=1 ? Infinity : Math.max(1, ceil((g*base - num)/(1-g)));
+    return { cur:cur, needed:needed, status:'behind', goalPct:o.goalPct };
+  }
+
+  /* ---- Full store computation ----
+     s: { trafDay, fMob, fInst,            // fiscal MTD mobile / RGU installs
+          gpTarget (from target-summary.json, fallback report col P),
+          gpTrend, gpMTD,
+          accMTD, wtMTD,
+          npsProm, npsDet, npsTotal,       // optional (Medallia MTD)
+          gigNum, gigBase, plusNum, plusBase } // optional
+     opts: { now, fiscalDayOverride, calDayOverride } */
+  function storeGoals(s, opts){
+    opts = opts||{};
+    var fp = fiscalPeriod(opts.now, opts.fiscalDayOverride||0);
+    var cp = calendarPeriod(opts.now, opts.calDayOverride||0);
+
+    var mobile = rateGoal({ trafDay:s.trafDay, mtdUnits:s.fMob, minRate:STD.MCR_MIN, per:fp });
+    var rgu    = rateGoal({ trafDay:s.trafDay, mtdUnits:s.fInst, minRate:STD.FCR_MIN, per:fp });
+
+    // Accessory month goal = $20 x mobile month goal (unit-consistent with planner)
+    var accMonth = STD.ACC_PER_BOX * mobile.monthGoal;
+    var acc = amountGoal({ monthGoal:accMonth, mtd:s.accMTD, per:cp, roundTo:5 });
+
+    var wtMonth = ceil((STD.WT_RATE/100) * (s.trafDay||0) * cp.tot);
+    var wt = amountGoal({ monthGoal:wtMonth, mtd:s.wtMTD, per:cp });
+
+    var gp = amountGoal({ monthGoal:s.gpTarget||0, trendGoal:s.gpTrend||0,
+                          mtd:s.gpMTD||0, per:cp, roundTo:25 });
+
+    var out = { period:{fiscal:fp, calendar:cp}, std:STD,
+                mobile:mobile, rgu:rgu, acc:acc, wt:wt, gp:gp };
+
+    if(s.npsTotal!=null) out.nps  = mixGoal({ goalPct:STD.NPS_GOAL,
+      num:(s.npsProm||0)-(s.npsDet||0), base:s.npsTotal });
+    if(s.gigBase!=null)  out.gig  = mixGoal({ goalPct:STD.GIG_GOAL,  num:s.gigNum,  base:s.gigBase });
+    if(s.plusBase!=null) out.plus = mixGoal({ goalPct:STD.PLUS_GOAL, num:s.plusNum, base:s.plusBase });
+    return out;
+  }
+
+  return { STD:STD, fiscalPeriod:fiscalPeriod, calendarPeriod:calendarPeriod,
+           rateGoal:rateGoal, amountGoal:amountGoal, mixGoal:mixGoal, storeGoals:storeGoals };
+})();
+if (typeof module!=='undefined' && module.exports) module.exports = BFX;
+/* ============================================================ END BFX ENGINE */
+
+/* BFX SMART TARGETS: Store Rank rows cached by npsFetchSalesStores() so the
+   goal helpers can see a store's row without re-fetching the workbook. */
+let BFX_SALES_ROWS = [];
+function bfxRowFor(shortName){
+  const k = String(shortName || "").trim().toLowerCase();
+  return (BFX_SALES_ROWS || []).find(s => String(s.name).trim().toLowerCase() === k) || null;
+}
+
+/* BFX SMART TARGETS: fiscal-MTD NPS survey buckets per store (nps-mtd.json —
+   the same Medallia MTD export the dashboard's MTD tab reads). Best effort. */
+let BFX_NPSMTD = { byStore: {}, loaded: false };
+function bfxIngestNpsMtd(surveys){
+  const by = {};
+  (surveys || []).forEach(s => {
+    if(!s || !s.storeKey || s.score == null) return;
+    const k = String(s.storeKey).trim().toLowerCase();
+    const rec = by[k] = by[k] || { prom: 0, det: 0, total: 0 };
+    const b = npsBucket(Number(s.score));
+    if(b === "good") rec.prom++; else if(b === "bad") rec.det++;
+    rec.total++;
+  });
+  BFX_NPSMTD = { byStore: by, loaded: true };
+  return BFX_NPSMTD;
+}
+async function bfxFetchNpsMtd(){
+  if(BFX_NPSMTD.loaded) return BFX_NPSMTD;
+  try {
+    const url = NPS_CONFIG.MTD_URL || "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/nps-mtd.json";
+    const r = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
+    if(r.ok){
+      const j = await r.json();
+      bfxIngestNpsMtd(j.surveys || []);
+    }
+  } catch(e){ console.warn("nps-mtd unavailable for targets:", e); }
+  return BFX_NPSMTD;
+}
+
+/* BFX SMART TARGETS: map the parsed feeds into BFX.storeGoals for one store.
+   Inputs: NPS_DAILY (shopper-trak daily avg), NPS_TARGETS (target-summary.json),
+   the store's Store Rank row, BFX_NPSMTD (Medallia MTD buckets).
+   g.est flags which inputs were estimated so the UI can mark them with ~. */
+function bfxStoreTargets(shortName, rowMaybe){
+  const key = String(shortName || "").trim().toLowerCase();
+  const row = rowMaybe || bfxRowFor(shortName);
+  const trafDay = NPS_DAILY[key] || 0;
+  if(!row || !trafDay) return null;
+  const t = (NPS_TARGETS.byStore || {})[key] || {};
+  const cp = BFX.calendarPeriod();
+  const gpTrend = Number(row.gpTrend) || 0;
+  const gpMTD = gpTrend * (cp.el / cp.tot);   // ESTIMATE: report carries trend, not GP MTD
+  const wtMTD = (Number(row.watchMTD) || 0) + (Number(row.tabletMTD) || 0);
+  const devs  = (Number(row.mobileMTD) || 0) + wtMTD;
+  const accMTD = (row.accTotal != null) ? Number(row.accTotal)
+               : Math.round((Number(row.accPerDev) || 0) * devs);   // estimate when col missing
+  const fMob  = (row.fMob  != null) ? Number(row.fMob)  : (Number(row.mobileMTD) || 0);
+  const fInst = (row.fInst != null) ? Number(row.fInst) : (Number(row.newRGU) || 0);
+  const s = { trafDay: trafDay, fMob: fMob, fInst: fInst,
+              gpTarget: Number(t.gp) || 0, gpTrend: gpTrend, gpMTD: gpMTD,
+              accMTD: accMTD, wtMTD: wtMTD };
+  const m = (BFX_NPSMTD.byStore || {})[key];
+  if(m && m.total){ s.npsProm = m.prom; s.npsDet = m.det; s.npsTotal = m.total; }
+  const g = BFX.storeGoals(s);
+  g.est = { gpMTD: true, accMTD: row.accTotal == null,
+            fMob: row.fMob == null, fInst: row.fInst == null };
+  return g;
+}
+
+/* BFX SMART TARGETS: subject-line snippet " • today: X XM / Y RGU". */
+function bfxSubjectSnippet(shortName, row){
+  const g = bfxStoreTargets(shortName, row);
+  if(!g || g.mobile.noTraffic) return "";
+  return " • today: " + g.mobile.daily + " XM / " + g.rgu.daily + " RGU";
+}
+
+/* BFX SMART TARGETS: one dark-navy target tile (email-safe, tables only —
+   no flex/grid so Outlook renders it). Modes: stretch ⭐ orange, behind red,
+   hit green ✓, norm = standard header tile. */
+function bfxTgtTile(label, big, ctx, mode){
+  const bg = mode === "stretch" ? "rgba(249,115,22,0.16)" : mode === "behind" ? "rgba(239,68,68,0.13)" : mode === "hit" ? "rgba(16,185,129,0.13)" : "rgba(255,255,255,0.08)";
+  const bd = mode === "stretch" ? "rgba(253,186,116,0.45)" : mode === "behind" ? "rgba(248,113,113,0.45)" : mode === "hit" ? "rgba(110,231,183,0.45)" : "rgba(159,192,255,0.22)";
+  const lc = mode === "stretch" ? "#fdba74" : mode === "behind" ? "#fca5a5" : mode === "hit" ? "#6ee7b7" : "#9fc0ff";
+  const cc = mode === "stretch" ? "#fdba74" : mode === "behind" ? "#fca5a5" : mode === "hit" ? "#6ee7b7" : "#8aa3d6";
+  return '<td width="33.33%" style="padding:3px;vertical-align:top;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:8px;"><tr><td style="padding:8px 6px;text-align:center;">' +
+    '<div style="font-size:9px;color:' + lc + ';font-weight:800;letter-spacing:0.5px;text-transform:uppercase;">' + label + '</div>' +
+    '<div style="font-size:18px;color:#ffffff;font-weight:800;margin-top:1px;line-height:1.1;">' + big + '</div>' +
+    '<div style="font-size:9.5px;color:' + cc + ';font-weight:600;margin-top:3px;line-height:1.35;">' + ctx + '</div>' +
+    '</td></tr></table></td>';
+}
+function bfxMode(u){ return u.status === "hit" ? "hit" : u.stretch ? "stretch" : u.status === "behind" ? "behind" : "norm"; }
+// Context line for rate-driven tiles (XM, RGU — fiscal basis).
+function bfxCtxRate(u){
+  if(u.status === "hit") return "goal hit &#10003; maintain " + u.maintain + "/day";
+  if(u.status === "behind") return "behind pace &mdash; need " + u.daily + "/day";
+  return "MTD " + u.mtd + " of " + u.monthGoal + " &middot; trending " + (Math.round(u.trend * 10) / 10).toFixed(1) + "%" + (u.stretch ? " &#11088;" : "");
+}
+// Context line for amount tiles (GP $, Acc $ — calendar basis). est prefixes ~.
+function bfxCtxAmt(u, est){
+  const f = v => "$" + Math.round(v).toLocaleString("en-US");
+  if(u.status === "hit") return "goal hit &#10003; maintain " + f(u.maintain) + "/day";
+  if(u.status === "behind") return "behind pace &mdash; need " + f(u.daily) + "/day";
+  return "MTD " + (est ? "~" : "") + f(u.mtd) + " of " + f(u.goal) + (u.stretch ? " &#11088;" : "");
+}
+
+/* BFX SMART TARGETS: the 🎯 TODAY'S TARGETS panel. Renders directly below the
+   Monthly Goal panel inside the dark-navy email header (also reused by the
+   NPS Index dashboard cards). Returns "" when the engine has no data. */
+function npsDailyGoalHtml(shortName, rowMaybe){
+  const g = bfxStoreTargets(shortName, rowMaybe);
+  if(!g) return "";
+  const fp = g.period.fiscal, cp = g.period.calendar;
+  // Watch/Tablet: weekly framing is friendlier when fewer units than days remain.
+  const wt = g.wt;
+  let wtBig, wtCtx;
+  if(wt.status === "hit"){
+    wtBig = "&#10003;";
+    wtCtx = "goal hit &#10003; maintain " + wt.maintain + "/day";
+  } else if(wt.need > 0 && wt.need < cp.rem){
+    wtBig = Math.ceil(wt.need / Math.max(1, cp.rem / 7)) + "/wk";
+    wtCtx = "MTD " + wt.mtd + " of " + wt.goal + (wt.status === "behind" ? " &mdash; behind pace" : "");
+  } else {
+    wtBig = wt.daily + "/day";
+    wtCtx = wt.status === "behind" ? "behind pace &mdash; need " + wt.daily + "/day"
+          : "MTD " + wt.mtd + " of " + wt.goal;
+  }
+  // NPS: "N more 9–10 surveys to reach 80" line.
+  let npsBig = "&mdash;", npsCtx = "MTD surveys unavailable", npsModeStr = "norm";
+  if(g.nps && g.nps.status !== "no-data"){
+    npsBig = String(Math.round(g.nps.cur));
+    if(g.nps.status === "hit"){
+      npsCtx = "at or above " + g.nps.goalPct + " &#10003; keep it up";
+      npsModeStr = "hit";
+    } else {
+      npsCtx = "<b>" + g.nps.needed + "</b> more 9&ndash;10 survey" + (g.nps.needed === 1 ? "" : "s") + " to reach " + g.nps.goalPct;
+      npsModeStr = "behind";
+    }
+  } else if(g.nps && g.nps.status === "no-data"){
+    npsCtx = "no surveys yet &mdash; every 9&ndash;10 counts";
+  }
+  const gpTile = g.gp.goal > 0
+    ? bfxTgtTile("GP $ / Day", "$" + g.gp.daily.toLocaleString("en-US"), bfxCtxAmt(g.gp, g.est.gpMTD), bfxMode(g.gp))
+    : bfxTgtTile("GP $ / Day", "&mdash;", "no GP target posted", "norm");
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;"><tr>' +
+    '<td style="background:rgba(255,255,255,0.08);border:1px solid rgba(159,192,255,0.35);border-radius:12px;padding:12px 8px 9px;">' +
+    '<div style="color:#9fc0ff;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 8px 7px;">&#127919; Today&rsquo;s Targets ' +
+    '<span style="color:#8aa3d6;font-weight:600;letter-spacing:0.4px;text-transform:none;">&bull; ' + fp.rem + ' fiscal day' + (fp.rem === 1 ? "" : "s") + ' left &bull; ' + cp.rem + ' calendar</span></div>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+    bfxTgtTile("XM / Day", g.mobile.daily + "/day", bfxCtxRate(g.mobile), bfxMode(g.mobile)) +
+    bfxTgtTile("RGU / Day", g.rgu.daily + "/day", bfxCtxRate(g.rgu), bfxMode(g.rgu)) +
+    bfxTgtTile("Acc $ / Day", "$" + g.acc.daily.toLocaleString("en-US"), bfxCtxAmt(g.acc, g.est.accMTD), bfxMode(g.acc)) +
+    '</tr><tr>' +
+    gpTile +
+    bfxTgtTile("Watch / Tablet", wtBig, wtCtx, bfxMode(wt)) +
+    bfxTgtTile("NPS &middot; to 80", npsBig, npsCtx, npsModeStr) +
+    '</tr></table>' +
+    '</td></tr></table>';
+}
+/* ====================================================== END BFX SMART TARGETS */
+
 function npsMonthlyGoals(shortName){
   const key = String(shortName).trim().toLowerCase();
   const t = (NPS_TARGETS.byStore || {})[key];
@@ -1432,8 +1786,15 @@ function npsMonthlyGoals(shortName){
   if(!t || !daily) return null;
   const C = Math.ceil;
   const monthly = daily * npsDaysInMonth();
-  const xm = C(monthly * 0.07);
-  return { gp: C(t.gp||0), xm: xm, rgu: C(monthly*((t.fcr||0)/100)), wt: C(monthly*0.02), acc: C(xm*20), ts: C(monthly*0.20) };
+  /* BFX SMART TARGETS: the XM goal now comes from the smart engine (over-pace
+     aware — rises to the store's trend when they beat 7%), and accessory is
+     $20/box against that SMART mobile goal. Falls back to the old flat 7%
+     when the engine has no Store Rank row yet. */
+  const smart = bfxStoreTargets(shortName);
+  const xm = (smart && smart.mobile.monthGoal > 0) ? smart.mobile.monthGoal : C(monthly * 0.07);
+  const xmRate = (smart && smart.mobile.monthGoal > 0) ? smart.mobile.rate : 7;
+  const xmStretch = !!(smart && smart.mobile.stretch);
+  return { gp: C(t.gp||0), xm: xm, rgu: C(monthly*((t.fcr||0)/100)), wt: C(monthly*0.02), acc: C(xm*BFX.STD.ACC_PER_BOX), ts: C(monthly*0.20), xmRate: xmRate, xmStretch: xmStretch };
 }
 
 /* ---- One-On-One-Form ranking + opportunities (Store Rank sheet) ---- */
@@ -1616,7 +1977,7 @@ function npsStoreGoalsHtml(row, shortName, fw){
   }
   return '<tr><td style="padding:20px 20px 2px;">' +
       '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#128202;&nbsp; Store Goals &mdash; Month to Date</div>' +
-      '<div style="font-size:12px;color:#64748b;margin:5px 0 2px;line-height:1.5;">Fiscal month <b>' + fw.label + '</b> &bull; <b>' + daysLeftTxt + '</b>. Targets from the <a href="https://blufoxmobile.github.io/Monthly-Target-Planner/" style="color:#2563eb;font-weight:700;text-decoration:none;">Monthly Target Planner &#8599;</a> (7% MCR &bull; traffic-based).</div>' +
+      '<div style="font-size:12px;color:#64748b;margin:5px 0 2px;line-height:1.5;">Fiscal month <b>' + fw.label + '</b> &bull; <b>' + daysLeftTxt + '</b>. Targets from the <a href="https://blufoxmobile.github.io/Monthly-Target-Planner/" style="color:#2563eb;font-weight:700;text-decoration:none;">Monthly Target Planner &#8599;</a> (' + /* BFX SMART TARGETS: dynamic rate label */ ((g && g.xmRate) ? ((Math.round(g.xmRate*10)/10).toFixed(1) + '% MCR' + (g.xmStretch ? ' &mdash; your trend &#11088;' : '')) : '7% MCR') + ' &bull; traffic-based).</div>' +
     '</td></tr>' +
     '<tr><td style="padding:6px 12px 6px;">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + tiles + '</table>' +
@@ -1928,7 +2289,9 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
     '<div style="color:#ffffff;font-size:30px;font-weight:800;letter-spacing:-0.6px;margin-top:6px;">' + npsEsc(shortName) + '</div>' +
     '<div style="color:#c7d6f3;font-size:13px;margin-top:6px;">' + subLine + '</div>' +
     '</td>' + medallion +
-    '</tr></table></td></tr>';
+    '</tr></table>' +
+    npsDailyGoalHtml(shortName, row) + /* BFX SMART TARGETS: 🎯 Today's Targets panel, inside the dark header */
+    '</td></tr>';
 
   // --- Store goals ---
   const storeGoalsHtml = row ? npsStoreGoalsHtml(row, shortName, fw) : "";
@@ -1968,7 +2331,8 @@ footerHtml +
 
   const subject = "Morning Briefing for " + shortName + " — " +
     (surveys.length ? surveys.length + " NPS survey" + (surveys.length === 1 ? "" : "s") : "no NPS surveys") +
-    (bad.length ? " (" + bad.length + " need attention)" : "");
+    (bad.length ? " (" + bad.length + " need attention)" : "") +
+    bfxSubjectSnippet(shortName, row); /* BFX SMART TARGETS: " • today: X XM / Y RGU" */
 
   return {
     store: shortName, store_full: fullKey,
@@ -2008,7 +2372,8 @@ async function npsSendEmails(surveys, salesStores, dir){
     npsFetchPunches().catch(e => console.warn("punch data unavailable:", e)),
     npsFetchConversion().catch(e => console.warn("conversion unavailable:", e)),
     npsFetchTargets().catch(e => console.warn("targets unavailable:", e)),
-    npsFetchOneOnOne().catch(e => console.warn("one-on-one ranking unavailable:", e))
+    npsFetchOneOnOne().catch(e => console.warn("one-on-one ranking unavailable:", e)),
+    bfxFetchNpsMtd().catch(e => console.warn("nps-mtd unavailable:", e)) /* BFX SMART TARGETS */
   ]);
   // Freshness gate: don't send on stale daily data — wait until today's files are up.
   const _today = npsLocalYMD(new Date());
