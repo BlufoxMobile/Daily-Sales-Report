@@ -6923,11 +6923,10 @@
     "store": "Valparaiso"
   },
   "2378597295": {
-    "status": "Pending Install",
-    "ts": "2026-07-08T14:40:36.796Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:28.381Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-17"
+    "store": "Evanston"
   },
   "2378696795": {
     "status": "Pending Install",
@@ -6943,10 +6942,11 @@
     "store": "Burbank"
   },
   "2378733239": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:27.389Z",
+    "status": "Pending Install",
+    "ts": "2026-07-08T14:40:43.244Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-17"
   },
   "2378824527": {
     "status": "Closed",
