@@ -7719,11 +7719,10 @@
     "store": "Evanston"
   },
   "2398661088": {
-    "status": "Pending Install",
-    "ts": "2026-07-08T16:35:28.448Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-08T16:35:35.609Z",
     "dm": "Juan Carrillo",
-    "store": "Calumet City",
-    "pendingUntil": "2026-07-10"
+    "store": "Calumet City"
   },
   "2399076600": {
     "status": "Closed",
