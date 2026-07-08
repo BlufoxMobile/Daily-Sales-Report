@@ -7652,12 +7652,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2393769158": {
-    "status": "Closed",
-    "ts": "2026-07-08T15:05:30.541Z",
-    "dm": "Jacob Cabrales",
-    "store": "Elkhart"
-  },
   "2394215432": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:45.029Z",
@@ -7681,6 +7675,12 @@
     "ts": "2026-07-07T23:00:46.309Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2396943261": {
+    "status": "Closed",
+    "ts": "2026-07-08T15:05:46.206Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2396990837": {
     "status": "Closed",
