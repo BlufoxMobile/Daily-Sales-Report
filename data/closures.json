@@ -6954,10 +6954,11 @@
     "store": "Glenview"
   },
   "2378831149": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:26.509Z",
+    "status": "Pending Install",
+    "ts": "2026-07-08T14:40:25.292Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-17"
   },
   "2378914844": {
     "status": "Cancelled Order",
