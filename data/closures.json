@@ -7718,15 +7718,15 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2398661088": {
-    "status": "Can Not Close",
-    "ts": "2026-07-08T16:35:42.185Z",
-    "dm": "Juan Carrillo",
-    "store": "Calumet City"
-  },
   "2399076600": {
     "status": "Closed",
     "ts": "2026-07-08T16:30:37.049Z",
+    "dm": "Juan Carrillo",
+    "store": "Calumet City"
+  },
+  "2399531881": {
+    "status": "Can Not Close",
+    "ts": "2026-07-08T16:35:45.777Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
