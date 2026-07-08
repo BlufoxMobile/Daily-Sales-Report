@@ -7742,12 +7742,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2398371592": {
-    "status": "Can Not Close",
-    "ts": "2026-07-08T21:09:34.643Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
-  },
   "2399076600": {
     "status": "Closed",
     "ts": "2026-07-08T16:30:37.049Z",
@@ -10126,5 +10120,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart",
     "pendingUntil": "2026-07-14"
+  },
+  "1001304152352103": {
+    "status": "Pending Install",
+    "ts": "2026-07-08T21:10:02.673Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville",
+    "pendingUntil": "2026-07-09"
   }
 }
