@@ -7755,10 +7755,11 @@
     "store": "Calumet City"
   },
   "2399387337": {
-    "status": "Closed",
-    "ts": "2026-07-08T21:10:58.324Z",
+    "status": "Pending Install",
+    "ts": "2026-07-08T21:12:55.562Z",
     "dm": "Matthew Brooks",
-    "store": "Greeneville"
+    "store": "Greeneville",
+    "pendingUntil": "2026-07-09"
   },
   "2399533937": {
     "status": "Can Not Close",
