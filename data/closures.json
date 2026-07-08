@@ -7688,13 +7688,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2397097348": {
-    "status": "Pending Install",
-    "ts": "2026-07-08T15:19:49.601Z",
-    "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-07-17"
-  },
   "2397307335": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:59.525Z",
@@ -10072,5 +10065,12 @@
     "ts": "2026-07-07T23:00:53.341Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "1002291032322050": {
+    "status": "Pending Install",
+    "ts": "2026-07-08T15:22:18.075Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart",
+    "pendingUntil": "2026-07-14"
   }
 }
