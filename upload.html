@@ -996,6 +996,7 @@ function npsParseReps(wb){
   const iMobile = h.findIndex(c => /^Mobile\s*MTD$/i.test(c));
   const iTablet = h.findIndex(c => /^Tablet\s*MTD$/i.test(c));
   const iWatch  = h.findIndex(c => /^Watches\s*MTD$/i.test(c));
+  const iTitle  = h.findIndex(c => /title|position|role/i.test(c));
   if(iName < 0) return [];
   const out = [];
   for(let i = hr + 1; i < rows.length; i++){
@@ -1012,7 +1013,8 @@ function npsParseReps(wb){
       gigPct: iGig >= 0 ? num(r[iGig]) : 0,
       mobile: iMobile >= 0 ? num(r[iMobile]) : 0,
       tablet: iTablet >= 0 ? num(r[iTablet]) : 0,
-      watch: iWatch >= 0 ? num(r[iWatch]) : 0
+      watch: iWatch >= 0 ? num(r[iWatch]) : 0,
+      title: iTitle >= 0 ? String(r[iTitle] || "").trim() : ""
     });
   }
   return out;
@@ -1434,140 +1436,442 @@ function npsMonthlyGoals(shortName){
   return { gp: C(t.gp||0), xm: xm, rgu: C(monthly*((t.fcr||0)/100)), wt: C(monthly*0.02), acc: C(xm*20), ts: C(monthly*0.20) };
 }
 
+/* ---- One-On-One-Form ranking + opportunities (Store Rank sheet) ---- */
+let NPS_ONEONONE = { byStore: {}, loaded: false };
+const NPS_ONEONONE_URL = "https://raw.githubusercontent.com/BlufoxMobile/One-On-One-Form/main/data/sales.xlsx";
+// Metric display names + coaching tips (mirrors the One-On-One-Form).
+const NPS_OOO_META = {
+  mcr:  { name: "Mobile Close Rate",          tip: "Greet fast and put a number in front of every &lsquo;just looking&rsquo; &mdash; don&rsquo;t let a guest leave without a quote.", weight: 25 },
+  gp:   { name: "Gross Profit",               tip: "Protect margin &mdash; sell accessories at full price, lead with premium plans, and kill fallout before it posts.", weight: 20 },
+  nps:  { name: "Customer Happiness (NPS)",   tip: "Ask every happy customer for the survey before they leave the counter.", weight: 15 },
+  ntcr: { name: "Non-Traditional Close Rate", tip: "Attach internet, a tablet, or a watch to every phone deal.", weight: 10 },
+  acc:  { name: "Accessories per Device",     tip: "A case AND screen protector on every device &mdash; bundle it into the price.", weight: 10 },
+  gig:  { name: "GIG Internet %",             tip: "Lead every internet deal with the 1-Gig+ plan.", weight: 10 },
+  upg:  { name: "New-to-Upgrade %",           tip: "Work a &lsquo;who&rsquo;s due&rsquo; list &mdash; call upgrade-eligible customers before they shop.", weight: 5 },
+  mp:   { name: "Premium Plan Mix",           tip: "Present Mobile Plus first and tie it to perks they&rsquo;ll actually use.", weight: 5 }
+};
+
+async function npsFetchOneOnOne(){
+  const url = (await npsPinnedUrl("One-On-One-Form","data/sales.xlsx")) || NPS_ONEONONE_URL;
+  const resp = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
+  if(!resp.ok) throw new Error("One-On-One sales.xlsx HTTP " + resp.status);
+  const wb = XLSX.read(await resp.arrayBuffer(), { type: "array" });
+  const ws = wb.Sheets["Store Rank"];
+  if(!ws){ NPS_ONEONONE = { byStore: {}, loaded: true }; return NPS_ONEONONE; }
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null, raw: true });
+  let hr = -1;
+  for(let i = 0; i < Math.min(20, rows.length); i++){
+    if(rows[i] && rows[i].some(c => c != null && String(c).trim() === "Rank")){ hr = i; break; }
+  }
+  if(hr < 0){ NPS_ONEONONE = { byStore: {}, loaded: true }; return NPS_ONEONONE; }
+  // Fixed column layout (verified against the file):
+  const C = { store: 2, rank: 0, score: 117,
+              mcr: 97, gp: 94, nps: 109, ntcr: 100, acc: 106, gig: 112, upg: 103, mp: 115 };
+  const numOrNull = v => { const n = Number(v); return (v == null || v === "" || isNaN(n)) ? null : n; };
+  const dataRows = rows.slice(hr + 1).filter(r => r && numOrNull(r[C.rank]) != null);
+  const N = dataRows.length;
+  const byStore = {};
+  dataRows.forEach(r => {
+    const store = String(r[C.store] || "").trim();
+    if(!store) return;
+    const mr = {};
+    ["mcr","gp","nps","ntcr","acc","gig","upg","mp"].forEach(k => { mr[k] = numOrNull(r[C[k]]); });
+    byStore[store.toLowerCase()] = {
+      rank: numOrNull(r[C.rank]),
+      score: numOrNull(r[C.score]),
+      N: N,
+      metricRanks: mr
+    };
+  });
+  NPS_ONEONONE = { byStore: byStore, loaded: true };
+  return NPS_ONEONONE;
+}
+
+// Reproduce the One-On-One-Form opportunity logic for a store.
+// Returns { moves:[{key,name,tip,rank,N,p}], strength:{key,name,rank,N,p}|null } or null.
+function npsOpportunities(shortName){
+  const rec = (NPS_ONEONONE.byStore || {})[String(shortName).trim().toLowerCase()];
+  if(!rec || !rec.N) return null;
+  const N = rec.N;
+  const scored = [];
+  Object.keys(NPS_OOO_META).forEach(key => {
+    const rank = rec.metricRanks[key];
+    if(rank == null) return;
+    const p = rank / N;                       // higher p = better
+    const lag = key === "nps" ? 0.45 : 1.0;
+    const meta = NPS_OOO_META[key];
+    const focus = p <= 0.5;
+    const oppScore = (1 - p) * meta.weight * lag;
+    scored.push({ key: key, name: meta.name, tip: meta.tip, rank: rank, N: N, p: p, focus: focus, oppScore: oppScore });
+  });
+  const moves = scored.filter(m => m.focus).sort((a,b) => b.oppScore - a.oppScore).slice(0, 3);
+  // strength = single best metric (highest p), only if p > 0.75
+  let strength = null;
+  scored.forEach(m => { if(m.p > 0.75 && (!strength || m.p > strength.p)) strength = m; });
+  return { moves: moves, strength: strength };
+}
+
 /* ---- Section HTML builders (match the approved preview) ---- */
-function npsGoalTile(label, value, hot){
-  const bg = hot ? "rgba(249,115,22,0.16)" : "rgba(255,255,255,0.07)";
-  const bd = hot ? "rgba(253,186,116,0.45)" : "rgba(159,192,255,0.22)";
-  const lc = hot ? "#fdba74" : "#9fc0ff";
-  return '<div style="display:inline-block;width:33%;min-width:92px;vertical-align:top;font-size:0;"><div style="margin:5px;padding:9px 10px;background:'+bg+';border:1px solid '+bd+';border-radius:8px;text-align:center;">'+
-    '<div style="font-size:9px;color:'+lc+';font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">'+label+'</div>'+
-    '<div style="font-size:16px;color:#ffffff;font-weight:800;">'+value+'</div></div></div>';
+
+// Fiscal-month window label + selling days left (matches the preview copy).
+function npsFiscalWindow(){
+  const now = new Date();
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const first = new Date(now.getFullYear(), now.getMonth(), 1);
+  const last  = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  const label = M[first.getMonth()] + " " + first.getDate() + " &ndash; " + M[last.getMonth()] + " " + last.getDate();
+  const daysLeft = Math.max(0, last.getDate() - now.getDate());
+  const dim = last.getDate();
+  const elapsed = Math.min(1, Math.max(0, now.getDate() / dim));
+  return { label: label, daysLeft: daysLeft, elapsed: elapsed, dim: dim };
 }
-function npsMonthlyGoalHtml(shortName){
+
+// Money like $26.7k / $34.2k for larger amounts; whole dollars under 1000.
+function npsMoneyK(v){
+  const n = Math.round(Number(v) || 0);
+  if(Math.abs(n) >= 10000) return "$" + (n/1000).toFixed(1) + "k";
+  return "$" + n.toLocaleString("en-US");
+}
+
+// Rep-cell money: always compact $X.Xk (matches the scorecard preview).
+function npsMoneyKrep(v){
+  const n = Number(v) || 0;
+  return "$" + (n/1000).toFixed(1) + "k";
+}
+function npsClampPct(cur, goal){
+  if(!goal || goal <= 0) return 0;
+  return Math.max(0, Math.min(100, Math.round((cur/goal) * 100)));
+}
+// Pace tone from current/goal vs elapsed fraction of the month.
+function npsPaceTone(cur, goal, elapsed){
+  if(!goal || goal <= 0) return "neutral";
+  const ratio = cur / goal;
+  if(ratio >= elapsed) return "good";
+  if(ratio >= 0.6 * elapsed) return "warn";
+  return "bad";
+}
+function npsPaceColors(tone){
+  if(tone === "good") return { bar: "#059669", txt: "#059669" };
+  if(tone === "warn") return { bar: "#d97706", txt: "#d97706" };
+  if(tone === "bad")  return { bar: "#dc2626", txt: "#dc2626" };
+  return { bar: "#64748b", txt: "#64748b" };
+}
+
+// One Store-Goal tile (label, current display, goal display, bar % + pace note).
+function npsStoreTile(label, curDisp, goalDisp, pct, tone, note){
+  const c = npsPaceColors(tone);
+  return '<td width="33.33%" style="padding:5px;vertical-align:top;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f9fc;border:1px solid #e6ebf3;border-radius:12px;"><tr><td style="padding:11px 12px;">' +
+    '<div style="font-size:10px;font-weight:800;letter-spacing:0.5px;color:#64748b;text-transform:uppercase;">' + label + '</div>' +
+    '<div style="margin-top:3px;"><span style="font-size:19px;font-weight:800;color:#0f172a;">' + curDisp + '</span><span style="font-size:12px;font-weight:700;color:#94a3b8;"> ' + goalDisp + '</span></div>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:7px;"><tr><td height="7" style="background:#e2e8f0;border-radius:4px;font-size:0;line-height:0;">' +
+    '<table role="presentation" width="' + pct + '%" cellpadding="0" cellspacing="0"><tr><td height="7" style="background:' + c.bar + ';border-radius:4px;font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr></table>' +
+    '<div style="font-size:10.5px;color:' + c.txt + ';font-weight:700;margin-top:5px;">' + note + '</div>' +
+    '</td></tr></table></td>';
+}
+
+function npsStoreGoalsHtml(row, shortName, fw){
   const g = npsMonthlyGoals(shortName);
-  if(!g) return "";
-  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;"><tr>'+
-    '<td style="background:rgba(255,255,255,0.08);border:1px solid rgba(159,192,255,0.35);border-radius:12px;padding:12px 11px 9px;">'+
-    '<div style="color:#9fc0ff;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 8px 4px;">Monthly Goal <span style="color:#8aa3d6;font-weight:600;letter-spacing:0.4px;text-transform:none;">&bull; targeting 7% mobile</span></div>'+
-    '<div style="font-size:0;">'+
-    npsGoalTile("GP", "$"+g.gp.toLocaleString("en-US"), false)+
-    npsGoalTile("XM &middot; 7%", String(g.xm), true)+
-    npsGoalTile("RGU", String(g.rgu), false)+
-    npsGoalTile("Watch / Tablet", String(g.wt), false)+
-    npsGoalTile("Accessory", "$"+g.acc.toLocaleString("en-US"), false)+
-    npsGoalTile("T-Sheet", String(g.ts), false)+
-    '</div></td></tr></table>';
+  const tc = (NPS_TCHARTS.byStore || {})[row.name] || 0;
+  const el = fw.elapsed;
+  const daysLeftTxt = fw.daysLeft + " selling day" + (fw.daysLeft === 1 ? "" : "s") + " left";
+  // Current values
+  const curGP  = Number(row.gpTrend) || 0;
+  const curXM  = Number(row.mobileMTD) || 0;
+  const curRGU = Number(row.newRGU) || 0;
+  const curWT  = (Number(row.watchMTD) || 0) + (Number(row.tabletMTD) || 0);
+  const devs   = (Number(row.mobileMTD)||0) + (Number(row.tabletMTD)||0) + (Number(row.watchMTD)||0);
+  const curAcc = (row.accTotal != null) ? Number(row.accTotal) : Math.round((Number(row.accPerDev)||0) * devs);
+  const curTS  = tc;
+
+  const perDay = (v) => fw.daysLeft > 0 ? "~" + Math.max(1, Math.ceil(v / fw.daysLeft)) + "/day" : "keep going";
+  const note = (cur, goal, tone) => {
+    if(!goal || goal <= 0) return "&mdash;";
+    const remaining = Math.max(0, goal - cur);
+    if(tone === "good") return Math.round(npsClampPct(cur,goal)) + "% &bull; on pace";
+    if(tone === "warn") return "Behind &bull; " + perDay(remaining);
+    return "Behind &bull; " + perDay(remaining);
+  };
+
+  let tiles = "";
+  if(g){
+    const tGP  = npsPaceTone(curGP,  g.gp,  el);
+    const tXM  = npsPaceTone(curXM,  g.xm,  el);
+    const tRGU = npsPaceTone(curRGU, g.rgu, el);
+    const tWT  = npsPaceTone(curWT,  g.wt,  el);
+    const tAcc = npsPaceTone(curAcc, g.acc, el);
+    const tTS  = npsPaceTone(curTS,  g.ts,  el);
+    tiles =
+      '<tr>' +
+        npsStoreTile("Gross Profit", npsMoneyK(curGP), "/" + npsMoneyK(g.gp), npsClampPct(curGP,g.gp), tGP, note(curGP,g.gp,tGP)) +
+        npsStoreTile("XM &bull; Mobile", String(curXM), "/ " + g.xm, npsClampPct(curXM,g.xm), tXM, note(curXM,g.xm,tXM)) +
+        npsStoreTile("Total RGU", String(curRGU), "/ " + g.rgu, npsClampPct(curRGU,g.rgu), tRGU, note(curRGU,g.rgu,tRGU)) +
+      '</tr><tr>' +
+        npsStoreTile("Watch + Tablet", String(curWT), "/ " + g.wt, npsClampPct(curWT,g.wt), tWT, note(curWT,g.wt,tWT)) +
+        npsStoreTile("Accessory $", npsMoneyFmt(curAcc), "/" + npsMoneyFmt(g.acc), npsClampPct(curAcc,g.acc), tAcc, note(curAcc,g.acc,tAcc)) +
+        npsStoreTile("T-Sheets", String(curTS), "/ " + g.ts, npsClampPct(curTS,g.ts), tTS, note(curTS,g.ts,tTS)) +
+      '</tr>';
+  } else {
+    tiles = '<tr><td style="padding:8px 5px;"><div style="font-size:12px;color:#94a3b8;font-style:italic;">Monthly targets not posted yet &mdash; goals will appear once the planner updates.</div></td></tr>';
+  }
+  return '<tr><td style="padding:20px 20px 2px;">' +
+      '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#128202;&nbsp; Store Goals &mdash; Month to Date</div>' +
+      '<div style="font-size:12px;color:#64748b;margin:5px 0 2px;line-height:1.5;">Fiscal month <b>' + fw.label + '</b> &bull; <b>' + daysLeftTxt + '</b>. Targets from the <a href="https://blufoxmobile.github.io/Monthly-Target-Planner/" style="color:#2563eb;font-weight:700;text-decoration:none;">Monthly Target Planner &#8599;</a> (7% MCR &bull; traffic-based).</div>' +
+    '</td></tr>' +
+    '<tr><td style="padding:6px 12px 6px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + tiles + '</table>' +
+    '</td></tr>';
 }
 
-function npsCurTile(label, value, tone, w){
-  const bg = tone==="good" ? "#ecfdf5" : tone==="bad" ? "#fef2f2" : "#f8fafc";
-  const bd = tone==="good" ? "#6ee7b7" : tone==="bad" ? "#fca5a5" : "#c4cdda";
-  const vc = tone==="good" ? "#047857" : tone==="bad" ? "#b91c1c" : "#0f172a";
-  const width = w || "33%";
-  const mw = w==="20%" ? "108px" : "150px";
-  return '<div style="display:inline-block;width:'+width+';min-width:'+mw+';vertical-align:top;font-size:0;"><div style="margin:5px;background:'+bg+';border:1.5px solid '+bd+';border-radius:12px;padding:11px 10px;text-align:center;">'+
-    '<div style="font-size:10px;color:#64748b;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">'+label+'</div>'+
-    '<div style="font-size:20px;color:'+vc+';font-weight:800;margin-top:3px;">'+value+'</div></div></div>';
+// --- Team Scorecard (heatmap) ---
+function npsPct100(v){ const n = Number(v) || 0; return n <= 1 ? Math.round(n*100) : Math.round(n); }
+function npsRepInitialName(name){
+  const parts = String(name || "").trim().split(/\s+/);
+  if(parts.length < 2) return npsEsc(name || "");
+  return npsEsc(parts[0].charAt(0) + ". " + parts.slice(1).join(" "));
 }
-function npsCurrentStandingsHtml(row, tone){
-  if(!row) return "";
-  // neutral counts (5 across)
-  const neutral = '<div style="font-size:0;text-align:center;">'+
-    npsCurTile("Total RGU", String(row.newRGU), "neutral", "20%")+
-    npsCurTile("Mobile", String(row.mobileMTD), "neutral", "20%")+
-    npsCurTile("Tablet", String(row.tabletMTD), "neutral", "20%")+
-    npsCurTile("Watches", String(row.watchMTD), "neutral", "20%")+
-    npsCurTile("T-Charts", String((NPS_TCHARTS.byStore||{})[row.name] || 0), "neutral", "20%")+
-    '</div>';
-  // toned metrics (3 across)
-  const toned = '<div style="font-size:0;text-align:center;">'+
-    npsCurTile("GP Trend", npsMoneyFmt(row.gpTrend), tone("gpTrend"), "33%")+
-    npsCurTile("Mob Close Rate", npsPctFmt(row.mobileCR), tone("mobileCR"), "33%")+
-    npsCurTile("Fiscal CR", npsPctFmt(row.fiscalCR), tone("fiscalCR"), "33%")+
-    npsCurTile("Non-Trad", npsPctFmt(row.nonTrad), tone("nonTrad"), "33%")+
-    npsCurTile("Gig Plans %", npsPctFmt(row.gigPct), tone("gigPct"), "33%")+
-    npsCurTile("Plus Mix", npsPctFmt(row.plusMix), tone("plusMix"), "33%")+
-    npsCurTile("New &rarr; Upgrade", npsPctFmt(row.newToUpg), tone("newToUpg"), "33%")+
-    npsCurTile("Accessories", npsMoneyFmt(row.accPerDev), tone("accPerDev"), "33%")+
-    npsCurTile("NPS", npsPctFmt(row.nps), tone("nps"), "33%")+
-    '</div>';
-  return '<tr><td style="padding:8px 8px 2px;">'+neutral+'</td></tr>'+
-         '<tr><td style="padding:2px 8px 12px;">'+toned+'</td></tr>';
+function npsHeatCell(curDisp, goalDisp, tone, last){
+  const bg = tone === "good" ? "#ecfdf5" : tone === "warn" ? "#fffbeb" : tone === "bad" ? "#fef2f2" : "#f8fafc";
+  const col = tone === "good" ? "#047857" : tone === "warn" ? "#b45309" : tone === "bad" ? "#b91c1c" : "#0f172a";
+  const bb = last ? "" : "border-bottom:1px solid #ffffff;";
+  return '<td style="text-align:center;padding:6px 2px;background:' + bg + ';' + bb + '">' +
+    '<div style="font-size:12.5px;font-weight:800;color:' + col + ';line-height:1;">' + curDisp + '</div>' +
+    '<div style="font-size:9px;color:#94a3b8;font-weight:700;margin-top:1px;">' + goalDisp + '</div></td>';
+}
+function npsRepRankBadge(rank, repN){
+  const p = repN > 0 ? (rank / repN) : 1;   // rep rank 1 = best, so low = good
+  const tier = p <= 0.33 ? "good" : p <= 0.66 ? "warn" : "bad";
+  const bg = tier === "good" ? "#ecfdf5" : tier === "warn" ? "#fffbeb" : "#fef2f2";
+  const bd = tier === "good" ? "#a7f3d0" : tier === "warn" ? "#fde68a" : "#fecaca";
+  const col = tier === "good" ? "#047857" : tier === "warn" ? "#b45309" : "#b91c1c";
+  return '<span style="display:inline-block;background:' + bg + ';color:' + col + ';border:1px solid ' + bd + ';border-radius:6px;font-size:9px;font-weight:800;padding:1px 5px;vertical-align:middle;">#' + rank + '</span>';
+}
+function npsTeamScorecardHtml(shortName, storeReps, repN){
+  if(!storeReps.length) return "";
+  const g = npsMonthlyGoals(shortName);
+  const n = storeReps.length;
+  const C = Math.ceil;
+  // Rep goals: store goal split evenly by rep count (planner method).
+  const repGP    = g ? C((g.gp||0)/n)   : 0;
+  const repXM    = g ? C((g.xm||0)/n)   : 0;
+  const repTab   = g ? C((g.wt||0)/2/n) : 0;
+  const repWatch = g ? C((g.wt||0)/2/n) : 0;
+  const repTS    = g ? C((g.ts||0)/n)   : 0;
+  const PLUS_GOAL = 75, GIG_GOAL = 80;   // ratio targets (not split)
+  const el = npsFiscalWindow().elapsed;
+  const tcOf = r => (NPS_TCHARTS.byRep || {})[String(r.name).trim().toLowerCase() + "||" + shortName.toLowerCase()] || 0;
+
+  const header =
+    '<tr>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;letter-spacing:0.4px;padding:7px 8px;text-align:left;border-radius:8px 0 0 0;">REP</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">GP</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">XM</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">TAB</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">WATCH</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">PLUS</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">GIG</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;border-radius:0 8px 0 0;">T-CH</td>' +
+    '</tr>';
+
+  const rowsHtml = storeReps.map((r, idx) => {
+    const last = idx === storeReps.length - 1;
+    const cGP = Number(r.gp) || 0;
+    const cXM = Number(r.mobile) || 0;
+    const cTab = Number(r.tablet) || 0;
+    const cWatch = Number(r.watch) || 0;
+    const cPlus = npsPct100(r.plusMix);
+    const cGig  = npsPct100(r.gigPct);
+    const cTc = tcOf(r);
+    const nameCellBB = last ? "" : "border-bottom:1px solid #eef2f7;";
+    const title = r.title ? npsEsc(r.title) : "";
+    const nameCell =
+      '<td style="padding:7px 8px;background:#ffffff;' + nameCellBB + 'vertical-align:middle;">' +
+      '<div style="font-size:12.5px;font-weight:800;color:#0f172a;">' + npsRepInitialName(r.name) + ' ' + npsRepRankBadge(r.rank, repN) + '</div>' +
+      (title ? '<div style="font-size:10px;color:#94a3b8;margin-top:1px;">' + title + '</div>' : '') +
+      '</td>';
+    return '<tr>' + nameCell +
+      npsHeatCell(npsMoneyKrep(cGP), "/" + npsMoneyKrep(repGP), npsPaceTone(cGP, repGP, el), last) +
+      npsHeatCell(String(cXM), "/" + repXM, npsPaceTone(cXM, repXM, el), last) +
+      npsHeatCell(String(cTab), "/" + repTab, npsPaceTone(cTab, repTab, el), last) +
+      npsHeatCell(String(cWatch), "/" + repWatch, npsPaceTone(cWatch, repWatch, el), last) +
+      npsHeatCell(cPlus + "%", "/" + PLUS_GOAL + "%", npsPaceTone(cPlus, PLUS_GOAL, 1), last) +
+      npsHeatCell(cGig + "%", "/" + GIG_GOAL + "%", npsPaceTone(cGig, GIG_GOAL, 1), last) +
+      npsHeatCell(String(cTc), "/" + repTS, npsPaceTone(cTc, repTS, el), last) +
+      '</tr>';
+  }).join("");
+
+  return '<tr><td style="padding:14px 20px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e6ebf3;border-radius:16px;"><tr><td style="padding:16px 16px;">' +
+    '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#127942;&nbsp; Team Scorecard &mdash; MTD to Goal</div>' +
+    '<div style="font-size:12px;color:#64748b;margin:5px 0 12px;line-height:1.5;">Each rep vs. their monthly goal (planner goal split by rep). <b style="color:#047857;">Green</b> on pace &bull; <b style="color:#b45309;">amber</b> close &bull; <b style="color:#b91c1c;">red</b> needs a push. <b>#</b> = rank of ' + repN + ' reps.</div>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:0;">' +
+    header + rowsHtml +
+    '</table>' +
+    '<div style="font-size:10.5px;color:#94a3b8;margin-top:9px;line-height:1.5;">Rep goals add up to the store goal above &mdash; everyone&rsquo;s share gets the store to the line.</div>' +
+    '</td></tr></table></td></tr>';
 }
 
-function npsConvTile(label, value, tone){
-  const bg = tone==="good" ? "#ecfdf5" : tone==="bad" ? "#fef2f2" : "#f8fafc";
-  const bd = tone==="good" ? "#6ee7b7" : tone==="bad" ? "#fca5a5" : "#c4cdda";
-  const lc = tone==="bad" ? "#b91c1c" : tone==="good" ? "#047857" : "#64748b";
-  const vc = tone==="good" ? "#047857" : tone==="bad" ? "#b91c1c" : "#0f172a";
-  return '<div style="display:inline-block;width:20%;min-width:98px;vertical-align:top;font-size:0;"><div style="margin:4px;background:'+bg+';border:1.5px solid '+bd+';border-radius:12px;padding:10px 5px;text-align:center;">'+
-    '<div style="font-size:9px;color:'+lc+';font-weight:700;letter-spacing:0.3px;text-transform:uppercase;">'+label+'</div>'+
-    '<div style="font-size:22px;color:'+vc+';font-weight:800;margin-top:2px;">'+value+'</div></div></div>';
+// --- Yesterday's Conversion hero strip ---
+function npsConvHeroCell(value, label, color, first){
+  const bl = first ? "" : "border-left:1px solid rgba(255,255,255,0.12);";
+  return '<td width="20%" style="text-align:center;padding:6px 4px;' + bl + '">' +
+    '<div style="color:' + color + ';font-size:26px;font-weight:800;line-height:1;">' + value + '</div>' +
+    '<div style="color:#c7d6f3;font-size:9.5px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-top:5px;">' + label + '</div></td>';
 }
-function npsConversionHtml(shortName){
+function npsConversionHeroHtml(shortName){
   const c = (NPS_CONV.byStore || {})[shortName];
+  const dateTxt = NPS_CONV.date ? (function(iso){
+    const [y,m,d] = iso.split("-").map(Number);
+    const W = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const dt = new Date(y, m-1, d);
+    return W[dt.getDay()] + ", " + M[m-1] + " " + d;
+  })(NPS_CONV.date) : "";
+
   let inner;
   if(c && (c.traffic || c.mobile || c.tcharts)){
     const mcr = c.mcr;
-    const mcrTone = (mcr==null) ? "neutral" : (mcr > 7 ? "good" : (mcr >= 6 ? "warn" : "bad"));
-    const mcrTxt = (mcr==null) ? "&mdash;" : (Math.round(mcr*10)/10).toFixed(1)+"%";
     const tp = c.tpct;
-    const tpTone = (tp==null) ? "neutral" : (tp > 20 ? "good" : (tp >= 15 ? "warn" : "bad"));
-    const tpTxt = (tp==null) ? "&mdash;" : (Math.round(tp*10)/10).toFixed(1)+"%";
-    inner = '<div style="font-size:0;text-align:center;">'+
-      npsConvTile("Traffic", String(c.traffic||0), "neutral")+
-      npsConvTile("XM Sold", String(c.mobile||0), "neutral")+
-      npsConvTile("MCR", mcrTxt, mcrTone==="warn"?"neutral":mcrTone)+
-      npsConvTile("T-Charts", String(c.tcharts||0), "neutral")+
-      npsConvTile("T-Chart %", tpTxt, tpTone==="warn"?"neutral":tpTone)+
-      '</div>';
+    const mcrCol = (mcr == null) ? "#ffffff" : (mcr >= 7 ? "#34d399" : "#fbbf24");
+    const tpCol  = (tp == null)  ? "#ffffff" : (tp >= 20 ? "#34d399" : "#fbbf24");
+    const mcrTxt = (mcr == null) ? "&mdash;" : (Math.round(mcr*10)/10).toFixed(1) + "%";
+    const tpTxt  = (tp == null)  ? "&mdash;" : (Math.round(tp*10)/10).toFixed(1) + "%";
+    const hitMcr = (mcr != null && mcr >= 7);
+    const hitTp  = (tp != null && tp >= 20);
+    const foot = (hitMcr && hitTp)
+      ? "you hit both yesterday. Keep the savings comparison on every guest."
+      : (hitMcr || hitTp)
+        ? "you hit one of two &mdash; push the other today. Run a savings comparison on every guest."
+        : "let&rsquo;s get both above the line today &mdash; run a savings comparison on every guest.";
+    inner =
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+      npsConvHeroCell(String(c.traffic || 0), "Traffic", "#ffffff", true) +
+      npsConvHeroCell(String(c.mobile || 0), "XM Sold", "#ffffff", false) +
+      npsConvHeroCell(mcrTxt, "Close Rate", mcrCol, false) +
+      npsConvHeroCell(String(c.tcharts || 0), "T-Charts", "#ffffff", false) +
+      npsConvHeroCell(tpTxt, "T-Chart %", tpCol, false) +
+      '</tr></table>' +
+      '<div style="color:#f8c9a6;font-size:11px;text-align:center;margin-top:10px;line-height:1.5;">Goal: <b style="color:#ffffff;">7%+ close rate</b> and <b style="color:#ffffff;">T-Charts on 20%+</b> of traffic &bull; ' + foot + '</div>';
   } else {
-    inner = '<div style="font-size:13px;color:#94a3b8;text-align:center;padding:8px 0;">No conversion numbers posted for yesterday yet.</div>';
+    inner = '<div style="color:#f8c9a6;font-size:12px;text-align:center;padding:10px 0;line-height:1.5;">No conversion posted yet for yesterday &mdash; it&rsquo;ll show here once the numbers land.</div>';
   }
-  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #f97316;border-radius:14px;overflow:hidden;">'+
-    '<tr><td style="background:#fff7ed;padding:14px 18px 10px;border-bottom:1.5px solid #fdba74;">'+
-    '<div><span style="display:inline-block;background:#f97316;color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.5px;padding:5px 12px;border-radius:8px;">&#9889;&nbsp; YESTERDAY&rsquo;S CONVERSION</span></div>'+
-    '<div style="color:#9a3412;font-size:12px;margin-top:8px;line-height:1.5;">How yesterday&rsquo;s foot traffic turned into sales. <strong>MCR</strong> = % of shoppers who bought mobile; <strong>T&#8209;Chart %</strong> = % we ran a savings comparison for. Goal: <strong>MCR 7%+</strong> and <strong>T&#8209;Charts on 20%+</strong> of traffic.</div>'+
-    '</td></tr>'+
-    '<tr><td style="padding:10px 5px 8px;">'+inner+'</td></tr>'+
-    '<tr><td style="padding:2px 18px 14px;"><a href="https://blufoxmobile.github.io/Yesterday-s-Conversion/" style="color:#ea580c;font-size:13px;font-weight:700;text-decoration:none;">View full Yesterday&rsquo;s Conversion board &rarr;</a></td></tr>'+
-    '</table>';
+  return '<tr><td style="padding:12px 20px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0b1f45;background:linear-gradient(135deg,#0b1f45 0%,#3b2258 55%,#7a2d12 100%);border-radius:16px;">' +
+    '<tr><td style="padding:16px 18px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+    '<td style="vertical-align:middle;"><span style="display:inline-block;background:#f97316;color:#ffffff;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;padding:5px 12px;border-radius:999px;">&#9889;&nbsp; Yesterday&rsquo;s Conversion</span></td>' +
+    (dateTxt ? '<td style="text-align:right;color:#f8c9a6;font-size:11px;font-weight:600;vertical-align:middle;">' + dateTxt + '</td>' : '<td></td>') +
+    '</tr></table></td></tr>' +
+    '<tr><td style="padding:8px 10px 16px;">' + inner + '</td></tr>' +
+    '</table></td></tr>';
 }
 
-function npsTimekeepingHtml(shortName){
-  const detail = (NPS_PUNCH.detail || {})[shortName] || [];
+// --- NPS section ---
+function npsSectionHtml(shortName, surveys, good, ok, bad, tnps){
+  const total = surveys.length;
+  // One flagged recent detractor with a non-empty comment (most recent by txnDate).
+  const flagged = bad.filter(s => s.comment && String(s.comment).trim())
+    .sort((a,b) => String(b.txnDate || "").localeCompare(String(a.txnDate || "")))[0];
+  const flaggedHtml = flagged
+    ? '<div style="border-top:1px solid #eef2f7;margin-top:12px;padding-top:10px;">' +
+      '<div style="font-size:12px;color:#b91c1c;font-weight:700;">&#9888;&nbsp; Needs a callback</div>' +
+      '<div style="font-size:12.5px;color:#334155;font-style:italic;margin-top:4px;line-height:1.5;">&ldquo;' + npsEsc(flagged.comment) + '&rdquo; &mdash; score ' + flagged.score + '</div></div>'
+    : '';
+  const chips =
+    '<span style="display:inline-block;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;border-radius:8px;font-size:12px;font-weight:700;padding:5px 10px;margin-right:6px;">' + good.length + ' Promoter' + (good.length===1?"":"s") + '</span>' +
+    '<span style="display:inline-block;background:#fffbeb;color:#b45309;border:1px solid #fde68a;border-radius:8px;font-size:12px;font-weight:700;padding:5px 10px;margin-right:6px;">' + ok.length + ' Passive</span>' +
+    '<span style="display:inline-block;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:8px;font-size:12px;font-weight:700;padding:5px 10px;">' + bad.length + ' Need Attention</span>';
+  const npsCol = tnps >= 0 ? "#ea580c" : "#b91c1c";
+  const emptyLine = total
+    ? ''
+    : '<div style="font-size:12.5px;color:#64748b;margin-top:10px;">No surveys yet this month &mdash; keep asking happy customers to take the survey.</div>';
+  return '<tr><td style="padding:12px 20px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e6ebf3;border-radius:16px;"><tr><td style="padding:16px 18px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+    '<td style="vertical-align:middle;">' +
+    '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#128172;&nbsp; What Customers Are Saying</div>' +
+    '<div style="font-size:12px;color:#64748b;margin-top:4px;">Month-to-date &bull; ' + total + ' survey' + (total===1?"":"s") + '</div>' +
+    (total ? '<div style="margin-top:10px;">' + chips + '</div>' : emptyLine) +
+    '</td>' +
+    (total ? '<td style="vertical-align:middle;text-align:center;width:104px;">' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" align="right" style="background:#fff7ed;border:1.5px solid #fdba74;border-radius:14px;"><tr><td style="padding:12px 18px;text-align:center;">' +
+      '<div style="color:' + npsCol + ';font-size:32px;font-weight:800;line-height:1;">' + (tnps >= 0 ? "+" : "") + tnps + '</div>' +
+      '<div style="color:#9a3412;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:4px;">tNPS</div>' +
+      '</td></tr></table></td>' : '') +
+    '</tr></table>' + flaggedHtml +
+    '</td></tr></table></td></tr>';
+}
+
+// --- Playbook (One-On-One-Form opportunities) ---
+function npsPlaybookHtml(shortName){
+  const opp = npsOpportunities(shortName);
+  if(!opp || (!opp.moves.length && !opp.strength)) return "";
+  const moveRow = (m, idx) => {
+    const first = idx === 0;
+    const bg = first ? "#fef2f2" : "#fff7ed";
+    const bd = first ? "#fecaca" : "#fed7aa";
+    const rc = first ? "#b91c1c" : "#c2410c";
+    const oc = first ? "#dc2626" : "#ea580c";
+    const br = first ? "#fbd5d5" : "#fdd9b5";
+    return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:12px;margin-bottom:8px;"><tr>' +
+      '<td style="width:64px;vertical-align:middle;text-align:center;padding:12px 6px;border-right:1px solid ' + br + ';">' +
+      '<div style="color:' + rc + ';font-size:19px;font-weight:800;line-height:1;">#' + m.rank + '</div>' +
+      '<div style="color:' + oc + ';font-size:9px;font-weight:700;margin-top:2px;">of ' + m.N + '</div></td>' +
+      '<td style="padding:10px 14px;vertical-align:middle;">' +
+      '<div style="font-size:13.5px;font-weight:800;color:#0f172a;">' + m.name + '</div>' +
+      '<div style="font-size:12px;color:#475569;margin-top:3px;line-height:1.5;">' + m.tip + '</div></td></tr></table>';
+  };
+  const movesHtml = opp.moves.map(moveRow).join("");
+  const strengthHtml = opp.strength
+    ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;margin-top:10px;"><tr>' +
+      '<td style="padding:11px 14px;vertical-align:middle;">' +
+      '<span style="color:#047857;font-size:12px;font-weight:800;">&#11088; Keep doing what works:</span>' +
+      '<span style="color:#065f46;font-size:12px;font-weight:600;"> ' + opp.strength.name + ' is <b>#' + opp.strength.rank + ' of ' + opp.strength.N + '</b> &mdash; one of your strongest ranks in the company. Whatever you&rsquo;re doing here, don&rsquo;t stop.</span>' +
+      '</td></tr></table>'
+    : '';
+  return '<tr><td style="padding:12px 20px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e6ebf3;border-radius:16px;"><tr><td style="padding:16px 18px;">' +
+    '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#127919;&nbsp; Your Playbook &mdash; Where to Win This Month</div>' +
+    '<div style="font-size:12px;color:#64748b;margin:5px 0 12px;">Your biggest ranking gains in the company right now. Move these and you climb the board.</div>' +
+    movesHtml + strengthHtml +
+    '</td></tr></table></td></tr>';
+}
+
+// --- Lunch punch reminder ---
+function npsLunchReminderHtml(shortName){
+  const missed = (NPS_PUNCH.byStore || {})[shortName] || 0;
   const loaded = NPS_PUNCH.loaded;
-  const byRep = {};
-  detail.forEach(x => { (byRep[x.rep] = byRep[x.rep] || []).push(x); });
-  const reps = Object.keys(byRep).sort();
-  let punchHtml;
+  let sub;
   if(!loaded){
-    punchHtml = '<div style="font-size:12px;color:#94a3b8;font-style:italic;">Punch data not loaded yet.</div>';
-  } else if(reps.length === 0){
-    punchHtml = '<div style="font-size:13px;color:#047857;background:#ecfdf5;border:1.5px solid #6ee7b7;border-radius:8px;padding:10px 12px;">&#10003; No missed punches this month &mdash; nice work keeping it clean.</div>';
+    sub = 'Missed meal punches create compliance issues and hold up payroll. Please clock in and out for every lunch.';
+  } else if(missed > 0){
+    sub = 'Missed meal punches create compliance issues and hold up payroll. <b style="color:#b91c1c;">' + missed + ' missed punch' + (missed===1?"":"es") + ' this month</b> &mdash; please fix them in the Punch Audit.';
   } else {
-    let rowsH = "";
-    reps.forEach(rep => {
-      const days = byRep[rep].slice().sort((a,b) => String(a.date).localeCompare(String(b.date)));
-      const daysH = days.map(d => '<div style="font-size:12px;color:#7c2d12;margin-top:2px;">' + npsEsc(String(d.date)) + ' &mdash; clocked out ' + npsEsc(d.clockOut || "—") + ' <span style="color:#9a3412;">(' + d.punches + ' punches)</span></div>').join("");
-      rowsH += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;"><tr>' +
-        '<td style="vertical-align:top;"><div style="font-size:14px;font-weight:800;color:#0f172a;">' + npsEsc(rep) + '</div>' + daysH + '</td>' +
-        '<td width="60" align="right" style="vertical-align:top;"><div style="font-size:22px;font-weight:800;color:#ea580c;">' + days.length + '</div><div style="font-size:9px;color:#9a3412;text-transform:uppercase;letter-spacing:0.5px;">day' + (days.length===1?"":"s") + '</div></td>' +
-        '</tr></table>';
-    });
-    punchHtml = '<div style="border:1.5px solid #f97316;background:#fff7ed;border-radius:8px;padding:10px 12px;">' +
-      '<div style="font-size:11px;color:#9a3412;margin-bottom:2px;">Reps with fewer than 4 punches on a day this month (managers excluded). Fix clock-outs in the Punch Audit.</div>' + rowsH + '</div>';
+    sub = 'Missed meal punches create compliance issues and hold up payroll. <b style="color:#047857;">No missed punches this month &mdash; nice work.</b>';
   }
-  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid #94a3b8;border-radius:14px;overflow:hidden;">'+
-    '<tr><td style="padding:14px 18px 6px;"><div><span style="display:inline-block;background:#0f172a;color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.5px;padding:5px 12px;border-radius:8px;">&#9201;&nbsp; TIMEKEEPING &amp; REMINDERS</span></div></td></tr>'+
-    '<tr><td style="padding:4px 18px 8px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fffbeb;border:1.5px solid #fbbf24;border-radius:10px;"><tr>'+
-    '<td width="40" align="center" style="vertical-align:top;padding:12px 0 12px 6px;font-size:22px;">&#127869;</td>'+
-    '<td style="vertical-align:middle;padding:12px 14px 12px 6px;"><div style="font-size:13px;font-weight:800;color:#92400e;">Please clock in and out for lunch &mdash; every day.</div>'+
-    '<div style="font-size:12px;color:#b45309;margin-top:2px;">Use the clock in / clock out portion on your timesheet for the start <strong>and</strong> end of every lunch. Accurate punches keep everyone&rsquo;s pay correct.</div></td>'+
-    '</tr></table></td></tr>'+
-    '<tr><td style="padding:0 18px 16px;"><div style="font-size:11px;font-weight:700;letter-spacing:0.5px;color:#64748b;text-transform:uppercase;margin-bottom:6px;">Month To Date Missed Punches</div>'+
-    punchHtml + '</td></tr>'+
-    '</table>';
+  return '<tr><td style="padding:12px 20px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef4ff;border:1px solid #c7d8f7;border-radius:14px;"><tr>' +
+    '<td style="width:52px;text-align:center;vertical-align:middle;padding:14px 0 14px 8px;font-size:26px;">&#127869;</td>' +
+    '<td style="padding:12px 14px;vertical-align:middle;">' +
+    '<div style="font-size:13px;font-weight:800;color:#1e3a8a;">Clock in &amp; out for lunch &mdash; every day</div>' +
+    '<div style="font-size:12px;color:#475569;margin-top:3px;line-height:1.5;">' + sub + '</div>' +
+    '</td></tr></table></td></tr>';
+}
+
+// --- Footer ---
+function npsFooterHtml(){
+  return '<tr><td style="padding:14px 20px 22px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0f2350;border-radius:14px;"><tr><td style="padding:16px 18px;text-align:center;">' +
+    '<div style="color:#9fc0ff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Dig Deeper</div>' +
+    '<a href="https://blufoxmobile.github.io/Monthly-Target-Planner/" style="color:#fdba74;font-size:12.5px;font-weight:700;text-decoration:none;">Target Planner</a>' +
+    '<span style="color:#3b5591;">&nbsp;|&nbsp;</span>' +
+    '<a href="https://blufoxmobile.github.io/One-On-One-Form/" style="color:#fdba74;font-size:12.5px;font-weight:700;text-decoration:none;">Playbook</a>' +
+    '<span style="color:#3b5591;">&nbsp;|&nbsp;</span>' +
+    '<a href="' + NPS_CONFIG.DASHBOARD_URL + '" style="color:#fdba74;font-size:12.5px;font-weight:700;text-decoration:none;">NPS Index</a>' +
+    '<span style="color:#3b5591;">&nbsp;|&nbsp;</span>' +
+    '<a href="https://blufoxmobile.github.io/Yesterday-s-Conversion/" style="color:#fdba74;font-size:12.5px;font-weight:700;text-decoration:none;">Conversion</a>' +
+    '<div style="color:#7f97c9;font-size:11px;margin-top:12px;">Blufox Mobile &bull; Have a great day, team.</div>' +
+    '</td></tr></table></td></tr>';
 }
 
 // Build the full HTML email + webhook payload for one store.
@@ -1594,227 +1898,90 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
   const bad  = surveys.filter(s => npsBucket(s.score) === "bad");
   const tnps = surveys.length ? Math.round(((good.length - bad.length) / surveys.length) * 100) : 0;
 
-  const dates = surveys.map(s => s.txnDate).filter(Boolean).sort();
-  const dateLabel = dates.length
-    ? (dates[0] === dates[dates.length-1]
-        ? npsPrettyDate(dates[0])
-        : npsPrettyDate(dates[0]) + " &ndash; " + npsPrettyDate(dates[dates.length-1]))
-    : npsPrettyDate(npsDateStr(new Date()));
-
-  // --- Store performance row (Sales Report "Store Rank") + tone fn ---
+  // --- Store performance row (Sales Report "Store Rank") ---
   const row = (salesStores || []).find(s => String(s.name).trim().toLowerCase() === shortName.toLowerCase());
-  let tone = () => "neutral";
-  if(row){
-    const med = {};
-    ["gpTrend","mobileCR","fiscalCR","nonTrad","gigPct","plusMix","newToUpg","accPerDev","nps"].forEach(k => {
-      med[k] = npsMedian(salesStores.map(s => s[k]));
-    });
-    tone = k => row[k] >= med[k] ? "good" : "bad";
-  }
 
-  // --- Header (briefing label, store, region/SM/DM, rank pill, Monthly Goal panel) ---
-  const rankPill = (row && row.rank != null)
-    ? '<span style="background:#f97316;color:#ffffff;font-size:11px;font-weight:800;letter-spacing:1px;padding:5px 13px;border-radius:999px;">RANK&nbsp;#' + row.rank + '</span>'
+  const fw = npsFiscalWindow();
+
+  // --- Company rank medallion from One-On-One-Form ---
+  const ooo = (NPS_ONEONONE.byStore || {})[String(shortName).trim().toLowerCase()];
+  const medallion = (ooo && ooo.rank != null)
+    ? '<td style="vertical-align:middle;text-align:right;width:132px;">' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" align="right" style="background:rgba(255,255,255,0.08);border:1px solid rgba(159,192,255,0.35);border-radius:14px;">' +
+      '<tr><td style="padding:12px 16px;text-align:center;">' +
+      '<div style="color:#fdba74;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;">Company Rank</div>' +
+      '<div style="color:#ffffff;font-size:30px;font-weight:800;line-height:1.05;margin-top:3px;">#' + ooo.rank + '</div>' +
+      '<div style="color:#9fc0ff;font-size:11px;font-weight:600;margin-top:1px;">of ' + ooo.N + ' stores</div>' +
+      (ooo.score != null ? '<div style="color:#c7d6f3;font-size:11px;font-weight:600;margin-top:6px;border-top:1px solid rgba(159,192,255,0.25);padding-top:5px;">Score <b style="color:#ffffff;">' + Number(ooo.score).toLocaleString("en-US") + '</b></div>' : '') +
+      '</td></tr></table></td>'
     : '';
+
   const subLine = row
     ? npsEsc(row.region || "") + ' &nbsp;&bull;&nbsp; SM: ' + npsEsc(smName || row.sm || "No Mgr") + ' &nbsp;&bull;&nbsp; DM: ' + npsEsc(row.dm || "")
     : 'SM: ' + npsEsc(smName || "No Mgr");
+
   const headerHtml =
+    '<tr><td style="background:#0f2350;background:linear-gradient(135deg,#0f2350 0%,#22408f 100%);padding:22px 24px;">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
     '<td style="vertical-align:middle;">' +
-    '<div style="color:#9fc0ff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">BLUFOX&nbsp;MOBILE &nbsp;&bull;&nbsp; DAILY BRIEFING</div>' +
-    '<div style="color:#ffffff;font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-top:6px;">' + npsEsc(shortName) + '</div>' +
-    '<div style="color:#c7d6f3;font-size:13px;margin-top:5px;">' + subLine + '</div>' +
-    '</td><td style="vertical-align:top;text-align:right;white-space:nowrap;">' + rankPill + '</td>' +
-    '</tr></table>' +
-    npsMonthlyGoalHtml(shortName);
+    '<div style="color:#9fc0ff;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;">Blufox Mobile &nbsp;&bull;&nbsp; Morning Briefing</div>' +
+    '<div style="color:#ffffff;font-size:30px;font-weight:800;letter-spacing:-0.6px;margin-top:6px;">' + npsEsc(shortName) + '</div>' +
+    '<div style="color:#c7d6f3;font-size:13px;margin-top:6px;">' + subLine + '</div>' +
+    '</td>' + medallion +
+    '</tr></table></td></tr>';
 
-  // --- Team table (Rep Rank) ---
-  let teamHtml = "";
+  // --- Store goals ---
+  const storeGoalsHtml = row ? npsStoreGoalsHtml(row, shortName, fw) : "";
+
+  // --- Team Scorecard ---
   const allowedStores = new Set((salesStores || []).map(s => String(s.name).trim().toLowerCase()));
-  const pool = (NPS_REPS || []).filter(r => allowedStores.has(String(r.store).trim().toLowerCase()));
-  const storeReps = pool.filter(r => String(r.store).trim().toLowerCase() === shortName.toLowerCase())
+  const repN = (NPS_REPS && NPS_REPS.length) ? NPS_REPS.length : 0;
+  const storeReps = (NPS_REPS || [])
+    .filter(r => String(r.store).trim().toLowerCase() === shortName.toLowerCase())
     .sort((a,b) => a.rank - b.rank);
-  if(storeReps.length){
-    const repTc = r => (NPS_TCHARTS.byRep || {})[String(r.name).trim().toLowerCase() + "||" + shortName.toLowerCase()] || 0;
-    const medGP   = npsMedian(pool.map(r => r.gp));
-    const medPlus = npsMedian(pool.map(r => r.plusMix));
-    const medGig  = npsMedian(pool.map(r => r.gigPct));
-    const medTc   = npsMedian(pool.map(r => (NPS_TCHARTS.byRep || {})[String(r.name).trim().toLowerCase() + "||" + String(r.store).trim().toLowerCase()] || 0));
-    const cv = (v, med) => v >= med ? "#047857" : "#b91c1c";
-    const th = (t, ctr) => '<td style="background:#0f172a;color:#cbd5e1;font-size:9px;letter-spacing:0.5px;text-transform:uppercase;font-weight:700;padding:6px 4px;white-space:nowrap;' + (ctr ? "text-align:center;" : "") + '">' + t + '</td>';
-    const td = (v, color, extra) => '<td style="font-size:12px;padding:6px 4px;border-bottom:1px solid #e2e8f0;color:' + (color || "#0f172a") + ';white-space:nowrap;' + (extra || "") + '">' + v + '</td>';
-    const ctr = "text-align:center;";
-    const rowsHtml = storeReps.map(r =>
-      '<tr>' +
-      td('#' + r.rank, "#2563eb", "font-weight:700;") +
-      td(npsEsc(r.name), "#0f172a", "font-weight:700;white-space:normal;min-width:96px;") +
-      td(npsMoneyFmt(r.gp), cv(r.gp, medGP), "font-weight:700;") +
-      td(npsPctFmt(r.plusMix), cv(r.plusMix, medPlus)) +
-      td(npsPctFmt(r.gigPct), cv(r.gigPct, medGig)) +
-      td(r.mobile, "#0f172a", ctr + "font-weight:700;") +
-      td(r.tablet, "#475569", ctr) +
-      td(r.watch, "#475569", ctr) +
-      td(repTc(r), cv(repTc(r), medTc), ctr + "font-weight:700;") +
-      '</tr>').join("");
-    teamHtml =
-      '<div style="font-size:11px;color:#64748b;margin:0 0 8px;line-height:1.5;">Where each rep ranks <strong>nationally</strong> this month. Green = top half of all our reps, red = bottom half. XM/Tab/Watch = devices sold; T-Charts = savings sheets ran.</div>' +
-      '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">' +
-      '<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;min-width:480px;">' +
-      '<tr>' + th("Nat&rsquo;l #") + th("Rep") + th("GP $") + th("Plus %") + th("Gig %") + th("XM", 1) + th("Tab", 1) + th("Watch", 1) + th("T-Charts", 1) + '</tr>' +
-      rowsHtml + '</table></div>';
-  }
+  const teamHtml = (storeReps.length && repN) ? npsTeamScorecardHtml(shortName, storeReps, repN) : "";
 
-  // --- Action items: open orders + lead follow-ups ---
-  const openCount = (NPS_CRM.open  || {})[shortName] || 0;
-  const agedCount = (NPS_CRM.aged  || {})[shortName] || 0;
-  const leadObj   = (NPS_CRM.leads || {})[shortName] || { approved: 0, resubmit: 0 };
-  const leadCount = (leadObj.approved || 0) + (leadObj.resubmit || 0);
-  const crmLoaded = NPS_CRM.loaded;
+  // --- Conversion / NPS / Playbook / Lunch / Footer ---
+  const convHtml = npsConversionHeroHtml(shortName);
+  const npsHtml  = npsSectionHtml(shortName, surveys, good, ok, bad, tnps);
+  const playHtml = npsPlaybookHtml(shortName);
+  const lunchHtml = npsLunchReminderHtml(shortName);
+  const footerHtml = npsFooterHtml();
   const punchCount = (NPS_PUNCH.byStore || {})[shortName] || 0;
-  let actionHtml = "";
-  if(crmLoaded){
-    const SHOW_MAX = 5;
-    const openItems = ((NPS_CRM.openList || {})[shortName] || []);
-    const leadItems = ((NPS_CRM.leadList || {})[shortName] || []);
-    const allClear = openCount === 0 && leadCount === 0;
-
-    const subHead = (n, label, sub) =>
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px;"><tr>' +
-      '<td width="50" align="center" style="vertical-align:top;"><div style="font-size:26px;font-weight:800;color:' + (n ? "#ea580c" : "#047857") + ';line-height:1.1;">' + n + '</div></td>' +
-      '<td style="vertical-align:top;padding-left:6px;"><div style="font-size:13px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
-      (sub ? '<div style="font-size:12px;color:#64748b;margin-top:1px;">' + sub + '</div>' : '') + '</td></tr></table>';
-
-    const orderLine = o =>
-      '<div style="padding:7px 0 7px 56px;border-bottom:1px solid #fde4cf;">' +
-      '<div style="font-size:13px;font-weight:700;color:#0f172a;">' + npsEsc(npsTitleCase(o.customer) || "Unknown Customer") +
-      ' <span style="font-weight:500;color:#94a3b8;font-size:11px;">WO ' + npsEsc(o.wo) + '</span></div>' +
-      '<div style="font-size:12px;color:#64748b;margin-top:1px;">' + npsEsc(o.product || "") +
-      (o.rep ? ' &bull; sold by ' + npsEsc(o.rep) : '') +
-      ' &bull; <span style="font-weight:700;color:' + (o.age >= 30 ? "#b91c1c" : "#9a3412") + ';">' + o.age + ' days open</span></div></div>';
-
-    const leadLine = l =>
-      '<div style="padding:7px 0 7px 56px;border-bottom:1px solid #fde4cf;">' +
-      '<div style="font-size:13px;font-weight:700;color:#0f172a;">' + npsEsc(npsTitleCase(l.customer) || "Unknown Customer") + ' ' +
-      (l.bucket === "approved"
-        ? '<span style="background:#ecfdf5;border:1px solid #10b981;color:#047857;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:800;letter-spacing:0.5px;">APPROVED &mdash; CALL TO SELL</span>'
-        : '<span style="background:#fffbeb;border:1px solid #f59e0b;color:#b45309;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:800;letter-spacing:0.5px;">RESUBMIT TO CREDIT TEAM</span>') +
-      '</div>' +
-      '<div style="font-size:12px;color:#64748b;margin-top:1px;">' + npsEsc(l.phone || "no phone on file") +
-      (l.rep ? ' &bull; submitted by ' + npsEsc(l.rep) : '') + '</div></div>';
-
-    const moreLine = n => n > 0
-      ? '<div style="font-size:12px;color:#9a3412;font-weight:700;padding:7px 0 0 56px;">+ ' + n + ' more in the Store CRM</div>'
-      : '';
-
-    let detail = "";
-    if(!allClear){
-      detail += subHead(openCount, "Open Orders to close out",
-        openCount ? "Oldest first" + (agedCount ? ' &bull; <span style="color:#b91c1c;font-weight:700;">' + agedCount + ' aged 30+ days</span>' : "") : "Nothing pending &mdash; clear");
-      detail += openItems.slice(0, SHOW_MAX).map(orderLine).join("") + moreLine(openCount - Math.min(openItems.length, SHOW_MAX));
-      detail += subHead(leadCount, "Lead Follow-Ups to work",
-        leadCount ? (leadObj.approved || 0) + " approved to contact &bull; " + (leadObj.resubmit || 0) + " to resubmit" : "Nothing pending &mdash; clear");
-      detail += leadItems.slice(0, SHOW_MAX).map(leadLine).join("") + moreLine(leadCount - Math.min(leadItems.length, SHOW_MAX));
-    }
-
-    actionHtml =
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:2px solid ' + (allClear ? "#10b981" : "#f97316") + ';border-radius:14px;overflow:hidden;">' +
-      '<tr><td style="background:' + (allClear ? "#ecfdf5" : "#fff7ed") + ';padding:14px 18px 6px;">' +
-      '<div><span style="display:inline-block;background:' + (allClear ? "#10b981" : "#ea580c") + ';color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.5px;padding:5px 12px;border-radius:8px;">&#9989;&nbsp; ACTION ITEMS FOR TODAY</span></div>' +
-      '<div style="color:' + (allClear ? "#047857" : "#9a3412") + ';font-size:12px;margin-top:8px;line-height:1.5;">Orders to close out and leads to call back. Knock these out first.</div></td></tr>' +
-      '<tr><td style="background:' + (allClear ? "#ecfdf5" : "#fff7ed") + ';padding:4px 18px 14px;">' +
-      (allClear
-        ? '<div style="font-size:13px;color:#047857;font-weight:600;margin-top:8px;">All caught up &mdash; no open orders and no lead follow-ups. Nice work.</div>'
-        : detail) +
-      '<div style="margin-top:14px;"><a href="' + NPS_CONFIG.CRM_URL + '" style="background:#ea580c;color:#ffffff;padding:11px 20px;border-radius:9px;display:inline-block;font-weight:700;font-size:13px;text-decoration:none;">Close them out in the Store CRM &rarr;</a></div>' +
-      '</td></tr></table>';
-  }
-
-  // --- NPS comments (each survey boxed by bucket color) ---
-  const sectionBoxed = (title, color, list, bd) => {
-    if(!list.length) return "";
-    return '<div style="font-size:11px;font-weight:800;letter-spacing:1px;color:' + color + ';margin:16px 0 8px;text-transform:uppercase;">' + title + ' (' + list.length + ')</div>' +
-      list.map(s => '<div style="border:2px solid ' + bd + ';border-radius:10px;margin-bottom:10px;">' + npsSurveyBoxHtml(s) + '</div>').join("");
-  };
-  const npsChips =
-    '<span style="background:#ecfdf5;border:1.5px solid #10b981;color:#047857;border-radius:999px;padding:3px 11px;font-weight:700;white-space:nowrap;">' + good.length + ' Good (9&ndash;10)</span>&nbsp; ' +
-    '<span style="background:#fffbeb;border:1.5px solid #f59e0b;color:#b45309;border-radius:999px;padding:3px 11px;font-weight:700;white-space:nowrap;">' + ok.length + ' OK (8)</span>&nbsp; ' +
-    '<span style="background:#fef2f2;border:1.5px solid #ef4444;color:#b91c1c;border-radius:999px;padding:3px 11px;font-weight:700;white-space:nowrap;">' + bad.length + ' Needs Attention</span>' +
-    '&nbsp;&nbsp;<span style="color:#64748b;">Daily tNPS: <strong style="color:' + (tnps >= 0 ? "#047857" : "#b91c1c") + ';">' + tnps + '</strong></span>';
-  const npsBody = surveys.length
-    ? (sectionBoxed("&#127942; Wins", "#047857", good, "#6ee7b7") +
-       sectionBoxed("Almost There", "#b45309", ok, "#fcd34d") +
-       sectionBoxed("&#9888; Needs Attention", "#b91c1c", bad, "#fca5a5"))
-    : '<div style="font-size:13px;color:#64748b;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:14px 16px;text-align:center;">No NPS surveys came in for ' + npsEsc(shortName) + ' yesterday. Keep asking happy customers to take the survey!</div>';
-
-  // --- Reusable white section-card wrappers ---
-  const cardOpen  = '<tr><td class="nps-pad" style="background:#ffffff;border-left:1.5px solid #cbd5e1;border-right:1.5px solid #cbd5e1;padding:10px 16px 4px;">';
-  const cardClose = '</td></tr>';
-  const labelChip = (txt) => '<div><span style="display:inline-block;background:#eef4ff;color:#1e3a8a;font-size:13px;font-weight:800;letter-spacing:0.5px;padding:5px 11px;border-radius:8px;border:1px solid #c7d6f3;">' + txt + '</span></div>';
-
-  const standingsHtml = row
-    ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid #c4cdda;border-radius:14px;overflow:hidden;">' +
-      '<tr><td style="padding:14px 18px 6px;">' + labelChip('&#128202;&nbsp; CURRENT STANDINGS') +
-      '<div style="color:#64748b;font-size:12px;margin-top:8px;line-height:1.5;">Where the store actually sits <strong>this month</strong> against the goals above and the rest of the region. Green = top half of all our stores, red = room to push.</div></td></tr>' +
-      npsCurrentStandingsHtml(row, tone) + '</table>'
-    : '';
-
-  const teamCard = teamHtml
-    ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid #c4cdda;border-radius:14px;overflow:hidden;">' +
-      '<tr><td style="padding:14px 18px 4px;">' + labelChip('&#128100;&nbsp; YOUR TEAM &mdash; MONTH TO DATE') + '</td></tr>' +
-      '<tr><td style="padding:8px 12px 14px;">' + teamHtml + '</td></tr></table>'
-    : '';
-
-  const npsCard =
-    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid #c4cdda;border-radius:14px;overflow:hidden;">' +
-    '<tr><td style="padding:14px 18px 6px;">' + labelChip('&#128172;&nbsp; WHAT CUSTOMERS SAID YESTERDAY') +
-    '<div style="color:#64748b;font-size:12px;margin-top:8px;line-height:1.5;">Every survey from yesterday&rsquo;s visits (' + dateLabel + '). Celebrate the wins and reach out on anything that needs attention.</div>' +
-    '<div style="margin-top:12px;font-size:12px;line-height:2.2;">' + npsChips + '</div></td></tr>' +
-    '<tr><td style="padding:6px 18px 16px;">' + npsBody + '</td></tr>' +
-    '<tr><td style="padding:0 18px 16px;"><a href="' + NPS_CONFIG.DASHBOARD_URL + '" style="color:#1e3a8a;font-size:13px;font-weight:700;text-decoration:none;">Open the full NPS Index &rarr;</a></td></tr></table>';
 
   const bodyHtml =
 '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-'<style>@media only screen and (max-width:480px){ .nps-pad{padding-left:14px !important;padding-right:14px !important;} }</style>' +
-'</head><body style="margin:0;padding:0;background:#e8eef6;">' +
-'<div style="background:#e8eef6;padding:16px 8px 40px;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">' +
-'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">' +
-'<table role="presentation" cellpadding="0" cellspacing="0" style="max-width:660px;width:100%;">' +
-'<tr><td class="nps-pad" style="background:#0f2350;background:linear-gradient(135deg,#0f2350 0%,#1e3a8a 60%,#2b4ba0 100%);border-radius:18px 18px 0 0;padding:24px 16px 22px;">' + headerHtml + '</td></tr>' +
-'<tr><td class="nps-pad" style="background:#ffffff;border-left:1.5px solid #cbd5e1;border-right:1.5px solid #cbd5e1;padding:12px 22px;"><span style="color:#64748b;font-size:12px;font-weight:600;">Good morning, team! Here&rsquo;s your snapshot for <strong style="color:#0f172a;">' + dateLabel + '</strong>.</span></td></tr>' +
-(standingsHtml ? cardOpen + standingsHtml + cardClose : '') +
-cardOpen + npsConversionHtml(shortName) + cardClose +
-(teamCard ? cardOpen + teamCard + cardClose : '') +
-cardOpen + npsCard + cardClose +
-(actionHtml ? cardOpen + actionHtml + cardClose : '') +
-'<tr><td class="nps-pad" style="background:#ffffff;border-left:1.5px solid #cbd5e1;border-right:1.5px solid #cbd5e1;padding:10px 16px 16px;">' + npsTimekeepingHtml(shortName) + '</td></tr>' +
-'<tr><td class="nps-pad" style="background:#0f2350;border-radius:0 0 18px 18px;padding:20px 24px;text-align:center;">' +
-'<div style="font-size:11px;color:#9fc0ff;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Quick Links</div>' +
-'<table role="presentation" cellpadding="0" cellspacing="0" align="center"><tr>' +
-'<td style="padding:4px 8px;"><a href="https://blufoxmobile.github.io/Yesterday-s-Conversion/" style="color:#fdba74;font-size:13px;font-weight:600;text-decoration:none;">Yesterday&rsquo;s Conversion</a></td>' +
-'<td style="color:#3b5694;">|</td>' +
-'<td style="padding:4px 8px;"><a href="' + NPS_CONFIG.DASHBOARD_URL + '" style="color:#fdba74;font-size:13px;font-weight:600;text-decoration:none;">NPS Index</a></td>' +
-'<td style="color:#3b5694;">|</td>' +
-'<td style="padding:4px 8px;"><a href="' + NPS_CONFIG.CRM_URL + '" style="color:#fdba74;font-size:13px;font-weight:600;text-decoration:none;">Open Orders / CRM</a></td>' +
-'</tr></table></td></tr>' +
-'</table></td></tr></table></div></body></html>';
+'<title>Blufox Morning Briefing</title></head>' +
+'<body style="margin:0;padding:0;background:#e9eef6;">' +
+'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e9eef6;font-family:\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;">' +
+'<tr><td align="center" style="padding:22px 12px;">' +
+'<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #dbe3f0;">' +
+headerHtml +
+storeGoalsHtml +
+teamHtml +
+convHtml +
+npsHtml +
+playHtml +
+lunchHtml +
+footerHtml +
+'</table></td></tr></table></body></html>';
 
   const subject = "Morning Briefing for " + shortName + " — " +
     (surveys.length ? surveys.length + " NPS survey" + (surveys.length === 1 ? "" : "s") : "no NPS surveys") +
-    (bad.length ? " (" + bad.length + " need attention)" : "") +
-    ((openCount + leadCount + punchCount) ? " • " + (openCount + leadCount + punchCount) + " action items" : "");
+    (bad.length ? " (" + bad.length + " need attention)" : "");
 
   return {
     store: shortName, store_full: fullKey,
     to: to, cc: cc, subject: subject, body_html: bodyHtml,
     good: good.length, ok: ok.length, bad: bad.length,
     total: surveys.length, tnps: tnps,
-    open_orders: openCount, aged_orders: agedCount, follow_ups: leadCount,
+    open_orders: 0, aged_orders: 0, follow_ups: 0,
     missed_lunch_punches: punchCount,
     tcharts: (NPS_TCHARTS.byStore || {})[shortName] || 0,
     date: npsDateStr(new Date())
   };
 }
+
 
 function npsHookReady(){
   return /^https:\/\/hooks\.zapier\.com\//.test(NPS_CONFIG.WEBHOOK_URL);
@@ -1840,7 +2007,8 @@ async function npsSendEmails(surveys, salesStores, dir){
     npsFetchCrmActions().catch(e => console.warn("crm actions unavailable:", e)),
     npsFetchPunches().catch(e => console.warn("punch data unavailable:", e)),
     npsFetchConversion().catch(e => console.warn("conversion unavailable:", e)),
-    npsFetchTargets().catch(e => console.warn("targets unavailable:", e))
+    npsFetchTargets().catch(e => console.warn("targets unavailable:", e)),
+    npsFetchOneOnOne().catch(e => console.warn("one-on-one ranking unavailable:", e))
   ]);
   // Freshness gate: don't send on stale daily data — wait until today's files are up.
   const _today = npsLocalYMD(new Date());
