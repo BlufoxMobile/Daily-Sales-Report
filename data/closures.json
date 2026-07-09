@@ -7084,7 +7084,7 @@
   },
   "2380193525": {
     "status": "Closed",
-    "ts": "2026-07-09T19:49:54.366Z",
+    "ts": "2026-07-09T19:49:00.430Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
@@ -7518,12 +7518,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2387950269": {
-    "status": "Closed",
-    "ts": "2026-07-09T19:49:55.478Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville"
-  },
   "2388036014": {
     "status": "Closed",
     "ts": "2026-06-30T18:05:43.897Z",
@@ -7606,6 +7600,12 @@
     "dm": "Jacob Cabrales",
     "store": "Cicero",
     "pendingUntil": "2026-07-02"
+  },
+  "2388488127": {
+    "status": "Closed",
+    "ts": "2026-07-09T19:50:03.479Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
   },
   "2389309095": {
     "status": "Closed",
