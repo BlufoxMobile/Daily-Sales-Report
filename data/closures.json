@@ -6688,10 +6688,11 @@
     "store": "Kildeer"
   },
   "2375335051": {
-    "status": "Closed",
-    "ts": "2026-07-09T13:38:03.858Z",
+    "status": "Pending Install",
+    "ts": "2026-06-23T21:49:52.565Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-06-26"
   },
   "2375457351": {
     "status": "Closed",
@@ -10169,5 +10170,12 @@
     "ts": "2026-07-08T21:50:14.428Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "1001303609622100": {
+    "status": "Pending Install",
+    "ts": "2026-07-09T13:39:07.128Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-09"
   }
 }
