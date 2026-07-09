@@ -1688,6 +1688,7 @@ function npsTeamScorecardHtml(shortName, storeReps, repN){
       '<td style="padding:7px 8px;background:#ffffff;' + nameCellBB + 'vertical-align:middle;">' +
       '<div style="font-size:12.5px;font-weight:800;color:#0f172a;">' + npsRepInitialName(r.name) + ' ' + npsRepRankBadge(r.rank, repN) + '</div>' +
       (title ? '<div style="font-size:10px;color:#94a3b8;margin-top:1px;">' + title + '</div>' : '') +
+      npsRepTierLine(r.rank, repN) +
       '</td>';
     return '<tr>' + nameCell +
       npsHeatCell(npsMoneyKrep(cGP), "/" + npsMoneyKrep(repGP), npsPaceTone(cGP, repGP, el), last) +
@@ -1912,6 +1913,52 @@ function npsFooterHtml(){
     '</td></tr></table></td></tr>';
 }
 
+// --- Store Report Card: the 3 headline metrics the company ranks on ---
+function npsReportCardHtml(row){
+  if(!row) return "";
+  const pct = v => { const n = Number(v) || 0; return Math.abs(n) <= 1.5 ? n * 100 : n; };
+  const mcr = pct(row.mobileCR), fcr = pct(row.fiscalCR), nps = pct(row.nps);
+  const gig = pct(row.gigPct), plus = pct(row.plusMix);
+  const accBox = Number(row.accPerDev) || 0;
+  const tile = (label, valDisp, pass, goalTxt) => {
+    const col = pass ? "#047857" : "#b91c1c";
+    const bg  = pass ? "#ecfdf5" : "#fef2f2";
+    const bd  = pass ? "#a7f3d0" : "#fecaca";
+    const tag = pass ? "ON TARGET" : "BELOW GOAL";
+    return '<td width="33.33%" style="padding:5px;vertical-align:top;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:12px;"><tr><td style="padding:12px 10px;text-align:center;">' +
+      '<div style="font-size:10px;font-weight:800;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;">' + label + '</div>' +
+      '<div style="font-size:24px;font-weight:800;color:' + col + ';line-height:1;margin-top:5px;">' + valDisp + '</div>' +
+      '<div style="margin-top:7px;"><span style="display:inline-block;background:' + col + ';color:#ffffff;font-size:8.5px;font-weight:800;letter-spacing:0.5px;border-radius:999px;padding:2px 9px;">' + tag + '</span></div>' +
+      '<div style="font-size:9.5px;color:#94a3b8;font-weight:700;margin-top:6px;">' + goalTxt + '</div>' +
+      '</td></tr></table></td>';
+  };
+  return '<tr><td style="padding:16px 20px 2px;">' +
+      '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#128200;&nbsp; Store Report Card</div>' +
+      '<div style="font-size:12px;color:#64748b;margin:5px 0 2px;line-height:1.5;">The numbers the company ranks you on. <b style="color:#047857;">Green</b> = hitting goal &bull; <b style="color:#b91c1c;">red</b> = work to do.</div>' +
+    '</td></tr>' +
+    '<tr><td style="padding:6px 12px 4px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">' +
+      '<tr>' +
+        tile("Mobile Close Rate", mcr.toFixed(1) + "%", mcr >= 7,  "Goal 7%+") +
+        tile("Fiscal Close Rate", fcr.toFixed(1) + "%", fcr >= 10, "Goal 10%+") +
+        tile("NPS", nps.toFixed(1) + "%", nps >= 70, "Goal 70%+") +
+      '</tr><tr>' +
+        tile("Accessory / Box", "$" + accBox.toFixed(2), accBox > 20, "Goal $20+") +
+        tile("GIG Attach", gig.toFixed(1) + "%", gig >= 80, "Goal 80%+") +
+        tile("Plus Attach", plus.toFixed(1) + "%", plus > 70, "Goal 70%+") +
+      '</tr>' +
+    '</table></td></tr>';
+}
+
+// Rep company-rank tier line for the scorecard (rank 1 = best).
+function npsRepTierLine(rank, N){
+  if(!rank || !N) return "";
+  const p = rank / N;
+  const col = p <= 0.33 ? "#047857" : p <= 0.66 ? "#b45309" : "#b91c1c";
+  const label = p <= 0.5 ? "Top " + Math.ceil(p * 100) + "% in the company" : "Bottom " + Math.ceil((1 - p) * 100) + "% &mdash; push";
+  return '<div style="font-size:10px;font-weight:700;margin-top:2px;color:' + col + ';">#' + rank + ' of ' + N + ' &bull; ' + label + '</div>';
+}
+
 // Build the full HTML email + webhook payload for one store.
 function buildNpsPayload(shortName, surveys, salesStores, dir){
   const fullKey = shortName + " Xfinity Store";
@@ -1968,6 +2015,9 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
     '</td>' + medallion +
     '</tr></table></td></tr>';
 
+  // --- Store report card (MCR / FCR / NPS vs thresholds) ---
+  const reportCardHtml = row ? npsReportCardHtml(row) : "";
+
   // --- Store goals ---
   const storeGoalsHtml = row ? npsStoreGoalsHtml(row, shortName, fw) : "";
 
@@ -1995,6 +2045,7 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
 '<tr><td align="center" style="padding:22px 12px;">' +
 '<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #dbe3f0;">' +
 headerHtml +
+reportCardHtml +
 storeGoalsHtml +
 teamHtml +
 convHtml +
