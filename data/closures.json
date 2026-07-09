@@ -7729,6 +7729,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2397025956": {
+    "status": "Closed",
+    "ts": "2026-07-09T20:19:34.800Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2397307335": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:59.525Z",
@@ -7771,12 +7777,6 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
-  "2398509367": {
-    "status": "Closed",
-    "ts": "2026-07-09T20:19:23.911Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
-  },
   "2398549916": {
     "status": "Closed",
     "ts": "2026-07-08T21:52:41.216Z",
@@ -7803,7 +7803,7 @@
   },
   "2400078855": {
     "status": "Closed",
-    "ts": "2026-07-09T20:19:27.775Z",
+    "ts": "2026-07-09T20:19:33.456Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
