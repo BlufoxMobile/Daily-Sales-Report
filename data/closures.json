@@ -7083,11 +7083,10 @@
     "store": "Johnson City"
   },
   "2380193525": {
-    "status": "Pending Install",
-    "ts": "2026-06-25T16:13:21.041Z",
+    "status": "Closed",
+    "ts": "2026-07-09T19:47:15.645Z",
     "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-07-02"
+    "store": "South Knoxville"
   },
   "2380206649": {
     "status": "Closed",
