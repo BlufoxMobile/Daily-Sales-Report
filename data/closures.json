@@ -6688,11 +6688,10 @@
     "store": "Kildeer"
   },
   "2375335051": {
-    "status": "Pending Install",
-    "ts": "2026-06-23T21:49:52.565Z",
+    "status": "Closed",
+    "ts": "2026-07-09T13:38:03.858Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-06-26"
+    "store": "Oak Ridge"
   },
   "2375457351": {
     "status": "Closed",
