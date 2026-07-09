@@ -10171,10 +10171,11 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
-  "1001302822832108": {
-    "status": "Closed",
-    "ts": "2026-07-09T13:40:22.801Z",
+  "1001303317372105": {
+    "status": "Pending Install",
+    "ts": "2026-07-09T13:41:03.895Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-09"
   }
 }
