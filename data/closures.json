@@ -7518,6 +7518,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2387950269": {
+    "status": "Closed",
+    "ts": "2026-07-01T16:36:56.002Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
+  },
   "2388036014": {
     "status": "Closed",
     "ts": "2026-06-30T18:05:43.897Z",
@@ -7603,7 +7609,7 @@
   },
   "2388488127": {
     "status": "Closed",
-    "ts": "2026-07-09T19:50:03.479Z",
+    "ts": "2026-07-09T19:50:44.965Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
