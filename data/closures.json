@@ -6789,8 +6789,8 @@
     "store": "Kildeer"
   },
   "2376540670": {
-    "status": "Closed",
-    "ts": "2026-07-09T20:14:12.543Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-24T13:47:00.350Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
@@ -7806,6 +7806,13 @@
     "ts": "2026-07-09T19:58:08.934Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2400927424": {
+    "status": "Pending Install",
+    "ts": "2026-07-09T20:15:19.399Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-16"
   },
   "1001290369922103": {
     "status": "Pending Install",
