@@ -6639,8 +6639,8 @@
     "pendingUntil": "2026-06-29"
   },
   "2374905890": {
-    "status": "Can Not Close",
-    "ts": "2026-06-24T13:39:41.282Z",
+    "status": "Closed",
+    "ts": "2026-07-09T20:08:27.408Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
@@ -7794,12 +7794,6 @@
     "ts": "2026-07-08T16:35:54.001Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
-  },
-  "2400053239": {
-    "status": "Closed",
-    "ts": "2026-07-09T20:06:53.112Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
   },
   "2400339322": {
     "status": "Closed",
