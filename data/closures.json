@@ -7729,12 +7729,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2397025956": {
-    "status": "Closed",
-    "ts": "2026-07-09T20:20:32.889Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
-  },
   "2397307335": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:59.525Z",
@@ -7777,17 +7771,17 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
-  "2398509367": {
-    "status": "Closed",
-    "ts": "2026-07-09T20:20:30.041Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
-  },
   "2398549916": {
     "status": "Closed",
     "ts": "2026-07-08T21:52:41.216Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "2398558514": {
+    "status": "Closed",
+    "ts": "2026-07-09T20:20:48.600Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2398690739": {
     "status": "Closed",
@@ -7806,12 +7800,6 @@
     "ts": "2026-07-08T16:35:54.001Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
-  },
-  "2400078855": {
-    "status": "Closed",
-    "ts": "2026-07-09T20:20:31.496Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
   },
   "2400339322": {
     "status": "Closed",
