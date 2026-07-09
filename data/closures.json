@@ -9647,10 +9647,11 @@
     "pendingUntil": "2026-07-02"
   },
   "1001301831422109": {
-    "status": "Closed",
-    "ts": "2026-07-09T13:41:10.168Z",
+    "status": "Pending Install",
+    "ts": "2026-06-24T17:50:48.708Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-01"
   },
   "1002289184242050": {
     "status": "Pending Install",
@@ -10169,5 +10170,11 @@
     "ts": "2026-07-08T21:50:14.428Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "1001302822832108": {
+    "status": "Closed",
+    "ts": "2026-07-09T13:41:30.137Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   }
 }
