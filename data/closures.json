@@ -7815,7 +7815,7 @@
   },
   "2399140332": {
     "status": "Closed",
-    "ts": "2026-07-10T21:07:08.583Z",
+    "ts": "2026-07-10T21:07:18.015Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
@@ -10269,12 +10269,5 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-07-17"
-  },
-  "1002292311712052": {
-    "status": "Pending Install",
-    "ts": "2026-07-10T21:07:05.295Z",
-    "dm": "Jacob Cabrales",
-    "store": "Michigan City",
-    "pendingUntil": "2026-07-13"
   }
 }
