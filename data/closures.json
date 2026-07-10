@@ -7801,6 +7801,12 @@
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
+  "2400144356": {
+    "status": "Closed",
+    "ts": "2026-07-10T19:32:31.475Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2400339322": {
     "status": "Closed",
     "ts": "2026-07-09T19:58:07.327Z",
@@ -7812,6 +7818,12 @@
     "ts": "2026-07-09T19:58:08.934Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2400623377": {
+    "status": "Closed",
+    "ts": "2026-07-10T19:32:30.291Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2400927424": {
     "status": "Pending Install",
