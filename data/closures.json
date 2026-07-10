@@ -7813,12 +7813,6 @@
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
-  "2399140332": {
-    "status": "Closed",
-    "ts": "2026-07-10T21:06:47.218Z",
-    "dm": "Jacob Cabrales",
-    "store": "Michigan City"
-  },
   "2399533937": {
     "status": "Can Not Close",
     "ts": "2026-07-08T16:35:54.001Z",
@@ -10270,11 +10264,11 @@
     "store": "Michigan City",
     "pendingUntil": "2026-07-17"
   },
-  "1002292822272059": {
+  "1002292311712052": {
     "status": "Pending Install",
-    "ts": "2026-07-10T21:06:43.686Z",
+    "ts": "2026-07-10T21:07:05.295Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
-    "pendingUntil": "2026-07-30"
+    "pendingUntil": "2026-07-13"
   }
 }
