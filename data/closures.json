@@ -7801,6 +7801,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
+  "2398726901": {
+    "status": "Closed",
+    "ts": "2026-07-10T20:53:34.099Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
   "2399076600": {
     "status": "Closed",
     "ts": "2026-07-08T16:30:37.049Z",
@@ -10250,12 +10256,5 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville",
     "pendingUntil": "2026-07-17"
-  },
-  "1002292311712052": {
-    "status": "Pending Install",
-    "ts": "2026-07-10T20:53:25.358Z",
-    "dm": "Jacob Cabrales",
-    "store": "Michigan City",
-    "pendingUntil": "2026-07-13"
   }
 }
