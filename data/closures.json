@@ -7747,6 +7747,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2397906568": {
+    "status": "Closed",
+    "ts": "2026-07-10T20:50:56.149Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
   "2398364398": {
     "status": "Closed",
     "ts": "2026-07-08T20:54:52.043Z",
@@ -9407,10 +9413,10 @@
   },
   "1002285099582051": {
     "status": "Pending Install",
-    "ts": "2026-07-10T20:49:12.203Z",
+    "ts": "2026-06-16T22:03:33.908Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
-    "pendingUntil": "2026-07-20"
+    "pendingUntil": "2026-06-30"
   },
   "1002287810482058": {
     "status": "Closed",
