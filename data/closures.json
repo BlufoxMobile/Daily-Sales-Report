@@ -10212,5 +10212,12 @@
     "ts": "2026-07-09T13:41:30.137Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "1001304092942104": {
+    "status": "Pending Install",
+    "ts": "2026-07-10T13:33:18.479Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville",
+    "pendingUntil": "2026-07-17"
   }
 }
