@@ -862,9 +862,9 @@ const UPLOAD_KEY_STORAGE = 'blufoxUploadKey';
 localStorage.removeItem('blufox_github_token'); // scrub any old token override
 
 function getUploadKey(forcePrompt) {
-  let key = null;
+  let key = localStorage.getItem(UPLOAD_KEY_STORAGE);
   if (!key || forcePrompt) {
-    key = 'Xf!nity250';
+    key = prompt('Enter the Blufox upload key (asked once per browser):');
     if (key && key.trim()) {
       key = key.trim();
       localStorage.setItem(UPLOAD_KEY_STORAGE, key);
