@@ -815,6 +815,7 @@ let state = {
   expandedGroups: new Set(),
   expandedSubgroups: new Set(),
   pendingChanges: {},    // queue of changes to push
+  savedChanges: {},      // recently pushed changes (wo -> {entry, savedAt}) re-applied over stale CDN reads
   writeTimer: null,
   pollTimer: null
 };
@@ -974,6 +975,28 @@ async function fetchClosuresWithSha() {
   return { closures, sha: null };
 }
 
+/* raw.githubusercontent.com can keep serving a stale closures.json for a few
+   minutes after a commit lands. Until the CDN catches up, re-apply changes we
+   KNOW were saved (savedChanges) on top of every fetched copy, so a stale read
+   can neither revert the UI nor be written back over a fresh save. */
+const SAVED_OVERLAY_TTL_MS = 10 * 60 * 1000;
+function applySavedOverlay(closures) {
+  const now = Date.now();
+  for (const wo in state.savedChanges) {
+    const saved = state.savedChanges[wo];
+    if (now - saved.savedAt > SAVED_OVERLAY_TTL_MS) {
+      delete state.savedChanges[wo]; // CDN is caught up by now
+      continue;
+    }
+    if (saved.entry.status === 'Open') {
+      delete closures[wo];
+    } else {
+      closures[wo] = saved.entry;
+    }
+  }
+  return closures;
+}
+
 async function fetchAllData() {
   try {
     const [orderData, closureData] = await Promise.all([
@@ -992,8 +1015,9 @@ async function fetchAllData() {
     // pencil-whipped closures and to count truly-closed orders.
     state.todayOpenWOs = new Set(state.orders.map(o => o.workOrder));
 
-    // merge any pending local changes with remote to avoid losing in-flight clicks
-    const remote = closureData.closures || {};
+    // merge recently-saved + pending local changes with remote so a stale
+    // CDN read can't revert clicks that already landed on GitHub
+    const remote = applySavedOverlay(closureData.closures || {});
     for (const wo in state.pendingChanges) {
       remote[wo] = state.pendingChanges[wo];
     }
@@ -1038,6 +1062,8 @@ function queueStatusChange(workOrderNumber, status, extra) {
 
 async function flushChanges() {
   if (Object.keys(state.pendingChanges).length === 0) return;
+  // snapshot — anything queued while the upload is in flight stays pending
+  const flushing = { ...state.pendingChanges };
 
   // refetch closures sha to minimize conflicts
   let currentSha = state.closuresSha;
@@ -1051,10 +1077,14 @@ async function flushChanges() {
     currentClosures = { ...state.closures };
     delete currentClosures.__pending; // safety
   }
+  // re-apply recently-saved changes: the raw CDN can serve a copy that
+  // predates commits made seconds ago, and writing from that stale base
+  // used to erase them from GitHub (the "orders don't save" bug)
+  applySavedOverlay(currentClosures);
 
   // apply pending on top of current remote
-  for (const wo in state.pendingChanges) {
-    const change = state.pendingChanges[wo];
+  for (const wo in flushing) {
+    const change = flushing[wo];
     if (change.status === 'Open') {
       delete currentClosures[wo];
     } else {
@@ -1066,7 +1096,7 @@ async function flushChanges() {
   // base64 encode (handle UTF-8 properly)
   const b64 = btoa(unescape(encodeURIComponent(content)));
 
-  const nChanges = Object.keys(state.pendingChanges).length;
+  const nChanges = Object.keys(flushing).length;
   const message = `Update order closures (${nChanges} change${nChanges === 1 ? '' : 's'})`;
 
   try {
@@ -1078,7 +1108,11 @@ async function flushChanges() {
     }]);
     state.closuresSha = currentSha;
     state.closures = currentClosures;
-    state.pendingChanges = {};
+    const savedAt = Date.now();
+    for (const wo in flushing) {
+      state.savedChanges[wo] = { entry: flushing[wo], savedAt: savedAt };
+      if (state.pendingChanges[wo] === flushing[wo]) delete state.pendingChanges[wo];
+    }
     showToast('Saved to GitHub ✓', 'success');
   } catch (err) {
     console.error(err);
@@ -1095,8 +1129,8 @@ async function checkForUpdate(){try{const res=await fetch("https://raw.githubuse
     // only poll closures (orders only change once a day on upload)
     try {
       const fresh = await fetchClosuresWithSha();
-      // merge pending changes on top
-      const merged = fresh.closures || {};
+      // merge recently-saved + pending changes on top (stale CDN guard)
+      const merged = applySavedOverlay(fresh.closures || {});
       for (const wo in state.pendingChanges) {
         merged[wo] = state.pendingChanges[wo];
       }
