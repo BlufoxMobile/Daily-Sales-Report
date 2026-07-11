@@ -1967,7 +1967,7 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
   const dmEmail  = (dir.storeDMs || {})[fullKey] || "";
   const smName   = (dir.storeManagerNames || {})[fullKey] || "";
 
-  const repEmails = (dir.storeEmployees || {})[fullKey] || [];
+  const repEmails = ((dir.storeEmployees || {})[fullKey] || []).map(e => (e && typeof e === 'object') ? (e.email || '') : e).filter(Boolean);
   const to = smEmail || asmEmail || dmEmail || (repEmails[0] || "") || NPS_CONFIG.MY_EMAIL;
   const seen = new Set([to.toLowerCase()]);
   const cc = [asmEmail, dmEmail, ...repEmails, NPS_CONFIG.MY_EMAIL].filter(e => {
