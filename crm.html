@@ -367,6 +367,21 @@
   .toast.success { border-left-color: var(--green); }
   .toast.error { border-left-color: var(--red); }
 
+  /* ========= SAVE STATUS (persistent pending/failed-save indicator) ========= */
+  .save-status {
+    position: fixed; bottom: 24px; left: 24px;
+    background: #fff; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange);
+    padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 8px 24px rgba(32,38,46,0.16);
+    transform: translateY(150%); transition: transform 0.3s;
+    z-index: 590; display: flex; align-items: center; gap: 8px;
+    color: var(--text);
+  }
+  .save-status.show { transform: translateY(0); }
+  .save-status.ok { border-left-color: var(--green); }
+  .save-status.fail { border-left-color: var(--red); }
+
   /* ========= MODALS ========= */
   .modal-overlay {
     position: fixed; inset: 0;
@@ -564,6 +579,7 @@
     .modal-buttons { flex-direction: column; }
     .modal-buttons button { width: 100%; }
     .toast { left: 14px; right: 14px; bottom: 14px; }
+    .save-status { left: 14px; right: 14px; bottom: 64px; }
 
     .hide-mobile { display: none !important; }
   }
@@ -763,12 +779,13 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="save-status" id="saveStatus"></div>
 
 <script>
 /* =====================================================
    CONFIGURATION
    ===================================================== */
-const BUILD_VERSION = '2026-07-11T12'; const CONFIG = {
+const BUILD_VERSION = '2026-07-11T18'; const CONFIG = {
   PASSWORD: 'Xf!nity250',
   REPO_OWNER: 'BlufoxMobile',
   REPO_NAME: 'Daily-Sales-Report',
@@ -817,8 +834,47 @@ let state = {
   pendingChanges: {},    // queue of changes to push
   savedChanges: {},      // recently pushed changes (wo -> {entry, savedAt}) re-applied over stale CDN reads
   writeTimer: null,
-  pollTimer: null
+  pollTimer: null,
+  flushInFlight: false,  // guard against overlapping flushes
+  flushFailCount: 0,     // consecutive flush failures (drives retry backoff)
+  flushRetryTimer: null, // pending auto-retry timer
+  flushRetryAt: null     // epoch ms of the next scheduled retry (for the indicator)
 };
+
+/* =====================================================
+   PENDING-CHANGES PERSISTENCE (never lose a click)
+   Every queued change is mirrored to localStorage the moment it's queued,
+   and removed only after the proxy confirms the commit. A refresh, closed
+   tab, or laptop sleep can't lose an unsent closure — it's restored and
+   flushed on the next page load.
+   ===================================================== */
+const PENDING_STORAGE = 'blufoxCrmPending';
+function persistPending() {
+  try {
+    if (Object.keys(state.pendingChanges).length === 0) {
+      localStorage.removeItem(PENDING_STORAGE);
+    } else {
+      localStorage.setItem(PENDING_STORAGE, JSON.stringify(state.pendingChanges));
+    }
+  } catch (e) { console.error('persistPending failed', e); }
+}
+function restorePending() {
+  try {
+    const raw = localStorage.getItem(PENDING_STORAGE);
+    if (!raw) return 0;
+    const saved = JSON.parse(raw);
+    let n = 0;
+    for (const wo in saved) {
+      if (!saved[wo] || typeof saved[wo] !== 'object' || !saved[wo].status) continue;
+      // don't clobber anything queued this session (shouldn't happen — restore runs first)
+      if (!(wo in state.pendingChanges)) { state.pendingChanges[wo] = saved[wo]; n++; }
+    }
+    return n;
+  } catch (e) {
+    console.error('restorePending failed', e);
+    return 0;
+  }
+}
 
 
 /* =====================================================
@@ -829,6 +885,11 @@ function checkPassword() {
   const error = document.getElementById('gateError');
   if (input.value === CONFIG.PASSWORD) {
     sessionStorage.setItem('blufox_crm_auth', '1');
+    // The proxy upload key is the same string as the page password, so seed
+    // the upload-key slot from the successful login — employees never see a
+    // key prompt. If the proxy ever rejects it, the bad-key retry in
+    // proxyUpload() clears it and re-prompts once.
+    localStorage.setItem('blufoxUploadKey', input.value);
     showApp();
   } else {
     error.textContent = 'Incorrect password';
@@ -1053,6 +1114,8 @@ function queueStatusChange(workOrderNumber, status, extra) {
     state.closures[workOrderNumber] = entry;
   }
   state.pendingChanges[workOrderNumber] = entry;
+  persistPending(); // mirror to localStorage immediately — a refresh can't lose this click
+  updateSaveIndicator();
 
   renderStats();
   // debounce write
@@ -1060,8 +1123,26 @@ function queueStatusChange(workOrderNumber, status, extra) {
   state.writeTimer = setTimeout(flushChanges, CONFIG.WRITE_DEBOUNCE_MS);
 }
 
+/* Auto-retry: if a flush fails (network/proxy error), retry automatically
+   with backoff — 5s, 15s, 60s, then every 60s — until it lands. The user
+   never has to click again. */
+const FLUSH_RETRY_DELAYS_MS = [5000, 15000, 60000];
+function scheduleFlushRetry() {
+  const delay = FLUSH_RETRY_DELAYS_MS[Math.min(state.flushFailCount - 1, FLUSH_RETRY_DELAYS_MS.length - 1)];
+  clearTimeout(state.flushRetryTimer);
+  state.flushRetryAt = Date.now() + delay;
+  state.flushRetryTimer = setTimeout(flushChanges, delay);
+  return delay;
+}
+
 async function flushChanges() {
-  if (Object.keys(state.pendingChanges).length === 0) return;
+  if (Object.keys(state.pendingChanges).length === 0) { updateSaveIndicator(); return; }
+  if (state.flushInFlight) return; // one upload at a time; leftovers re-flush below
+  state.flushInFlight = true;
+  clearTimeout(state.writeTimer);      state.writeTimer = null;
+  clearTimeout(state.flushRetryTimer); state.flushRetryTimer = null;
+  state.flushRetryAt = null;
+  updateSaveIndicator();
   // snapshot — anything queued while the upload is in flight stays pending
   const flushing = { ...state.pendingChanges };
 
@@ -1113,10 +1194,22 @@ async function flushChanges() {
       state.savedChanges[wo] = { entry: flushing[wo], savedAt: savedAt };
       if (state.pendingChanges[wo] === flushing[wo]) delete state.pendingChanges[wo];
     }
+    persistPending(); // confirmed on GitHub — clear the localStorage mirror
+    state.flushFailCount = 0;
     showToast('Saved to GitHub ✓', 'success');
   } catch (err) {
     console.error(err);
-    showToast('Save failed: ' + err.message, 'error');
+    state.flushFailCount++;
+    const delay = scheduleFlushRetry();
+    showToast('⚠️ Save failed: ' + err.message + ' — retrying in ' + Math.round(delay / 1000) + 's (your clicks are safe)', 'error');
+  } finally {
+    state.flushInFlight = false;
+    // anything queued (or superseded) while the upload was in flight — or a
+    // failed batch — is still in pendingChanges; make sure it gets flushed
+    if (Object.keys(state.pendingChanges).length > 0 && !state.flushRetryTimer && !state.writeTimer) {
+      state.writeTimer = setTimeout(flushChanges, CONFIG.WRITE_DEBOUNCE_MS);
+    }
+    updateSaveIndicator();
   }
 }
 
@@ -1690,6 +1783,46 @@ function showToast(msg, type) {
   clearTimeout(showToast._t);
   showToast._t = setTimeout(() => t.classList.remove('show'), 3500);
 }
+
+/* Persistent bottom-left pill: visible whenever saves are pending or
+   failing, with a live retry countdown; flashes a success state when the
+   queue drains. Complements (doesn't replace) the transient toasts. */
+function updateSaveIndicator() {
+  const el = document.getElementById('saveStatus');
+  if (!el) return;
+  const n = Object.keys(state.pendingChanges).length;
+  clearTimeout(updateSaveIndicator._hide);
+  clearInterval(updateSaveIndicator._tick);
+  updateSaveIndicator._tick = null;
+  if (n === 0) {
+    if (updateSaveIndicator._hadPending) {
+      updateSaveIndicator._hadPending = false;
+      el.className = 'save-status show ok';
+      el.textContent = '✓ All changes saved';
+      updateSaveIndicator._hide = setTimeout(() => el.classList.remove('show'), 3000);
+    } else {
+      el.classList.remove('show');
+    }
+    return;
+  }
+  updateSaveIndicator._hadPending = true;
+  const label = n + ' save' + (n === 1 ? '' : 's') + ' pending';
+  if (state.flushInFlight) {
+    el.className = 'save-status show';
+    el.textContent = '⏳ ' + label + ' — saving…';
+  } else if (state.flushRetryAt) {
+    el.className = 'save-status show fail';
+    const render = () => {
+      const secs = Math.max(0, Math.ceil((state.flushRetryAt - Date.now()) / 1000));
+      el.textContent = '⚠️ ' + label + ' — save failed, retrying in ' + secs + 's…';
+    };
+    render();
+    updateSaveIndicator._tick = setInterval(render, 1000);
+  } else {
+    el.className = 'save-status show';
+    el.textContent = '⏳ ' + label + ' — saving shortly…';
+  }
+}
 function manualRefresh() {
   showToast('Refreshing...', '');
   fetchAllData();
@@ -1699,9 +1832,19 @@ function manualRefresh() {
    INIT
    ===================================================== */
 async function initApp() {
+  // Restore any closures queued in a previous session that never reached
+  // GitHub (refresh / closed tab / laptop sleep mid-save) and send them now.
+  const restored = restorePending();
+  if (restored > 0) {
+    showToast('Restored ' + restored + ' unsent save' + (restored === 1 ? '' : 's') + ' from your last visit — sending now…');
+    updateSaveIndicator();
+  }
   await fetchAllData();
+  if (Object.keys(state.pendingChanges).length > 0) flushChanges();
   startPolling();
 }
+// Cheap insurance: re-mirror the queue right before the page goes away.
+window.addEventListener('beforeunload', persistPending);
 
 /* =====================================================
    TAB SWITCHING
