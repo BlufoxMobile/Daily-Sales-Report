@@ -7666,6 +7666,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2393620491": {
+    "status": "Closed",
+    "ts": "2026-07-11T23:55:15.447Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
+  },
   "2393676717": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:41.253Z",
@@ -10331,5 +10337,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank",
     "pendingUntil": "2026-07-16"
+  },
+  "1002293033252054": {
+    "status": "Pending Install",
+    "ts": "2026-07-11T23:58:02.238Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-07-18"
   }
 }
