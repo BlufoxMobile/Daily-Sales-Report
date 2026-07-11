@@ -7666,23 +7666,11 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2393817062": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-11T15:24:22.891Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
-  },
   "2394215432": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:45.029Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2394334227": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-11T15:24:21.275Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
   },
   "2394387316": {
     "status": "Closed",
@@ -10290,5 +10278,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-07-17"
+  },
+  "1002292534672059": {
+    "status": "Pending Install",
+    "ts": "2026-07-11T15:24:32.028Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-14"
   }
 }
