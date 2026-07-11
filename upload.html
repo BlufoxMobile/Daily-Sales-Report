@@ -1483,6 +1483,16 @@ async function npsFetchOneOnOne(){
       metricRanks: mr
     };
   });
+  // The metric columns are POINTS (best store = N pts, worst = 1) — convert to a
+  // true competition rank (1 = best, ties share a rank) so emails show honest placement.
+  ["mcr","gp","nps","ntcr","acc","gig","upg","mp"].forEach(k => {
+    const vals = Object.values(byStore).map(r => r.metricRanks[k]).filter(v => v != null);
+    Object.values(byStore).forEach(r => {
+      const v = r.metricRanks[k];
+      if(v == null) return;
+      r.metricRanks[k] = 1 + vals.filter(x => x > v).length;   // higher points = better
+    });
+  });
   NPS_ONEONONE = { byStore: byStore, loaded: true };
   return NPS_ONEONONE;
 }
@@ -1497,7 +1507,7 @@ function npsOpportunities(shortName){
   Object.keys(NPS_OOO_META).forEach(key => {
     const rank = rec.metricRanks[key];
     if(rank == null) return;
-    const p = rank / N;                       // higher p = better
+    const p = (N - rank + 1) / N;             // rank 1 = best -> p = 1
     const lag = key === "nps" ? 0.45 : 1.0;
     const meta = NPS_OOO_META[key];
     const focus = p <= 0.5;
