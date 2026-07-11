@@ -2108,7 +2108,7 @@ async function npsSendEmails(surveys, salesStores, dir){
   if(_punch && _punch.date && _punch.date !== _today) _stale.push("Punch data (" + _punch.date + ")");
   if(_stale.length){
     console.warn("NPS send skipped — data not current for today (" + _today + "): " + _stale.join(", ") + ". Will send on next upload once updated.");
-    return { sent: 0, storeCount: 0, errors: [], skipped: true, stale: _stale };
+    return { sent: 0, storeCount: 0, errors: [], sentStores: [], skipped: true, stale: _stale };
   }
   const groups = {};
   surveys.forEach(s => { if(s.storeKey){ (groups[s.storeKey] = groups[s.storeKey] || []).push(s); } });
@@ -2116,15 +2116,28 @@ async function npsSendEmails(surveys, salesStores, dir){
   const storeNames = new Set();
   (salesStores || []).forEach(s => { if(s && s.name) storeNames.add(String(s.name).trim()); });
   Object.keys(groups).forEach(k => storeNames.add(k));
-  let sent = 0; const errors = [];
-  for(const shortName of Array.from(storeNames).sort()){
+  let sent = 0; const errors = []; const sentStores = [];
+  const npsSleep = ms => new Promise(r => setTimeout(r, ms));
+  const storeList = Array.from(storeNames).sort();
+  for(let si = 0; si < storeList.length; si++){
+    const shortName = storeList[si];
     try {
       const payload = buildNpsPayload(shortName, groups[shortName] || [], salesStores, dir);
-      await npsPostWebhook(payload);
+      // Up to 3 attempts per store with backoff — Zapier catch hooks can
+      // transiently reject rapid sequential posts.
+      let lastErr = null;
+      for(let attempt = 1; attempt <= 3; attempt++){
+        try { await npsPostWebhook(payload); lastErr = null; break; }
+        catch(e){ lastErr = e; if(attempt < 3) await npsSleep(600 * attempt); }
+      }
+      if(lastErr) throw lastErr;
       sent++;
+      sentStores.push(shortName);
     } catch(e){ errors.push(shortName + ": " + e.message); }
+    // Throttle: small gap between stores so we don't hammer the hook.
+    if(si < storeList.length - 1) await npsSleep(350);
   }
-  return { sent: sent, errors: errors, storeCount: storeNames.size };
+  return { sent: sent, errors: errors, storeCount: storeNames.size, sentStores: sentStores };
 }
 // === END NPS SHARED MODULE ===
 
@@ -2194,14 +2207,24 @@ async function uploadNpsFile(file){
       // missing data (e.g. today's Sales Report / Punch data) has been uploaded.
       setStatus("Emails held \u2014 waiting for today's " + (res.stale || []).join(" & ") + ". They'll send automatically on your next upload once that data is current.", 'info');
     } else {
-      // 4) Record what we sent so tomorrow's upload doesn't repeat it.
-      const allIds = Array.from(sentSet);
-      fresh.forEach(s => allIds.push(s.id));
-      await pushToGitHub(REPOS.sales, NPS_CONFIG.SENT_LOG_PATH, npsToB64(JSON.stringify({
-        sentIds: allIds.slice(-6000),
-        lastSentAt: new Date().toISOString(),
-        batches: (sentLog.batches || []).slice(-30).concat([{ date: today, surveys: fresh.length, emailsSent: sent }])
-      })), 'NPS sent log — ' + today);
+      // 4) Record ONLY surveys whose store email actually went out. Surveys for
+      // stores that errored stay OUT of the log, so the next upload picks them
+      // up as "fresh" and retries them automatically. (Surveys with no storeKey
+      // can never be emailed to a store, so they're logged once the batch ran.)
+      const okStores = new Set(res.sentStores || []);
+      const sentSurveys = fresh.filter(s => !s.storeKey || okStores.has(s.storeKey));
+      if(sent > 0){
+        const allIds = Array.from(sentSet);
+        sentSurveys.forEach(s => allIds.push(s.id));
+        await pushToGitHub(REPOS.sales, NPS_CONFIG.SENT_LOG_PATH, npsToB64(JSON.stringify({
+          sentIds: allIds.slice(-6000),
+          lastSentAt: new Date().toISOString(),
+          batches: (sentLog.batches || []).slice(-30).concat([{ date: today, surveys: sentSurveys.length, emailsSent: sent }])
+        })), 'NPS sent log — ' + today);
+      }
+      if(errors.length){
+        setStatus('NPS emails: ' + sent + ' of ' + storeCount + ' stores sent — ' + errors.length + ' store' + (errors.length === 1 ? '' : 's') + ' failed; those surveys were NOT marked sent and will retry automatically on your next upload.', 'error');
+      }
     }
   }
 
@@ -2394,7 +2417,7 @@ async function uploadFiles() {
           label += ` — ⚠ unmatched store(s): ${res.unmatched.join('; ')}`;
         }
         if (res.errors.length) {
-          label += ` — ⚠ email errors: ${res.errors.join('; ')}`;
+          label += ` — ⚠ ${res.errors.length} store email${res.errors.length === 1 ? '' : 's'} failed (will retry on next upload): ${res.errors.join('; ')}`;
         }
         parts.push(label);
         setProgress(20 + (completed / totalSteps) * 70);
