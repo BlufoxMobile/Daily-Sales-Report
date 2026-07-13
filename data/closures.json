@@ -7944,6 +7944,12 @@
     "store": "Hammond",
     "pendingUntil": "2026-07-15"
   },
+  "2406458411": {
+    "status": "Can Not Close",
+    "ts": "2026-07-13T18:52:07.530Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
@@ -10461,5 +10467,11 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart",
     "pendingUntil": "2026-07-17"
+  },
+  "1002293349492055": {
+    "status": "Closed",
+    "ts": "2026-07-13T18:54:01.691Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
