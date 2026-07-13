@@ -10394,5 +10394,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-07-16"
+  },
+  "1002292603732057": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T16:34:47.058Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond",
+    "pendingUntil": "2026-08-01"
   }
 }
