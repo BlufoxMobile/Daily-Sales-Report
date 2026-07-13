@@ -7676,6 +7676,12 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
+  "2389064155": {
+    "status": "Closed",
+    "ts": "2026-07-13T21:46:02.316Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2389309095": {
     "status": "Closed",
     "ts": "2026-07-07T22:59:48.718Z",
@@ -10609,5 +10615,11 @@
     "dm": "Jacob Cabrales",
     "store": "South Bend",
     "pendingUntil": "2026-07-17"
+  },
+  "1002291862942050": {
+    "status": "Closed",
+    "ts": "2026-07-13T21:46:03.757Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   }
 }
