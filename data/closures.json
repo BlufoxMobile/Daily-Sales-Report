@@ -9870,10 +9870,10 @@
   },
   "1002289247992055": {
     "status": "Pending Install",
-    "ts": "2026-06-29T16:54:30.815Z",
+    "ts": "2026-07-13T16:32:05.822Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond",
-    "pendingUntil": "2026-07-04"
+    "pendingUntil": "2026-07-14"
   },
   "1002289488312054": {
     "status": "Closed",
