@@ -8014,12 +8014,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2403397522": {
-    "status": "Closed",
-    "ts": "2026-07-13T21:59:45.164Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
-  },
   "2404348908": {
     "status": "Closed",
     "ts": "2026-07-13T19:16:24.239Z",
@@ -10668,5 +10662,12 @@
     "ts": "2026-07-13T21:59:12.577Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "1002292995802054": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T21:59:58.313Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-21"
   }
 }
