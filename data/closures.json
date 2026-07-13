@@ -7624,13 +7624,6 @@
     "store": "Cicero",
     "pendingUntil": "2026-07-02"
   },
-  "2387894858": {
-    "status": "Pending Install",
-    "ts": "2026-07-07T23:00:20.348Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-18"
-  },
   "2387931782": {
     "status": "Closed",
     "ts": "2026-06-30T15:37:55.613Z",
@@ -10461,7 +10454,7 @@
   },
   "1002289872852053": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:36.381Z",
+    "ts": "2026-07-13T22:39:25.993Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
