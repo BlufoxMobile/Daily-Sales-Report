@@ -10252,11 +10252,10 @@
     "store": "Cicero"
   },
   "1002289610232055": {
-    "status": "Pending Install",
-    "ts": "2026-06-30T21:29:22.127Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:06:04.810Z",
     "dm": "Juan Carrillo",
-    "store": "Bourbonnais",
-    "pendingUntil": "2026-07-10"
+    "store": "Bourbonnais"
   },
   "1001358356232115": {
     "status": "Can Not Close",
