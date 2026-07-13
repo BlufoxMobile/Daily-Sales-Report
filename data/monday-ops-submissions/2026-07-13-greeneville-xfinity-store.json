@@ -1,5 +1,5 @@
 {
-  "submittedAt": "2026-07-13T14:06:01.013Z",
+  "submittedAt": "2026-07-13T14:27:23.037Z",
   "store": "Greeneville Xfinity Store",
   "name": "Josh Trentham",
   "email": "jTrentham@blufoxmobile.com",
@@ -11,7 +11,7 @@
     "depositBags": "Yes",
     "pciChecklist": "Yes",
     "scheduleWeeks": "Yes",
-    "uniformsNeeded": "Yes",
+    "uniformsNeeded": "No",
     "cashFloat": "Yes",
     "returnsShipped": "Yes"
   },
