@@ -7849,10 +7849,11 @@
     "store": "Greeneville"
   },
   "2395757397": {
-    "status": "Closed",
-    "ts": "2026-07-07T23:00:47.901Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:45:03.627Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-20"
   },
   "2396725015": {
     "status": "Closed",
@@ -7879,10 +7880,11 @@
     "store": "Elkhart"
   },
   "2396990837": {
-    "status": "Closed",
-    "ts": "2026-07-07T23:00:54.237Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:45:05.816Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-20"
   },
   "2397307335": {
     "status": "Closed",
