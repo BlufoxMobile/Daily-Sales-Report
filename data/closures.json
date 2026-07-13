@@ -9937,11 +9937,10 @@
     "pendingUntil": "2026-06-29"
   },
   "1002288526592057": {
-    "status": "Pending Install",
-    "ts": "2026-06-22T22:55:39.029Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:48:15.807Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-07-03"
+    "store": "Schererville"
   },
   "1002287911302056": {
     "status": "Closed",
@@ -10300,11 +10299,10 @@
     "pendingUntil": "2026-07-13"
   },
   "1002289143772056": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T22:47:30.717Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:48:09.396Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-07-02"
+    "store": "Schererville"
   },
   "1002289901022058": {
     "status": "Pending Install",
@@ -10864,5 +10862,12 @@
     "ts": "2026-07-13T22:17:15.881Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "1002291234942051": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:50:25.272Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-08-02"
   }
 }
