@@ -6322,12 +6322,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
-  "2369929337": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:26:43.041Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
-  },
   "2370017405": {
     "status": "Closed",
     "ts": "2026-06-22T21:55:36.816Z",
@@ -7300,12 +7294,6 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
-  "2381472469": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:29:32.791Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
-  },
   "2381564206": {
     "status": "Closed",
     "ts": "2026-06-26T14:46:11.258Z",
@@ -7460,8 +7448,8 @@
     "pendingUntil": "2026-07-03"
   },
   "2383387839": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:34.045Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T22:24:30.489Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7482,12 +7470,6 @@
     "ts": "2026-06-30T21:57:17.788Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
-  },
-  "2383994396": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:30:50.287Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
   },
   "2384121020": {
     "status": "Closed",
@@ -7543,12 +7525,6 @@
     "ts": "2026-06-29T16:33:48.531Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2385299972": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:30:51.367Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
   },
   "2385334449": {
     "status": "Closed",
@@ -7752,7 +7728,7 @@
   },
   "2389309095": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:48.718Z",
+    "ts": "2026-07-13T22:27:56.257Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7868,7 +7844,7 @@
   },
   "2396775240": {
     "status": "Closed",
-    "ts": "2026-07-07T23:00:46.309Z",
+    "ts": "2026-07-13T22:32:01.792Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10847,11 +10823,5 @@
     "ts": "2026-07-13T22:17:15.881Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
-  },
-  "1002292738622058": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:30:55.978Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
   }
 }
