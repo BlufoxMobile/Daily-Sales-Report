@@ -6990,10 +6990,11 @@
     "store": "Burbank"
   },
   "2378733239": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:27.389Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:38.318Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2378824527": {
     "status": "Closed",
