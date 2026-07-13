@@ -6805,10 +6805,11 @@
     "store": "Johnson City"
   },
   "2376342835": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:29.605Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:42.998Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2376346294": {
     "status": "Pending Install",
