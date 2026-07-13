@@ -7291,6 +7291,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2381974983": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T20:06:08.245Z",
+    "dm": "Jacob Cabrales",
+    "store": "South Bend"
+  },
   "2382069317": {
     "status": "Closed",
     "ts": "2026-06-30T21:55:51.780Z",
