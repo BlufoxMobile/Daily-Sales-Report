@@ -5633,12 +5633,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2356984639": {
-    "status": "Can Not Close",
-    "ts": "2026-07-13T19:22:57.738Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
   "2357011237": {
     "status": "Closed",
     "ts": "2026-06-08T22:45:13.656Z",
@@ -6327,6 +6321,12 @@
     "ts": "2026-06-27T00:51:06.822Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "2369929337": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:26:43.041Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
   },
   "2370017405": {
     "status": "Closed",
@@ -7293,6 +7293,12 @@
     "ts": "2026-06-26T14:44:33.527Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2381472469": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:29:32.791Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
   },
   "2381564206": {
     "status": "Closed",
@@ -10513,7 +10519,7 @@
   },
   "1002292293942057": {
     "status": "Closed",
-    "ts": "2026-07-13T22:29:16.156Z",
+    "ts": "2026-07-08T21:50:14.428Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
