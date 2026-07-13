@@ -5633,6 +5633,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2356984639": {
+    "status": "Can Not Close",
+    "ts": "2026-07-13T19:22:57.738Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2357011237": {
     "status": "Closed",
     "ts": "2026-06-08T22:45:13.656Z",
@@ -7417,7 +7423,7 @@
   },
   "2383178410": {
     "status": "Closed",
-    "ts": "2026-07-13T22:20:48.105Z",
+    "ts": "2026-07-07T22:59:35.373Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7442,8 +7448,8 @@
     "pendingUntil": "2026-07-03"
   },
   "2383387839": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-13T22:24:30.489Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:34.045Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7722,7 +7728,7 @@
   },
   "2389309095": {
     "status": "Closed",
-    "ts": "2026-07-13T22:27:56.257Z",
+    "ts": "2026-07-07T22:59:48.718Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10437,7 +10443,7 @@
   },
   "1002289872852053": {
     "status": "Closed",
-    "ts": "2026-07-13T22:19:36.152Z",
+    "ts": "2026-07-07T22:59:36.381Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10507,7 +10513,7 @@
   },
   "1002292293942057": {
     "status": "Closed",
-    "ts": "2026-07-08T21:50:14.428Z",
+    "ts": "2026-07-13T22:29:16.156Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
