@@ -8015,11 +8015,10 @@
     "store": "Elkhart"
   },
   "2403397522": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T21:59:40.497Z",
+    "status": "Closed",
+    "ts": "2026-07-13T21:59:45.164Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-07-21"
+    "store": "Kildeer"
   },
   "2404348908": {
     "status": "Closed",
