@@ -1841,7 +1841,7 @@
   },
   "2306857753": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:00.181Z",
+    "ts": "2026-07-13T22:15:47.128Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6515,12 +6515,6 @@
     "ts": "2026-06-25T18:03:54.066Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
-  },
-  "2372558786": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:15:42.745Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2372639351": {
     "status": "Pending Install",
