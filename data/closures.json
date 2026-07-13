@@ -7416,7 +7416,7 @@
   },
   "2383410453": {
     "status": "Closed",
-    "ts": "2026-06-30T21:29:47.643Z",
+    "ts": "2026-07-13T22:07:12.194Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
@@ -7459,7 +7459,7 @@
   },
   "2384505467": {
     "status": "Closed",
-    "ts": "2026-06-30T21:30:37.053Z",
+    "ts": "2026-07-13T22:07:50.146Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
@@ -10277,11 +10277,10 @@
     "store": "Cicero"
   },
   "1002289610232055": {
-    "status": "Pending Install",
-    "ts": "2026-06-30T21:29:22.127Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:06:04.810Z",
     "dm": "Juan Carrillo",
-    "store": "Bourbonnais",
-    "pendingUntil": "2026-07-10"
+    "store": "Bourbonnais"
   },
   "1001358356232115": {
     "status": "Can Not Close",
@@ -10715,5 +10714,11 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer",
     "pendingUntil": "2026-07-14"
+  },
+  "1002291454642050": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:09:55.617Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   }
 }
