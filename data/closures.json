@@ -6322,12 +6322,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
-  "2369929337": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:26:43.041Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
-  },
   "2370017405": {
     "status": "Closed",
     "ts": "2026-06-22T21:55:36.816Z",
@@ -7423,7 +7417,7 @@
   },
   "2383178410": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:35.373Z",
+    "ts": "2026-07-13T22:20:48.105Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7448,8 +7442,8 @@
     "pendingUntil": "2026-07-03"
   },
   "2383387839": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:34.045Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T22:24:30.489Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7728,7 +7722,7 @@
   },
   "2389309095": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:48.718Z",
+    "ts": "2026-07-13T22:27:56.257Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10443,7 +10437,7 @@
   },
   "1002289872852053": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:36.381Z",
+    "ts": "2026-07-13T22:19:36.152Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
