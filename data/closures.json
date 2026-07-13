@@ -3485,7 +3485,7 @@
   },
   "2327920660": {
     "status": "Closed",
-    "ts": "2026-05-25T20:56:45.116Z",
+    "ts": "2026-07-13T22:20:13.976Z",
     "dm": "Juan Carrillo",
     "store": "Dekalb"
   },
@@ -3841,11 +3841,10 @@
     "store": "Kildeer"
   },
   "2331109787": {
-    "status": "Pending Install",
-    "ts": "2026-05-25T20:58:58.114Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-13T22:21:06.688Z",
     "dm": "Juan Carrillo",
-    "store": "Dekalb",
-    "pendingUntil": "2026-06-01"
+    "store": "Dekalb"
   },
   "2331121153": {
     "status": "Closed",
@@ -5502,6 +5501,12 @@
     "store": "Valparaiso",
     "pendingUntil": "2026-06-15"
   },
+  "2355416728": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:22:50.080Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
+  },
   "2355425779": {
     "status": "Closed",
     "ts": "2026-06-06T20:27:20.013Z",
@@ -5918,6 +5923,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2362400593": {
+    "status": "Can Not Close",
+    "ts": "2026-07-13T22:23:47.048Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
+  },
   "2362711042": {
     "status": "Closed",
     "ts": "2026-06-25T15:24:54.094Z",
@@ -6122,6 +6133,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2366622492": {
+    "status": "Can Not Close",
+    "ts": "2026-07-13T22:24:35.936Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
+  },
   "2366715016": {
     "status": "Closed",
     "ts": "2026-06-27T00:48:02.276Z",
@@ -6182,6 +6199,12 @@
     "ts": "2026-06-16T16:38:07.388Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2367180979": {
+    "status": "Can Not Close",
+    "ts": "2026-07-13T22:24:34.633Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
   },
   "2367308600": {
     "status": "Closed",
@@ -6515,6 +6538,12 @@
     "ts": "2026-06-25T18:03:54.066Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "2372558786": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:15:42.745Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2372639351": {
     "status": "Pending Install",
@@ -7388,7 +7417,7 @@
   },
   "2383178410": {
     "status": "Closed",
-    "ts": "2026-07-13T22:20:48.105Z",
+    "ts": "2026-07-07T22:59:35.373Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7413,8 +7442,8 @@
     "pendingUntil": "2026-07-03"
   },
   "2383387839": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-13T22:24:30.489Z",
+    "status": "Closed",
+    "ts": "2026-07-07T22:59:34.045Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7927,6 +7956,12 @@
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
+  "2399077106": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:15:55.978Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
   "2399126056": {
     "status": "Closed",
     "ts": "2026-07-10T22:42:32.023Z",
@@ -7986,6 +8021,12 @@
     "ts": "2026-07-12T16:48:20.871Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
+  },
+  "2400739245": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:15.458Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2400927424": {
     "status": "Pending Install",
@@ -8048,6 +8089,12 @@
     "ts": "2026-07-13T22:08:23.087Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "2403810396": {
+    "status": "Can Not Close",
+    "ts": "2026-07-13T22:18:10.225Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2404348908": {
     "status": "Closed",
@@ -10390,7 +10437,7 @@
   },
   "1002289872852053": {
     "status": "Closed",
-    "ts": "2026-07-13T22:19:36.152Z",
+    "ts": "2026-07-07T22:59:36.381Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10740,5 +10787,35 @@
     "ts": "2026-07-13T22:19:00.305Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "1002293365822052": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:01.697Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
+  "1002293244382054": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:03.090Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
+  "1002293005632051": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:06.178Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
+  "1002292792712050": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:08.354Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
+  "1002292516742052": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:17:15.881Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   }
 }
