@@ -7136,8 +7136,8 @@
     "store": "Michigan City"
   },
   "2380350232": {
-    "status": "Closed",
-    "ts": "2026-06-30T21:57:18.840Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-13T21:31:05.957Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -10268,13 +10268,13 @@
   },
   "1002290142752057": {
     "status": "Closed",
-    "ts": "2026-06-30T21:58:22.616Z",
+    "ts": "2026-07-13T21:31:10.358Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
   "1002289614752058": {
     "status": "Closed",
-    "ts": "2026-06-30T22:01:28.002Z",
+    "ts": "2026-07-13T21:31:08.741Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
