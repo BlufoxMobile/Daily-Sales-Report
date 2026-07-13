@@ -5460,8 +5460,8 @@
     "store": "Elkhart"
   },
   "2354578033": {
-    "status": "Closed",
-    "ts": "2026-07-13T21:26:52.276Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-13T21:54:52.412Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
@@ -6480,6 +6480,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2372280443": {
+    "status": "Closed",
+    "ts": "2026-07-13T21:54:44.315Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2372317343": {
     "status": "Closed",
     "ts": "2026-06-27T00:54:32.004Z",
@@ -6993,6 +6999,12 @@
     "ts": "2026-07-07T22:59:27.389Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2378763154": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T22:00:59.148Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2378824527": {
     "status": "Closed",
@@ -8013,6 +8025,13 @@
     "ts": "2026-07-13T13:44:55.325Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2403397522": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T21:59:40.497Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-21"
   },
   "2404348908": {
     "status": "Closed",
@@ -10662,19 +10681,5 @@
     "ts": "2026-07-13T21:59:12.577Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
-  },
-  "1002292995802054": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T21:59:58.313Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-07-21"
-  },
-  "1002293166052057": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T22:00:26.322Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-07-14"
   }
 }
