@@ -5460,8 +5460,8 @@
     "store": "Elkhart"
   },
   "2354578033": {
-    "status": "Can Not Close",
-    "ts": "2026-07-13T21:54:52.412Z",
+    "status": "Closed",
+    "ts": "2026-07-13T21:26:52.276Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
@@ -6479,12 +6479,6 @@
     "ts": "2026-06-27T22:29:33.971Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
-  },
-  "2372280443": {
-    "status": "Closed",
-    "ts": "2026-07-13T21:54:44.315Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
   },
   "2372317343": {
     "status": "Closed",
@@ -7542,11 +7536,10 @@
     "store": "Bourbonnais"
   },
   "2387694742": {
-    "status": "Pending Install",
-    "ts": "2026-06-30T15:05:13.696Z",
+    "status": "Closed",
+    "ts": "2026-07-13T21:56:55.157Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-07-11"
+    "store": "Kildeer"
   },
   "2387729873": {
     "status": "Closed",
@@ -7887,6 +7880,12 @@
     "ts": "2026-07-08T21:33:10.481Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "2398475429": {
+    "status": "Closed",
+    "ts": "2026-07-13T21:56:56.623Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2398549916": {
     "status": "Closed",
