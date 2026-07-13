@@ -7415,6 +7415,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2383013782": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T22:33:26.828Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2383100601": {
     "status": "Closed",
     "ts": "2026-07-01T16:33:12.411Z",
@@ -7467,7 +7473,7 @@
   },
   "2383496595": {
     "status": "Cancelled Order",
-    "ts": "2026-07-13T22:33:17.565Z",
+    "ts": "2026-07-13T22:33:23.659Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
