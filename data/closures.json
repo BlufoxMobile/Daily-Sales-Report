@@ -8014,6 +8014,13 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2403397522": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T21:59:40.497Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-21"
+  },
   "2404348908": {
     "status": "Closed",
     "ts": "2026-07-13T19:16:24.239Z",
