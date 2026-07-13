@@ -1841,7 +1841,7 @@
   },
   "2306857753": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:00.181Z",
+    "ts": "2026-07-13T22:15:47.128Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6470,7 +6470,7 @@
   },
   "2372227596": {
     "status": "Closed",
-    "ts": "2026-07-07T22:58:57.493Z",
+    "ts": "2026-07-13T22:15:54.136Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6479,12 +6479,6 @@
     "ts": "2026-06-27T22:29:33.971Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
-  },
-  "2372280443": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:18:12.791Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
   },
   "2372317343": {
     "status": "Closed",
@@ -6643,13 +6637,13 @@
   },
   "2374301279": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:16.749Z",
+    "ts": "2026-07-13T22:15:55.448Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
   "2374318694": {
     "status": "Closed",
-    "ts": "2026-07-07T22:58:56.261Z",
+    "ts": "2026-07-13T22:16:00.466Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6811,10 +6805,11 @@
     "store": "Johnson City"
   },
   "2376342835": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:29.605Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:42.998Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2376346294": {
     "status": "Pending Install",
@@ -6976,10 +6971,11 @@
     "store": "Valparaiso"
   },
   "2378597295": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:28.381Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:10.016Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2378696795": {
     "status": "Pending Install",
@@ -6995,10 +6991,11 @@
     "store": "Burbank"
   },
   "2378733239": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:27.389Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:38.318Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2378824527": {
     "status": "Closed",
@@ -7007,10 +7004,11 @@
     "store": "Glenview"
   },
   "2378831149": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:26.509Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:31.878Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2378914844": {
     "status": "Cancelled Order",
@@ -7185,7 +7183,7 @@
   },
   "2380448404": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:32.357Z",
+    "ts": "2026-07-13T22:18:34.666Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -9710,7 +9708,7 @@
   },
   "1002285874112058": {
     "status": "Closed",
-    "ts": "2026-07-07T22:58:59.013Z",
+    "ts": "2026-07-13T22:15:56.617Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -9727,11 +9725,10 @@
     "store": "Evanston"
   },
   "1002288386292053": {
-    "status": "Pending Install",
-    "ts": "2026-07-07T22:58:10.483Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:22.884Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-18"
+    "store": "Evanston"
   },
   "1002288374832050": {
     "status": "Pending Install",
