@@ -6480,6 +6480,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2372280443": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:18:12.791Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2372317343": {
     "status": "Closed",
     "ts": "2026-06-27T00:54:32.004Z",
@@ -6515,12 +6521,6 @@
     "ts": "2026-06-25T18:03:54.066Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
-  },
-  "2372558786": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:15:42.745Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2372639351": {
     "status": "Pending Install",
@@ -7929,12 +7929,6 @@
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
-  "2399077106": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:15:55.978Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
   "2399126056": {
     "status": "Closed",
     "ts": "2026-07-10T22:42:32.023Z",
@@ -7994,12 +7988,6 @@
     "ts": "2026-07-12T16:48:20.871Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
-  },
-  "2400739245": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:15.458Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2400927424": {
     "status": "Pending Install",
@@ -8062,12 +8050,6 @@
     "ts": "2026-07-13T22:08:23.087Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
-  },
-  "2403810396": {
-    "status": "Can Not Close",
-    "ts": "2026-07-13T22:18:10.225Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2404348908": {
     "status": "Closed",
@@ -10754,36 +10736,6 @@
   "1002292053892054": {
     "status": "Closed",
     "ts": "2026-07-13T22:09:57.826Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002293365822052": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:01.697Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002293244382054": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:03.090Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002293005632051": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:06.178Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002292792712050": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:08.354Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002292516742052": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:17:15.881Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   }
