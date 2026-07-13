@@ -7306,6 +7306,12 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2381472469": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:59:12.213Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
+  },
   "2381564206": {
     "status": "Closed",
     "ts": "2026-06-26T14:46:11.258Z",
@@ -10959,6 +10965,13 @@
     "ts": "2026-07-13T22:53:19.632Z",
     "dm": "Juan Carrillo",
     "store": "Dekalb",
+    "pendingUntil": "2026-07-20"
+  },
+  "1002288700962050": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:59:44.411Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
     "pendingUntil": "2026-07-20"
   }
 }
