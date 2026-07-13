@@ -6322,12 +6322,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
-  "2369929337": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:26:43.041Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
-  },
   "2370017405": {
     "status": "Closed",
     "ts": "2026-06-22T21:55:36.816Z",
@@ -7038,6 +7032,12 @@
     "store": "Evanston",
     "pendingUntil": "2026-07-18"
   },
+  "2378763154": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T22:29:47.968Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2378824527": {
     "status": "Closed",
     "ts": "2026-06-30T21:44:34.461Z",
@@ -7300,12 +7300,6 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
-  "2381472469": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:29:32.791Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
-  },
   "2381564206": {
     "status": "Closed",
     "ts": "2026-06-26T14:46:11.258Z",
@@ -7403,6 +7397,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Round Lake Beach"
   },
+  "2382295432": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T22:33:13.977Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2382371449": {
     "status": "Can Not Close",
     "ts": "2026-06-25T15:54:02.388Z",
@@ -7483,12 +7483,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
-  "2383994396": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:30:50.287Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
-  },
   "2384121020": {
     "status": "Closed",
     "ts": "2026-06-30T15:00:43.864Z",
@@ -7543,12 +7537,6 @@
     "ts": "2026-06-29T16:33:48.531Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2385299972": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:30:51.367Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
   },
   "2385334449": {
     "status": "Closed",
@@ -8064,12 +8052,6 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge",
     "pendingUntil": "2026-07-16"
-  },
-  "2402122522": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:33:00.648Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
   },
   "2402314468": {
     "status": "Closed",
@@ -10853,17 +10835,5 @@
     "ts": "2026-07-13T22:17:15.881Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
-  },
-  "1002292738622058": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:30:55.978Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
-  },
-  "1002292998722051": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:30:59.591Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb"
   }
 }
