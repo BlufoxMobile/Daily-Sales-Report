@@ -8061,6 +8061,13 @@
     "store": "Oak Ridge",
     "pendingUntil": "2026-07-16"
   },
+  "2401457640": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:45:16.600Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-07-20"
+  },
   "2401763298": {
     "status": "Pending Install",
     "ts": "2026-07-13T22:45:10.832Z",
