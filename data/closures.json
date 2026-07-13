@@ -7397,12 +7397,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Round Lake Beach"
   },
-  "2382295432": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-13T22:33:13.977Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
-  },
   "2382371449": {
     "status": "Can Not Close",
     "ts": "2026-06-25T15:54:02.388Z",
@@ -7470,6 +7464,12 @@
     "ts": "2026-07-13T22:07:12.194Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "2383496595": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-13T22:33:17.565Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2383953180": {
     "status": "Closed",
