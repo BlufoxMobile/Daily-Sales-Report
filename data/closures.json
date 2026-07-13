@@ -7544,6 +7544,18 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2384589095": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:46:58.089Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "2384589486": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:46:55.395Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2384653400": {
     "status": "Can Not Close",
     "ts": "2026-06-29T16:33:48.531Z",
@@ -10870,5 +10882,12 @@
     "ts": "2026-07-13T22:17:15.881Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "1002290709532058": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:47:02.796Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-07-20"
   }
 }
