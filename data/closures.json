@@ -7526,6 +7526,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2384564396": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:46:53.730Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2384573078": {
     "status": "Can Not Close",
     "ts": "2026-06-29T14:54:11.757Z",
@@ -7537,6 +7543,18 @@
     "ts": "2026-07-11T23:28:23.014Z",
     "dm": "Juan Carrillo",
     "store": "Burbank"
+  },
+  "2384589095": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:46:58.089Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "2384589486": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:46:55.395Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2384653400": {
     "status": "Can Not Close",
@@ -8023,6 +8041,12 @@
     "ts": "2026-07-13T21:49:35.123Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "2400337294": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:52:55.453Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2400339322": {
     "status": "Closed",
@@ -10869,5 +10893,40 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-08-02"
+  },
+  "1002290709532058": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:47:02.796Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-07-20"
+  },
+  "1002291219602050": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:47:10.331Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-07-20"
+  },
+  "1002291432962059": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:47:15.495Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-07-20"
+  },
+  "1002292022812050": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:47:20.811Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-07-20"
+  },
+  "1002292248542051": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:47:25.864Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-07-20"
   }
 }
