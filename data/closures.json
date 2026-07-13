@@ -7416,7 +7416,7 @@
   },
   "2383410453": {
     "status": "Closed",
-    "ts": "2026-07-13T22:07:12.194Z",
+    "ts": "2026-06-30T21:29:47.643Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
@@ -7459,7 +7459,7 @@
   },
   "2384505467": {
     "status": "Closed",
-    "ts": "2026-07-13T22:07:50.146Z",
+    "ts": "2026-06-30T21:30:37.053Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
@@ -8008,11 +8008,36 @@
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
+  "2402943523": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:08:21.254Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2403056086": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:09:08.604Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-15"
+  },
   "2403141811": {
     "status": "Closed",
     "ts": "2026-07-13T13:44:55.325Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2403397522": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:08:19.973Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2403478293": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:08:23.087Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2404348908": {
     "status": "Closed",
@@ -10252,10 +10277,11 @@
     "store": "Cicero"
   },
   "1002289610232055": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:06:04.810Z",
+    "status": "Pending Install",
+    "ts": "2026-06-30T21:29:22.127Z",
     "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-07-10"
   },
   "1001358356232115": {
     "status": "Can Not Close",
@@ -10689,11 +10715,5 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer",
     "pendingUntil": "2026-07-14"
-  },
-  "1002291454642050": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:08:57.650Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   }
 }
