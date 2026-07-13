@@ -1841,7 +1841,7 @@
   },
   "2306857753": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:00.181Z",
+    "ts": "2026-07-13T22:15:47.128Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6470,7 +6470,7 @@
   },
   "2372227596": {
     "status": "Closed",
-    "ts": "2026-07-07T22:58:57.493Z",
+    "ts": "2026-07-13T22:15:54.136Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6515,12 +6515,6 @@
     "ts": "2026-06-25T18:03:54.066Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
-  },
-  "2372558786": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:15:42.745Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2372639351": {
     "status": "Pending Install",
@@ -6643,13 +6637,13 @@
   },
   "2374301279": {
     "status": "Closed",
-    "ts": "2026-07-07T22:59:16.749Z",
+    "ts": "2026-07-13T22:15:55.448Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
   "2374318694": {
     "status": "Closed",
-    "ts": "2026-07-07T22:58:56.261Z",
+    "ts": "2026-07-13T22:16:00.466Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6976,10 +6970,11 @@
     "store": "Valparaiso"
   },
   "2378597295": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:28.381Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:10.016Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2378696795": {
     "status": "Pending Install",
@@ -7007,10 +7002,11 @@
     "store": "Glenview"
   },
   "2378831149": {
-    "status": "Closed",
-    "ts": "2026-07-07T22:59:26.509Z",
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:16:15.935Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-07-18"
   },
   "2378914844": {
     "status": "Cancelled Order",
@@ -7929,12 +7925,6 @@
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
-  "2399077106": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:15:55.978Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
   "2399126056": {
     "status": "Closed",
     "ts": "2026-07-10T22:42:32.023Z",
@@ -7994,12 +7984,6 @@
     "ts": "2026-07-12T16:48:20.871Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
-  },
-  "2400739245": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:15.458Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2400927424": {
     "status": "Pending Install",
@@ -9722,7 +9706,7 @@
   },
   "1002285874112058": {
     "status": "Closed",
-    "ts": "2026-07-07T22:58:59.013Z",
+    "ts": "2026-07-13T22:15:56.617Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -9739,11 +9723,10 @@
     "store": "Evanston"
   },
   "1002288386292053": {
-    "status": "Pending Install",
-    "ts": "2026-07-07T22:58:10.483Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:22.884Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-18"
+    "store": "Evanston"
   },
   "1002288374832050": {
     "status": "Pending Install",
@@ -10748,36 +10731,6 @@
   "1002292053892054": {
     "status": "Closed",
     "ts": "2026-07-13T22:09:57.826Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002293365822052": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:01.697Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002293244382054": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:03.090Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002293005632051": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:06.178Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002292792712050": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:08.354Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
-  "1002292516742052": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:10.545Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   }
