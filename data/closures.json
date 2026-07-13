@@ -7907,12 +7907,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2402315818": {
-    "status": "Closed",
-    "ts": "2026-07-13T16:37:51.177Z",
-    "dm": "Jacob Cabrales",
-    "store": "Hammond"
-  },
   "2402751359": {
     "status": "Closed",
     "ts": "2026-07-12T17:08:13.653Z",
@@ -7928,6 +7922,12 @@
   "2403141811": {
     "status": "Closed",
     "ts": "2026-07-13T13:44:55.325Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
+  "2406458411": {
+    "status": "Can Not Close",
+    "ts": "2026-07-13T16:39:26.093Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
