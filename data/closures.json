@@ -7625,11 +7625,10 @@
     "pendingUntil": "2026-07-02"
   },
   "2387894858": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T22:44:48.400Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:44:55.362Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-17"
+    "store": "Evanston"
   },
   "2387931782": {
     "status": "Closed",
