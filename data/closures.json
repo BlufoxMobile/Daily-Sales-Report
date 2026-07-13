@@ -1841,7 +1841,7 @@
   },
   "2306857753": {
     "status": "Closed",
-    "ts": "2026-07-13T22:15:47.128Z",
+    "ts": "2026-07-07T22:59:00.181Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6470,7 +6470,7 @@
   },
   "2372227596": {
     "status": "Closed",
-    "ts": "2026-07-13T22:15:54.136Z",
+    "ts": "2026-07-07T22:58:57.493Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6515,6 +6515,12 @@
     "ts": "2026-06-25T18:03:54.066Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "2372558786": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:15:42.745Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2372639351": {
     "status": "Pending Install",
@@ -6637,7 +6643,7 @@
   },
   "2374301279": {
     "status": "Closed",
-    "ts": "2026-07-13T22:15:55.448Z",
+    "ts": "2026-07-07T22:59:16.749Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7922,6 +7928,12 @@
     "ts": "2026-07-08T16:30:37.049Z",
     "dm": "Juan Carrillo",
     "store": "Calumet City"
+  },
+  "2399077106": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:15:55.978Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2399126056": {
     "status": "Closed",
@@ -9704,7 +9716,7 @@
   },
   "1002285874112058": {
     "status": "Closed",
-    "ts": "2026-07-13T22:15:56.617Z",
+    "ts": "2026-07-07T22:58:59.013Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10730,6 +10742,18 @@
   "1002292053892054": {
     "status": "Closed",
     "ts": "2026-07-13T22:09:57.826Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
+  "1002293365822052": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:01.697Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
+  "1002293244382054": {
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:03.090Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   }
