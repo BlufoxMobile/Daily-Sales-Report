@@ -8118,6 +8118,13 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2403245760": {
+    "status": "Pending Install",
+    "ts": "2026-07-13T22:45:21.352Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-07-20"
+  },
   "2403397522": {
     "status": "Closed",
     "ts": "2026-07-13T22:08:19.973Z",
