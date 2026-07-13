@@ -5183,7 +5183,7 @@
   },
   "2351108415": {
     "status": "Closed",
-    "ts": "2026-06-30T21:55:21.290Z",
+    "ts": "2026-07-13T21:29:39.159Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -7172,8 +7172,8 @@
     "store": "Kildeer"
   },
   "2380603164": {
-    "status": "Closed",
-    "ts": "2026-06-30T21:57:19.754Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-13T21:31:02.710Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
