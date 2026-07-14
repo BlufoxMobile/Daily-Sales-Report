@@ -8332,6 +8332,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2407056653": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:23:24.834Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2407098397": {
     "status": "Pending Install",
     "ts": "2026-07-14T20:58:38.145Z",
@@ -11224,48 +11230,6 @@
   "1001305129742102": {
     "status": "Pending Install",
     "ts": "2026-07-14T21:20:22.639Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-07-21"
-  },
-  "1001305126632108": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:21:02.242Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-07-21"
-  },
-  "1001305121822100": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:20:28.671Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-07-21"
-  },
-  "1001305124032103": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:21:15.492Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-07-21"
-  },
-  "1001305128182102": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:21:08.777Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-07-21"
-  },
-  "1001305143072106": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:21:18.232Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-07-21"
-  },
-  "1001305145952107": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:21:21.295Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville",
     "pendingUntil": "2026-07-21"
