@@ -8165,6 +8165,12 @@
     "store": "Evanston",
     "pendingUntil": "2026-07-20"
   },
+  "2401566402": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:10:55.497Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2401763298": {
     "status": "Pending Install",
     "ts": "2026-07-13T22:45:10.832Z",
