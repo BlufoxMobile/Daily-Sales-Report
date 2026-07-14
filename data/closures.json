@@ -7978,6 +7978,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2397427277": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T21:00:03.013Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-07-24"
+  },
   "2397568610": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:57.405Z",
