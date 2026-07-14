@@ -8477,6 +8477,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2406929967": {
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:10:56.589Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2407056653": {
     "status": "Closed",
     "ts": "2026-07-14T21:23:24.834Z",
@@ -10886,8 +10892,8 @@
     "store": "Evanston"
   },
   "1002292077192051": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:39:12.713Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:10:52.557Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -11190,8 +11196,8 @@
     "store": "Bourbonnais"
   },
   "1002292740762058": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:19:00.305Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:10:53.917Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
