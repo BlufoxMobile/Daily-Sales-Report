@@ -7907,23 +7907,11 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
-  "2393641483": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:33:03.598Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2393676717": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:41.253Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2393759984": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:37:19.372Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   },
   "2393769158": {
     "status": "Closed",
@@ -8335,6 +8323,12 @@
     "ts": "2026-07-13T22:18:10.225Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "2404272521": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:39:44.988Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2404348908": {
     "status": "Closed",
@@ -11341,11 +11335,5 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge",
     "pendingUntil": "2026-07-21"
-  },
-  "1002282577842057": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:30:18.743Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   }
 }
