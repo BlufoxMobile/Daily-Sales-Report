@@ -4829,7 +4829,7 @@
   },
   "2345132417": {
     "status": "Can Not Close",
-    "ts": "2026-07-14T20:51:48.631Z",
+    "ts": "2026-07-14T20:51:56.261Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5870,8 +5870,8 @@
     "store": "Evergreen Park"
   },
   "2361564036": {
-    "status": "Closed",
-    "ts": "2026-06-27T00:38:14.284Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T20:52:01.988Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5960,8 +5960,8 @@
     "store": "Burbank"
   },
   "2363552164": {
-    "status": "Closed",
-    "ts": "2026-06-27T00:43:17.285Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T20:52:03.324Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
