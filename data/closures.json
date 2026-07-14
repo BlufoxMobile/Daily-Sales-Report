@@ -7852,23 +7852,11 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
-  "2390789137": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:29:33.959Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2390794488": {
     "status": "Closed",
     "ts": "2026-07-07T22:59:49.957Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2391280825": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:29:22.073Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   },
   "2392855219": {
     "status": "Closed",
@@ -8361,6 +8349,18 @@
     "ts": "2026-07-13T18:52:07.530Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2407056653": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:23:24.834Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
+  "2407083574": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:28:58.779Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2407098397": {
     "status": "Pending Install",
@@ -10264,11 +10264,10 @@
     "pendingUntil": "2026-07-02"
   },
   "1001301831422109": {
-    "status": "Pending Install",
-    "ts": "2026-06-24T17:50:48.708Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T21:30:11.111Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-07-01"
+    "store": "Oak Ridge"
   },
   "1002289184242050": {
     "status": "Pending Install",
@@ -11291,5 +11290,12 @@
     "ts": "2026-07-14T21:19:27.471Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "1001304633932101": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T21:28:38.969Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-21"
   }
 }
