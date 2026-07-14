@@ -6498,8 +6498,8 @@
     "store": "Tinley Park"
   },
   "2372227596": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:15:54.136Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-14T21:47:28.901Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6683,8 +6683,8 @@
     "store": "Evanston"
   },
   "2374318694": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:16:00.466Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-14T21:48:38.380Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7483,8 +7483,8 @@
     "pendingUntil": "2026-07-03"
   },
   "2383387839": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:39:22.721Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-14T21:50:24.669Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -8037,12 +8037,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2397886867": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:49:54.719Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2397906568": {
     "status": "Closed",
     "ts": "2026-07-10T20:50:56.149Z",
@@ -8181,30 +8175,6 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
-  "2400442833": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:45:47.990Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "2400455020": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:47:59.824Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "2400524884": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:45:50.932Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "2400537355": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:45:45.822Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2400623377": {
     "status": "Closed",
     "ts": "2026-07-10T19:32:30.291Z",
@@ -8328,12 +8298,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer",
     "pendingUntil": "2026-07-15"
-  },
-  "2403068541": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:43:15.737Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
   },
   "2403141811": {
     "status": "Closed",
@@ -10110,7 +10074,7 @@
   },
   "1002285874112058": {
     "status": "Closed",
-    "ts": "2026-07-13T22:15:56.617Z",
+    "ts": "2026-07-14T21:46:15.044Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
