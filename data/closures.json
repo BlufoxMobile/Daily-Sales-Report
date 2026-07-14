@@ -8299,6 +8299,12 @@
     "store": "Kildeer",
     "pendingUntil": "2026-07-15"
   },
+  "2403068541": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:43:15.737Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2403141811": {
     "status": "Closed",
     "ts": "2026-07-13T13:44:55.325Z",
@@ -8341,6 +8347,12 @@
     "ts": "2026-07-13T22:18:10.225Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "2404272521": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:39:44.988Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2404348908": {
     "status": "Closed",
@@ -11351,12 +11363,6 @@
   "1002282577842057": {
     "status": "Closed",
     "ts": "2026-07-14T21:30:18.743Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
-  "1002292506132058": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T21:42:09.494Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   }
