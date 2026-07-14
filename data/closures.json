@@ -11179,5 +11179,12 @@
     "ts": "2026-07-14T21:00:26.565Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "1002292584302052": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T21:07:24.289Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-07-20"
   }
 }
