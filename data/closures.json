@@ -8175,6 +8175,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2400537355": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:45:45.822Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2400623377": {
     "status": "Closed",
     "ts": "2026-07-10T19:32:30.291Z",
@@ -8299,6 +8305,12 @@
     "store": "Kildeer",
     "pendingUntil": "2026-07-15"
   },
+  "2403068541": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:43:15.737Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2403141811": {
     "status": "Closed",
     "ts": "2026-07-13T13:44:55.325Z",
@@ -8341,6 +8353,12 @@
     "ts": "2026-07-13T22:18:10.225Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "2404272521": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:39:44.988Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2404348908": {
     "status": "Closed",
@@ -10092,7 +10110,7 @@
   },
   "1002288386292053": {
     "status": "Closed",
-    "ts": "2026-07-14T21:43:53.812Z",
+    "ts": "2026-07-13T22:16:22.884Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10759,7 +10777,7 @@
   },
   "1002290535532058": {
     "status": "Closed",
-    "ts": "2026-07-14T21:40:48.524Z",
+    "ts": "2026-07-13T22:18:45.224Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
