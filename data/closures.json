@@ -8081,7 +8081,7 @@
   },
   "2397623802": {
     "status": "Closed",
-    "ts": "2026-07-14T22:08:27.418Z",
+    "ts": "2026-07-14T22:20:39.393Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
@@ -8265,13 +8265,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2400625508": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T22:18:05.452Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-07-16"
-  },
   "2400641814": {
     "status": "Closed",
     "ts": "2026-07-12T16:48:20.871Z",
@@ -8377,12 +8370,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2402958118": {
-    "status": "Closed",
-    "ts": "2026-07-14T22:18:28.197Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2402985008": {
     "status": "Closed",
     "ts": "2026-07-14T14:46:36.363Z",
@@ -8420,13 +8407,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-07-20"
-  },
-  "2403336788": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T22:18:19.461Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-07-17"
   },
   "2403348822": {
     "status": "Closed",
