@@ -2200,14 +2200,14 @@
     "store": "Burbank"
   },
   "2313314319": {
-    "status": "Can Not Close",
-    "ts": "2026-05-04T21:41:23.357Z",
+    "status": "Closed",
+    "ts": "2026-07-14T20:55:48.569Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
   "2313323378": {
     "status": "Closed",
-    "ts": "2026-06-09T21:04:11.733Z",
+    "ts": "2026-07-14T20:56:56.489Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -3756,12 +3756,6 @@
     "store": "South Knoxville",
     "pendingUntil": "2026-05-25"
   },
-  "2330043111": {
-    "status": "Can Not Close",
-    "ts": "2026-06-08T23:35:07.096Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2330079196": {
     "status": "Closed",
     "ts": "2026-05-18T16:29:39.344Z",
@@ -3914,8 +3908,8 @@
     "store": "South Skokie"
   },
   "2332162823": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:51:46.961Z",
+    "status": "Closed",
+    "ts": "2026-07-07T20:35:10.420Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -4828,8 +4822,8 @@
     "store": "Hammond"
   },
   "2345132417": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:51:56.261Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:11:40.111Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5097,8 +5091,8 @@
     "store": "Uptown"
   },
   "2349284532": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:51:49.871Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:21:55.396Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5313,8 +5307,8 @@
     "store": "Uptown"
   },
   "2352398868": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:51:51.583Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:25:12.283Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5331,8 +5325,8 @@
     "store": "Oak Ridge"
   },
   "2352686874": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:51:52.702Z",
+    "status": "Closed",
+    "ts": "2026-06-27T22:41:57.919Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5616,8 +5610,8 @@
     "store": "South Skokie"
   },
   "2356876123": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:51:53.926Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:27:57.095Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5870,8 +5864,8 @@
     "store": "Evergreen Park"
   },
   "2361564036": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:01.988Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:38:14.284Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -5960,8 +5954,8 @@
     "store": "Burbank"
   },
   "2363552164": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:03.324Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:43:17.285Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6504,8 +6498,8 @@
     "store": "Evanston"
   },
   "2372279639": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:30.244Z",
+    "status": "Closed",
+    "ts": "2026-06-27T22:29:33.971Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6516,8 +6510,8 @@
     "store": "Evergreen Park"
   },
   "2372317343": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:22.110Z",
+    "status": "Closed",
+    "ts": "2026-06-27T00:54:32.004Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6534,8 +6528,8 @@
     "store": "Valparaiso"
   },
   "2372377982": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:04.915Z",
+    "status": "Closed",
+    "ts": "2026-06-27T22:24:58.298Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6720,10 +6714,11 @@
     "store": "Johnson City"
   },
   "2374864688": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:34.188Z",
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:24:42.571Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
   },
   "2374905890": {
     "status": "Closed",
@@ -6920,10 +6915,11 @@
     "store": "Glenview"
   },
   "2376841411": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:35.746Z",
+    "status": "Pending Install",
+    "ts": "2026-06-22T22:27:07.721Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
+    "store": "Glenview",
+    "pendingUntil": "2026-06-29"
   },
   "2376959630": {
     "status": "Closed",
@@ -6992,8 +6988,8 @@
     "store": "Michigan City"
   },
   "2378025369": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:47.616Z",
+    "status": "Closed",
+    "ts": "2026-06-30T21:42:05.800Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7149,14 +7145,14 @@
     "store": "Elkhart"
   },
   "2379706756": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:49.462Z",
+    "status": "Closed",
+    "ts": "2026-06-30T22:14:26.038Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
   "2379777668": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:51.901Z",
+    "status": "Closed",
+    "ts": "2026-06-30T22:14:25.046Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7270,8 +7266,8 @@
     "store": "Michigan City"
   },
   "2380853262": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T20:52:45.199Z",
+    "status": "Closed",
+    "ts": "2026-06-30T21:46:52.111Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -8305,13 +8301,6 @@
     "ts": "2026-07-13T18:52:07.530Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2407771743": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T20:56:46.633Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-07-21"
   },
   "1001290369922103": {
     "status": "Pending Install",
