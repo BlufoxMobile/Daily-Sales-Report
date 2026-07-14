@@ -6516,8 +6516,8 @@
     "store": "Evergreen Park"
   },
   "2372317343": {
-    "status": "Closed",
-    "ts": "2026-06-27T00:54:32.004Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T20:52:22.110Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -6534,8 +6534,8 @@
     "store": "Valparaiso"
   },
   "2372377982": {
-    "status": "Closed",
-    "ts": "2026-06-27T22:24:58.298Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T20:52:04.915Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
