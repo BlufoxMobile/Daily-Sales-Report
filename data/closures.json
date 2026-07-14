@@ -7172,6 +7172,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2380120648": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:53:10.022Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2380134387": {
     "status": "Closed",
     "ts": "2026-06-26T20:55:32.166Z",
@@ -11405,6 +11411,18 @@
   "1002282577842057": {
     "status": "Closed",
     "ts": "2026-07-14T21:30:18.743Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "1002293603722056": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:51:02.441Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "1002291867712052": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:58:55.799Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   }
