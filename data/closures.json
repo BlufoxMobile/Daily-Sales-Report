@@ -7172,6 +7172,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2380120648": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:53:10.022Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2380134387": {
     "status": "Closed",
     "ts": "2026-06-26T20:55:32.166Z",
@@ -7364,6 +7370,12 @@
     "ts": "2026-06-25T19:15:23.533Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "2381860456": {
+    "status": "Closed",
+    "ts": "2026-07-14T22:01:44.089Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2381868141": {
     "status": "Closed",
@@ -7713,12 +7725,6 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
-  "2387995708": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:59:01.277Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2388036014": {
     "status": "Closed",
     "ts": "2026-06-30T18:05:43.897Z",
@@ -7791,12 +7797,6 @@
   "2388410714": {
     "status": "Closed",
     "ts": "2026-06-30T22:08:07.779Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "2388412403": {
-    "status": "Closed",
-    "ts": "2026-07-14T22:00:22.549Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -8028,6 +8028,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown",
     "pendingUntil": "2026-07-24"
+  },
+  "2396913505": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:59:13.060Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2396943261": {
     "status": "Closed",
@@ -11417,6 +11423,18 @@
   "1002282577842057": {
     "status": "Closed",
     "ts": "2026-07-14T21:30:18.743Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "1002291867712052": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:58:55.799Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "1002292506132058": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:59:04.581Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   }
