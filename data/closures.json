@@ -7495,8 +7495,8 @@
     "pendingUntil": "2026-07-03"
   },
   "2383387839": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T22:10:45.941Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:39:22.721Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7702,8 +7702,8 @@
     "pendingUntil": "2026-07-02"
   },
   "2387894858": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T22:10:50.341Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:44:55.362Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -8477,12 +8477,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2406929967": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T22:10:56.589Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
-  },
   "2407056653": {
     "status": "Closed",
     "ts": "2026-07-14T21:23:24.834Z",
@@ -8502,32 +8496,11 @@
     "store": "Glenview",
     "pendingUntil": "2026-07-21"
   },
-  "2407299663": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T22:10:59.629Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-21"
-  },
   "2407443695": {
     "status": "Closed",
     "ts": "2026-07-14T21:05:51.474Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
-  },
-  "2407447207": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T22:11:02.180Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-21"
-  },
-  "2407449828": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:55:08.707Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-21"
   },
   "2407454224": {
     "status": "Pending Install",
@@ -10185,7 +10158,7 @@
   },
   "1002285874112058": {
     "status": "Closed",
-    "ts": "2026-07-14T22:11:08.349Z",
+    "ts": "2026-07-13T22:15:56.617Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10863,8 +10836,8 @@
     "store": "Glenview"
   },
   "1002289872852053": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T22:10:47.613Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:39:25.993Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10875,8 +10848,8 @@
     "store": "Evanston"
   },
   "1002290532162057": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T22:10:48.950Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:19:33.768Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10906,8 +10879,8 @@
     "store": "Evanston"
   },
   "1002292077192051": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T22:10:52.557Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:39:12.713Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -11210,8 +11183,8 @@
     "store": "Bourbonnais"
   },
   "1002292740762058": {
-    "status": "Can Not Close",
-    "ts": "2026-07-14T22:11:03.989Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:19:00.305Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
