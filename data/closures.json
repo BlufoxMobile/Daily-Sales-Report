@@ -8079,6 +8079,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2397623802": {
+    "status": "Closed",
+    "ts": "2026-07-14T22:08:27.418Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2397883751": {
     "status": "Closed",
     "ts": "2026-07-07T23:00:55.950Z",
@@ -8258,6 +8264,13 @@
     "ts": "2026-07-10T19:32:30.291Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2400625508": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T22:18:05.452Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-07-16"
   },
   "2400641814": {
     "status": "Closed",
