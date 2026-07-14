@@ -8350,6 +8350,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2407056653": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:23:24.834Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2407098397": {
     "status": "Pending Install",
     "ts": "2026-07-14T20:58:38.145Z",
@@ -11279,5 +11285,12 @@
     "ts": "2026-07-14T21:19:27.471Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "1001304633932101": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T21:28:38.969Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-21"
   }
 }
