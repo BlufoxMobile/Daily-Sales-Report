@@ -7702,8 +7702,8 @@
     "pendingUntil": "2026-07-02"
   },
   "2387894858": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:44:55.362Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:10:50.341Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10843,8 +10843,8 @@
     "store": "Glenview"
   },
   "1002289872852053": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:39:25.993Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:10:47.613Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10855,8 +10855,8 @@
     "store": "Evanston"
   },
   "1002290532162057": {
-    "status": "Closed",
-    "ts": "2026-07-13T22:19:33.768Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:10:48.950Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
