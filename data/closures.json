@@ -3914,8 +3914,8 @@
     "store": "South Skokie"
   },
   "2332162823": {
-    "status": "Closed",
-    "ts": "2026-07-07T20:35:10.420Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T20:51:46.961Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7489,12 +7489,6 @@
     "ts": "2026-07-13T22:39:22.721Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2383393300": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-14T20:51:12.928Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
   },
   "2383410453": {
     "status": "Closed",
