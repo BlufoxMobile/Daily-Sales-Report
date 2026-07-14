@@ -6498,8 +6498,8 @@
     "store": "Tinley Park"
   },
   "2372227596": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-14T21:47:28.901Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:15:54.136Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -6683,8 +6683,8 @@
     "store": "Evanston"
   },
   "2374318694": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-14T21:48:38.380Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:16:00.466Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7483,8 +7483,8 @@
     "pendingUntil": "2026-07-03"
   },
   "2383387839": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-14T21:50:24.669Z",
+    "status": "Closed",
+    "ts": "2026-07-13T22:39:22.721Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -7691,7 +7691,7 @@
   },
   "2387894858": {
     "status": "Closed",
-    "ts": "2026-07-13T22:44:55.362Z",
+    "ts": "2026-07-14T21:50:38.373Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -10074,7 +10074,7 @@
   },
   "1002285874112058": {
     "status": "Closed",
-    "ts": "2026-07-14T21:46:15.044Z",
+    "ts": "2026-07-13T22:15:56.617Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
