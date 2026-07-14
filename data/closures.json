@@ -6992,8 +6992,8 @@
     "store": "Michigan City"
   },
   "2378025369": {
-    "status": "Closed",
-    "ts": "2026-06-30T21:42:05.800Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T20:52:47.616Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -7149,8 +7149,8 @@
     "store": "Elkhart"
   },
   "2379706756": {
-    "status": "Closed",
-    "ts": "2026-06-30T22:14:26.038Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T20:52:49.462Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
