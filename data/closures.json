@@ -8306,12 +8306,6 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
-  "2404924056": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:18:52.503Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2404948179": {
     "status": "Pending Install",
     "ts": "2026-07-14T13:14:54.899Z",
@@ -11199,10 +11193,11 @@
     "store": "Uptown",
     "pendingUntil": "2026-07-20"
   },
-  "1002288556322052": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:19:27.471Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
+  "1001305136322104": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T21:19:55.569Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville",
+    "pendingUntil": "2026-07-21"
   }
 }
