@@ -11141,5 +11141,17 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-07-17"
+  },
+  "1002293386862053": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:00:23.820Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
+  "1002292531242054": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:00:26.565Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   }
 }
