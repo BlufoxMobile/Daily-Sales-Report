@@ -11353,5 +11353,17 @@
     "ts": "2026-07-14T21:30:18.743Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "1002292506132058": {
+    "status": "Can Not Close",
+    "ts": "2026-07-14T21:42:09.494Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "1002291867712052": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:47:04.529Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   }
 }
