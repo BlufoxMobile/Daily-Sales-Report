@@ -2200,14 +2200,14 @@
     "store": "Burbank"
   },
   "2313314319": {
-    "status": "Closed",
-    "ts": "2026-07-14T20:55:48.569Z",
+    "status": "Can Not Close",
+    "ts": "2026-05-04T21:41:23.357Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
   "2313323378": {
     "status": "Closed",
-    "ts": "2026-07-14T20:56:56.489Z",
+    "ts": "2026-06-09T21:04:11.733Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -3757,8 +3757,8 @@
     "pendingUntil": "2026-05-25"
   },
   "2330043111": {
-    "status": "Closed",
-    "ts": "2026-07-14T20:58:51.598Z",
+    "status": "Can Not Close",
+    "ts": "2026-06-08T23:35:07.096Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -7921,6 +7921,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2395211542": {
+    "status": "Closed",
+    "ts": "2026-07-14T20:58:02.092Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2395757397": {
     "status": "Pending Install",
     "ts": "2026-07-13T22:45:03.627Z",
@@ -7945,6 +7951,13 @@
     "ts": "2026-07-08T20:54:49.570Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2396795035": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T20:59:55.470Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-07-24"
   },
   "2396943261": {
     "status": "Closed",
