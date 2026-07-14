@@ -7222,6 +7222,13 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2380350852": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T20:49:50.909Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-07-31"
+  },
   "2380368717": {
     "status": "Closed",
     "ts": "2026-07-11T15:15:52.989Z",
