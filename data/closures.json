@@ -8147,18 +8147,6 @@
     "dm": "Juan Carrillo",
     "store": "Calumet City"
   },
-  "2402760472": {
-    "status": "Closed",
-    "ts": "2026-07-14T13:07:46.522Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
-  },
-  "2402882047": {
-    "status": "Closed",
-    "ts": "2026-07-14T13:07:48.626Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
-  },
   "2402882328": {
     "status": "Closed",
     "ts": "2026-07-12T17:03:39.302Z",
@@ -8220,6 +8208,13 @@
     "ts": "2026-07-13T16:42:43.439Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond"
+  },
+  "2404948179": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T13:14:54.899Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-07-18"
   },
   "2405070660": {
     "status": "Pending Install",
@@ -10068,10 +10063,10 @@
   },
   "1001300994642107": {
     "status": "Pending Install",
-    "ts": "2026-07-14T13:13:29.538Z",
+    "ts": "2026-06-24T13:40:15.469Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville",
-    "pendingUntil": "2026-07-20"
+    "pendingUntil": "2026-07-01"
   },
   "1001301213462103": {
     "status": "Pending Install",
@@ -10604,10 +10599,10 @@
   },
   "1001304152352103": {
     "status": "Pending Install",
-    "ts": "2026-07-14T13:12:54.442Z",
+    "ts": "2026-07-08T21:10:33.777Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville",
-    "pendingUntil": "2026-07-21"
+    "pendingUntil": "2026-07-09"
   },
   "1001303904782104": {
     "status": "Pending Install",
@@ -11012,26 +11007,5 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-07-20"
-  },
-  "1001302797142103": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T13:13:54.603Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-07-17"
-  },
-  "1001302939402100": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T13:14:22.730Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-07-16"
-  },
-  "1001303344252106": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T13:14:49.882Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-07-22"
   }
 }
