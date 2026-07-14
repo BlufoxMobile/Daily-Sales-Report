@@ -7944,8 +7944,8 @@
     "store": "Evanston"
   },
   "2393759984": {
-    "status": "Closed",
-    "ts": "2026-07-14T21:37:19.372Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:04:44.659Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -8007,6 +8007,12 @@
   "2395877628": {
     "status": "Closed",
     "ts": "2026-07-14T22:04:40.728Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "2396496780": {
+    "status": "Can Not Close",
+    "ts": "2026-07-14T22:04:47.566Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
