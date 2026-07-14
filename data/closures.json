@@ -8461,11 +8461,25 @@
     "store": "Glenview",
     "pendingUntil": "2026-07-21"
   },
+  "2407299663": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T21:55:02.643Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-07-21"
+  },
   "2407443695": {
     "status": "Closed",
     "ts": "2026-07-14T21:05:51.474Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
+  },
+  "2407447207": {
+    "status": "Pending Install",
+    "ts": "2026-07-14T21:55:05.571Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-07-21"
   },
   "2407454224": {
     "status": "Pending Install",
