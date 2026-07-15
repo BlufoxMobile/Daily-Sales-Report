@@ -8297,6 +8297,12 @@
     "store": "Oak Ridge",
     "pendingUntil": "2026-07-16"
   },
+  "2400939248": {
+    "status": "Closed",
+    "ts": "2026-07-15T19:08:26.397Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
+  },
   "2401457640": {
     "status": "Pending Install",
     "ts": "2026-07-13T22:45:16.600Z",
