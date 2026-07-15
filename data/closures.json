@@ -11474,5 +11474,40 @@
     "ts": "2026-07-14T22:04:07.543Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "1002291879502053": {
+    "status": "Pending Install",
+    "ts": "2026-07-15T14:03:08.432Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-07-17"
+  },
+  "1002292252942056": {
+    "status": "Pending Install",
+    "ts": "2026-07-15T14:03:57.882Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-07-15"
+  },
+  "1002292601712051": {
+    "status": "Pending Install",
+    "ts": "2026-07-15T14:05:35.998Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-08-01"
+  },
+  "1002293177092050": {
+    "status": "Pending Install",
+    "ts": "2026-07-15T14:06:19.201Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-07-24"
+  },
+  "1002293552662055": {
+    "status": "Pending Install",
+    "ts": "2026-07-15T14:07:00.740Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-07-22"
   }
 }
