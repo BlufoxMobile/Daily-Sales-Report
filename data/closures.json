@@ -11528,5 +11528,12 @@
     "ts": "2026-07-15T14:08:31.730Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
+  },
+  "1002291058412058": {
+    "status": "Pending Install",
+    "ts": "2026-07-15T18:19:57.325Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-07-16"
   }
 }
