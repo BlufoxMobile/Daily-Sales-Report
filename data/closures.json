@@ -10674,7 +10674,7 @@
   },
   "1002289143772056": {
     "status": "Closed",
-    "ts": "2026-07-13T22:48:09.396Z",
+    "ts": "2026-07-15T14:10:46.685Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
@@ -11509,5 +11509,18 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-07-22"
+  },
+  "1002293196562059": {
+    "status": "Pending Install",
+    "ts": "2026-07-15T14:07:33.332Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-07-24"
+  },
+  "1002293814752058": {
+    "status": "Closed",
+    "ts": "2026-07-15T14:08:31.730Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   }
 }
