@@ -26,7 +26,7 @@
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
     "Machesney Park": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
-  "updatedAt": "2026-07-15T13:31:48.700Z",
+  "updatedAt": "2026-07-16T15:22:25.598Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -44,6 +44,7 @@
     "Kildeer Xfinity Store",
     "Machesney Park",
     "Michigan City Xfinity Store",
+    "Oak Lawn Xfinity Store",
     "Oak Ridge Xfinity Store",
     "Round Lake Beach Xfinity Store",
     "Schererville Xfinity Store",
@@ -188,7 +189,8 @@
     "Bourbonnais Xfinity Store": "Jamil Soto",
     "South Bend Xfinity Store": "Jason Lilly",
     "South Skokie Xfinity Store": "Ozzie Garcia",
-    "Machesney Park": "James O'Rourke"
+    "Machesney Park": "James O'Rourke",
+    "Oak Lawn Xfinity Store": "Jorge Bortero"
   },
   "storeEmployees": {
     "Greeneville Xfinity Store": [
