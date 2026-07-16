@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-16T13:14:25.946443+00:00",
+  "updatedAt": "2026-07-16T15:23:03.093592+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -184,6 +184,11 @@
       "Dalton Hogan",
       "Hannah Ingram",
       "Keegan Canada",
+      "New Hire",
+      "DM or Director Submission"
+    ],
+    "Oak Lawn Xfinity Store": [
+      "Jorge Bortero",
       "New Hire",
       "DM or Director Submission"
     ],
