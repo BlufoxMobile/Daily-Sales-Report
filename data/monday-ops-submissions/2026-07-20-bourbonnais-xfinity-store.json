@@ -1,5 +1,5 @@
 {
-  "submittedAt": "2026-07-20T15:39:21.653Z",
+  "submittedAt": "2026-07-20T15:40:27.123Z",
   "store": "Bourbonnais Xfinity Store",
   "name": "Jamil Soto",
   "email": "jSoto@blufoxmobile.com",
@@ -17,10 +17,10 @@
   },
   "notes": "",
   "linksOpened": {
-    "depositOrderForm": true,
-    "pciChecklist": true,
-    "uniformOrderForm": true,
-    "cashFloatTracker": true
+    "depositOrderForm": false,
+    "pciChecklist": false,
+    "uniformOrderForm": false,
+    "cashFloatTracker": false
   },
   "photoUrls": {
     "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-07-20-bourbonnais-xfinity-store/week1.jpg",
