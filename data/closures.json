@@ -8476,11 +8476,10 @@
     "store": "Michigan City"
   },
   "2404461339": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:32:55.253Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-23T19:59:14.181Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-07-18"
+    "store": "Oak Ridge"
   },
   "2404677493": {
     "status": "Closed",
