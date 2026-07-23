@@ -8576,6 +8576,12 @@
     "store": "Glenview",
     "pendingUntil": "2026-07-21"
   },
+  "2407581261": {
+    "status": "Closed",
+    "ts": "2026-07-14T21:48:33.668Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2407627121": {
     "status": "Pending Install",
     "ts": "2026-07-14T20:58:47.518Z",
