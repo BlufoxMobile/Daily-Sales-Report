@@ -8658,6 +8658,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2416538794": {
+    "status": "Can Not Close",
+    "ts": "2026-07-24T14:58:50.578Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2417678780": {
     "status": "Closed",
     "ts": "2026-07-24T14:30:59.693Z",
@@ -11792,5 +11798,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-07-29"
+  },
+  "1001306554082105": {
+    "status": "Pending Install",
+    "ts": "2026-07-24T14:59:17.746Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville",
+    "pendingUntil": "2026-07-27"
   }
 }
