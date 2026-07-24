@@ -8747,6 +8747,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2415773382": {
+    "status": "Closed",
+    "ts": "2026-07-24T20:05:44.049Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2416501066": {
     "status": "Closed",
     "ts": "2026-07-24T19:27:01.475Z",
@@ -8800,6 +8806,12 @@
     "ts": "2026-07-24T19:21:37.756Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "2418584528": {
+    "status": "Can Not Close",
+    "ts": "2026-07-24T20:19:01.374Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2419027020": {
     "status": "Closed",
