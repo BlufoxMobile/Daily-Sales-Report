@@ -8819,11 +8819,29 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2420797505": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:55:16.788Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
+  },
   "2420820727": {
     "status": "Can Not Close",
     "ts": "2026-07-24T19:37:11.697Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2420905624": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:59:09.468Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
+  },
+  "2420924261": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:59:10.643Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
   },
   "1001290369922103": {
     "status": "Pending Install",
