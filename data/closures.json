@@ -8701,11 +8701,17 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2418356963": {
+  "2418224353": {
     "status": "Closed",
-    "ts": "2026-07-24T18:58:51.662Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "ts": "2026-07-24T18:57:35.577Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
+  "2418584528": {
+    "status": "Closed",
+    "ts": "2026-07-24T18:59:02.985Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "1001290369922103": {
     "status": "Pending Install",
