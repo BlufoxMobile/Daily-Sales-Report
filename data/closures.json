@@ -8320,11 +8320,10 @@
     "store": "Oak Ridge"
   },
   "2401763298": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T22:45:10.832Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-24T22:07:28.204Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-20"
+    "store": "Evanston"
   },
   "2402314468": {
     "status": "Closed",
@@ -8930,6 +8929,24 @@
     "ts": "2026-07-24T20:22:52.583Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2420955329": {
+    "status": "Closed",
+    "ts": "2026-07-24T22:06:24.388Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "2421159557": {
+    "status": "Closed",
+    "ts": "2026-07-24T22:06:25.716Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "2421159758": {
+    "status": "Closed",
+    "ts": "2026-07-24T22:06:27.524Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "1001290369922103": {
     "status": "Pending Install",
