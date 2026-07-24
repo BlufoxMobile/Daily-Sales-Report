@@ -8747,12 +8747,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2415773382": {
-    "status": "Closed",
-    "ts": "2026-07-24T20:05:44.049Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
-  },
   "2416501066": {
     "status": "Closed",
     "ts": "2026-07-24T19:27:01.475Z",
@@ -8806,12 +8800,6 @@
     "ts": "2026-07-24T19:21:37.756Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
-  },
-  "2418584528": {
-    "status": "Can Not Close",
-    "ts": "2026-07-24T20:19:01.374Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
   },
   "2419027020": {
     "status": "Closed",
@@ -10435,11 +10423,10 @@
     "store": "Bourbonnais"
   },
   "1002287628882051": {
-    "status": "Pending Install",
-    "ts": "2026-07-11T21:58:17.736Z",
+    "status": "Closed",
+    "ts": "2026-07-24T20:19:10.394Z",
     "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-07-18"
+    "store": "Burbank"
   },
   "1002287793622050": {
     "status": "Pending Install",
