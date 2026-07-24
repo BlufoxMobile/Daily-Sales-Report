@@ -7918,11 +7918,10 @@
     "store": "Elkhart"
   },
   "2393375122": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T22:45:00.776Z",
+    "status": "Closed",
+    "ts": "2026-07-24T22:02:10.452Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-20"
+    "store": "Evanston"
   },
   "2393503670": {
     "status": "Closed",
