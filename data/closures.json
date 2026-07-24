@@ -8765,6 +8765,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2417920208": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:27:44.346Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2418356963": {
     "status": "Closed",
     "ts": "2026-07-24T18:58:51.662Z",
@@ -8774,6 +8780,12 @@
   "2418395074": {
     "status": "Closed",
     "ts": "2026-07-24T19:21:37.756Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
+  "2418850226": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:32:45.954Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
