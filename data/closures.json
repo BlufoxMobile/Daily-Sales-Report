@@ -7269,6 +7269,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2380675582": {
+    "status": "Can Not Close",
+    "ts": "2026-07-24T19:15:41.973Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2380798779": {
     "status": "Closed",
     "ts": "2026-06-29T21:56:59.537Z",
@@ -8494,11 +8500,10 @@
     "store": "South Skokie"
   },
   "2404948179": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T13:14:54.899Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-24T19:13:20.181Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-07-18"
+    "store": "Oak Ridge"
   },
   "2405070660": {
     "status": "Pending Install",
@@ -8596,12 +8601,6 @@
     "store": "Glenview",
     "pendingUntil": "2026-07-21"
   },
-  "2408766695": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:14:34.475Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
-  },
   "2408832323": {
     "status": "Closed",
     "ts": "2026-07-15T22:50:47.177Z",
@@ -8638,12 +8637,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
-  "2411724732": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:10:24.204Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
-  },
   "2412543618": {
     "status": "Closed",
     "ts": "2026-07-24T19:03:07.769Z",
@@ -8666,6 +8659,12 @@
   "2412699818": {
     "status": "Closed",
     "ts": "2026-07-24T19:10:49.622Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
+  "2412757120": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:10:51.967Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
@@ -8736,12 +8735,6 @@
     "ts": "2026-07-24T18:58:51.662Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
-  },
-  "2418395074": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:10:42.683Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
   },
   "2419302276": {
     "status": "Closed",
