@@ -7822,7 +7822,7 @@
   },
   "2389064155": {
     "status": "Closed",
-    "ts": "2026-07-24T19:02:16.317Z",
+    "ts": "2026-07-13T21:46:02.316Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -8596,12 +8596,6 @@
     "store": "Glenview",
     "pendingUntil": "2026-07-21"
   },
-  "2408766695": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:03:51.132Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
-  },
   "2408832323": {
     "status": "Closed",
     "ts": "2026-07-15T22:50:47.177Z",
@@ -8706,6 +8700,18 @@
     "ts": "2026-07-24T14:30:58.389Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2418356963": {
+    "status": "Closed",
+    "ts": "2026-07-24T18:58:51.662Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2419302276": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:00:17.941Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "1001290369922103": {
     "status": "Pending Install",
@@ -11303,7 +11309,7 @@
   },
   "1002292788552056": {
     "status": "Closed",
-    "ts": "2026-07-24T19:02:18.716Z",
+    "ts": "2026-07-13T21:49:36.452Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -11854,6 +11860,25 @@
   "1002294602982055": {
     "status": "Closed",
     "ts": "2026-07-24T18:44:50.333Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002295137202059": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:02:54.157Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002295868662059": {
+    "status": "Pending Install",
+    "ts": "2026-07-24T19:03:20.091Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-07-28"
+  },
+  "1002295911192054": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:04:39.615Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   }
