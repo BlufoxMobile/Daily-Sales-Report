@@ -1840,8 +1840,8 @@
     "store": "Evanston"
   },
   "2306857753": {
-    "status": "Can Not Close",
-    "ts": "2026-07-24T20:05:37.350Z",
+    "status": "Closed",
+    "ts": "2026-07-14T21:46:12.268Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -8770,6 +8770,12 @@
     "ts": "2026-07-24T19:29:01.627Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2416843321": {
+    "status": "Closed",
+    "ts": "2026-07-24T20:05:41.785Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2417381337": {
     "status": "Closed",
