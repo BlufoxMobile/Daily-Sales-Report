@@ -8755,6 +8755,12 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2416325030": {
+    "status": "Closed",
+    "ts": "2026-07-24T22:19:09.540Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2416485808": {
     "status": "Can Not Close",
     "ts": "2026-07-24T20:31:34.348Z",
@@ -8805,7 +8811,7 @@
   },
   "2417064639": {
     "status": "Pending Install",
-    "ts": "2026-07-24T22:16:05.484Z",
+    "ts": "2026-07-24T22:16:15.411Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-07-31"
