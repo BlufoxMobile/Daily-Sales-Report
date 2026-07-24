@@ -6683,8 +6683,8 @@
     "store": "Evanston"
   },
   "2374318694": {
-    "status": "Closed",
-    "ts": "2026-07-14T22:11:12.013Z",
+    "status": "Can Not Close",
+    "ts": "2026-07-24T20:05:49.886Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -11155,7 +11155,7 @@
   },
   "1002290535532058": {
     "status": "Closed",
-    "ts": "2026-07-14T21:40:48.524Z",
+    "ts": "2026-07-24T20:05:56.654Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
