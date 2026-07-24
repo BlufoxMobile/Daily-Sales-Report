@@ -8002,11 +8002,10 @@
     "store": "Uptown"
   },
   "2395757397": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T22:45:03.627Z",
+    "status": "Closed",
+    "ts": "2026-07-24T22:03:55.037Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-20"
+    "store": "Evanston"
   },
   "2395877628": {
     "status": "Can Not Close",
