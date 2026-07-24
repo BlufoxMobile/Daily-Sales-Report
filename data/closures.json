@@ -8494,11 +8494,10 @@
     "store": "South Skokie"
   },
   "2404948179": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T13:14:54.899Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-24T19:13:20.181Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-07-18"
+    "store": "Oak Ridge"
   },
   "2405070660": {
     "status": "Pending Install",
@@ -8654,6 +8653,12 @@
   "2412699818": {
     "status": "Closed",
     "ts": "2026-07-24T19:10:49.622Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
+  "2412757120": {
+    "status": "Closed",
+    "ts": "2026-07-24T19:10:51.967Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
