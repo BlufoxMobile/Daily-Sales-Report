@@ -8689,12 +8689,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2416843321": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:00:00.626Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
-  },
   "2417678780": {
     "status": "Closed",
     "ts": "2026-07-24T14:30:59.693Z",
@@ -8707,17 +8701,17 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2418224353": {
+  "2418356963": {
     "status": "Closed",
-    "ts": "2026-07-24T18:57:35.577Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
+    "ts": "2026-07-24T18:58:51.662Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
-  "2418584528": {
+  "2419302276": {
     "status": "Closed",
-    "ts": "2026-07-24T18:59:02.985Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
+    "ts": "2026-07-24T19:00:17.941Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "1001290369922103": {
     "status": "Pending Install",
