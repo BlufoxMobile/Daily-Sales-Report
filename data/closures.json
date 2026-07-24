@@ -8632,6 +8632,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2412569965": {
+    "status": "Pending Install",
+    "ts": "2026-07-24T18:44:59.319Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-08-03"
+  },
   "2412617835": {
     "status": "Cancelled Order",
     "ts": "2026-07-24T14:24:04.069Z",
