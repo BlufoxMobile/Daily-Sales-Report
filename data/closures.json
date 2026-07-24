@@ -8435,11 +8435,10 @@
     "store": "Evanston"
   },
   "2403245760": {
-    "status": "Pending Install",
-    "ts": "2026-07-13T22:45:21.352Z",
+    "status": "Closed",
+    "ts": "2026-07-24T22:10:41.709Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-07-20"
+    "store": "Evanston"
   },
   "2403348822": {
     "status": "Closed",
