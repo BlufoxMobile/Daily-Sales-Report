@@ -8765,12 +8765,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2417920208": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:27:44.346Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
-  },
   "2418356963": {
     "status": "Closed",
     "ts": "2026-07-24T18:58:51.662Z",
@@ -8783,29 +8777,17 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
-  "2418850226": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:32:45.954Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
-  },
   "2419302276": {
     "status": "Closed",
     "ts": "2026-07-24T19:00:17.941Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
-  "2420727573": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:35:52.361Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
-  },
-  "2421076692": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:35:51.402Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
+  "2420820727": {
+    "status": "Can Not Close",
+    "ts": "2026-07-24T19:37:11.697Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "1001290369922103": {
     "status": "Pending Install",
