@@ -8627,8 +8627,8 @@
     "store": "Hammond"
   },
   "2412617835": {
-    "status": "Closed",
-    "ts": "2026-07-24T14:24:01.966Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-24T14:24:04.069Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
@@ -8651,6 +8651,18 @@
     "ts": "2026-07-20T23:41:01.302Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond"
+  },
+  "2417678780": {
+    "status": "Closed",
+    "ts": "2026-07-24T14:30:59.693Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
+  "2417680056": {
+    "status": "Closed",
+    "ts": "2026-07-24T14:30:58.389Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "1001290369922103": {
     "status": "Pending Install",
