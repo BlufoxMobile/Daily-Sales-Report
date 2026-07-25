@@ -8337,6 +8337,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2402589079": {
+    "status": "Pending Install",
+    "ts": "2026-07-25T18:04:00.849Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-08-01"
+  },
   "2402715372": {
     "status": "Closed",
     "ts": "2026-07-14T13:07:44.315Z",
