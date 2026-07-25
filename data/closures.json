@@ -8913,6 +8913,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2420375871": {
+    "status": "Closed",
+    "ts": "2026-07-25T23:05:15.551Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
+  },
   "2420519131": {
     "status": "Closed",
     "ts": "2026-07-24T20:28:02.861Z",
@@ -8930,6 +8936,12 @@
     "ts": "2026-07-24T22:06:20.108Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2420676166": {
+    "status": "Closed",
+    "ts": "2026-07-25T23:05:14.380Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2420797505": {
     "status": "Closed",
@@ -8996,6 +9008,13 @@
     "ts": "2026-07-24T22:06:27.524Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2422338826": {
+    "status": "Pending Install",
+    "ts": "2026-07-25T23:08:37.834Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-08-01"
   },
   "1001290369922103": {
     "status": "Pending Install",
