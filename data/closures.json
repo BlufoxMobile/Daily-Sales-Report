@@ -12163,5 +12163,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-07-31"
+  },
+  "1002294340572051": {
+    "status": "Pending Install",
+    "ts": "2026-07-25T19:55:50.722Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-08-01"
   }
 }
