@@ -7592,7 +7592,7 @@
   },
   "2384574815": {
     "status": "Closed",
-    "ts": "2026-07-11T23:28:23.014Z",
+    "ts": "2026-07-26T00:10:35.923Z",
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
@@ -12013,11 +12013,10 @@
     "store": "Schererville"
   },
   "1002291058412058": {
-    "status": "Pending Install",
-    "ts": "2026-07-15T18:19:57.325Z",
+    "status": "Closed",
+    "ts": "2026-07-26T00:10:34.605Z",
     "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-07-16"
+    "store": "Burbank"
   },
   "1002293865042052": {
     "status": "Pending Install",
