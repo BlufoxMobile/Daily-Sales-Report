@@ -12663,5 +12663,12 @@
     "ts": "2026-07-27T16:52:24.276Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "1002296159762053": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T23:01:49.220Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero",
+    "pendingUntil": "2026-07-29"
   }
 }
