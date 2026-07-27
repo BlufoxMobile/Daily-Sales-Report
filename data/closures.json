@@ -9221,6 +9221,12 @@
     "store": "Glenview",
     "pendingUntil": "2026-08-03"
   },
+  "2423840900": {
+    "status": "Closed",
+    "ts": "2026-07-27T17:15:46.780Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
