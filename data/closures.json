@@ -12070,7 +12070,7 @@
   },
   "1002293814752058": {
     "status": "Closed",
-    "ts": "2026-07-15T14:08:31.730Z",
+    "ts": "2026-07-27T16:28:19.642Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
@@ -12361,10 +12361,24 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "1002295665922052": {
-    "status": "Closed",
-    "ts": "2026-07-27T16:30:23.950Z",
+  "1002294083042056": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T16:29:17.217Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart"
+    "store": "Schererville",
+    "pendingUntil": "2026-08-01"
+  },
+  "1002294792072055": {
+    "status": "Closed",
+    "ts": "2026-07-27T16:30:13.189Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
+  "1002294753152052": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T16:31:08.776Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-07-28"
   }
 }
