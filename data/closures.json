@@ -8913,6 +8913,13 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2419054345": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T14:19:55.928Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart",
+    "pendingUntil": "2026-08-03"
+  },
   "2419227756": {
     "status": "Closed",
     "ts": "2026-07-24T22:28:12.173Z",
