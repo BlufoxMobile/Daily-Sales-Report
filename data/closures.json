@@ -9214,6 +9214,13 @@
     "store": "Burbank",
     "pendingUntil": "2026-08-01"
   },
+  "2422500342": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T17:15:32.151Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-08-03"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
