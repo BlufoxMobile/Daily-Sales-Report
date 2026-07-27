@@ -9148,6 +9148,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2421810043": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T17:13:04.233Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-08-03"
+  },
   "2422002915": {
     "status": "Closed",
     "ts": "2026-07-27T14:16:02.177Z",
@@ -9159,6 +9166,12 @@
     "ts": "2026-07-27T14:14:14.998Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2422017434": {
+    "status": "Closed",
+    "ts": "2026-07-27T17:15:25.658Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2422023772": {
     "status": "Closed",
