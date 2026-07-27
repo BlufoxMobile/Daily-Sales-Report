@@ -8883,6 +8883,12 @@
     "store": "Evanston",
     "pendingUntil": "2026-07-31"
   },
+  "2417213830": {
+    "status": "Closed",
+    "ts": "2026-07-27T16:44:46.568Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2417381337": {
     "status": "Closed",
     "ts": "2026-07-24T19:19:48.930Z",
@@ -12468,6 +12474,12 @@
   "1002295140952054": {
     "status": "Closed",
     "ts": "2026-07-27T16:22:26.260Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
+  "1002295125402059": {
+    "status": "Closed",
+    "ts": "2026-07-27T16:43:28.109Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   }
