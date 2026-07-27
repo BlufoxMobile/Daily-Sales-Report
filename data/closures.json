@@ -8544,6 +8544,13 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
+  "2407004218": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T20:24:59.367Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-08-07"
+  },
   "2407056653": {
     "status": "Closed",
     "ts": "2026-07-14T21:23:24.834Z",
