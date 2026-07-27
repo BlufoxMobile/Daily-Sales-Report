@@ -8619,6 +8619,13 @@
     "store": "Glenview",
     "pendingUntil": "2026-07-21"
   },
+  "2408684579": {
+    "status": "Pending Install",
+    "ts": "2026-07-27T16:21:27.763Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-08-03"
+  },
   "2408766695": {
     "status": "Closed",
     "ts": "2026-07-24T19:14:34.475Z",
@@ -12335,5 +12342,11 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-08-13"
+  },
+  "1002293896142053": {
+    "status": "Closed",
+    "ts": "2026-07-27T16:18:24.817Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   }
 }
