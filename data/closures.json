@@ -12388,11 +12388,16 @@
     "store": "Schererville",
     "pendingUntil": "2026-08-01"
   },
-  "1002295156262059": {
-    "status": "Pending Install",
-    "ts": "2026-07-27T16:33:33.544Z",
+  "1002295665922052": {
+    "status": "Closed",
+    "ts": "2026-07-27T16:30:23.950Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-07-30"
+    "store": "Elkhart"
+  },
+  "1002295837092057": {
+    "status": "Closed",
+    "ts": "2026-07-27T16:33:46.615Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
