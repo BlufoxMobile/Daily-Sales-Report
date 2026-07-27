@@ -8664,10 +8664,11 @@
     "store": "Hammond"
   },
   "2411258756": {
-    "status": "Closed",
-    "ts": "2026-07-24T18:27:35.937Z",
+    "status": "Pending Install",
+    "ts": "2026-07-27T14:34:10.783Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-08-08"
   },
   "2411639926": {
     "status": "Closed",
