@@ -8270,7 +8270,7 @@
   },
   "2400524884": {
     "status": "Closed",
-    "ts": "2026-07-14T21:45:50.932Z",
+    "ts": "2026-07-27T16:18:19.891Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -8588,11 +8588,10 @@
     "store": "Uptown"
   },
   "2407454224": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T20:57:27.485Z",
+    "status": "Closed",
+    "ts": "2026-07-27T16:18:22.218Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-07-21"
+    "store": "Glenview"
   },
   "2407570266": {
     "status": "Pending Install",
@@ -8608,11 +8607,10 @@
     "store": "Oak Ridge"
   },
   "2407627121": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T20:58:47.518Z",
+    "status": "Closed",
+    "ts": "2026-07-27T16:18:21.106Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-07-21"
+    "store": "Glenview"
   },
   "2407771743": {
     "status": "Pending Install",
