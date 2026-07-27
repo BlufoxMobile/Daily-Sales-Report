@@ -8656,18 +8656,6 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
-  "2410706566": {
-    "status": "Closed",
-    "ts": "2026-07-27T16:38:16.206Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "2411079565": {
-    "status": "Closed",
-    "ts": "2026-07-27T16:42:01.045Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2411238084": {
     "status": "Closed",
     "ts": "2026-07-24T19:43:28.095Z",
@@ -8774,12 +8762,6 @@
     "store": "Elkhart",
     "pendingUntil": "2026-07-30"
   },
-  "2414242577": {
-    "status": "Closed",
-    "ts": "2026-07-27T16:43:25.039Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2414322834": {
     "status": "Can Not Close",
     "ts": "2026-07-27T14:37:43.279Z",
@@ -8882,12 +8864,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-07-31"
-  },
-  "2417213830": {
-    "status": "Closed",
-    "ts": "2026-07-27T16:44:46.568Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
   },
   "2417381337": {
     "status": "Closed",
@@ -11250,10 +11226,11 @@
     "pendingUntil": "2026-07-13"
   },
   "1002289143772056": {
-    "status": "Closed",
-    "ts": "2026-07-15T14:10:46.685Z",
+    "status": "Pending Install",
+    "ts": "2026-07-27T16:45:17.610Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville"
+    "store": "Schererville",
+    "pendingUntil": "2026-08-08"
   },
   "1002289901022058": {
     "status": "Pending Install",
@@ -12470,17 +12447,5 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-08-07"
-  },
-  "1002295140952054": {
-    "status": "Closed",
-    "ts": "2026-07-27T16:22:26.260Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "1002295125402059": {
-    "status": "Closed",
-    "ts": "2026-07-27T16:43:28.109Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
   }
 }
