@@ -8301,7 +8301,7 @@
   },
   "2400739245": {
     "status": "Closed",
-    "ts": "2026-07-28T19:17:53.111Z",
+    "ts": "2026-07-13T22:16:15.458Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
@@ -8688,23 +8688,11 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
-  "2408950130": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:14:24.575Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
-  },
   "2408963757": {
     "status": "Closed",
     "ts": "2026-07-15T22:44:36.592Z",
     "dm": "Juan Carrillo",
     "store": "Burbank"
-  },
-  "2408989558": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:14:22.831Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2409172876": {
     "status": "Closed",
@@ -9375,6 +9363,12 @@
     "ts": "2026-07-27T17:15:50.780Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "2424961379": {
+    "status": "Closed",
+    "ts": "2026-07-28T19:17:52.595Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   },
   "2425902339": {
     "status": "Closed",
@@ -12865,12 +12859,5 @@
     "ts": "2026-07-28T18:46:24.199Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
-  },
-  "1002294300422057": {
-    "status": "Pending Install",
-    "ts": "2026-07-28T19:14:56.062Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais",
-    "pendingUntil": "2026-08-04"
   }
 }
