@@ -12811,5 +12811,17 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-04"
+  },
+  "1002294960512056": {
+    "status": "Closed",
+    "ts": "2026-07-28T18:42:09.085Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "1002295140122054": {
+    "status": "Closed",
+    "ts": "2026-07-28T18:42:12.790Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   }
 }
