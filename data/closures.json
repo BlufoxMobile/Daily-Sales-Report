@@ -8786,8 +8786,8 @@
     "store": "Burbank"
   },
   "2412543618": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:03:07.769Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-28T19:35:51.146Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
@@ -9387,6 +9387,12 @@
     "ts": "2026-07-27T17:15:46.780Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "2423898654": {
+    "status": "Closed",
+    "ts": "2026-07-28T19:38:40.452Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2423904597": {
     "status": "Closed",
