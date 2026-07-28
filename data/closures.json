@@ -8786,8 +8786,8 @@
     "store": "Burbank"
   },
   "2412543618": {
-    "status": "Closed",
-    "ts": "2026-07-24T19:03:07.769Z",
+    "status": "Cancelled Order",
+    "ts": "2026-07-28T19:35:51.146Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
@@ -9125,12 +9125,6 @@
     "ts": "2026-07-24T19:00:17.941Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
-  },
-  "2419314627": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:33:32.597Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2419641392": {
     "status": "Closed",
