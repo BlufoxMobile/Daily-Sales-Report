@@ -7869,6 +7869,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2390755562": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-28T19:55:36.841Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
+  },
   "2390789137": {
     "status": "Closed",
     "ts": "2026-07-14T21:29:33.959Z",
