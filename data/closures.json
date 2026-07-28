@@ -2463,7 +2463,7 @@
   },
   "2315852472": {
     "status": "Closed",
-    "ts": "2026-07-11T17:57:45.408Z",
+    "ts": "2026-07-28T20:17:24.687Z",
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
@@ -9293,12 +9293,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2421731272": {
-    "status": "Can Not Close",
-    "ts": "2026-07-28T19:53:03.834Z",
-    "dm": "Matthew Brooks",
-    "store": "Johnson City"
-  },
   "2421793662": {
     "status": "Closed",
     "ts": "2026-07-28T19:39:32.378Z",
@@ -9509,12 +9503,6 @@
     "ts": "2026-07-28T19:47:23.637Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
-  },
-  "2426285196": {
-    "status": "Closed",
-    "ts": "2026-07-28T20:14:08.347Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
   },
   "1001290369922103": {
     "status": "Pending Install",
