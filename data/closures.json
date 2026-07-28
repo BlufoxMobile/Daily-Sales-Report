@@ -7574,7 +7574,7 @@
   },
   "2384562666": {
     "status": "Closed",
-    "ts": "2026-07-28T19:46:38.372Z",
+    "ts": "2026-07-01T16:47:49.920Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
@@ -9240,12 +9240,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2421002047": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:44:03.292Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
-  },
   "2421105164": {
     "status": "Closed",
     "ts": "2026-07-25T23:05:11.868Z",
@@ -9462,6 +9456,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart",
     "pendingUntil": "2026-08-06"
+  },
+  "2426032896": {
+    "status": "Closed",
+    "ts": "2026-07-28T19:47:23.637Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "1001290369922103": {
     "status": "Pending Install",
@@ -12935,6 +12935,13 @@
   "1002294300422057": {
     "status": "Pending Install",
     "ts": "2026-07-28T19:27:27.709Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-08-04"
+  },
+  "1002295901722050": {
+    "status": "Pending Install",
+    "ts": "2026-07-28T19:33:36.109Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais",
     "pendingUntil": "2026-08-04"
