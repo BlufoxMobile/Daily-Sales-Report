@@ -8786,8 +8786,8 @@
     "store": "Burbank"
   },
   "2412543618": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-28T19:35:51.146Z",
+    "status": "Closed",
+    "ts": "2026-07-24T19:03:07.769Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
@@ -9064,6 +9064,12 @@
     "ts": "2026-07-24T20:19:01.374Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2418852355": {
+    "status": "Closed",
+    "ts": "2026-07-28T19:36:02.033Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank"
   },
   "2418886017": {
     "status": "Closed",
