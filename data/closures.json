@@ -7574,7 +7574,7 @@
   },
   "2384562666": {
     "status": "Closed",
-    "ts": "2026-07-28T19:46:38.372Z",
+    "ts": "2026-07-01T16:47:49.920Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
@@ -7964,6 +7964,12 @@
     "ts": "2026-07-11T23:55:13.850Z",
     "dm": "Juan Carrillo",
     "store": "Burbank"
+  },
+  "2394124155": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-28T19:53:27.761Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   },
   "2394215432": {
     "status": "Closed",
@@ -8549,6 +8555,12 @@
     "ts": "2026-07-20T19:14:44.308Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
+  },
+  "2406500812": {
+    "status": "Can Not Close",
+    "ts": "2026-07-28T19:48:22.239Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   },
   "2406866675": {
     "status": "Closed",
@@ -9193,8 +9205,8 @@
     "store": "Greeneville"
   },
   "2420797505": {
-    "status": "Can Not Close",
-    "ts": "2026-07-28T19:53:02.069Z",
+    "status": "Closed",
+    "ts": "2026-07-24T19:55:16.788Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
@@ -9239,12 +9251,6 @@
     "ts": "2026-07-24T22:06:24.388Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2421002047": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:44:03.292Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
   },
   "2421105164": {
     "status": "Closed",
@@ -9349,12 +9355,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview",
     "pendingUntil": "2026-08-03"
-  },
-  "2422666085": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:51:15.501Z",
-    "dm": "Matthew Brooks",
-    "store": "Johnson City"
   },
   "2423273627": {
     "status": "Closed",
