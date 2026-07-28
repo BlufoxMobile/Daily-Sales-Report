@@ -8301,7 +8301,7 @@
   },
   "2400739245": {
     "status": "Closed",
-    "ts": "2026-07-13T22:16:15.458Z",
+    "ts": "2026-07-28T19:17:53.111Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
@@ -12140,7 +12140,7 @@
   },
   "1002292998722051": {
     "status": "Pending Install",
-    "ts": "2026-07-28T19:06:02.761Z",
+    "ts": "2026-07-13T22:53:19.632Z",
     "dm": "Juan Carrillo",
     "store": "Dekalb",
     "pendingUntil": "2026-07-20"
@@ -12865,27 +12865,6 @@
     "ts": "2026-07-28T18:46:24.199Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
-  },
-  "1002296793742057": {
-    "status": "Pending Install",
-    "ts": "2026-07-28T19:05:56.625Z",
-    "dm": "Juan Carrillo",
-    "store": "Dekalb",
-    "pendingUntil": "2026-08-04"
-  },
-  "1002295653902058": {
-    "status": "Pending Install",
-    "ts": "2026-07-28T19:06:23.777Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort",
-    "pendingUntil": "2026-08-04"
-  },
-  "1002294553452058": {
-    "status": "Pending Install",
-    "ts": "2026-07-28T19:06:30.473Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort",
-    "pendingUntil": "2026-08-04"
   },
   "1002294300422057": {
     "status": "Pending Install",
