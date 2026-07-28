@@ -8786,8 +8786,8 @@
     "store": "Burbank"
   },
   "2412543618": {
-    "status": "Cancelled Order",
-    "ts": "2026-07-28T19:35:51.146Z",
+    "status": "Closed",
+    "ts": "2026-07-24T19:03:07.769Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
@@ -8803,6 +8803,12 @@
     "ts": "2026-07-24T14:24:04.069Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2412679835": {
+    "status": "Cancelled Order",
+    "ts": "2026-07-28T19:40:41.789Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   },
   "2412699818": {
     "status": "Closed",
@@ -9252,12 +9258,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2421793662": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:39:32.378Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
-  },
   "2421810043": {
     "status": "Pending Install",
     "ts": "2026-07-27T17:13:04.233Z",
@@ -9393,12 +9393,6 @@
     "ts": "2026-07-27T17:15:46.780Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
-  },
-  "2423898654": {
-    "status": "Closed",
-    "ts": "2026-07-28T19:38:40.452Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
   },
   "2423904597": {
     "status": "Closed",
