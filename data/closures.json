@@ -8688,6 +8688,12 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
+  "2408950130": {
+    "status": "Closed",
+    "ts": "2026-07-28T19:27:24.069Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
   "2408963757": {
     "status": "Closed",
     "ts": "2026-07-15T22:44:36.592Z",
@@ -12877,5 +12883,12 @@
     "ts": "2026-07-28T19:17:54.803Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "1002294300422057": {
+    "status": "Pending Install",
+    "ts": "2026-07-28T19:27:27.709Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-08-04"
   }
 }
