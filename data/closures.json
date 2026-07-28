@@ -8550,6 +8550,18 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
+  "2406958845": {
+    "status": "Closed",
+    "ts": "2026-07-28T18:29:34.949Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "2406995783": {
+    "status": "Closed",
+    "ts": "2026-07-28T18:29:33.813Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2407004218": {
     "status": "Pending Install",
     "ts": "2026-07-27T20:24:59.367Z",
@@ -8581,6 +8593,12 @@
     "ts": "2026-07-15T22:41:53.983Z",
     "dm": "Juan Carrillo",
     "store": "Burbank"
+  },
+  "2407140511": {
+    "status": "Can Not Close",
+    "ts": "2026-07-28T18:18:52.037Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2407287886": {
     "status": "Closed",
