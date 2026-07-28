@@ -9370,6 +9370,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2425825228": {
+    "status": "Closed",
+    "ts": "2026-07-28T19:19:01.697Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2425902339": {
     "status": "Closed",
     "ts": "2026-07-28T18:53:31.490Z",
@@ -12859,5 +12865,11 @@
     "ts": "2026-07-28T18:46:24.199Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "1002296855732053": {
+    "status": "Closed",
+    "ts": "2026-07-28T19:17:54.803Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   }
 }
