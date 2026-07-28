@@ -5182,7 +5182,7 @@
   },
   "2351108415": {
     "status": "Closed",
-    "ts": "2026-07-28T19:05:20.081Z",
+    "ts": "2026-07-24T18:58:10.182Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -5236,7 +5236,7 @@
   },
   "2351469628": {
     "status": "Closed",
-    "ts": "2026-07-28T19:05:19.097Z",
+    "ts": "2026-07-24T18:58:11.868Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -7827,7 +7827,7 @@
   },
   "2389064155": {
     "status": "Closed",
-    "ts": "2026-07-28T19:05:32.305Z",
+    "ts": "2026-07-13T21:46:02.316Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
@@ -12847,5 +12847,12 @@
     "ts": "2026-07-28T18:46:24.199Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "1002296793742057": {
+    "status": "Pending Install",
+    "ts": "2026-07-28T19:05:56.625Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb",
+    "pendingUntil": "2026-08-04"
   }
 }
