@@ -26,7 +26,7 @@
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
     "Machesney Park": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
-  "updatedAt": "2026-07-27T21:38:30.534Z",
+  "updatedAt": "2026-07-28T15:34:21.795Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -97,7 +97,7 @@
     "Elkhart Xfinity Store": "dRegan@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "mRivera@blufoxmobile.com",
     "Evanston Xfinity Store": "ayonan@blufoxmobile.com",
-    "Frankfort Xfinity Store": "FPedraza-Scalfano@blufoxmobile.com",
+    "Frankfort Xfinity Store": "tTaylor@blufoxmobile.com",
     "Glenview Xfinity Store": "tChowdhury@blufoxmobile.com",
     "Greeneville Xfinity Store": "jTrentham@blufoxmobile.com",
     "Hammond Xfinity Store": "ABell@blufoxmobile.com",
@@ -172,7 +172,7 @@
     "Elkhart Xfinity Store": "DJ Regan",
     "Evergreen Park Xfinity Store": "Michael Rivera",
     "Evanston Xfinity Store": "Aedo Yonan",
-    "Frankfort Xfinity Store": "Frankie Scalfano",
+    "Frankfort Xfinity Store": "Terron Taylor",
     "Glenview Xfinity Store": "Tanzim Chowdhury",
     "Greeneville Xfinity Store": "Josh Trentham",
     "Hammond Xfinity Store": "Alexis Bell",
@@ -294,11 +294,6 @@
         "first": "Connor",
         "last": "Mcllwain",
         "email": "cmcilwain@blufoxmobile.com"
-      },
-      {
-        "first": "Stefan",
-        "last": "Murrell-Onley",
-        "email": "smurrell-onley@blufoxmobile.com"
       },
       {
         "first": "Dontavius",
