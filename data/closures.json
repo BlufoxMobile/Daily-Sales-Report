@@ -7813,11 +7813,10 @@
     "pendingUntil": "2026-07-11"
   },
   "2388476087": {
-    "status": "Pending Install",
-    "ts": "2026-06-30T20:07:18.837Z",
+    "status": "Closed",
+    "ts": "2026-07-28T19:57:01.681Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-07-02"
+    "store": "Cicero"
   },
   "2388488127": {
     "status": "Closed",
