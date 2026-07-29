@@ -11663,10 +11663,11 @@
     "pendingUntil": "2026-07-15"
   },
   "1002290092852055": {
-    "status": "Closed",
-    "ts": "2026-07-26T00:10:38.921Z",
+    "status": "Pending Install",
+    "ts": "2026-07-29T00:10:25.298Z",
     "dm": "Juan Carrillo",
-    "store": "Burbank"
+    "store": "Burbank",
+    "pendingUntil": "2026-07-29"
   },
   "1002290288352050": {
     "status": "Pending Install",
