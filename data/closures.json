@@ -8889,11 +8889,10 @@
     "pendingUntil": "2026-07-30"
   },
   "2413571433": {
-    "status": "Pending Install",
-    "ts": "2026-07-20T15:26:46.999Z",
+    "status": "Closed",
+    "ts": "2026-07-31T16:16:21.553Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-07-30"
+    "store": "Elkhart"
   },
   "2414242577": {
     "status": "Closed",
