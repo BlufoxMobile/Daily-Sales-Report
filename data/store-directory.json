@@ -25,7 +25,7 @@
     "Uptown Xfinity Store": "4401 N. Clarendon Road, Chicago, IL 60640",
     "Valparaiso Xfinity Store": "2710 Laporte Ave, Suite 140, Valparaiso, IN 46383",
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
-    "Machesney Park": "1556 West Lane Rd, Machesney Park, IL 61115"
+    "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
   "updatedAt": "2026-07-31T22:53:16.655Z",
   "stores": [
@@ -43,7 +43,7 @@
     "Hammond Xfinity Store",
     "Johnson City Xfinity Store",
     "Kildeer Xfinity Store",
-    "Machesney Park",
+    "Machesney Park Xfinity Store",
     "Michigan City Xfinity Store",
     "Oak Lawn Xfinity Store",
     "Oak Ridge Xfinity Store",
@@ -115,7 +115,7 @@
     "Bourbonnais Xfinity Store": "jSoto@blufoxmobile.com",
     "South Bend Xfinity Store": "jLilly@blufoxmobile.com",
     "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
-    "Machesney Park": "tCollins@blufoxmobile.com",
+    "Machesney Park Xfinity Store": "tCollins@blufoxmobile.com",
     "Oak Lawn Xfinity Store": "jBotero@blufoxmobile.com"
   },
   "storeAMs": {
@@ -164,7 +164,7 @@
     "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "juCarrillo@blufoxmobile.com",
     "South Skokie Xfinity Store": "IDhorajiwala@blufoxmobile.com",
-    "Machesney Park": "IDhorajiwala@blufoxmobile.com",
+    "Machesney Park Xfinity Store": "IDhorajiwala@blufoxmobile.com",
     "Oak Lawn Xfinity Store": "juCarrillo@blufoxmobile.com"
   },
   "storeManagerNames": {
@@ -192,11 +192,11 @@
     "Bourbonnais Xfinity Store": "Jamil Soto",
     "South Bend Xfinity Store": "Jason Lilly",
     "South Skokie Xfinity Store": "Ozzie Garcia",
-    "Machesney Park": "Tim Collins",
+    "Machesney Park Xfinity Store": "Tim Collins",
     "Oak Lawn Xfinity Store": "Jorge Bortero"
   },
   "storeEmployees": {
-    "Machesney Park": [
+    "Machesney Park Xfinity Store": [
       {
         "first": "Torrence",
         "last": "Aldridge",
@@ -785,23 +785,6 @@
         "first": "Alexander",
         "last": "Wallace",
         "email": "awallace@blufoxmobile.com"
-      }
-    ],
-    "Machesney Park Xfinity Store": [
-      {
-        "first": "Torrence",
-        "last": "Aldridge",
-        "email": "taldridge@blufoxmobile.com"
-      },
-      {
-        "first": "Quaevon",
-        "last": "Blackwell",
-        "email": "qblackwell@blufoxmobile.com"
-      },
-      {
-        "first": "Catherine",
-        "last": "Fannin",
-        "email": "cfannin@blufoxmobile.com"
       }
     ],
     "Michigan City Xfinity Store": [
