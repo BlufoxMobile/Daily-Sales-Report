@@ -26,7 +26,7 @@
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
     "Machesney Park": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
-  "updatedAt": "2026-07-29T18:26:50.456Z",
+  "updatedAt": "2026-07-31T22:53:16.655Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -114,7 +114,8 @@
     "Bourbonnais Xfinity Store": "jSoto@blufoxmobile.com",
     "South Bend Xfinity Store": "jLilly@blufoxmobile.com",
     "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
-    "Machesney Park": "tCollins@blufoxmobile.com"
+    "Machesney Park": "tCollins@blufoxmobile.com",
+    "Oak Lawn Xfinity Store": "jBotero@blufoxmobile.com"
   },
   "storeAMs": {
     "Bourbonnais Xfinity Store": "NTrombley@blufoxmobile.com",
@@ -162,7 +163,8 @@
     "Valparaiso Xfinity Store": "jcabrales@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "juCarrillo@blufoxmobile.com",
     "South Skokie Xfinity Store": "IDhorajiwala@blufoxmobile.com",
-    "Machesney Park": "IDhorajiwala@blufoxmobile.com"
+    "Machesney Park": "IDhorajiwala@blufoxmobile.com",
+    "Oak Lawn Xfinity Store": "juCarrillo@blufoxmobile.com"
   },
   "storeManagerNames": {
     "Burbank Xfinity Store": "Zuri Salazar",
