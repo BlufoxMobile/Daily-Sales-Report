@@ -9564,18 +9564,16 @@
     "store": "Evergreen Park"
   },
   "2425945757": {
-    "status": "Pending Install",
-    "ts": "2026-07-28T14:32:40.418Z",
+    "status": "Closed",
+    "ts": "2026-07-31T16:12:45.160Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-07-30"
+    "store": "Elkhart"
   },
   "2426010156": {
-    "status": "Pending Install",
-    "ts": "2026-07-28T14:32:26.329Z",
+    "status": "Closed",
+    "ts": "2026-07-31T16:12:43.776Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-07-30"
+    "store": "Elkhart"
   },
   "2426010606": {
     "status": "Pending Install",
