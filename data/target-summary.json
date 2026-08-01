@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T13:10:30.965Z",
+  "updatedAt": "2026-08-01T00:03:32.465Z",
   "month": "July",
   "year": 2026,
   "source": "Jeffrey Bilbrey (cols A–F)",
@@ -9,175 +9,884 @@
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 45900
+      "gp": 45000,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 93,
+        "days": 31,
+        "monthlyTraffic": 2883,
+        "reps": 5,
+        "store": {
+          "gp": 45000,
+          "xm": 202,
+          "rgu": 303,
+          "watchTablet": 58,
+          "tsheet": 577,
+          "accessory": 4040
+        },
+        "rep": {
+          "gp": 9000,
+          "xm": 41,
+          "rgu": 61,
+          "watchTablet": 12,
+          "tsheet": 116,
+          "accessory": 808
+        }
+      }
     },
     "Glenview": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 66600
+      "gp": 61200,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 102,
+        "days": 31,
+        "monthlyTraffic": 3162,
+        "reps": 5,
+        "store": {
+          "gp": 61200,
+          "xm": 222,
+          "rgu": 333,
+          "watchTablet": 64,
+          "tsheet": 633,
+          "accessory": 4440
+        },
+        "rep": {
+          "gp": 12240,
+          "xm": 45,
+          "rgu": 67,
+          "watchTablet": 13,
+          "tsheet": 127,
+          "accessory": 888
+        }
+      }
     },
     "Kildeer": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 42300
+      "gp": 50400,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 108,
+        "days": 31,
+        "monthlyTraffic": 3348,
+        "reps": 6,
+        "store": {
+          "gp": 50400,
+          "xm": 235,
+          "rgu": 319,
+          "watchTablet": 67,
+          "tsheet": 670,
+          "accessory": 4700
+        },
+        "rep": {
+          "gp": 8400,
+          "xm": 40,
+          "rgu": 54,
+          "watchTablet": 12,
+          "tsheet": 112,
+          "accessory": 784
+        }
+      }
     },
     "Machesney Park": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": null,
-      "gp": 18000
+      "gp": 29700,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 0,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 39,
+        "days": 31,
+        "monthlyTraffic": 1209,
+        "reps": 5,
+        "store": {
+          "gp": 29700,
+          "xm": 85,
+          "rgu": 0,
+          "watchTablet": 25,
+          "tsheet": 242,
+          "accessory": 1700
+        },
+        "rep": {
+          "gp": 5940,
+          "xm": 17,
+          "rgu": 0,
+          "watchTablet": 5,
+          "tsheet": 49,
+          "accessory": 340
+        }
+      }
     },
     "Round Lake Beach": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9,
-      "gp": 27000
+      "gp": 34200,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 63,
+        "days": 31,
+        "monthlyTraffic": 1953,
+        "reps": 4,
+        "store": {
+          "gp": 34200,
+          "xm": 137,
+          "rgu": 176,
+          "watchTablet": 40,
+          "tsheet": 391,
+          "accessory": 2740
+        },
+        "rep": {
+          "gp": 8550,
+          "xm": 35,
+          "rgu": 44,
+          "watchTablet": 10,
+          "tsheet": 98,
+          "accessory": 685
+        }
+      }
     },
     "South Skokie": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 49500
+      "gp": 46800,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 99,
+        "days": 31,
+        "monthlyTraffic": 3069,
+        "reps": 6,
+        "store": {
+          "gp": 46800,
+          "xm": 215,
+          "rgu": 307,
+          "watchTablet": 62,
+          "tsheet": 614,
+          "accessory": 4300
+        },
+        "rep": {
+          "gp": 7800,
+          "xm": 36,
+          "rgu": 52,
+          "watchTablet": 11,
+          "tsheet": 103,
+          "accessory": 717
+        }
+      }
     },
     "Uptown": {
       "dm": "Imaad Dhorajiwala",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 40500
+      "gp": 45000,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 89,
+        "days": 31,
+        "monthlyTraffic": 2759,
+        "reps": 6,
+        "store": {
+          "gp": 45000,
+          "xm": 194,
+          "rgu": 290,
+          "watchTablet": 56,
+          "tsheet": 552,
+          "accessory": 3880
+        },
+        "rep": {
+          "gp": 7500,
+          "xm": 33,
+          "rgu": 49,
+          "watchTablet": 10,
+          "tsheet": 92,
+          "accessory": 647
+        }
+      }
     },
     "Cicero": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.25,
-      "gp": 77400
+      "gp": 72000,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10.25,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 160,
+        "days": 31,
+        "monthlyTraffic": 4960,
+        "reps": 9,
+        "store": {
+          "gp": 72000,
+          "xm": 348,
+          "rgu": 509,
+          "watchTablet": 100,
+          "tsheet": 992,
+          "accessory": 6960
+        },
+        "rep": {
+          "gp": 8000,
+          "xm": 39,
+          "rgu": 57,
+          "watchTablet": 12,
+          "tsheet": 111,
+          "accessory": 774
+        }
+      }
     },
     "Elkhart": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9,
-      "gp": 57600
+      "gp": 64800,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 139,
+        "days": 31,
+        "monthlyTraffic": 4309,
+        "reps": 9,
+        "store": {
+          "gp": 64800,
+          "xm": 302,
+          "rgu": 388,
+          "watchTablet": 87,
+          "tsheet": 862,
+          "accessory": 6040
+        },
+        "rep": {
+          "gp": 7200,
+          "xm": 34,
+          "rgu": 44,
+          "watchTablet": 10,
+          "tsheet": 96,
+          "accessory": 672
+        }
+      }
     },
     "Hammond": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.25,
-      "gp": 58500
+      "gp": 51300,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10.25,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 82,
+        "days": 31,
+        "monthlyTraffic": 2542,
+        "reps": 8,
+        "store": {
+          "gp": 51300,
+          "xm": 178,
+          "rgu": 261,
+          "watchTablet": 51,
+          "tsheet": 509,
+          "accessory": 3560
+        },
+        "rep": {
+          "gp": 6413,
+          "xm": 23,
+          "rgu": 33,
+          "watchTablet": 7,
+          "tsheet": 64,
+          "accessory": 445
+        }
+      }
     },
     "Michigan City": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.75,
-      "gp": 39600
+      "gp": 35100,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.75,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 84,
+        "days": 31,
+        "monthlyTraffic": 2604,
+        "reps": 4,
+        "store": {
+          "gp": 35100,
+          "xm": 183,
+          "rgu": 254,
+          "watchTablet": 53,
+          "tsheet": 521,
+          "accessory": 3660
+        },
+        "rep": {
+          "gp": 8775,
+          "xm": 46,
+          "rgu": 64,
+          "watchTablet": 14,
+          "tsheet": 131,
+          "accessory": 915
+        }
+      }
     },
     "Schererville": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 46800
+      "gp": 57600,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 110,
+        "days": 31,
+        "monthlyTraffic": 3410,
+        "reps": 7,
+        "store": {
+          "gp": 57600,
+          "xm": 239,
+          "rgu": 324,
+          "watchTablet": 69,
+          "tsheet": 682,
+          "accessory": 4780
+        },
+        "rep": {
+          "gp": 8229,
+          "xm": 35,
+          "rgu": 47,
+          "watchTablet": 10,
+          "tsheet": 98,
+          "accessory": 683
+        }
+      }
     },
     "South Bend": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.25,
-      "gp": 18000
+      "gp": 27000,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.25,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 63,
+        "days": 31,
+        "monthlyTraffic": 1953,
+        "reps": 4,
+        "store": {
+          "gp": 27000,
+          "xm": 137,
+          "rgu": 181,
+          "watchTablet": 40,
+          "tsheet": 391,
+          "accessory": 2740
+        },
+        "rep": {
+          "gp": 6750,
+          "xm": 35,
+          "rgu": 46,
+          "watchTablet": 10,
+          "tsheet": 98,
+          "accessory": 685
+        }
+      }
     },
     "Valparaiso": {
       "dm": "Jacob Cabrales",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10.5,
-      "gp": 65700
+      "gp": 60300,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 108,
+        "days": 31,
+        "monthlyTraffic": 3348,
+        "reps": 7,
+        "store": {
+          "gp": 60300,
+          "xm": 235,
+          "rgu": 352,
+          "watchTablet": 67,
+          "tsheet": 670,
+          "accessory": 4700
+        },
+        "rep": {
+          "gp": 8615,
+          "xm": 34,
+          "rgu": 51,
+          "watchTablet": 10,
+          "tsheet": 96,
+          "accessory": 672
+        }
+      }
     },
     "Bourbonnais": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.25,
-      "gp": 45900
+      "gp": 49500,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.25,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 109,
+        "days": 31,
+        "monthlyTraffic": 3379,
+        "reps": 5,
+        "store": {
+          "gp": 49500,
+          "xm": 237,
+          "rgu": 313,
+          "watchTablet": 68,
+          "tsheet": 676,
+          "accessory": 4740
+        },
+        "rep": {
+          "gp": 9900,
+          "xm": 48,
+          "rgu": 63,
+          "watchTablet": 14,
+          "tsheet": 136,
+          "accessory": 948
+        }
+      }
     },
     "Burbank": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 53100
+      "gp": 54900,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 108,
+        "days": 31,
+        "monthlyTraffic": 3348,
+        "reps": 7,
+        "store": {
+          "gp": 54900,
+          "xm": 235,
+          "rgu": 335,
+          "watchTablet": 67,
+          "tsheet": 670,
+          "accessory": 4700
+        },
+        "rep": {
+          "gp": 7843,
+          "xm": 34,
+          "rgu": 48,
+          "watchTablet": 10,
+          "tsheet": 96,
+          "accessory": 672
+        }
+      }
     },
     "Calumet City": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 27000
+      "gp": 34200,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 85,
+        "days": 31,
+        "monthlyTraffic": 2635,
+        "reps": 7,
+        "store": {
+          "gp": 34200,
+          "xm": 185,
+          "rgu": 251,
+          "watchTablet": 53,
+          "tsheet": 527,
+          "accessory": 3700
+        },
+        "rep": {
+          "gp": 4886,
+          "xm": 27,
+          "rgu": 36,
+          "watchTablet": 8,
+          "tsheet": 76,
+          "accessory": 529
+        }
+      }
     },
     "Dekalb": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 37800
+      "gp": 43200,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 101,
+        "days": 31,
+        "monthlyTraffic": 3131,
+        "reps": 6,
+        "store": {
+          "gp": 43200,
+          "xm": 220,
+          "rgu": 298,
+          "watchTablet": 63,
+          "tsheet": 627,
+          "accessory": 4400
+        },
+        "rep": {
+          "gp": 7200,
+          "xm": 37,
+          "rgu": 50,
+          "watchTablet": 11,
+          "tsheet": 105,
+          "accessory": 734
+        }
+      }
     },
     "Evergreen Park": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 74700
+      "gp": 74700,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 171,
+        "days": 31,
+        "monthlyTraffic": 5301,
+        "reps": 10,
+        "store": {
+          "gp": 74700,
+          "xm": 372,
+          "rgu": 531,
+          "watchTablet": 107,
+          "tsheet": 1061,
+          "accessory": 7440
+        },
+        "rep": {
+          "gp": 7470,
+          "xm": 38,
+          "rgu": 54,
+          "watchTablet": 11,
+          "tsheet": 107,
+          "accessory": 744
+        }
+      }
     },
     "Frankfort": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.75,
-      "gp": 49500
+      "gp": 53100,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.75,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 96,
+        "days": 31,
+        "monthlyTraffic": 2976,
+        "reps": 7,
+        "store": {
+          "gp": 53100,
+          "xm": 209,
+          "rgu": 291,
+          "watchTablet": 60,
+          "tsheet": 596,
+          "accessory": 4180
+        },
+        "rep": {
+          "gp": 7586,
+          "xm": 30,
+          "rgu": 42,
+          "watchTablet": 9,
+          "tsheet": 86,
+          "accessory": 598
+        }
+      }
+    },
+    "Oaklawn": {
+      "dm": "Juan Carrillo",
+      "rd": "Jeffrey Bilbrey",
+      "nps": 70,
+      "closeRate": null,
+      "gp": 22500,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 0,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 0,
+        "days": 31,
+        "monthlyTraffic": 0,
+        "reps": 0,
+        "store": {
+          "gp": 22500,
+          "xm": 0,
+          "rgu": 0,
+          "watchTablet": 0,
+          "tsheet": 0,
+          "accessory": 0
+        },
+        "rep": {
+          "gp": 22500,
+          "xm": 0,
+          "rgu": 0,
+          "watchTablet": 0,
+          "tsheet": 0,
+          "accessory": 0
+        }
+      }
     },
     "Tinley Park": {
       "dm": "Juan Carrillo",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 45000
+      "gp": 50400,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 116,
+        "days": 31,
+        "monthlyTraffic": 3596,
+        "reps": 6,
+        "store": {
+          "gp": 50400,
+          "xm": 252,
+          "rgu": 360,
+          "watchTablet": 72,
+          "tsheet": 720,
+          "accessory": 5040
+        },
+        "rep": {
+          "gp": 8400,
+          "xm": 42,
+          "rgu": 60,
+          "watchTablet": 12,
+          "tsheet": 120,
+          "accessory": 840
+        }
+      }
     },
     "Greeneville": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 81000
+      "gp": 89100,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 151,
+        "days": 31,
+        "monthlyTraffic": 4681,
+        "reps": 9,
+        "store": {
+          "gp": 89100,
+          "xm": 328,
+          "rgu": 469,
+          "watchTablet": 94,
+          "tsheet": 937,
+          "accessory": 6560
+        },
+        "rep": {
+          "gp": 9900,
+          "xm": 37,
+          "rgu": 53,
+          "watchTablet": 11,
+          "tsheet": 105,
+          "accessory": 729
+        }
+      }
     },
     "Johnson City": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 40500
+      "gp": 46800,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 73,
+        "days": 31,
+        "monthlyTraffic": 2263,
+        "reps": 4,
+        "store": {
+          "gp": 46800,
+          "xm": 159,
+          "rgu": 215,
+          "watchTablet": 46,
+          "tsheet": 453,
+          "accessory": 3180
+        },
+        "rep": {
+          "gp": 11700,
+          "xm": 40,
+          "rgu": 54,
+          "watchTablet": 12,
+          "tsheet": 114,
+          "accessory": 795
+        }
+      }
     },
     "Oak Ridge": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 9.5,
-      "gp": 84600
+      "gp": 89100,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 9.5,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 173,
+        "days": 31,
+        "monthlyTraffic": 5363,
+        "reps": 8,
+        "store": {
+          "gp": 89100,
+          "xm": 376,
+          "rgu": 510,
+          "watchTablet": 108,
+          "tsheet": 1073,
+          "accessory": 7520
+        },
+        "rep": {
+          "gp": 11138,
+          "xm": 47,
+          "rgu": 64,
+          "watchTablet": 14,
+          "tsheet": 135,
+          "accessory": 940
+        }
+      }
     },
     "South Knoxville": {
       "dm": "Matthew Brooks",
       "rd": "Jeffrey Bilbrey",
       "nps": 70,
       "closeRate": 10,
-      "gp": 34200
+      "gp": 45000,
+      "targets": {
+        "mobileCloseRate": 7,
+        "fiscalCloseRate": 10,
+        "wtRate": 0.02,
+        "tsRate": 0.2,
+        "accPerXM": 20,
+        "dailyTraffic": 74,
+        "days": 31,
+        "monthlyTraffic": 2294,
+        "reps": 4,
+        "store": {
+          "gp": 45000,
+          "xm": 161,
+          "rgu": 230,
+          "watchTablet": 46,
+          "tsheet": 459,
+          "accessory": 3220
+        },
+        "rep": {
+          "gp": 11250,
+          "xm": 41,
+          "rgu": 58,
+          "watchTablet": 12,
+          "tsheet": 115,
+          "accessory": 805
+        }
+      }
     }
   }
 }
