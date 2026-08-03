@@ -12258,10 +12258,11 @@
     "pendingUntil": "2026-07-17"
   },
   "1002291534052056": {
-    "status": "Closed",
-    "ts": "2026-07-31T14:23:21.774Z",
+    "status": "Pending Install",
+    "ts": "2026-08-03T21:47:24.407Z",
     "dm": "Jacob Cabrales",
-    "store": "South Bend"
+    "store": "South Bend",
+    "pendingUntil": "2026-08-03"
   },
   "1002292363032052": {
     "status": "Pending Install",
