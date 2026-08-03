@@ -9636,6 +9636,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Round Lake Beach"
   },
+  "2432928353": {
+    "status": "Closed",
+    "ts": "2026-08-03T15:11:37.955Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
@@ -12951,10 +12957,10 @@
   },
   "1002295156262059": {
     "status": "Pending Install",
-    "ts": "2026-08-03T15:08:16.832Z",
+    "ts": "2026-07-27T16:33:33.544Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville",
-    "pendingUntil": "2026-08-28"
+    "pendingUntil": "2026-07-30"
   },
   "1002295664292051": {
     "status": "Pending Install",
@@ -13183,12 +13189,5 @@
     "ts": "2026-07-31T14:24:37.957Z",
     "dm": "Jacob Cabrales",
     "store": "South Bend"
-  },
-  "1002296847272051": {
-    "status": "Pending Install",
-    "ts": "2026-08-03T15:09:32.964Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-08-06"
   }
 }
