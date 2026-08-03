@@ -1,5 +1,5 @@
 {
-  "submittedAt": "2026-08-03T15:12:39.388Z",
+  "submittedAt": "2026-08-03T15:14:32.236Z",
   "store": "Kildeer Xfinity Store",
   "name": "Gavin Williams",
   "email": "GWilliams@blufoxmobile.com",
@@ -11,16 +11,16 @@
     "depositBags": "Yes",
     "pciChecklist": "Yes",
     "scheduleWeeks": "Yes",
-    "uniformsNeeded": "Yes",
+    "uniformsNeeded": "No",
     "cashFloat": "Yes",
     "returnsShipped": "Yes"
   },
   "notes": "",
   "linksOpened": {
     "depositOrderForm": false,
-    "pciChecklist": true,
-    "uniformOrderForm": true,
-    "cashFloatTracker": true
+    "pciChecklist": false,
+    "uniformOrderForm": false,
+    "cashFloatTracker": false
   },
   "photoUrls": {
     "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-08-03-kildeer-xfinity-store/week1.jpg",
