@@ -12957,10 +12957,10 @@
   },
   "1002295156262059": {
     "status": "Pending Install",
-    "ts": "2026-07-27T16:33:33.544Z",
+    "ts": "2026-08-03T15:08:16.832Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville",
-    "pendingUntil": "2026-07-30"
+    "pendingUntil": "2026-08-28"
   },
   "1002295664292051": {
     "status": "Pending Install",
@@ -13189,5 +13189,18 @@
     "ts": "2026-07-31T14:24:37.957Z",
     "dm": "Jacob Cabrales",
     "store": "South Bend"
+  },
+  "1002296847272051": {
+    "status": "Pending Install",
+    "ts": "2026-08-03T15:09:32.964Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-08-06"
+  },
+  "1002297361962051": {
+    "status": "Closed",
+    "ts": "2026-08-03T15:13:12.606Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   }
 }
