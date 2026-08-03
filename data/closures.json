@@ -9356,8 +9356,8 @@
     "pendingUntil": "2026-07-31"
   },
   "2421928477": {
-    "status": "Closed",
-    "ts": "2026-07-31T14:11:27.453Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-03T20:29:14.214Z",
     "dm": "Jacob Cabrales",
     "store": "South Bend"
   },
