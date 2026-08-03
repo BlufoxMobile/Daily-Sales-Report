@@ -9661,10 +9661,11 @@
     "store": "Elkhart"
   },
   "2433393183": {
-    "status": "Can Not Close",
-    "ts": "2026-08-03T18:13:06.800Z",
+    "status": "Pending Install",
+    "ts": "2026-08-03T18:13:14.222Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond"
+    "store": "Hammond",
+    "pendingUntil": "2026-08-13"
   },
   "1001290369922103": {
     "status": "Pending Install",
