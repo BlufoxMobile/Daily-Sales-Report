@@ -8518,11 +8518,10 @@
     "store": "Cicero"
   },
   "2404461339": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T13:15:00.858Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-04T19:23:39.469Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-07-18"
+    "store": "Oak Ridge"
   },
   "2404677493": {
     "status": "Closed",
