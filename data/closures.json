@@ -13496,5 +13496,23 @@
     "ts": "2026-08-04T15:25:50.550Z",
     "dm": "Jacob Cabrales",
     "store": "Cicero"
+  },
+  "1002297092472057": {
+    "status": "Closed",
+    "ts": "2026-08-04T15:46:06.748Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "1002296150872059": {
+    "status": "Closed",
+    "ts": "2026-08-04T15:46:08.253Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "1002297424472056": {
+    "status": "Can Not Close",
+    "ts": "2026-08-04T15:46:15.828Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   }
 }
