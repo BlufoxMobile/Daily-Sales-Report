@@ -13484,5 +13484,11 @@
     "dm": "Jacob Cabrales",
     "store": "Cicero",
     "pendingUntil": "2026-08-13"
+  },
+  "1002293239482059": {
+    "status": "Cancelled Order",
+    "ts": "2026-08-04T15:25:50.550Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero"
   }
 }
