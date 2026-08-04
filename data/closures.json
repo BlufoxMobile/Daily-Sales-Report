@@ -9366,6 +9366,12 @@
     "store": "South Skokie",
     "pendingUntil": "2026-07-30"
   },
+  "2421999278": {
+    "status": "Cancelled Order",
+    "ts": "2026-08-04T19:36:54.491Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
+  },
   "2422002915": {
     "status": "Closed",
     "ts": "2026-07-27T14:16:02.177Z",
