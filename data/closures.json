@@ -13475,15 +13475,8 @@
   },
   "1002297421532050": {
     "status": "Closed",
-    "ts": "2026-08-04T15:13:27.909Z",
+    "ts": "2026-08-04T15:15:39.095Z",
     "dm": "Jacob Cabrales",
     "store": "Cicero"
-  },
-  "1002298730022056": {
-    "status": "Pending Install",
-    "ts": "2026-08-04T15:14:55.702Z",
-    "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-08-13"
   }
 }
