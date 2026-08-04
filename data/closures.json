@@ -7554,11 +7554,10 @@
     "store": "Glenview"
   },
   "2384254682": {
-    "status": "Pending Install",
-    "ts": "2026-06-30T20:11:56.069Z",
+    "status": "Closed",
+    "ts": "2026-08-04T15:19:40.618Z",
     "dm": "Jacob Cabrales",
-    "store": "Cicero",
-    "pendingUntil": "2026-07-02"
+    "store": "Cicero"
   },
   "2384257665": {
     "status": "Closed",
