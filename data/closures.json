@@ -9184,7 +9184,7 @@
   },
   "2419691624": {
     "status": "Closed",
-    "ts": "2026-07-27T17:11:57.414Z",
+    "ts": "2026-08-05T21:32:55.229Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -9339,11 +9339,10 @@
     "store": "Greeneville"
   },
   "2421810043": {
-    "status": "Pending Install",
-    "ts": "2026-07-27T17:13:04.233Z",
+    "status": "Closed",
+    "ts": "2026-08-05T21:32:58.974Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-08-03"
+    "store": "Glenview"
   },
   "2421857931": {
     "status": "Pending Install",
@@ -9409,11 +9408,10 @@
     "pendingUntil": "2026-08-05"
   },
   "2422274734": {
-    "status": "Pending Install",
-    "ts": "2026-07-27T17:13:00.746Z",
+    "status": "Closed",
+    "ts": "2026-08-05T21:32:58.053Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-08-03"
+    "store": "Glenview"
   },
   "2422314001": {
     "status": "Pending Install",
@@ -9437,11 +9435,10 @@
     "pendingUntil": "2026-08-01"
   },
   "2422500342": {
-    "status": "Pending Install",
-    "ts": "2026-07-27T17:15:32.151Z",
+    "status": "Closed",
+    "ts": "2026-08-05T21:32:56.813Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Glenview",
-    "pendingUntil": "2026-08-03"
+    "store": "Glenview"
   },
   "2422666085": {
     "status": "Pending Install",
