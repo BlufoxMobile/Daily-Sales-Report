@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-05T16:09:47.069741+00:00",
+  "updatedAt": "2026-08-05T17:18:58.355889+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -37,12 +37,12 @@
       "DM or Director Submission"
     ],
     "Cicero Xfinity Store": [
-      "Cayanna Sanders",
       "Francisco Salazar",
       "Jaime Rodriguez",
       "Julia Ariza",
       "Kevin Morales",
       "Leonardo Zavala",
+      "Leslie Diaz",
       "Ramon Gomez",
       "Sarah Penablanca",
       "Williams Perez-Arellano",
@@ -89,6 +89,7 @@
       "Danyale Myles",
       "Erica Young",
       "Jesus Romo",
+      "Marshawn Sykes",
       "Michael Rivera",
       "Vivian Avila",
       "Wendy Cerda Bacilio",
@@ -135,12 +136,14 @@
       "Jeremiah Watson",
       "Matthew Gallardo",
       "Reina Salgado",
+      "Timothy Bankston",
       "Victoria Ponce de Leon",
       "New Hire",
       "DM or Director Submission"
     ],
     "Johnson City Xfinity Store": [
       "Deaundre Mitchell",
+      "Jesse Grawberg",
       "Joshua Jones",
       "Raymond Johnson",
       "Richard Campbell",
@@ -185,6 +188,7 @@
     "Oak Ridge Xfinity Store": [
       "Connor McIlwain",
       "Dontavius Rogers",
+      "Erika McFall",
       "Jacori Wimes",
       "James Jones",
       "Kayla Kirkland",
@@ -200,6 +204,7 @@
       "Jose Maldonado",
       "Joseph Vasquez",
       "Juan Padilla",
+      "Yandel Alvarez",
       "New Hire",
       "DM or Director Submission"
     ],
@@ -210,6 +215,7 @@
       "Maliyah Jackson",
       "Michael Jackson",
       "Thristian Manuel",
+      "Ty Perry",
       "Victoria Moore",
       "New Hire",
       "DM or Director Submission"
@@ -235,6 +241,7 @@
       "Alexis Rodriguez",
       "Dayan Delgado",
       "Ozzie Garcia",
+      "Shazaib Mukhi",
       "Steev Qaryo",
       "Taiyeeb Chowdhury",
       "New Hire",
@@ -242,10 +249,13 @@
     ],
     "Tinley Park Xfinity Store": [
       "Calvin Sykes",
+      "Darionne Townsend",
       "Emily Guzman",
+      "Felix Diaz",
       "Jasmine Green",
       "Khyree Battle",
       "Sebas Orozco",
+      "Sebastian Orozco",
       "New Hire",
       "DM or Director Submission"
     ],
@@ -255,11 +265,13 @@
       "Kenisha Banks",
       "Oleksandr Kostenko",
       "Ronaldinho Llivi",
+      "Shayna Perez",
       "Tyroy French",
       "New Hire",
       "DM or Director Submission"
     ],
     "Valparaiso Xfinity Store": [
+      "Airelle Young",
       "Alexandria Giglio",
       "Daniel Long",
       "Denzel Brent",
