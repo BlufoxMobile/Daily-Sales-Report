@@ -9860,6 +9860,13 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2438086988": {
+    "status": "Pending Install",
+    "ts": "2026-08-05T21:48:47.083Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-08-12"
+  },
   "2438167353": {
     "status": "Closed",
     "ts": "2026-08-05T21:33:32.773Z",
