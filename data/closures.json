@@ -9841,6 +9841,13 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2436177863": {
+    "status": "Pending Install",
+    "ts": "2026-08-05T21:48:43.245Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-08-12"
+  },
   "2436365944": {
     "status": "Closed",
     "ts": "2026-08-04T19:41:02.138Z",
