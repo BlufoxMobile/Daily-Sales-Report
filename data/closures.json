@@ -13722,5 +13722,17 @@
     "dm": "Jacob Cabrales",
     "store": "South Bend",
     "pendingUntil": "2026-08-07"
+  },
+  "1002297131312058": {
+    "status": "Closed",
+    "ts": "2026-08-05T21:38:51.841Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
+  "1002297089102055": {
+    "status": "Closed",
+    "ts": "2026-08-05T21:38:54.638Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   }
 }
