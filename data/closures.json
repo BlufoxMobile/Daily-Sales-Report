@@ -9702,6 +9702,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2430957461": {
+    "status": "Closed",
+    "ts": "2026-08-05T21:40:13.247Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2430961244": {
     "status": "Closed",
     "ts": "2026-08-04T19:32:23.739Z",
@@ -13743,7 +13749,7 @@
   },
   "1002298726302058": {
     "status": "Closed",
-    "ts": "2026-08-05T21:39:05.099Z",
+    "ts": "2026-08-05T21:39:13.792Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
