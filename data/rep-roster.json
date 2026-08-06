@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-05T22:10:25.874771+00:00",
+  "updatedAt": "2026-08-06T13:01:25.954655+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -37,6 +37,7 @@
       "DM or Director Submission"
     ],
     "Cicero Xfinity Store": [
+      "Eric Rodriguez",
       "Francisco Salazar",
       "Jaime Rodriguez",
       "Julia Ariza",
@@ -157,6 +158,7 @@
       "Gavin Williams",
       "Irvin Solis",
       "Jose Gomez",
+      "Matthew Sak",
       "Moises Chino",
       "New Hire",
       "DM or Director Submission"
@@ -181,6 +183,7 @@
       "DM or Director Submission"
     ],
     "Oak Lawn Xfinity Store": [
+      "Biancia Brooks",
       "Jorge Bortero",
       "New Hire",
       "DM or Director Submission"
