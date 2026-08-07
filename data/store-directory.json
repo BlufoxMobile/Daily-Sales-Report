@@ -27,7 +27,7 @@
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
     "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
-  "updatedAt": "2026-08-07T01:10:28.967Z",
+  "updatedAt": "2026-08-07T01:11:28.344Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -767,11 +767,6 @@
     ],
     "Machesney Park Xfinity Store": [
       {
-        "first": "Torrence",
-        "last": "Aldridge",
-        "email": "taldridge@blufoxmobile.com"
-      },
-      {
         "first": "Quaevon",
         "last": "Blackwell",
         "email": "qblackwell@blufoxmobile.com"
@@ -819,16 +814,6 @@
         "first": "Ahmad",
         "last": "Allan",
         "email": "aallan@blufoxmobile.com"
-      },
-      {
-        "first": "Bianca",
-        "last": "Brooks",
-        "email": "bibrooks@blufoxmobile.com"
-      },
-      {
-        "first": "Ruben",
-        "last": "Calderon",
-        "email": "rcalderon@blufoxmobile.com"
       },
       {
         "first": "Kianti",
