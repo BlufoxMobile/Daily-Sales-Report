@@ -27,7 +27,7 @@
     "Calumet City Xfinity Store": "1330 Torrence Ave, Calumet City, IL 60409",
     "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115"
   },
-  "updatedAt": "2026-08-07T01:11:28.344Z",
+  "updatedAt": "2026-08-07T02:17:14.471Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -195,7 +195,45 @@
     "Machesney Park Xfinity Store": "Tim Collins",
     "Oak Lawn Xfinity Store": "Jorge Bortero"
   },
+  "storeAMNames": {
+    "Bourbonnais Xfinity Store": "Nancy Trombley",
+    "Burbank Xfinity Store": "Jacqueline Benitez",
+    "Calumet City Xfinity Store": "Kamar Thomas",
+    "Cicero Xfinity Store": "Sarah Penablanca",
+    "Evanston Xfinity Store": "Jamal Lomax",
+    "Evergreen Park Xfinity Store": "Alicia Valdez",
+    "Glenview Xfinity Store": "Linda Weeks",
+    "Greeneville Xfinity Store": "Daniel Mitchell Jr.",
+    "Hammond Xfinity Store": "Darryl Charles",
+    "Johnson City Xfinity Store": "Richard Campbell",
+    "Kildeer Xfinity Store": "Irvin Solis",
+    "Michigan City Xfinity Store": "Anthony Evans",
+    "Oak Ridge Xfinity Store": "Erika McFall",
+    "Schererville Xfinity Store": "April Vasquez",
+    "South Knoxville Xfinity Store": "Demarcus McKamey",
+    "South Skokie Xfinity Store": "Alexis Rodriguez",
+    "Tinley Park Xfinity Store": "Emily Guzman",
+    "Uptown Xfinity Store": "Jordan Berry",
+    "Valparaiso Xfinity Store": "Denzel Brent"
+  },
   "storeEmployees": {
+    "Oak Lawn Xfinity Store": [
+      {
+        "first": "Ahmad",
+        "last": "Allan",
+        "email": "aallan@blufoxmobile.com"
+      },
+      {
+        "first": "Kianti",
+        "last": "London",
+        "email": "klondon@blufoxmobile.com"
+      },
+      {
+        "first": "Briana",
+        "last": "Marquez",
+        "email": "brmarquez@blufoxmobile.com"
+      }
+    ],
     "Greeneville Xfinity Store": [
       {
         "first": "Dalton",
@@ -767,6 +805,11 @@
     ],
     "Machesney Park Xfinity Store": [
       {
+        "first": "Torrence",
+        "last": "Aldridge",
+        "email": "taldridge@blufoxmobile.com"
+      },
+      {
         "first": "Quaevon",
         "last": "Blackwell",
         "email": "qblackwell@blufoxmobile.com"
@@ -807,23 +850,6 @@
         "first": "Hannah",
         "last": "Ingram",
         "email": "hingram@blufoxmobile.com"
-      }
-    ],
-    "Oak Lawn Xfinity Store": [
-      {
-        "first": "Ahmad",
-        "last": "Allan",
-        "email": "aallan@blufoxmobile.com"
-      },
-      {
-        "first": "Kianti",
-        "last": "London",
-        "email": "klondon@blufoxmobile.com"
-      },
-      {
-        "first": "Briana",
-        "last": "Marquez",
-        "email": "brmarquez@blufoxmobile.com"
       }
     ],
     "Round Lake Beach Xfinity Store": [
