@@ -9745,6 +9745,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2430284439": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:11:08.717Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2430287546": {
     "status": "Closed",
     "ts": "2026-08-08T22:11:06.006Z",
@@ -9756,6 +9762,12 @@
     "ts": "2026-08-04T19:51:50.168Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2430753159": {
+    "status": "Can Not Close",
+    "ts": "2026-08-08T22:11:11.278Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2430957461": {
     "status": "Closed",
