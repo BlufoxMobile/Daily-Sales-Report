@@ -10028,11 +10028,23 @@
     "store": "Burbank",
     "pendingUntil": "2026-08-15"
   },
+  "2438872252": {
+    "status": "Closed",
+    "ts": "2026-08-08T14:58:01.925Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2438944047": {
     "status": "Can Not Close",
     "ts": "2026-08-08T13:47:29.933Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2439487624": {
+    "status": "Closed",
+    "ts": "2026-08-08T14:58:03.205Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   },
   "2440506747": {
     "status": "Closed",
