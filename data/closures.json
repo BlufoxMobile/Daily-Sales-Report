@@ -10123,6 +10123,12 @@
     "store": "Evanston",
     "pendingUntil": "2026-08-15"
   },
+  "2440453876": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:31:17.255Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2440459207": {
     "status": "Closed",
     "ts": "2026-08-08T15:03:11.751Z",
@@ -10140,6 +10146,12 @@
     "ts": "2026-08-08T13:43:33.660Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2441021746": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:31:18.151Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2441145762": {
     "status": "Pending Install",
