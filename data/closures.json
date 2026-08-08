@@ -13713,11 +13713,10 @@
     "pendingUntil": "2026-08-12"
   },
   "1002298160002057": {
-    "status": "Pending Install",
-    "ts": "2026-08-03T20:16:57.295Z",
+    "status": "Closed",
+    "ts": "2026-08-08T13:59:53.196Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-08-07"
+    "store": "Elkhart"
   },
   "1002298222842052": {
     "status": "Closed",
