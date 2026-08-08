@@ -9727,10 +9727,11 @@
     "store": "Round Lake Beach"
   },
   "2430147207": {
-    "status": "Closed",
-    "ts": "2026-08-08T22:09:15.079Z",
+    "status": "Pending Install",
+    "ts": "2026-08-08T22:10:14.989Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-08-15"
   },
   "2430188254": {
     "status": "Closed",
