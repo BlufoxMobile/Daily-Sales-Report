@@ -9764,10 +9764,11 @@
     "store": "Greeneville"
   },
   "2430753159": {
-    "status": "Closed",
-    "ts": "2026-08-08T22:14:11.806Z",
+    "status": "Pending Install",
+    "ts": "2026-08-08T22:14:29.076Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-08-22"
   },
   "2430957461": {
     "status": "Closed",
