@@ -9867,6 +9867,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2433390165": {
+    "status": "Pending Install",
+    "ts": "2026-08-08T22:48:35.559Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-08-15"
+  },
   "2433393183": {
     "status": "Pending Install",
     "ts": "2026-08-03T18:13:14.222Z",
@@ -9998,6 +10005,12 @@
     "ts": "2026-08-04T19:08:24.921Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2436442986": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:48:39.136Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2437196261": {
     "status": "Closed",
