@@ -10084,6 +10084,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2438344530": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:43:21.783Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2438672649": {
     "status": "Pending Install",
     "ts": "2026-08-06T23:15:51.957Z",
@@ -10146,6 +10152,18 @@
     "ts": "2026-08-08T13:43:33.660Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2440995946": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:31:21.343Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "2441002518": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:31:19.999Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2441021746": {
     "status": "Closed",
