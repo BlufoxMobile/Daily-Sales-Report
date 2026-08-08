@@ -9733,11 +9733,23 @@
     "store": "Evanston",
     "pendingUntil": "2026-08-15"
   },
+  "2430153794": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:11:07.166Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2430188254": {
     "status": "Closed",
     "ts": "2026-08-04T19:33:05.532Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2430287546": {
+    "status": "Closed",
+    "ts": "2026-08-08T22:11:06.006Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2430727773": {
     "status": "Closed",
