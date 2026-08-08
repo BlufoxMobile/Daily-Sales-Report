@@ -9819,10 +9819,11 @@
     "store": "Evanston"
   },
   "2432371928": {
-    "status": "Closed",
-    "ts": "2026-08-08T22:24:42.702Z",
+    "status": "Pending Install",
+    "ts": "2026-08-08T22:29:09.637Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-08-15"
   },
   "2432920309": {
     "status": "Closed",
