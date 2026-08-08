@@ -9944,6 +9944,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-08-15"
   },
+  "2438944047": {
+    "status": "Can Not Close",
+    "ts": "2026-08-08T13:47:29.933Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2440506747": {
     "status": "Closed",
     "ts": "2026-08-08T13:45:22.021Z",
