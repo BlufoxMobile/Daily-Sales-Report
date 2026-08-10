@@ -10117,6 +10117,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-08-15"
   },
+  "2438678573": {
+    "status": "Closed",
+    "ts": "2026-08-10T13:20:30.288Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
+  },
   "2438757248": {
     "status": "Pending Install",
     "ts": "2026-08-08T22:48:44.831Z",
@@ -14184,5 +14190,11 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville",
     "pendingUntil": "2026-08-17"
+  },
+  "1001307917002103": {
+    "status": "Closed",
+    "ts": "2026-08-10T13:20:36.884Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
   }
 }
