@@ -14448,5 +14448,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart",
     "pendingUntil": "2026-08-18"
+  },
+  "1002300599682051": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T19:13:23.285Z",
+    "dm": "Juan Carrillo",
+    "store": "Burbank",
+    "pendingUntil": "2026-08-14"
   }
 }
