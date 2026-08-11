@@ -10721,6 +10721,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2446800351": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T23:31:09.168Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
