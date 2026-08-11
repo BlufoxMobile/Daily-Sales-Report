@@ -10272,6 +10272,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2437590225": {
+    "status": "Closed",
+    "ts": "2026-08-11T23:51:06.572Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
   "2437626348": {
     "status": "Closed",
     "ts": "2026-08-10T14:59:25.400Z",
@@ -10504,6 +10510,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-08-15"
+  },
+  "2439569114": {
+    "status": "Closed",
+    "ts": "2026-08-11T23:52:06.893Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2439666141": {
     "status": "Pending Install",
