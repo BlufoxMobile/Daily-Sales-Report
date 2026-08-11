@@ -9085,6 +9085,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2418166200": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:05:29.542Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2418224353": {
     "status": "Can Not Close",
     "ts": "2026-07-24T20:19:03.151Z",
@@ -10364,12 +10370,6 @@
     "ts": "2026-08-10T15:20:16.336Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
-  },
-  "2440759321": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:03:27.289Z",
-    "dm": "Jacob Cabrales",
-    "store": "Michigan City"
   },
   "2440939211": {
     "status": "Closed",
@@ -13962,7 +13962,7 @@
   },
   "1002294634532050": {
     "status": "Pending Install",
-    "ts": "2026-07-28T18:29:49.124Z",
+    "ts": "2026-08-11T22:03:29.207Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-04"
@@ -13975,16 +13975,18 @@
     "pendingUntil": "2026-08-04"
   },
   "1002294960512056": {
-    "status": "Closed",
-    "ts": "2026-07-28T18:42:09.085Z",
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:03:37.582Z",
     "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
   },
   "1002295140122054": {
-    "status": "Closed",
-    "ts": "2026-07-28T18:42:12.790Z",
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:03:41.495Z",
     "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
   },
   "1002296400802054": {
     "status": "Closed",
@@ -14650,12 +14652,5 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-08-16"
-  },
-  "1002299802022057": {
-    "status": "Pending Install",
-    "ts": "2026-08-11T22:04:42.855Z",
-    "dm": "Jacob Cabrales",
-    "store": "Michigan City",
-    "pendingUntil": "2026-08-21"
   }
 }
