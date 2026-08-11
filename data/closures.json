@@ -10220,11 +10220,23 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2438929161": {
+    "status": "Can Not Close",
+    "ts": "2026-08-11T13:10:52.723Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2438944047": {
     "status": "Can Not Close",
     "ts": "2026-08-08T13:47:29.933Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2439024994": {
+    "status": "Can Not Close",
+    "ts": "2026-08-11T13:10:51.347Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2439212671": {
     "status": "Closed",
