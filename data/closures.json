@@ -9909,6 +9909,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2433022257": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:27:41.900Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2433249536": {
     "status": "Closed",
     "ts": "2026-08-03T18:57:51.176Z",
@@ -10119,6 +10125,12 @@
     "ts": "2026-08-11T20:30:33.426Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2437147844": {
+    "status": "Can Not Close",
+    "ts": "2026-08-11T22:30:11.899Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2437196261": {
     "status": "Closed",
@@ -14731,11 +14743,11 @@
     "store": "Valparaiso",
     "pendingUntil": "2026-08-15"
   },
-  "1002298444772053": {
+  "1002297929022059": {
     "status": "Pending Install",
-    "ts": "2026-08-11T22:29:02.274Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso",
-    "pendingUntil": "2026-08-26"
+    "ts": "2026-08-11T22:20:47.145Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
   }
 }
