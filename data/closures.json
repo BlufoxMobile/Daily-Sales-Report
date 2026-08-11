@@ -10242,6 +10242,12 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
+  "2437447541": {
+    "status": "Closed",
+    "ts": "2026-08-11T23:49:51.335Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
   "2437508414": {
     "status": "Closed",
     "ts": "2026-08-08T14:51:57.731Z",
@@ -10419,6 +10425,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-08-15"
+  },
+  "2438787125": {
+    "status": "Closed",
+    "ts": "2026-08-11T23:49:54.945Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2438829454": {
     "status": "Closed",
