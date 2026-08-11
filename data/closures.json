@@ -10621,6 +10621,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2443998769": {
+    "status": "Closed",
+    "ts": "2026-08-11T23:23:42.875Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2445668052": {
     "status": "Closed",
     "ts": "2026-08-11T15:39:14.907Z",
@@ -14908,6 +14914,13 @@
   "1002299498232051": {
     "status": "Pending Install",
     "ts": "2026-08-11T22:46:29.573Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
+  },
+  "1002300339862054": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T23:23:48.242Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-18"
