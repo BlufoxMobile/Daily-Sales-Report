@@ -10108,12 +10108,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
-  "2437310047": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:08:16.137Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
-  },
   "2437379940": {
     "status": "Closed",
     "ts": "2026-08-10T15:01:43.247Z",
@@ -10521,6 +10515,13 @@
     "ts": "2026-08-11T21:51:52.284Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "2446360054": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:08:14.057Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-08-14"
   },
   "2446656422": {
     "status": "Pending Install",
@@ -14658,5 +14659,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-08-16"
+  },
+  "1002300560282055": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:09:04.729Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-08-21"
   }
 }
