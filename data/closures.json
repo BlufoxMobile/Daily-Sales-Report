@@ -10126,12 +10126,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
-  "2437512827": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:18:34.422Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
   "2437574815": {
     "status": "Closed",
     "ts": "2026-08-08T13:58:12.043Z",
@@ -10451,6 +10445,12 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2442150537": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:07:11.971Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
   "2442154522": {
     "status": "Closed",
     "ts": "2026-08-10T15:12:02.758Z",
@@ -10468,6 +10468,12 @@
     "ts": "2026-08-10T15:15:21.144Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2443594603": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:09:49.074Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
   },
   "2445668052": {
     "status": "Closed",
@@ -10498,6 +10504,12 @@
     "ts": "2026-08-11T21:01:45.811Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2446045126": {
+    "status": "Can Not Close",
+    "ts": "2026-08-11T22:18:59.594Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
   },
   "2446077469": {
     "status": "Closed",
@@ -10535,6 +10547,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-08-14"
+  },
+  "2446536766": {
+    "status": "Can Not Close",
+    "ts": "2026-08-11T22:12:27.114Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
   },
   "2446656422": {
     "status": "Pending Install",
@@ -14693,5 +14711,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-08-15"
+  },
+  "1002300594382053": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:11:13.498Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City",
+    "pendingUntil": "2026-08-21"
   }
 }
