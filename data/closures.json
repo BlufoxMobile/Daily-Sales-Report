@@ -14802,9 +14802,10 @@
     "pendingUntil": "2026-08-17"
   },
   "1002298444772053": {
-    "status": "Cancelled Order",
-    "ts": "2026-08-11T22:40:18.889Z",
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:41:16.089Z",
     "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
+    "store": "Valparaiso",
+    "pendingUntil": "2026-08-26"
   }
 }
