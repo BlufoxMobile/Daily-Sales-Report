@@ -10365,6 +10365,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2440759321": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:03:27.289Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
   "2440939211": {
     "status": "Closed",
     "ts": "2026-08-08T13:43:33.660Z",
@@ -13956,7 +13962,7 @@
   },
   "1002294634532050": {
     "status": "Pending Install",
-    "ts": "2026-08-11T22:03:29.207Z",
+    "ts": "2026-07-28T18:29:49.124Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-04"
