@@ -10047,6 +10047,12 @@
     "store": "Glenview",
     "pendingUntil": "2026-08-12"
   },
+  "2436324497": {
+    "status": "Can Not Close",
+    "ts": "2026-08-11T21:57:07.167Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
   "2436365944": {
     "status": "Closed",
     "ts": "2026-08-04T19:41:02.138Z",
@@ -10456,13 +10462,6 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
-  "2445815218": {
-    "status": "Pending Install",
-    "ts": "2026-08-11T21:57:27.669Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso",
-    "pendingUntil": "2026-08-18"
-  },
   "2445941085": {
     "status": "Closed",
     "ts": "2026-08-11T15:31:33.736Z",
@@ -10504,13 +10503,6 @@
     "ts": "2026-08-11T21:51:52.284Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
-  },
-  "2446360054": {
-    "status": "Pending Install",
-    "ts": "2026-08-11T21:56:25.228Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso",
-    "pendingUntil": "2026-08-14"
   },
   "2446656422": {
     "status": "Pending Install",
@@ -14639,5 +14631,12 @@
     "ts": "2026-08-11T21:36:24.491Z",
     "dm": "Jacob Cabrales",
     "store": "South Bend"
+  },
+  "1002298998312058": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T21:57:43.942Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City",
+    "pendingUntil": "2026-08-16"
   }
 }
