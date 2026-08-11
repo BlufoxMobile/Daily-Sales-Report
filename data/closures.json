@@ -10401,6 +10401,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2439157409": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:48:21.641Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2439212671": {
     "status": "Closed",
     "ts": "2026-08-10T13:20:44.324Z",
@@ -14855,5 +14861,12 @@
     "ts": "2026-08-11T22:46:33.852Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "1002299498232051": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:46:29.573Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
   }
 }
