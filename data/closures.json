@@ -14800,5 +14800,11 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-08-17"
+  },
+  "1002298444772053": {
+    "status": "Cancelled Order",
+    "ts": "2026-08-11T22:40:18.889Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   }
 }
