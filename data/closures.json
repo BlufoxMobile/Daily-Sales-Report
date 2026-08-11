@@ -10542,11 +10542,23 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2442088221": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:46:26.859Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2442154522": {
     "status": "Closed",
     "ts": "2026-08-10T15:12:02.758Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2443231276": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:44:32.472Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2443244338": {
     "status": "Closed",
