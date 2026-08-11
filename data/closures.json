@@ -10396,6 +10396,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2439014666": {
+    "status": "Closed",
+    "ts": "2026-08-11T23:18:28.014Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2439024994": {
     "status": "Can Not Close",
     "ts": "2026-08-11T13:10:51.347Z",
@@ -14890,6 +14896,13 @@
   "1002299498232051": {
     "status": "Pending Install",
     "ts": "2026-08-11T22:46:29.573Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
+  },
+  "1002299577002052": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T23:18:32.117Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-18"
