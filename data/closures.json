@@ -10639,6 +10639,13 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2445922799": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T23:24:07.542Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
+  },
   "2445941085": {
     "status": "Closed",
     "ts": "2026-08-11T15:31:33.736Z",
