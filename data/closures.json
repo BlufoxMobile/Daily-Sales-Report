@@ -5633,6 +5633,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2356984639": {
+    "status": "Can Not Close",
+    "ts": "2026-08-11T22:41:42.521Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2357011237": {
     "status": "Closed",
     "ts": "2026-06-08T22:45:13.656Z",
@@ -7383,8 +7389,8 @@
     "store": "South Skokie"
   },
   "2381868141": {
-    "status": "Closed",
-    "ts": "2026-06-30T19:36:33.086Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-11T22:41:38.530Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
