@@ -9458,12 +9458,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
-  "2422589002": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:08:23.356Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
-  },
   "2422666085": {
     "status": "Pending Install",
     "ts": "2026-07-28T20:26:32.987Z",
@@ -9562,13 +9556,6 @@
     "ts": "2026-08-05T21:33:15.923Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
-  },
-  "2424265533": {
-    "status": "Pending Install",
-    "ts": "2026-08-11T22:11:22.970Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park",
-    "pendingUntil": "2026-08-18"
   },
   "2424820576": {
     "status": "Can Not Close",
@@ -9714,12 +9701,6 @@
     "ts": "2026-07-31T20:50:29.582Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
-  },
-  "2427576539": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:14:14.036Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
   },
   "2427675702": {
     "status": "Closed",
@@ -10127,12 +10108,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
-  "2437310047": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:08:16.137Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
-  },
   "2437379940": {
     "status": "Closed",
     "ts": "2026-08-10T15:01:43.247Z",
@@ -10145,12 +10120,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
-  "2437447023": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:08:18.244Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
-  },
   "2437508414": {
     "status": "Closed",
     "ts": "2026-08-08T14:51:57.731Z",
@@ -10162,12 +10131,6 @@
     "ts": "2026-08-08T13:58:12.043Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2437577448": {
-    "status": "Closed",
-    "ts": "2026-08-11T22:08:20.322Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
   },
   "2437579149": {
     "status": "Closed",
@@ -14710,5 +14673,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-08-20"
+  },
+  "1002299290852056": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:14:43.876Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-08-15"
   }
 }
