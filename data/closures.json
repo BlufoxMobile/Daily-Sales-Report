@@ -10144,6 +10144,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2437214632": {
+    "status": "Closed",
+    "ts": "2026-08-11T22:36:19.268Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2437237292": {
     "status": "Pending Install",
     "ts": "2026-08-05T22:07:15.494Z",
@@ -14752,6 +14758,13 @@
   "1002297929022059": {
     "status": "Pending Install",
     "ts": "2026-08-11T22:20:47.145Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-08-18"
+  },
+  "1002298626582056": {
+    "status": "Pending Install",
+    "ts": "2026-08-11T22:30:35.524Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-18"
