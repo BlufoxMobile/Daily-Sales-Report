@@ -8102,11 +8102,10 @@
     "store": "Evanston"
   },
   "2397427277": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T21:00:03.013Z",
+    "status": "Cancelled Order",
+    "ts": "2026-08-12T22:35:50.973Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-07-24"
+    "store": "Uptown"
   },
   "2397568610": {
     "status": "Closed",
@@ -8508,6 +8507,12 @@
     "ts": "2026-07-14T15:39:17.160Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Round Lake Beach"
+  },
+  "2403385274": {
+    "status": "Closed",
+    "ts": "2026-08-12T22:38:48.506Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
   },
   "2403397522": {
     "status": "Closed",
