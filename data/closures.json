@@ -9338,6 +9338,18 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2421011465": {
+    "status": "Closed",
+    "ts": "2026-08-12T00:22:34.775Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
+  },
+  "2421072374": {
+    "status": "Closed",
+    "ts": "2026-08-12T00:22:33.503Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
+  },
   "2421105164": {
     "status": "Closed",
     "ts": "2026-07-25T23:05:11.868Z",
@@ -15029,11 +15041,5 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-18"
-  },
-  "1002298226042055": {
-    "status": "Closed",
-    "ts": "2026-08-12T00:22:02.142Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
   }
 }
