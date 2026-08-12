@@ -10045,8 +10045,8 @@
     "store": "Valparaiso"
   },
   "2432121558": {
-    "status": "Closed",
-    "ts": "2026-08-05T21:41:59.268Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-12T23:41:34.044Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -10702,6 +10702,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2438871091": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:41:42.112Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2438872252": {
     "status": "Closed",
     "ts": "2026-08-08T14:58:01.925Z",
@@ -10890,6 +10896,12 @@
     "ts": "2026-08-08T13:43:33.660Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2440973485": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:41:40.696Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2440995946": {
     "status": "Closed",
