@@ -10994,6 +10994,12 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2441934242": {
+    "status": "Cancelled Order",
+    "ts": "2026-08-12T23:32:31.684Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2442088221": {
     "status": "Closed",
     "ts": "2026-08-11T22:46:26.859Z",
