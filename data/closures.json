@@ -15095,5 +15095,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park",
     "pendingUntil": "2026-08-12"
+  },
+  "1001310307762104": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T15:05:41.777Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville",
+    "pendingUntil": "2026-08-19"
   }
 }
