@@ -9724,8 +9724,8 @@
     "store": "Elkhart"
   },
   "2425968372": {
-    "status": "Closed",
-    "ts": "2026-08-05T21:37:47.994Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-12T23:41:29.500Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -10946,12 +10946,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
-  "2441373573": {
-    "status": "Closed",
-    "ts": "2026-08-12T23:39:57.619Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2441626803": {
     "status": "Closed",
     "ts": "2026-08-11T20:54:37.300Z",
@@ -11027,12 +11021,6 @@
   "2442453850": {
     "status": "Cancelled Order",
     "ts": "2026-08-12T23:36:55.943Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
-  "2442517335": {
-    "status": "Cancelled Order",
-    "ts": "2026-08-12T23:36:58.022Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
@@ -15309,8 +15297,8 @@
     "pendingUntil": "2026-08-07"
   },
   "1002297131312058": {
-    "status": "Closed",
-    "ts": "2026-08-05T21:38:51.841Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-12T23:41:30.947Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
