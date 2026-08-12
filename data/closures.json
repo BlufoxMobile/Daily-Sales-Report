@@ -10142,6 +10142,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2434835401": {
+    "status": "Closed",
+    "ts": "2026-08-12T21:59:34.387Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2434859270": {
     "status": "Can Not Close",
     "ts": "2026-08-11T22:30:32.331Z",
@@ -10748,6 +10754,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-08-19"
+  },
+  "2440601902": {
+    "status": "Closed",
+    "ts": "2026-08-12T21:58:02.363Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2440624865": {
     "status": "Closed",
