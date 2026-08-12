@@ -10912,6 +10912,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2443345114": {
+    "status": "Closed",
+    "ts": "2026-08-12T18:52:47.415Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2443392065": {
     "status": "Closed",
     "ts": "2026-08-10T15:15:21.144Z",
@@ -15415,6 +15421,13 @@
   "1002299794352058": {
     "status": "Pending Install",
     "ts": "2026-08-12T18:49:11.965Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-08-19"
+  },
+  "1002300295732051": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T18:51:51.974Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-08-19"
