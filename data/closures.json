@@ -9939,6 +9939,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2430344434": {
+    "status": "Can Not Close",
+    "ts": "2026-08-12T22:19:03.735Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2430671842": {
     "status": "Cancelled Order",
     "ts": "2026-08-11T22:20:43.400Z",
@@ -10943,12 +10949,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2443516366": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:17:55.371Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2443517424": {
     "status": "Closed",
     "ts": "2026-08-12T22:15:02.606Z",
@@ -11023,29 +11023,11 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
-  "2445635882": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:17:51.509Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
-  "2445639306": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:17:52.909Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2445668052": {
     "status": "Closed",
     "ts": "2026-08-11T15:39:14.907Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2445697243": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:17:54.204Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
   },
   "2445716983": {
     "status": "Closed",
