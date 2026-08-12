@@ -10766,6 +10766,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2443175127": {
+    "status": "Closed",
+    "ts": "2026-08-12T15:52:26.484Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2443231276": {
     "status": "Closed",
     "ts": "2026-08-11T22:44:32.472Z",
@@ -10844,6 +10850,12 @@
     "ts": "2026-08-11T23:54:05.777Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "2445875423": {
+    "status": "Closed",
+    "ts": "2026-08-12T15:52:28.412Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2445922799": {
     "status": "Pending Install",
