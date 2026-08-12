@@ -10882,6 +10882,12 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
+  "2445968536": {
+    "status": "Closed",
+    "ts": "2026-08-12T15:52:37.348Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2446020202": {
     "status": "Closed",
     "ts": "2026-08-12T14:42:54.792Z",
@@ -10993,6 +10999,12 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-08-18"
+  },
+  "2446835843": {
+    "status": "Closed",
+    "ts": "2026-08-12T15:52:42.106Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2446895411": {
     "status": "Closed",
