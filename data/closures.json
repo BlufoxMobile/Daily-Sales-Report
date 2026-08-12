@@ -10806,11 +10806,29 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2440510186": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:25:44.595Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
+  "2440511420": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:20:43.820Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2440517832": {
     "status": "Closed",
     "ts": "2026-08-11T22:53:05.481Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2440529697": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:20:41.869Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
   },
   "2440539942": {
     "status": "Pending Install",
