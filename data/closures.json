@@ -10232,6 +10232,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2436103002": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T18:19:53.137Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-08-19"
+  },
   "2436137901": {
     "status": "Closed",
     "ts": "2026-08-04T19:44:45.650Z",
