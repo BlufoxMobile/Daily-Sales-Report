@@ -7232,11 +7232,10 @@
     "store": "Tinley Park"
   },
   "2380350852": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T20:49:50.909Z",
+    "status": "Closed",
+    "ts": "2026-08-12T22:35:06.834Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-07-31"
+    "store": "Uptown"
   },
   "2380368717": {
     "status": "Closed",
@@ -8072,11 +8071,10 @@
     "store": "Greeneville"
   },
   "2396795035": {
-    "status": "Pending Install",
-    "ts": "2026-07-14T20:59:55.470Z",
+    "status": "Cancelled Order",
+    "ts": "2026-08-12T22:35:49.244Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-07-24"
+    "store": "Uptown"
   },
   "2396913505": {
     "status": "Closed",
@@ -15639,12 +15637,5 @@
     "ts": "2026-08-12T22:19:58.279Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
-  },
-  "1002300515242055": {
-    "status": "Pending Install",
-    "ts": "2026-08-12T22:35:43.664Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-08-19"
   }
 }
