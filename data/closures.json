@@ -11103,6 +11103,13 @@
     "store": "Valparaiso",
     "pendingUntil": "2026-08-14"
   },
+  "2446360799": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T21:40:13.838Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview",
+    "pendingUntil": "2026-08-19"
+  },
   "2446385997": {
     "status": "Closed",
     "ts": "2026-08-12T15:52:34.077Z",
@@ -15469,6 +15476,12 @@
   "1002300588442053": {
     "status": "Closed",
     "ts": "2026-08-12T21:39:26.790Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
+  "1002300566252052": {
+    "status": "Closed",
+    "ts": "2026-08-12T21:39:28.972Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   }
