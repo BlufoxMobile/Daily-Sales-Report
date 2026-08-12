@@ -10429,6 +10429,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2437579317": {
+    "status": "Closed",
+    "ts": "2026-08-12T18:57:21.566Z",
+    "dm": "Juan Carrillo",
+    "store": "Dekalb"
+  },
   "2437590225": {
     "status": "Closed",
     "ts": "2026-08-11T23:51:06.572Z",
@@ -10941,6 +10947,13 @@
     "ts": "2026-08-11T23:23:42.875Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2444588752": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T18:54:31.190Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-08-19"
   },
   "2445122359": {
     "status": "Closed",
