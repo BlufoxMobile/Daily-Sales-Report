@@ -15067,9 +15067,10 @@
     "pendingUntil": "2026-08-18"
   },
   "1002298226042055": {
-    "status": "Closed",
-    "ts": "2026-08-12T00:25:20.975Z",
+    "status": "Pending Install",
+    "ts": "2026-08-12T00:28:09.062Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
+    "store": "Machesney Park",
+    "pendingUntil": "2026-08-12"
   }
 }
