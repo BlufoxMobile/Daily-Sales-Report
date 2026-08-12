@@ -15346,5 +15346,12 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville",
     "pendingUntil": "2026-08-19"
+  },
+  "1002298236262057": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T18:18:39.522Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-08-19"
   }
 }
