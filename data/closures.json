@@ -9896,12 +9896,6 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
-  "2430025758": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:24:19.228Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
-  },
   "2430050698": {
     "status": "Can Not Close",
     "ts": "2026-08-10T14:50:58.078Z",
@@ -9944,12 +9938,6 @@
     "ts": "2026-08-08T22:11:06.006Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2430344434": {
-    "status": "Can Not Close",
-    "ts": "2026-08-12T22:19:03.735Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
   },
   "2430671842": {
     "status": "Cancelled Order",
@@ -10780,6 +10768,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2440642524": {
+    "status": "Can Not Close",
+    "ts": "2026-08-12T22:24:16.957Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2440727784": {
     "status": "Closed",
     "ts": "2026-08-12T00:23:49.911Z",
@@ -10797,6 +10791,12 @@
     "ts": "2026-08-12T18:47:27.990Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2440921030": {
+    "status": "Closed",
+    "ts": "2026-08-12T22:25:00.600Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2440939211": {
     "status": "Closed",
