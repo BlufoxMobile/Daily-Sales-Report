@@ -7232,10 +7232,11 @@
     "store": "Tinley Park"
   },
   "2380350852": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:35:06.834Z",
+    "status": "Pending Install",
+    "ts": "2026-07-14T20:49:50.909Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-07-31"
   },
   "2380368717": {
     "status": "Closed",
@@ -10012,7 +10013,7 @@
   },
   "2432121558": {
     "status": "Closed",
-    "ts": "2026-08-05T21:41:59.268Z",
+    "ts": "2026-08-12T22:35:13.710Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -10644,6 +10645,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2438871091": {
+    "status": "Closed",
+    "ts": "2026-08-12T22:35:03.179Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2438872252": {
     "status": "Closed",
     "ts": "2026-08-08T14:58:01.925Z",
@@ -10785,6 +10792,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2440705524": {
+    "status": "Closed",
+    "ts": "2026-08-12T22:35:01.027Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
+  },
   "2440727784": {
     "status": "Closed",
     "ts": "2026-08-12T00:23:49.911Z",
@@ -10814,6 +10827,12 @@
     "ts": "2026-08-08T13:43:33.660Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2440973485": {
+    "status": "Closed",
+    "ts": "2026-08-12T22:35:02.083Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Glenview"
   },
   "2440995946": {
     "status": "Closed",
@@ -15203,8 +15222,8 @@
     "pendingUntil": "2026-08-07"
   },
   "1002297131312058": {
-    "status": "Closed",
-    "ts": "2026-08-05T21:38:51.841Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-12T22:26:34.021Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
