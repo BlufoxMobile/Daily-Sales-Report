@@ -9724,8 +9724,8 @@
     "store": "Elkhart"
   },
   "2425968372": {
-    "status": "Can Not Close",
-    "ts": "2026-08-12T23:41:29.500Z",
+    "status": "Closed",
+    "ts": "2026-08-05T21:37:47.994Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -10045,8 +10045,8 @@
     "store": "Valparaiso"
   },
   "2432121558": {
-    "status": "Can Not Close",
-    "ts": "2026-08-12T23:41:34.044Z",
+    "status": "Closed",
+    "ts": "2026-08-05T21:41:59.268Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -10702,12 +10702,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2438871091": {
-    "status": "Closed",
-    "ts": "2026-08-12T23:41:42.112Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2438872252": {
     "status": "Closed",
     "ts": "2026-08-08T14:58:01.925Z",
@@ -10897,12 +10891,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2440973485": {
-    "status": "Closed",
-    "ts": "2026-08-12T23:41:40.696Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2440995946": {
     "status": "Closed",
     "ts": "2026-08-08T22:31:21.343Z",
@@ -10955,6 +10943,12 @@
   "2441299549": {
     "status": "Closed",
     "ts": "2026-08-12T23:20:40.313Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
+  "2441373573": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:39:57.619Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
@@ -11033,6 +11027,12 @@
   "2442453850": {
     "status": "Cancelled Order",
     "ts": "2026-08-12T23:36:55.943Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
+  "2442517335": {
+    "status": "Cancelled Order",
+    "ts": "2026-08-12T23:36:58.022Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
@@ -11119,6 +11119,12 @@
     "ts": "2026-08-11T23:23:42.875Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2444562671": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:43:49.118Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
   },
   "2444588752": {
     "status": "Pending Install",
@@ -15309,8 +15315,8 @@
     "pendingUntil": "2026-08-07"
   },
   "1002297131312058": {
-    "status": "Can Not Close",
-    "ts": "2026-08-12T23:41:30.947Z",
+    "status": "Closed",
+    "ts": "2026-08-05T21:38:51.841Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
