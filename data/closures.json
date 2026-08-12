@@ -15210,14 +15210,14 @@
     "store": "Glenview"
   },
   "1002298184092050": {
-    "status": "Closed",
-    "ts": "2026-08-05T21:39:00.287Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-12T22:26:31.589Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
   "1002298726302058": {
-    "status": "Closed",
-    "ts": "2026-08-05T21:39:13.792Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-12T22:26:29.895Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
