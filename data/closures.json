@@ -10184,6 +10184,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2435661940": {
+    "status": "Closed",
+    "ts": "2026-08-12T18:28:14.507Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2435783201": {
     "status": "Closed",
     "ts": "2026-08-04T19:29:50.548Z",
@@ -15363,6 +15369,13 @@
   "1002298236262057": {
     "status": "Pending Install",
     "ts": "2026-08-12T18:18:39.522Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-08-19"
+  },
+  "1002299482992058": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T18:39:41.251Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-08-19"
