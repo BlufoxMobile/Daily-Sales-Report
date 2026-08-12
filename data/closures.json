@@ -9338,18 +9338,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2421011465": {
-    "status": "Closed",
-    "ts": "2026-08-12T00:17:03.007Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
-  },
-  "2421072374": {
-    "status": "Closed",
-    "ts": "2026-08-12T00:17:01.551Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
-  },
   "2421105164": {
     "status": "Closed",
     "ts": "2026-07-25T23:05:11.868Z",
@@ -10248,12 +10236,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2437386902": {
-    "status": "Closed",
-    "ts": "2026-08-12T00:17:03.911Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
-  },
   "2437446586": {
     "status": "Closed",
     "ts": "2026-08-08T14:49:42.777Z",
@@ -10565,12 +10547,6 @@
     "ts": "2026-08-08T15:03:11.751Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
-  },
-  "2440493197": {
-    "status": "Closed",
-    "ts": "2026-08-12T00:17:11.359Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
   },
   "2440506747": {
     "status": "Closed",
@@ -15056,7 +15032,7 @@
   },
   "1002298226042055": {
     "status": "Closed",
-    "ts": "2026-08-12T00:17:04.910Z",
+    "ts": "2026-08-12T00:22:02.142Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   }
