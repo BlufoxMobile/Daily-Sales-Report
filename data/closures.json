@@ -9716,7 +9716,7 @@
   },
   "2425968372": {
     "status": "Closed",
-    "ts": "2026-08-12T22:35:17.469Z",
+    "ts": "2026-08-05T21:37:47.994Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -9793,12 +9793,6 @@
     "ts": "2026-07-31T14:13:35.293Z",
     "dm": "Jacob Cabrales",
     "store": "South Bend"
-  },
-  "2427204801": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:35:19.133Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
   },
   "2427206168": {
     "status": "Closed",
@@ -10019,7 +10013,7 @@
   },
   "2432121558": {
     "status": "Closed",
-    "ts": "2026-08-12T22:35:13.710Z",
+    "ts": "2026-08-05T21:41:59.268Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -10651,12 +10645,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2438871091": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:35:03.179Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2438872252": {
     "status": "Closed",
     "ts": "2026-08-08T14:58:01.925Z",
@@ -10798,12 +10786,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
-  "2440705524": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:35:01.027Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
-  },
   "2440727784": {
     "status": "Closed",
     "ts": "2026-08-12T00:23:49.911Z",
@@ -10833,12 +10815,6 @@
     "ts": "2026-08-08T13:43:33.660Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2440973485": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:35:02.083Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Glenview"
   },
   "2440995946": {
     "status": "Closed",
@@ -15228,8 +15204,8 @@
     "pendingUntil": "2026-08-07"
   },
   "1002297131312058": {
-    "status": "Can Not Close",
-    "ts": "2026-08-12T22:26:34.021Z",
+    "status": "Closed",
+    "ts": "2026-08-05T21:38:51.841Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
@@ -15663,5 +15639,12 @@
     "ts": "2026-08-12T22:19:58.279Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
+  },
+  "1002300515242055": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T22:35:43.664Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-08-19"
   }
 }
