@@ -9782,6 +9782,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2428884499": {
+    "status": "Cancelled Order",
+    "ts": "2026-08-12T00:01:05.200Z",
+    "dm": "Juan Carrillo",
+    "store": "Calumet City"
+  },
   "2428999725": {
     "status": "Closed",
     "ts": "2026-08-11T22:15:29.653Z",
