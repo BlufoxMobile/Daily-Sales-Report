@@ -10471,6 +10471,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Glenview"
   },
+  "2437930064": {
+    "status": "Pending Install",
+    "ts": "2026-08-12T18:40:50.747Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-08-19"
+  },
   "2437930617": {
     "status": "Closed",
     "ts": "2026-08-11T20:39:15.920Z",
