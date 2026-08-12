@@ -10946,6 +10946,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
+  "2441373573": {
+    "status": "Closed",
+    "ts": "2026-08-12T23:39:57.619Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2441626803": {
     "status": "Closed",
     "ts": "2026-08-11T20:54:37.300Z",
@@ -11021,6 +11027,12 @@
   "2442453850": {
     "status": "Cancelled Order",
     "ts": "2026-08-12T23:36:55.943Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
+  "2442517335": {
+    "status": "Cancelled Order",
+    "ts": "2026-08-12T23:36:58.022Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
