@@ -10174,6 +10174,12 @@
     "store": "Glenview",
     "pendingUntil": "2026-08-12"
   },
+  "2436214806": {
+    "status": "Closed",
+    "ts": "2026-08-12T15:51:50.089Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2436300626": {
     "status": "Pending Install",
     "ts": "2026-08-05T22:06:27.052Z",
@@ -10204,6 +10210,12 @@
     "ts": "2026-08-08T22:48:39.136Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2436579774": {
+    "status": "Closed",
+    "ts": "2026-08-12T15:51:52.218Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2437118443": {
     "status": "Closed",
