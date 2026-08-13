@@ -11470,6 +11470,13 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
+  "2446352357": {
+    "status": "Pending Install",
+    "ts": "2026-08-13T18:14:32.488Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-08-20"
+  },
   "2446360054": {
     "status": "Pending Install",
     "ts": "2026-08-11T22:08:14.057Z",
