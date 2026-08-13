@@ -11881,6 +11881,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2447177373": {
+    "status": "Closed",
+    "ts": "2026-08-13T21:31:29.016Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
   "2447251312": {
     "status": "Pending Install",
     "ts": "2026-08-13T18:19:01.675Z",
@@ -11912,6 +11918,12 @@
     "ts": "2026-08-13T20:27:45.463Z",
     "dm": "Jacob Cabrales",
     "store": "Cicero"
+  },
+  "2447591230": {
+    "status": "Closed",
+    "ts": "2026-08-13T21:31:26.954Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2447839260": {
     "status": "Closed",
