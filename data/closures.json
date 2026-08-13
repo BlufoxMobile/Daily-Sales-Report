@@ -11615,13 +11615,6 @@
     "dm": "Juan Carrillo",
     "store": "Burbank"
   },
-  "2446114819": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T20:20:25.362Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-08-20"
-  },
   "2446166586": {
     "status": "Closed",
     "ts": "2026-08-12T15:20:07.847Z",
@@ -11767,13 +11760,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
-  "2447210406": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T20:22:41.347Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-08-20"
-  },
   "2447251312": {
     "status": "Pending Install",
     "ts": "2026-08-13T18:19:01.675Z",
@@ -11787,12 +11773,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
-  "2447357080": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T20:21:39.964Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
-  },
   "2447359625": {
     "status": "Pending Install",
     "ts": "2026-08-13T18:18:54.147Z",
@@ -11805,12 +11785,6 @@
     "ts": "2026-08-13T18:29:36.940Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
-  },
-  "2447514155": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T20:21:44.093Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park"
   },
   "2448005961": {
     "status": "Closed",
@@ -16306,18 +16280,10 @@
     "store": "Tinley Park",
     "pendingUntil": "2026-08-20"
   },
-  "1002300662392059": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T20:20:28.891Z",
+  "1002301180272054": {
+    "status": "Closed",
+    "ts": "2026-08-13T20:23:15.218Z",
     "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-08-20"
-  },
-  "1002301190982056": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T20:21:49.779Z",
-    "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-08-20"
+    "store": "Burbank"
   }
 }
