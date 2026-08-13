@@ -8119,6 +8119,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2397408310": {
+    "status": "Closed",
+    "ts": "2026-08-13T20:46:07.119Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2397427277": {
     "status": "Cancelled Order",
     "ts": "2026-08-12T22:35:50.973Z",
@@ -8154,6 +8160,12 @@
     "ts": "2026-07-10T20:50:56.149Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
+  },
+  "2398057371": {
+    "status": "Closed",
+    "ts": "2026-08-13T20:46:08.535Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2398364398": {
     "status": "Closed",
