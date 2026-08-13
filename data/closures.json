@@ -7932,6 +7932,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2393421893": {
+    "status": "Closed",
+    "ts": "2026-08-13T17:25:07.398Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2393503670": {
     "status": "Cancelled Order",
     "ts": "2026-07-27T20:13:44.865Z",
@@ -8142,6 +8148,12 @@
     "ts": "2026-07-08T20:54:52.043Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2398366387": {
+    "status": "Closed",
+    "ts": "2026-08-13T17:24:57.616Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   },
   "2398371592": {
     "status": "Can Not Close",
