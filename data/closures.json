@@ -10613,6 +10613,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2437813076": {
+    "status": "Closed",
+    "ts": "2026-08-13T18:01:26.169Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2437923085": {
     "status": "Closed",
     "ts": "2026-08-11T22:36:23.553Z",
@@ -15861,5 +15867,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-08-14"
+  },
+  "1002299536552056": {
+    "status": "Pending Install",
+    "ts": "2026-08-13T18:02:43.898Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-08-21"
   }
 }
