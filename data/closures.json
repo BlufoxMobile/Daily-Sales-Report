@@ -8149,6 +8149,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2398366387": {
+    "status": "Can Not Close",
+    "ts": "2026-08-13T17:25:45.831Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2398371592": {
     "status": "Can Not Close",
     "ts": "2026-07-08T21:10:36.379Z",
@@ -8204,8 +8210,8 @@
     "store": "Schererville"
   },
   "2398567733": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T17:25:40.884Z",
+    "status": "Closed",
+    "ts": "2026-08-13T17:25:50.327Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
