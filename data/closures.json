@@ -15054,11 +15054,10 @@
     "pendingUntil": "2026-07-28"
   },
   "1001306157512102": {
-    "status": "Pending Install",
-    "ts": "2026-07-24T14:58:46.757Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-13T21:34:26.327Z",
     "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-07-29"
+    "store": "Greeneville"
   },
   "1001306554082105": {
     "status": "Pending Install",
