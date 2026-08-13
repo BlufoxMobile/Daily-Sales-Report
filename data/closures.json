@@ -10842,7 +10842,7 @@
   },
   "2438934340": {
     "status": "Closed",
-    "ts": "2026-08-13T18:51:24.951Z",
+    "ts": "2026-08-13T18:51:33.408Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
@@ -11179,6 +11179,12 @@
     "ts": "2026-08-12T18:51:47.087Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2442244219": {
+    "status": "Can Not Close",
+    "ts": "2026-08-13T18:55:47.205Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
   },
   "2442299821": {
     "status": "Closed",
