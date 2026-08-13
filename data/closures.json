@@ -7934,7 +7934,7 @@
   },
   "2393421893": {
     "status": "Closed",
-    "ts": "2026-08-13T17:25:07.398Z",
+    "ts": "2026-08-13T17:25:34.454Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
@@ -8149,12 +8149,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2398366387": {
-    "status": "Closed",
-    "ts": "2026-08-13T17:24:57.616Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
-  },
   "2398371592": {
     "status": "Can Not Close",
     "ts": "2026-07-08T21:10:36.379Z",
@@ -8179,12 +8173,6 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
-  "2398410024": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T17:24:20.253Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
-  },
   "2398475429": {
     "status": "Can Not Close",
     "ts": "2026-07-24T18:26:23.749Z",
@@ -8202,18 +8190,6 @@
     "ts": "2026-07-09T20:20:48.600Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
-  },
-  "2398564906": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T17:24:55.246Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
-  },
-  "2398567733": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T17:24:22.423Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
   },
   "2398661088": {
     "status": "Closed",
