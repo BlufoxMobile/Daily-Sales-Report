@@ -11767,6 +11767,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2447210406": {
+    "status": "Pending Install",
+    "ts": "2026-08-13T20:22:41.347Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park",
+    "pendingUntil": "2026-08-20"
+  },
   "2447251312": {
     "status": "Pending Install",
     "ts": "2026-08-13T18:19:01.675Z",
