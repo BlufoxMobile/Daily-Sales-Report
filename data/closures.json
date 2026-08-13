@@ -11473,6 +11473,13 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
+  "2445847038": {
+    "status": "Pending Install",
+    "ts": "2026-08-13T19:41:18.127Z",
+    "dm": "Jacob Cabrales",
+    "store": "Cicero",
+    "pendingUntil": "2026-08-14"
+  },
   "2445850142": {
     "status": "Pending Install",
     "ts": "2026-08-12T21:43:10.557Z",
