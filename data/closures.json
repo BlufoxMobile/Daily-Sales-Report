@@ -8173,6 +8173,12 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
+  "2398410024": {
+    "status": "Can Not Close",
+    "ts": "2026-08-13T17:25:44.248Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2398475429": {
     "status": "Can Not Close",
     "ts": "2026-07-24T18:26:23.749Z",
@@ -8194,6 +8200,12 @@
   "2398564906": {
     "status": "Closed",
     "ts": "2026-08-13T17:25:38.829Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
+  "2398567733": {
+    "status": "Can Not Close",
+    "ts": "2026-08-13T17:25:40.884Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
