@@ -11572,6 +11572,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2447251312": {
+    "status": "Pending Install",
+    "ts": "2026-08-13T18:19:01.675Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-08-13"
+  },
   "2447256663": {
     "status": "Closed",
     "ts": "2026-08-13T18:18:06.561Z",
