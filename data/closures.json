@@ -11881,12 +11881,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
-  "2447177373": {
-    "status": "Closed",
-    "ts": "2026-08-13T21:31:29.016Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
-  },
   "2447251312": {
     "status": "Pending Install",
     "ts": "2026-08-13T18:19:01.675Z",
@@ -11919,15 +11913,9 @@
     "dm": "Jacob Cabrales",
     "store": "Cicero"
   },
-  "2447591230": {
-    "status": "Closed",
-    "ts": "2026-08-13T21:31:26.954Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
-  },
   "2447839260": {
     "status": "Closed",
-    "ts": "2026-08-13T21:31:25.423Z",
+    "ts": "2026-08-13T21:35:05.397Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
@@ -15054,10 +15042,11 @@
     "pendingUntil": "2026-07-28"
   },
   "1001306157512102": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T21:34:26.327Z",
+    "status": "Pending Install",
+    "ts": "2026-07-24T14:58:46.757Z",
     "dm": "Matthew Brooks",
-    "store": "Greeneville"
+    "store": "Greeneville",
+    "pendingUntil": "2026-07-29"
   },
   "1001306554082105": {
     "status": "Pending Install",
@@ -15782,10 +15771,11 @@
     "pendingUntil": "2026-08-11"
   },
   "1001307619662105": {
-    "status": "Can Not Close",
-    "ts": "2026-08-13T21:32:58.553Z",
+    "status": "Pending Install",
+    "ts": "2026-08-04T19:23:55.027Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-08-11"
   },
   "1001306566472104": {
     "status": "Pending Install",
@@ -16434,152 +16424,5 @@
     "ts": "2026-08-13T21:19:01.008Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
-  },
-  "1001311220872103": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:30:24.013Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311169162102": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:30:28.814Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311427532104": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:30:32.747Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311180572107": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:30:45.946Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311404692103": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:30:39.838Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311487902106": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:30:49.512Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001310965592108": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:30:55.591Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001310970572103": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:31:06.538Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001310547952101": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:31:02.504Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001310543782106": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:31:12.976Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001309556072108": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:31:19.578Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001310348832106": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:31:45.151Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001309958502108": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:31:48.509Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001309983332109": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:31:51.707Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311477732109": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:33:30.001Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311140762103": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:33:33.392Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311215862101": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:33:36.260Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311429492109": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:34:01.554Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001311207942101": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:34:13.107Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001309985762105": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:34:20.089Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-08-20"
-  },
-  "1001308562612105": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T21:34:30.524Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville",
-    "pendingUntil": "2026-08-20"
   }
 }
