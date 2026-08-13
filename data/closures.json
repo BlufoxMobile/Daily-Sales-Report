@@ -11581,6 +11581,13 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2445815218": {
+    "status": "Pending Install",
+    "ts": "2026-08-13T21:18:36.697Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-08-16"
+  },
   "2445816491": {
     "status": "Closed",
     "ts": "2026-08-13T20:20:13.465Z",
@@ -11722,6 +11729,12 @@
     "ts": "2026-08-12T15:20:07.847Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2446180232": {
+    "status": "Can Not Close",
+    "ts": "2026-08-13T21:15:32.104Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2446188053": {
     "status": "Closed",
