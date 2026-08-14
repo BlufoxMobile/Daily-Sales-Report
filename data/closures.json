@@ -16459,5 +16459,23 @@
     "ts": "2026-08-13T21:19:01.008Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "1002300509602058": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:53:45.493Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002300515242055": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:53:46.833Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002301427632052": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:53:49.365Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   }
 }
