@@ -11892,12 +11892,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
-  "2447155963": {
-    "status": "Closed",
-    "ts": "2026-08-14T21:16:18.337Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2447167483": {
     "status": "Pending Install",
     "ts": "2026-08-14T20:33:49.603Z",
@@ -11954,6 +11948,12 @@
     "ts": "2026-08-13T21:35:05.397Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2447856228": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:16:48.459Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2447928072": {
     "status": "Pending Install",
@@ -16652,5 +16652,12 @@
     "ts": "2026-08-14T20:44:26.056Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "1002301265972057": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T20:15:46.232Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-08-21"
   }
 }
