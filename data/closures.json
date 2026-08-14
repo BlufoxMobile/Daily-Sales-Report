@@ -11892,6 +11892,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2447167483": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T20:33:49.603Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park",
+    "pendingUntil": "2026-08-21"
+  },
   "2447175103": {
     "status": "Closed",
     "ts": "2026-08-14T17:26:46.972Z",
