@@ -16504,13 +16504,25 @@
   },
   "1002298467052052": {
     "status": "Can Not Close",
-    "ts": "2026-08-14T19:54:02.103Z",
+    "ts": "2026-08-14T19:54:10.603Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
   "1002297936842051": {
     "status": "Can Not Close",
     "ts": "2026-08-14T19:54:05.785Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002297366922050": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:54:07.556Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002297408812053": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:54:09.206Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   }
