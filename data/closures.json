@@ -16754,5 +16754,19 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-08-21"
+  },
+  "1002298233882055": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T21:33:53.112Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-08-21"
+  },
+  "1002296189762057": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T21:34:04.783Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-08-21"
   }
 }
