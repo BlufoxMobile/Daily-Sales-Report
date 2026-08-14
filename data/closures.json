@@ -11943,11 +11943,25 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2447928072": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T20:33:53.601Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park",
+    "pendingUntil": "2026-08-21"
+  },
   "2448005961": {
     "status": "Closed",
     "ts": "2026-08-13T19:15:50.166Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2448041991": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T20:33:58.112Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park",
+    "pendingUntil": "2026-08-21"
   },
   "2448149399": {
     "status": "Closed",
