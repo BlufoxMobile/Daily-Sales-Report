@@ -10061,6 +10061,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2430344434": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:54:04.424Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2430484899": {
     "status": "Closed",
     "ts": "2026-08-13T17:32:21.128Z",
@@ -10321,6 +10327,12 @@
   "2434708153": {
     "status": "Can Not Close",
     "ts": "2026-08-14T19:51:27.859Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "2434835401": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:54:00.681Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -16487,6 +16499,18 @@
   "1002299290172059": {
     "status": "Can Not Close",
     "ts": "2026-08-14T19:53:58.601Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002298467052052": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:54:02.103Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002297936842051": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T19:54:05.785Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   }
