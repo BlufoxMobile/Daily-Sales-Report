@@ -10631,8 +10631,8 @@
     "store": "Greeneville"
   },
   "2437386902": {
-    "status": "Can Not Close",
-    "ts": "2026-08-14T20:44:13.086Z",
+    "status": "Closed",
+    "ts": "2026-08-12T00:22:37.231Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11059,7 +11059,7 @@
   },
   "2440493197": {
     "status": "Closed",
-    "ts": "2026-08-14T20:38:37.234Z",
+    "ts": "2026-08-12T00:23:51.631Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11132,7 +11132,7 @@
   },
   "2440727784": {
     "status": "Closed",
-    "ts": "2026-08-14T20:38:40.831Z",
+    "ts": "2026-08-12T00:23:49.911Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11199,7 +11199,7 @@
   },
   "2441199972": {
     "status": "Closed",
-    "ts": "2026-08-14T20:38:42.813Z",
+    "ts": "2026-08-12T00:23:57.223Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11815,12 +11815,6 @@
     "ts": "2026-08-12T15:13:31.472Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
-  },
-  "2446629713": {
-    "status": "Closed",
-    "ts": "2026-08-14T20:37:21.645Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
   },
   "2446656422": {
     "status": "Pending Install",
@@ -16594,6 +16588,12 @@
   "1002300040182057": {
     "status": "Closed",
     "ts": "2026-08-14T20:20:22.250Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "1002300858322050": {
+    "status": "Closed",
+    "ts": "2026-08-14T20:44:26.056Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   }
