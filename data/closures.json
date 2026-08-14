@@ -11280,8 +11280,8 @@
     "store": "Oak Ridge"
   },
   "2441633717": {
-    "status": "Can Not Close",
-    "ts": "2026-08-14T21:52:12.769Z",
+    "status": "Closed",
+    "ts": "2026-08-13T20:07:27.659Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -12179,6 +12179,12 @@
   "2450514144": {
     "status": "Closed",
     "ts": "2026-08-14T21:47:40.358Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "2450642615": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:52:23.052Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
