@@ -7382,8 +7382,8 @@
     "store": "Tinley Park"
   },
   "2381860456": {
-    "status": "Closed",
-    "ts": "2026-07-14T22:01:44.089Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-14T21:57:04.254Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -10449,8 +10449,8 @@
     "store": "Cicero"
   },
   "2436098085": {
-    "status": "Closed",
-    "ts": "2026-08-12T15:52:18.029Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-14T21:57:11.978Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
