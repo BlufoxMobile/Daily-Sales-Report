@@ -11059,7 +11059,7 @@
   },
   "2440493197": {
     "status": "Closed",
-    "ts": "2026-08-14T20:38:37.234Z",
+    "ts": "2026-08-12T00:23:51.631Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11132,7 +11132,7 @@
   },
   "2440727784": {
     "status": "Closed",
-    "ts": "2026-08-14T20:38:40.831Z",
+    "ts": "2026-08-12T00:23:49.911Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11199,7 +11199,7 @@
   },
   "2441199972": {
     "status": "Closed",
-    "ts": "2026-08-14T20:38:42.813Z",
+    "ts": "2026-08-12T00:23:57.223Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11816,12 +11816,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2446629713": {
-    "status": "Closed",
-    "ts": "2026-08-14T20:37:21.645Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Machesney Park"
-  },
   "2446656422": {
     "status": "Pending Install",
     "ts": "2026-08-11T20:57:35.882Z",
@@ -11942,6 +11936,12 @@
     "ts": "2026-08-13T20:27:45.463Z",
     "dm": "Jacob Cabrales",
     "store": "Cicero"
+  },
+  "2447608123": {
+    "status": "Closed",
+    "ts": "2026-08-14T20:38:48.290Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2447839260": {
     "status": "Closed",
