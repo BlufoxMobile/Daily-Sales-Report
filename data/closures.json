@@ -8930,11 +8930,10 @@
     "store": "Oak Ridge"
   },
   "2412569965": {
-    "status": "Pending Install",
-    "ts": "2026-07-24T18:44:59.319Z",
+    "status": "Closed",
+    "ts": "2026-08-14T19:50:35.306Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-08-03"
+    "store": "Kildeer"
   },
   "2412617835": {
     "status": "Cancelled Order",
