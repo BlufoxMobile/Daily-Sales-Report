@@ -12139,6 +12139,12 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
+  "2450067702": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:50:30.037Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2450082138": {
     "status": "Pending Install",
     "ts": "2026-08-14T20:59:33.441Z",
@@ -12169,6 +12175,13 @@
     "ts": "2026-08-14T21:47:40.358Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2450642615": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T21:51:11.924Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-08-21"
   },
   "2450701675": {
     "status": "Closed",
