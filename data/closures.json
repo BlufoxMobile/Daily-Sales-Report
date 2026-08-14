@@ -11241,7 +11241,7 @@
   },
   "2441633717": {
     "status": "Closed",
-    "ts": "2026-08-14T20:15:27.040Z",
+    "ts": "2026-08-13T20:07:27.659Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -16267,10 +16267,11 @@
     "pendingUntil": "2026-08-26"
   },
   "1002299867852059": {
-    "status": "Can Not Close",
-    "ts": "2026-08-14T20:15:22.680Z",
+    "status": "Pending Install",
+    "ts": "2026-08-13T20:07:26.009Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-08-20"
   },
   "1002300640602058": {
     "status": "Closed",
@@ -16691,5 +16692,12 @@
     "ts": "2026-08-14T21:18:57.523Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "1002301141312056": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T21:25:56.098Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-08-21"
   }
 }
