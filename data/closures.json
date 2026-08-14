@@ -11281,7 +11281,7 @@
   },
   "2441633717": {
     "status": "Can Not Close",
-    "ts": "2026-08-14T21:51:55.375Z",
+    "ts": "2026-08-14T21:52:12.769Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -12109,12 +12109,6 @@
     "store": "South Skokie",
     "pendingUntil": "2026-08-21"
   },
-  "2449311758": {
-    "status": "Closed",
-    "ts": "2026-08-14T21:51:50.000Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
-  },
   "2449406056": {
     "status": "Closed",
     "ts": "2026-08-14T21:26:00.715Z",
@@ -12144,13 +12138,6 @@
     "ts": "2026-08-14T17:22:47.214Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
-  },
-  "2450067702": {
-    "status": "Pending Install",
-    "ts": "2026-08-14T21:51:16.939Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-21"
   },
   "2450082138": {
     "status": "Pending Install",
@@ -12182,13 +12169,6 @@
     "ts": "2026-08-14T21:47:40.358Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2450642615": {
-    "status": "Pending Install",
-    "ts": "2026-08-14T21:51:11.924Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-21"
   },
   "2450701675": {
     "status": "Closed",
