@@ -8696,10 +8696,11 @@
     "store": "Evergreen Park"
   },
   "2407004218": {
-    "status": "Closed",
-    "ts": "2026-08-14T21:36:15.643Z",
+    "status": "Pending Install",
+    "ts": "2026-08-12T23:44:15.860Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-08-12"
   },
   "2407056653": {
     "status": "Closed",
@@ -8751,10 +8752,11 @@
     "store": "Round Lake Beach"
   },
   "2407335311": {
-    "status": "Closed",
-    "ts": "2026-08-14T21:36:16.984Z",
+    "status": "Pending Install",
+    "ts": "2026-07-27T20:24:51.887Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-08-07"
   },
   "2407399007": {
     "status": "Can Not Close",
@@ -11787,6 +11789,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2446189998": {
+    "status": "Can Not Close",
+    "ts": "2026-08-14T21:36:44.441Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2446314790": {
     "status": "Can Not Close",
     "ts": "2026-08-11T15:35:01.274Z",
@@ -11926,12 +11934,6 @@
     "ts": "2026-08-12T15:52:44.005Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
-  },
-  "2447155963": {
-    "status": "Can Not Close",
-    "ts": "2026-08-14T21:36:41.271Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
   },
   "2447167483": {
     "status": "Pending Install",
