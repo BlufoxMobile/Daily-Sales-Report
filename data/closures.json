@@ -7382,8 +7382,8 @@
     "store": "Tinley Park"
   },
   "2381860456": {
-    "status": "Can Not Close",
-    "ts": "2026-08-14T21:57:04.254Z",
+    "status": "Closed",
+    "ts": "2026-07-14T22:01:44.089Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -10449,8 +10449,8 @@
     "store": "Cicero"
   },
   "2436098085": {
-    "status": "Can Not Close",
-    "ts": "2026-08-14T21:57:11.978Z",
+    "status": "Closed",
+    "ts": "2026-08-12T15:52:18.029Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -12213,11 +12213,10 @@
     "store": "Evanston"
   },
   "2451007903": {
-    "status": "Pending Install",
-    "ts": "2026-08-14T21:42:09.622Z",
+    "status": "Closed",
+    "ts": "2026-08-14T21:57:18.070Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-21"
+    "store": "Evanston"
   },
   "1001290369922103": {
     "status": "Pending Install",
