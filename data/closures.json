@@ -16550,5 +16550,18 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-08-21"
+  },
+  "1002299823942051": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T20:14:43.987Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie",
+    "pendingUntil": "2026-08-17"
+  },
+  "1002300040182057": {
+    "status": "Closed",
+    "ts": "2026-08-14T20:20:22.250Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   }
 }
