@@ -10631,8 +10631,8 @@
     "store": "Greeneville"
   },
   "2437386902": {
-    "status": "Closed",
-    "ts": "2026-08-12T00:22:37.231Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-14T20:44:13.086Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
@@ -11986,6 +11986,13 @@
     "ts": "2026-08-14T19:53:43.263Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "2449131932": {
+    "status": "Pending Install",
+    "ts": "2026-08-14T20:51:29.335Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie",
+    "pendingUntil": "2026-08-21"
   },
   "2449884143": {
     "status": "Closed",
