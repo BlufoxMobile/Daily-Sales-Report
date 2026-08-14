@@ -12146,11 +12146,23 @@
     "store": "Uptown",
     "pendingUntil": "2026-08-19"
   },
+  "2450351081": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:47:41.900Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2450481198": {
     "status": "Closed",
     "ts": "2026-08-14T17:24:52.349Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2450514144": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:47:40.358Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2450701675": {
     "status": "Closed",
