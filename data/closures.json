@@ -11045,6 +11045,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2440453549": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:27:59.964Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2440453876": {
     "status": "Closed",
     "ts": "2026-08-08T22:31:17.255Z",
@@ -11141,6 +11147,12 @@
     "ts": "2026-08-13T21:04:09.007Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "2440813881": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:27:58.877Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
   },
   "2440863022": {
     "status": "Closed",
@@ -11241,7 +11253,7 @@
   },
   "2441633717": {
     "status": "Closed",
-    "ts": "2026-08-13T20:07:27.659Z",
+    "ts": "2026-08-14T20:15:27.040Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -11753,6 +11765,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2446189998": {
+    "status": "Closed",
+    "ts": "2026-08-14T21:21:46.606Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2446314790": {
     "status": "Can Not Close",
     "ts": "2026-08-11T15:35:01.274Z",
@@ -12049,18 +12067,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie",
     "pendingUntil": "2026-08-21"
-  },
-  "2449406056": {
-    "status": "Closed",
-    "ts": "2026-08-14T21:26:00.715Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
-  },
-  "2449406088": {
-    "status": "Closed",
-    "ts": "2026-08-14T21:26:01.820Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
   },
   "2449589723": {
     "status": "Closed",
@@ -16279,11 +16285,10 @@
     "pendingUntil": "2026-08-26"
   },
   "1002299867852059": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T20:07:26.009Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-14T20:15:22.680Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-20"
+    "store": "Evanston"
   },
   "1002300640602058": {
     "status": "Closed",
@@ -16704,12 +16709,5 @@
     "ts": "2026-08-14T21:18:57.523Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "1002301141312056": {
-    "status": "Pending Install",
-    "ts": "2026-08-14T21:25:56.098Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-21"
   }
 }
