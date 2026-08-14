@@ -12140,10 +12140,11 @@
     "store": "South Knoxville"
   },
   "2450067702": {
-    "status": "Closed",
-    "ts": "2026-08-14T21:50:30.037Z",
+    "status": "Pending Install",
+    "ts": "2026-08-14T21:51:16.939Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-08-21"
   },
   "2450082138": {
     "status": "Pending Install",
