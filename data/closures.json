@@ -8696,11 +8696,10 @@
     "store": "Evergreen Park"
   },
   "2407004218": {
-    "status": "Pending Install",
-    "ts": "2026-08-12T23:44:15.860Z",
+    "status": "Closed",
+    "ts": "2026-08-14T21:36:15.643Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-08-12"
+    "store": "Uptown"
   },
   "2407056653": {
     "status": "Closed",
@@ -8752,11 +8751,10 @@
     "store": "Round Lake Beach"
   },
   "2407335311": {
-    "status": "Pending Install",
-    "ts": "2026-07-27T20:24:51.887Z",
+    "status": "Closed",
+    "ts": "2026-08-14T21:36:16.984Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-08-07"
+    "store": "Uptown"
   },
   "2407399007": {
     "status": "Can Not Close",
