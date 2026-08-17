@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-06T13:12:40.743335+00:00",
+  "updatedAt": "2026-08-17T02:52:05.390732+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -16,7 +16,6 @@
     "Burbank Xfinity Store": [
       "Antonio Carradine",
       "Arturo Cahue",
-      "Christopher Coleman",
       "Eric Bartkowiak",
       "Jacqueline Benitez",
       "Jalen Logan",
@@ -54,6 +53,8 @@
       "Caleb Green",
       "Kyin Edwards",
       "Nevaeh Patton",
+      "Vivian Avila",
+      "Zachary Mitchell",
       "ZQ Mitchell",
       "New Hire",
       "DM or Director Submission"
@@ -66,6 +67,7 @@
       "Emanuel Soto-Moreno",
       "Fredy Aguilera",
       "Karla Gonzalez",
+      "Kathrynn Kirkman",
       "Killian Thaxton",
       "Shawn Ellis",
       "New Hire",
@@ -78,7 +80,6 @@
       "Jamal Lomax",
       "Nayeri Hernandez",
       "Suyal Ullah",
-      "Tanzim Chowdhury",
       "New Hire",
       "DM or Director Submission"
     ],
@@ -92,13 +93,13 @@
       "Jesus Romo",
       "Marshawn Sykes",
       "Michael Rivera",
-      "Vivian Avila",
       "Wendy Cerda Bacilio",
       "New Hire",
       "DM or Director Submission"
     ],
     "Frankfort Xfinity Store": [
       "Aiden Bolhuis",
+      "Austen Gast",
       "Deontay Moore",
       "Erick Smith",
       "Frankie Pedraza-Scalfano",
@@ -119,12 +120,14 @@
       "DM or Director Submission"
     ],
     "Greeneville Xfinity Store": [
+      "Alexander Harned",
       "Dalton Arwood",
       "Dalton Fox",
       "Daniel Mitchell Jr.",
       "Jared Reaves",
       "Josh Trentham",
       "Joshua Huerto",
+      "Joshua Trentham",
       "Nicholes Gilland",
       "New Hire",
       "DM or Director Submission"
@@ -182,9 +185,17 @@
       "New Hire",
       "DM or Director Submission"
     ],
+    "North Knoxville Xfinity Store": [
+      "Issiah Badgett",
+      "New Hire",
+      "DM or Director Submission"
+    ],
     "Oak Lawn Xfinity Store": [
-      "Biancia Brooks",
+      "Ahmad Allan",
+      "Briana Marquez",
+      "Christopher Coleman",
       "Jorge Bortero",
+      "Kianti London",
       "New Hire",
       "DM or Director Submission"
     ],
@@ -236,6 +247,7 @@
       "Demarcus McKamey",
       "Gregory Martin",
       "Jahsi Simon",
+      "Masahiro Taylor",
       "Zoe Spradling",
       "New Hire",
       "DM or Director Submission"
@@ -281,6 +293,7 @@
       "Emari Washington",
       "Mario Stevens",
       "Nathaniel Brogdon",
+      "Samantha Laingren",
       "Shamika Austin",
       "New Hire",
       "DM or Director Submission"
