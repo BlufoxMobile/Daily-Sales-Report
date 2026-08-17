@@ -1,4 +1,17 @@
 # GitHub Pages (Jekyll) build configuration
 # Keeps heavy data out of the published site so Pages deploys stay small and fast.
 # These files stay in the repo and are still read via api.github.com / raw.githubusercontent.com.
-exclude: [data/monday-ops-submissions, data/target-pdfs, reports, scripts, github-upload-proxy.gs]
+#
+# IMPORTANT: data/monday-ops-photos (853 files, ~495 MB) must stay excluded.
+# It was missing from this list, which pushed the published site to ~500 MB and
+# stalled the Pages build — the live site was frozen on the last successful build
+# while main kept moving. Excluding it drops the published site to ~11 MB.
+# Photos are written by github-upload-proxy.gs and read via raw.githubusercontent.com,
+# never over the Pages URL, so excluding them breaks nothing.
+exclude:
+  - data/monday-ops-photos
+  - data/monday-ops-submissions
+  - data/target-pdfs
+  - reports
+  - scripts
+  - github-upload-proxy.gs

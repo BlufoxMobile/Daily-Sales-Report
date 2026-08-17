@@ -25,9 +25,10 @@
   var CANONICAL_STORES = [
     'Bourbonnais', 'Burbank', 'Calumet City', 'Cicero', 'Dekalb', 'Elkhart',
     'Evanston', 'Evergreen Park', 'Frankfort', 'Glenview', 'Greeneville',
-    'Hammond', 'Johnson City', 'Kildeer', 'Michigan City', 'Oak Ridge',
-    'Round Lake Beach', 'Schererville', 'South Bend', 'South Knoxville',
-    'South Skokie', 'Tinley Park', 'Uptown', 'Valparaiso'
+    'Hammond', 'Johnson City', 'Kildeer', 'Machesney Park', 'Michigan City',
+    'North Knoxville', 'Oak Lawn', 'Oak Ridge', 'Round Lake Beach',
+    'Schererville', 'South Bend', 'South Knoxville', 'South Skokie',
+    'Tinley Park', 'Uptown', 'Valparaiso'
   ];
 
   /* Explicit nickname -> canonical short name.
@@ -35,7 +36,11 @@
      ("Skokie" is already handled automatically by rule 3, listed only as a
       worked example.) */
   var ALIASES = {
-    'skokie': 'South Skokie'
+    'skokie': 'South Skokie',
+    // Legacy submissions predating the North Knoxville opening said just "Knoxville".
+    // Now that two Knoxville stores exist, rule 3 can no longer auto-resolve the bare
+    // city, so pin it explicitly (rule 2 runs before rule 3).
+    'knoxville': 'South Knoxville'
   };
 
   /* The "X Xfinity Store" form differs from "<canonical> Xfinity Store" for a

@@ -369,7 +369,7 @@ const FILE_PATHS = {
 };
 // ======================================================
 
-    const MY_STORES = ['Bourbonnais','Burbank','Calumet City','Cicero','Dekalb','Elkhart','Evanston','Evergreen Park','Frankfort','Glenview','Greeneville','Hammond','Johnson City','Kildeer','Michigan City','Oak Ridge','Round Lake Beach','Schererville','South Bend','South Knoxville','South Skokie','Tinley Park','Uptown','Valparaiso'];
+    const MY_STORES = ['Bourbonnais','Burbank','Calumet City','Cicero','Dekalb','Elkhart','Evanston','Evergreen Park','Frankfort','Glenview','Greeneville','Hammond','Johnson City','Kildeer','Machesney Park','Michigan City','North Knoxville','Oak Lawn','Oak Ridge','Round Lake Beach','Schererville','South Bend','South Knoxville','South Skokie','Tinley Park','Uptown','Valparaiso'];
     const MY_STORES_LOWER = MY_STORES.map(s => s.toLowerCase());
 
     const excelInput      = document.getElementById('excelFile');
@@ -780,12 +780,18 @@ const NPS_STORE_NUM = {
   "51031": "Johnson City",  "55002": "Tinley Park",     "55011": "Cicero",
   "55001": "Kildeer",       "55003": "Dekalb",          "55008": "Evanston",
   "51009": "Oak Ridge",     "51032": "Burbank",         "51033": "Michigan City",
-  "51017": "Hammond",       "51035": "South Bend",      "51041": "Calumet City"
+  "51017": "Hammond",       "51035": "South Bend",      "51041": "Calumet City",
+  "51038": "Machesney Park","51039": "Oak Lawn",        "51045": "North Knoxville"
 };
 
 // Keyword fallbacks for store numbers we haven't seen yet. Checked in order.
 const NPS_STORE_ALIASES = [
+  // North Knoxville stays above South Knoxville so a bare "knoxville" style
+  // catch-all can never swallow it.
+  ["North Knoxville", ["n. knoxville", "n knoxville", "north knoxville"]],
   ["South Knoxville", ["s. knoxville", "s knoxville", "south knoxville"]],
+  ["Machesney Park",  ["machesney park", "machesney"]],
+  ["Oak Lawn",        ["oak lawn"]],
   ["South Skokie",    ["south skokie", "s. skokie", "s skokie", "skokie"]],
   ["South Bend",      ["south bend"]],
   ["Bourbonnais",     ["bourbonnais", "northfield square"]],

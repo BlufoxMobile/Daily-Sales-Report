@@ -801,6 +801,7 @@ const BUILD_VERSION = '2026-07-11T18'; const CONFIG = {
     'Juan Carrillo',
     'Imaad Dhorajiwala',
     'Jacob Cabrales',
+    'Tanzim Chowdhury',
     'Matthew Brooks'
   ]
 };
@@ -1868,11 +1869,18 @@ const FU_CONFIG = {
   POLL_MS: 60000
 };
 
+// Store -> DM ownership, matching the 5-district layout (27 stores).
+// Chicago North = Dhorajiwala, Chicago South = Carrillo, Chicago East = Cabrales,
+// Chicago West = Chowdhury, Big South = Brooks.
+// EXCEPTION: Cicero sits in the Chicago NORTH district but is managed by
+// Jacob Cabrales, so it is listed under Cabrales here — this map answers
+// "who is the DM for this store?", and the group headers below are DM names.
 const FU_DM_TO_STORES = {
-  'Juan Carrillo':       ['Bourbonnais', 'Burbank', 'Dekalb', 'Evergreen Park', 'Frankfort', 'Tinley Park'],
+  'Juan Carrillo':       ['Bourbonnais', 'Evergreen Park', 'Frankfort', 'Oak Lawn', 'Tinley Park'],
   'Jacob Cabrales':      ['Cicero', 'Elkhart', 'Hammond', 'Michigan City', 'Schererville', 'South Bend', 'Valparaiso'],
-  'Imaad Dhorajiwala':   ['Evanston', 'Glenview', 'Kildeer', 'Round Lake Beach', 'South Skokie', 'Uptown'],
-  'Matthew Brooks':      ['Greeneville', 'Johnson City', 'Oak Ridge', 'South Knoxville']
+  'Imaad Dhorajiwala':   ['Evanston', 'Kildeer', 'Machesney Park', 'South Skokie', 'Uptown'],
+  'Tanzim Chowdhury':    ['Burbank', 'Calumet City', 'Dekalb', 'Glenview', 'Round Lake Beach'],
+  'Matthew Brooks':      ['Greeneville', 'Johnson City', 'North Knoxville', 'Oak Ridge', 'South Knoxville']
 };
 const FU_STORE_TO_DM = {};
 Object.entries(FU_DM_TO_STORES).forEach(([dm, stores]) => stores.forEach(s => FU_STORE_TO_DM[s.toLowerCase()] = dm));
