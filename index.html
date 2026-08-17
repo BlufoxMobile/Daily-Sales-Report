@@ -572,7 +572,9 @@ async function loadTSheetCounts() {
         const base = String(name == null ? '' : name)
           .replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim()
           .replace(/\s+xfinity\s+store\s*$/i, '');
-        return /^skokie$/i.test(base) ? 'South Skokie' : base;
+        if (/^skokie$/i.test(base)) return 'South Skokie';
+        if (/^knoxville$/i.test(base)) return 'South Knoxville';
+        return base;
       };
   const byCanon = {};
   for (const label of Object.keys(raw)) {
