@@ -254,7 +254,7 @@ body {
 .controls.idle { opacity:.45; }
 .countdown-track { position:absolute; top:-3px; left:0; right:0; height:6px; background:transparent; }
 .countdown-fill { height:100%; background:linear-gradient(90deg, var(--day-mid), var(--day-ink)); border-radius:0 999px 999px 0; transition:width .1s linear; }
-.district-tabs { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
+.district-tabs { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; min-width:0; overflow:hidden; }
 .district-tab {
   padding:9px 16px; border-radius:999px; font-size:16px; font-weight:800;
   background:var(--track); color:var(--muted); cursor:pointer; white-space:nowrap;
@@ -374,13 +374,18 @@ const DAY_COLORS = {
   6: { name:'SATURDAY',  emoji:'🪻', ink:'#6741D9', mid:'#9775FA', soft:'#E5DBFF', tint:'#F3F0FF', line:'#D0BFFF' },
 };
 
-// ================= DISTRICTS (unchanged) =================
+// ================= DISTRICTS =================
+// Districts align with the Big South Chicago market layout.
+// dmMatch = DM surname substring(s) from the Store Rank sheet.
+// storeMatch = stores pulled INTO this district regardless of DM.
+// storeExclude = stores kept OUT of this district even if the DM matches.
 const DISTRICTS = [
-  { key: 'all',   label: 'All Stores',     dmMatch: null },
-  { key: 'north', label: 'North Chicago',  dmMatch: ['dhorajiwala'] },
-  { key: 'south', label: 'South Chicago',  dmMatch: ['carrillo'], storeMatch: ['calumet city'] },
-  { key: 'nwi',   label: 'NW Indiana',     dmMatch: ['cabrales'] },
-  { key: 'tn',    label: 'Tennessee',      dmMatch: ['brooks'] },
+  { key: 'all',       label: 'All Stores',    tab: 'All',        dmMatch: null },
+  { key: 'north',     label: 'Chicago North', tab: 'North',      dmMatch: ['dhorajiwala'], storeMatch: ['cicero'] },
+  { key: 'south',     label: 'Chicago South', tab: 'South',      dmMatch: ['carrillo'] },
+  { key: 'east',      label: 'Chicago East',  tab: 'East',       dmMatch: ['cabrales'], storeExclude: ['cicero'] },
+  { key: 'west',      label: 'Chicago West',  tab: 'West',       dmMatch: ['chowdhury'] },
+  { key: 'big-south', label: 'Big South',     tab: 'Big South',  dmMatch: ['brooks'] },
 ];
 
 const TSHEET_NAME_BY_STORE = {
@@ -445,19 +450,19 @@ function scheduleDayColorAtMidnight() {
 }
 function getDayInfo() { return DAY_COLORS[new Date().getDay()]; }
 
-// ============ DISTRICT HELPERS (unchanged) ============
+// ============ DISTRICT HELPERS ============
 function getActiveDistrict() {
   return DISTRICTS.find(d => d.key === state.currentDistrict) || DISTRICTS[0];
 }
 function storeMatchesDistrict(store, dist) {
   if (!dist || !dist.dmMatch) return true;
+  const name = String(store.name || '').toLowerCase();
+  // Explicit exclusions win over a DM match (e.g. Cicero reports to the East DM
+  // but belongs to Chicago North on the market org chart).
+  if (dist.storeExclude && dist.storeExclude.some(m => name.includes(m))) return false;
+  if (dist.storeMatch && dist.storeMatch.some(m => name.includes(m))) return true;
   const dm = String(store.dm || '').toLowerCase();
-  if (dist.dmMatch.some(m => dm.includes(m))) return true;
-  if (dist.storeMatch && dist.storeMatch.length) {
-    const name = String(store.name || '').toLowerCase();
-    if (dist.storeMatch.some(m => name.includes(m))) return true;
-  }
-  return false;
+  return dist.dmMatch.some(m => dm.includes(m));
 }
 function filteredStores() {
   const dist = getActiveDistrict();
@@ -857,10 +862,14 @@ function buildSlides() {
       const distStoreNames = distStores.map(s => s.name.toLowerCase());
       const rpRows = state.raiseProgram.rows.filter(r => {
         if (!(r.grandTotal > 0)) return false;
-        const dmLower = String(r.dm || '').toLowerCase();
-        if (distDmKeys.some(k => dmLower.includes(k))) return true;
         const storeLower = String(r.store || '').toLowerCase();
-        return distStoreNames.some(n => storeLower === n);
+        // Honour the district's store overrides BEFORE falling back to the DM match,
+        // otherwise a store that was moved off its DM (Cicero: East DM, North district)
+        // gets counted in both districts.
+        if (dist.storeExclude && dist.storeExclude.some(m => storeLower.includes(m))) return false;
+        if (distStoreNames.some(n => storeLower === n)) return true;
+        const dmLower = String(r.dm || '').toLowerCase();
+        return distDmKeys.some(k => dmLower.includes(k));
       });
       if (!rpRows.length) continue;
       const sorted = rpRows.slice().sort((a, b) => b.grandTotal - a.grandTotal);
@@ -1022,7 +1031,7 @@ function render() {
   const activeDist = state.currentDistrict;
   const districtTabsHtml = DISTRICTS.map(d => {
     const cnt = districtCount(d.key);
-    return `<div class="district-tab${d.key === activeDist ? ' active' : ''}" onclick="setDistrict('${d.key}')">${d.label}<span class="district-count">${cnt}</span></div>`;
+    return `<div class="district-tab${d.key === activeDist ? ' active' : ''}" title="${d.label}" onclick="setDistrict('${d.key}')">${d.tab || d.label}<span class="district-count">${cnt}</span></div>`;
   }).join('');
 
   const sortedStores = state.stores.slice().sort((a,b) => a.name.localeCompare(b.name));
