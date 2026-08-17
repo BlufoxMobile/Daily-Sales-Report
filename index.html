@@ -336,6 +336,9 @@ body {
   <div id="errorMsg"></div>
   <button id="retryBtn" onclick="loadData()">Retry</button>
 </div>
+<!-- Shared store-name normalizer (hosted by this repo). Must load BEFORE the
+     inline script so T-Sheet store labels can be resolved to canonical names. -->
+<script src="store-aliases.js"></script>
 <script>
 // ================= CONFIG (unchanged from previous version) =================
 const CONFIG = {
@@ -387,10 +390,6 @@ const DISTRICTS = [
   { key: 'west',      label: 'Chicago West',  tab: 'West',       dmMatch: ['chowdhury'] },
   { key: 'big-south', label: 'Big South',     tab: 'Big South',  dmMatch: ['brooks'] },
 ];
-
-const TSHEET_NAME_BY_STORE = {
-  'South Skokie': 'Skokie Xfinity Store',
-};
 
 let state = {
   stores: [],
@@ -564,10 +563,25 @@ async function loadTSheetCounts() {
     if (!s.store) continue;
     raw[s.store] = (raw[s.store] || 0) + 1;
   }
+  // Bucket the RAW T-Sheet labels by canonical short store name instead of
+  // guessing one expected spelling per store. This keeps "South Skokie Xfinity
+  // Store", "Skokie Xfinity Store" and a bare "Machesney Park" all counted.
+  const canonStore = (window.BLUFOX_STORES && window.BLUFOX_STORES.normalizeStore)
+    ? window.BLUFOX_STORES.normalizeStore
+    : function (name) {  // fallback only if store-aliases.js failed to load
+        const base = String(name == null ? '' : name)
+          .replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim()
+          .replace(/\s+xfinity\s+store\s*$/i, '');
+        return /^skokie$/i.test(base) ? 'South Skokie' : base;
+      };
+  const byCanon = {};
+  for (const label of Object.keys(raw)) {
+    const canon = canonStore(label);
+    byCanon[canon] = (byCanon[canon] || 0) + raw[label];
+  }
   const counts = {};
   for (const s of state.stores) {
-    const tname = TSHEET_NAME_BY_STORE[s.name] || (s.name + ' Xfinity Store');
-    counts[s.name] = raw[tname] || 0;
+    counts[s.name] = byCanon[canonStore(s.name)] || 0;
   }
   return { counts, date: useDate, ok: true };
 }

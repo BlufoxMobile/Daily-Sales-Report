@@ -789,7 +789,9 @@ const NPS_STORE_ALIASES = [
   // North Knoxville stays above South Knoxville so a bare "knoxville" style
   // catch-all can never swallow it.
   ["North Knoxville", ["n. knoxville", "n knoxville", "north knoxville"]],
-  ["South Knoxville", ["s. knoxville", "s knoxville", "south knoxville"]],
+  // Bare "knoxville" is the legacy spelling from before North Knoxville opened;
+  // it belongs to South Knoxville (matches store-aliases.js + the NPS dashboard).
+  ["South Knoxville", ["s. knoxville", "s knoxville", "south knoxville", "knoxville"]],
   ["Machesney Park",  ["machesney park", "machesney"]],
   ["Oak Lawn",        ["oak lawn"]],
   ["South Skokie",    ["south skokie", "s. skokie", "s skokie", "skokie"]],

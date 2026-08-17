@@ -781,6 +781,10 @@
 <div class="toast" id="toast"></div>
 <div class="save-status" id="saveStatus"></div>
 
+<!-- Shared store-name normalizer (hosted by this repo). Must load BEFORE the
+     inline script so credit-escalation store labels can be resolved to
+     canonical short names. -->
+<script src="store-aliases.js"></script>
 <script>
 /* =====================================================
    CONFIGURATION
@@ -1888,13 +1892,25 @@ Object.entries(FU_DM_TO_STORES).forEach(([dm, stores]) => stores.forEach(s => FU
 // Match store names from the Zap regardless of suffix variations like
 // "Uptown Xfinity Store" or "Tinley Park Xfinity Store · " — strip
 // trailing "Xfinity Store" / "Test Xfinity Store" / punctuation, case-insensitively.
+// Resolve a cleaned label to its canonical short name using the repo's shared
+// normalizer (store-aliases.js), which already knows the legacy/bare-city
+// spellings ("Skokie" -> "South Skokie"). Falls back to a local rule only if
+// that file failed to load, so the Zap's "Skokie Xfinity Store" rows still land
+// under South Skokie / Imaad instead of "(Unassigned)".
+const fuCanonStore = (window.BLUFOX_STORES && window.BLUFOX_STORES.normalizeStore)
+  ? window.BLUFOX_STORES.normalizeStore
+  : function (name) {
+      if (/^skokie$/i.test(name)) return 'South Skokie';
+      if (/^knoxville$/i.test(name)) return 'South Knoxville';
+      return name;
+    };
 function fuNormalizeStore(rawStore) {
   if (!rawStore) return '';
-  return String(rawStore)
+  return fuCanonStore(String(rawStore)
     .replace(/\s+Test\s+Xfinity\s+Store\b/gi, '')
     .replace(/\s+Xfinity\s+Store\b/gi, '')
     .replace(/[·•\-—,]+\s*$/g, '')
-    .trim();
+    .trim());
 }
 function fuLookupDM(rawStore) {
   const norm = fuNormalizeStore(rawStore).toLowerCase();
