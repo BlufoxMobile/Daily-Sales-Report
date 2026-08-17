@@ -1,13 +1,21 @@
 # GitHub Pages (Jekyll) build configuration
-# Keeps heavy data out of the published site so Pages deploys stay small and fast.
-# These files stay in the repo and are still read via api.github.com / raw.githubusercontent.com.
 #
-# IMPORTANT: data/monday-ops-photos (853 files, ~495 MB) must stay excluded.
-# It was missing from this list, which pushed the published site to ~500 MB and
-# stalled the Pages build — the live site was frozen on the last successful build
-# while main kept moving. Excluding it drops the published site to ~11 MB.
-# Photos are written by github-upload-proxy.gs and read via raw.githubusercontent.com,
-# never over the Pages URL, so excluding them breaks nothing.
+# NOTE ON WHAT THIS FILE ACTUALLY DOES:
+# Pages for this repo deploys via GitHub Actions (.github/workflows/update.yml),
+# not via Jekyll's branch build. That workflow assembles the published site with
+# its own rsync --exclude list, which is the list that really matters. This file
+# is belt-and-braces: it keeps the excludes correct if the Pages source is ever
+# switched back to "Deploy from a branch".
+#
+# Keep the two lists in sync. Everything excluded here stays in the repo and is
+# still reachable via api.github.com / raw.githubusercontent.com — only the
+# published site is trimmed.
+#
+# (Historical note: an earlier version of this comment blamed a stalled Pages
+# deploy on data/monday-ops-photos being missing from this list. That diagnosis
+# was wrong. The real cause was a scheduled workflow run stuck in "Waiting" for
+# 10+ days holding the `pages-deploy` concurrency lock, which blocked every
+# deploy behind it. That is now guarded by timeout-minutes: 20 in update.yml.)
 exclude:
   - data/monday-ops-photos
   - data/monday-ops-submissions

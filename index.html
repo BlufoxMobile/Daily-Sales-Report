@@ -422,14 +422,30 @@ function savePersistedFilters() {
     }));
   } catch (e) {}
 }
+// Set when the saved district key was missing/unknown but a real store was
+// saved: the district has to be re-derived from that store. findDistrictForStore
+// reads state.stores, which is still empty when filters load, so the derivation
+// is deferred to applyPendingDistrict() (called once the workbook is parsed).
+let pendingDistrictFromStore = false;
 function loadPersistedFilters() {
   try {
     const raw = localStorage.getItem(FILTER_STORAGE_KEY);
     if (!raw) return;
     const v = JSON.parse(raw);
-    if (v.district && DISTRICTS.some(d => d.key === v.district)) state.currentDistrict = v.district;
+    const validDistrict = !!(v.district && DISTRICTS.some(d => d.key === v.district));
+    if (validDistrict) state.currentDistrict = v.district;
     if (v.store) state.currentStore = v.store;
+    // District keys get renamed between releases; recover from the saved store
+    // rather than silently dropping the user back to the "All Stores" tab.
+    pendingDistrictFromStore = !validDistrict && !!v.store && v.store !== 'all';
   } catch (e) {}
+}
+function applyPendingDistrict() {
+  if (!pendingDistrictFromStore) return;
+  pendingDistrictFromStore = false;
+  const dist = findDistrictForStore(state.currentStore);
+  if (dist) state.currentDistrict = dist.key;
+  savePersistedFilters();
 }
 
 // ============ DAY THEME ============
@@ -454,24 +470,27 @@ function getActiveDistrict() {
   return DISTRICTS.find(d => d.key === state.currentDistrict) || DISTRICTS[0];
 }
 function storeMatchesDistrict(store, dist) {
-  if (!dist || !dist.dmMatch) return true;
+  if (!dist) return true;
   const name = String(store.name || '').toLowerCase();
   // Explicit exclusions win over a DM match (e.g. Cicero reports to the East DM
-  // but belongs to Chicago North on the market org chart).
+  // but belongs to Chicago North on the market org chart). They are checked
+  // before the dmMatch guard so a district declared with dmMatch:null still
+  // honours its storeExclude list instead of swallowing the whole market.
   if (dist.storeExclude && dist.storeExclude.some(m => name.includes(m))) return false;
   if (dist.storeMatch && dist.storeMatch.some(m => name.includes(m))) return true;
+  // No dmMatch = catch-all district ('all'): everything not excluded above.
+  if (!dist.dmMatch) return true;
   const dm = String(store.dm || '').toLowerCase();
   return dist.dmMatch.some(m => dm.includes(m));
 }
 function filteredStores() {
   const dist = getActiveDistrict();
-  if (!dist || !dist.dmMatch) return state.stores;
+  if (!dist) return state.stores;
   return state.stores.filter(s => storeMatchesDistrict(s, dist));
 }
 function districtCount(distKey) {
   const dist = DISTRICTS.find(d => d.key === distKey);
   if (!dist) return 0;
-  if (!dist.dmMatch) return state.stores.length;
   return state.stores.filter(s => storeMatchesDistrict(s, dist)).length;
 }
 function setDistrict(key) {
@@ -775,6 +794,8 @@ function parseWorkbook(wb) {
     });
   }
   state.stores.sort((a, b) => a.rank - b.rank);
+  // state.stores is now populated, so a deferred district lookup can resolve.
+  applyPendingDistrict();
 
   // Rep Rank
   const repWs = wb.Sheets['Rep Rank'];
