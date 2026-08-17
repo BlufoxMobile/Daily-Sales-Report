@@ -8447,11 +8447,10 @@
     "store": "Hammond"
   },
   "2402589079": {
-    "status": "Pending Install",
-    "ts": "2026-07-25T18:04:00.849Z",
-    "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-08-01"
+    "status": "Cancelled Order",
+    "ts": "2026-08-17T20:05:24.432Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank"
   },
   "2402715372": {
     "status": "Closed",
