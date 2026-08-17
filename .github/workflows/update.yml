@@ -23,6 +23,10 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # Cap the job so a stuck run can't hold the `pages-deploy` concurrency lock
+    # indefinitely (one run once sat Waiting for 10+ days and blocked every
+    # Pages deploy). On timeout the job fails and releases the lock.
+    timeout-minutes: 20
     permissions:
       contents: write
       pages: write
