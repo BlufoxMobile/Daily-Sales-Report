@@ -84,6 +84,7 @@ body {
 .brand-sub { font-size:15px; font-weight:700; color:var(--muted); letter-spacing:2px; margin-top:3px; }
 .header-center { text-align:center; flex:1; padding:0 20px; min-width:0; }
 .header-center-title { font-size:40px; font-weight:900; letter-spacing:1px; color:var(--text); line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header-center-title.long { font-size:27px; letter-spacing:0; }
 .header-center-title .accent { color:var(--day-ink); }
 .header-center-sub { font-size:18px; font-weight:700; color:var(--muted); margin-top:4px; }
 .header-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; min-width:430px; }
@@ -194,7 +195,7 @@ body {
 .detail-chips .chip .cl { font-size:14px; }
 .detail-chips .chip .cv { font-size:28px; }
 
-/* ---------- TABLES (team, yesterday, raise, rankings) ---------- */
+/* ---------- TABLES (team, yesterday, detractor, rankings) ---------- */
 .panel {
   background:var(--card); border-radius:24px; padding:20px 26px;
   box-shadow:0 8px 26px rgba(70,60,45,.09); border:1px solid #F3EFE8;
@@ -220,12 +221,37 @@ body {
 .mini-track { display:block; height:12px; background:var(--track); border-radius:999px; overflow:hidden; width:100%; flex:1; }
 .mini-fill { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg, var(--day-mid), var(--day-ink)); width:0; animation:grow .9s .2s forwards; }
 
-/* Raise sparkline */
-.spark { display:flex; align-items:flex-end; gap:3px; height:34px; }
-.spark span { flex:1; min-width:6px; border-radius:4px 4px 2px 2px; background:var(--day-line); }
-.spark span.hot { background:var(--day-mid); }
-.tier-chip { background:var(--good-bg); color:var(--good-ink); border-radius:999px; padding:4px 14px; font-size:18px; font-weight:900; white-space:nowrap; }
-.tier-chip.zero { background:var(--track); color:var(--muted); }
+/* Days Since Last Detractor (read from across the room: big numerals, tall rows) */
+.trow.streak { padding:15px 18px; margin-top:9px; }
+.trow.streak-dense { padding:5px 16px; margin-top:6px; }
+.trow.streak-dense .streak-days { font-size:30px; letter-spacing:-1px; }
+.trow.streak-dense .streak-note { font-size:17px; }
+.streak-days { font-size:52px; font-weight:900; line-height:1; color:var(--day-ink); letter-spacing:-2px; white-space:nowrap; }
+.streak-days .unit { font-size:15px; font-weight:800; color:var(--muted); letter-spacing:1px; margin-left:7px; }
+.trow.streak-goal { background:var(--good-bg); outline:2px solid var(--good-ink); }
+.trow.streak-goal .streak-days, .trow.streak-goal .rk { color:var(--good-ink); }
+.trow.streak-goal .mini-fill { background:linear-gradient(90deg, #51CF66, var(--good-ink)); }
+.trow.streak-pending { background:#EDFBEF; outline:2px dashed var(--good-ink); }
+.trow.streak-pending .streak-days, .trow.streak-pending .rk { color:var(--good-ink); }
+.trow.streak-pending .mini-fill { background:linear-gradient(90deg, #8CE99A, var(--good-ink)); }
+.trow.streak-limited { background:var(--day-tint); }
+.trow.streak-limited .streak-days { color:var(--text); }
+.trow.streak-reset .streak-days { color:var(--low-ink); }
+.trow.streak-reset .mini-fill { background:linear-gradient(90deg, #FF8787, var(--low-ink)); }
+.trow.streak-nodata { background:var(--track); }
+.trow.streak-nodata .nm, .trow.streak-nodata .rk { color:var(--muted); }
+.streak-note { font-size:20px; font-weight:800; color:var(--muted); font-style:italic; }
+.streak-sub { font-size:15px; font-weight:800; color:var(--muted); }
+.streak-stat { font-size:15px; font-weight:900; color:var(--muted); white-space:nowrap; }
+.trow.streak-goal .streak-stat, .trow.streak-pending .streak-stat { color:var(--good-ink); }
+.trow.streak-reset .streak-stat { color:var(--low-ink); }
+.streak-flag { display:block; font-size:13px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-top:3px; white-space:nowrap; }
+.streak-badge { display:inline-block; border-radius:999px; padding:4px 13px; font-size:16px; font-weight:900; white-space:nowrap; background:var(--good-bg); color:var(--good-ink); }
+.streak-badge.record { background:var(--warn-bg); color:var(--warn-ink); }
+.streak-foot { display:flex; gap:14px; margin-top:12px; flex-shrink:0; }
+.streak-foot .sf { flex:1; background:var(--day-tint); border:1px solid var(--day-line); border-radius:16px; padding:9px 18px; }
+.streak-foot .sfl { font-size:14px; font-weight:900; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.streak-foot .sfv { font-size:29px; font-weight:900; color:var(--day-ink); line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
 /* Two-column ranking layout */
 .rank-cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; height:100%; min-height:0; }
@@ -345,6 +371,7 @@ const CONFIG = {
   RSD_NAME: 'Jeffrey Bilbrey',
   EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
   PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
+  STREAKS_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/nps-detractor-streaks.json',
   SLIDE_INTERVAL: 15000,     // 15 seconds per slide
   // Auto-refresh window: look for a newly uploaded Sales Report every
   // `everyMin` minutes between startMin and endMin (minutes since midnight).
@@ -355,9 +382,6 @@ const CONFIG = {
   PROMO_EVERY_N: 4,
   ZERO_SHEET: 'Zero',
   TSHEET_API_URL: 'https://script.google.com/macros/s/AKfycbyQaa1yvggLJuw5dcme74vwAW3hSB3BvzCK40IhLThy-F8KZDFOF6gcyl8psNMd3yD-Cg/exec',
-  RAISE_TIER_GP: 65000,
-  RAISE_AMOUNT: 0.50,
-  RAISE_PROGRAM_SHEET: 'Raise Program',
   DISTRICT_RANK_SHEET: 'District Rank',
   REGION_RANK_SHEET: 'Region Rank',
   OUR_REGIONS: ['Greater Chicago', 'Big South'],
@@ -396,7 +420,7 @@ let state = {
   currentDistrict: 'all',
   currentStore: 'all',
   yesterday: { rows: {}, tsheets: {}, date: null, loaded: false, error: null },
-  raiseProgram: { monthHeaders: [], rows: [], loaded: false },
+  streaks: null,
   dmRanks: [],
   regionRanks: [],
   reps: [],
@@ -617,29 +641,91 @@ async function loadYesterday(wb) {
   }
 }
 
-// ============ RAISE PROGRAM PARSER (unchanged) ============
-function parseRaiseProgram(wb) {
-  const sheet = wb.Sheets[CONFIG.RAISE_PROGRAM_SHEET];
-  if (!sheet) return { monthHeaders: [], rows: [], loaded: false };
-  const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
-  if (!aoa.length) return { monthHeaders: [], rows: [], loaded: false };
-  const headers = aoa[0] || [];
-  const gtIdx = headers.findIndex(h => h && String(h).toLowerCase().includes('grand total'));
-  if (gtIdx < 4) return { monthHeaders: [], rows: [], loaded: false };
-  const monthHeaders = headers.slice(4, gtIdx).map(h => String(h || ''));
-  const rows = [];
-  for (let i = 1; i < aoa.length; i++) {
-    const r = aoa[i];
-    if (!r || !r[0]) continue;
-    rows.push({
-      name: String(r[0] || ''), store: String(r[1] || ''),
-      dm: String(r[2] || ''), rd: String(r[3] || ''),
-      months: monthHeaders.map((_, j) => Number(r[4 + j]) || 0),
-      grandTotal: Number(r[gtIdx]) || 0,
-    });
+// ============ NPS DETRACTOR STREAKS (days since last detractor) ============
+// Separate JSON feed, produced outside the workbook. Fetched alongside the
+// workbook and refreshed on the same window. If it is missing, broken, or
+// stale the slides are dropped from the rotation entirely — a wrong counter
+// on a store TV is worse than no counter at all.
+const STREAK_MAX_AGE_DAYS = 3;
+const STREAK_GOAL_FALLBACK = 30;
+
+async function loadStreaks() {
+  try {
+    const resp = await fetch(CONFIG.STREAKS_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const json = await resp.json();
+    if (!json || !Array.isArray(json.stores)) throw new Error('malformed payload (no stores array)');
+    state.streaks = json;
+  } catch (err) {
+    console.warn('[detractor streaks] unavailable — detractor slides will be skipped:', err && err.message ? err.message : err);
+    state.streaks = null;
   }
-  return { monthHeaders, rows, loaded: true };
 }
+
+// Cheap "did the feed move?" key so a workbook-unchanged refresh still notices
+// a new streaks file.
+function streakSignature(s) {
+  if (!s) return '';
+  return String(s.updatedAt || '') + '|' + String(s.asOf || '') + '|' + (Array.isArray(s.stores) ? s.stores.length : 0);
+}
+
+// Only warn once per distinct payload so a district-tab click doesn't spam.
+let streakWarnKey = null;
+function streakWarn(key, msg) {
+  if (streakWarnKey === key) return;
+  streakWarnKey = key;
+  console.warn('[detractor streaks] ' + msg);
+}
+
+// Gatekeeper for the whole slide family.
+function streaksUsable() {
+  const s = state.streaks;
+  if (!s || !Array.isArray(s.stores) || !s.stores.length) {
+    streakWarn('missing', 'no usable data — detractor slides omitted from the rotation');
+    return false;
+  }
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s.asOf || ''));
+  if (!m) {
+    streakWarn(streakSignature(s), 'missing/unreadable asOf date — detractor slides omitted');
+    return false;
+  }
+  const asOf = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const ageDays = (Date.now() - asOf.getTime()) / 86400000;
+  if (ageDays > STREAK_MAX_AGE_DAYS) {
+    streakWarn(streakSignature(s), 'stale (asOf ' + s.asOf + ', ' + Math.floor(ageDays) + ' days old) — detractor slides omitted');
+    return false;
+  }
+  streakWarnKey = null;
+  return true;
+}
+
+// Districts are matched on districtKey from the feed — NOT on DM names — so a
+// district never silently disappears because a DM moved.
+function streakStoresForDistrict(key) {
+  const s = state.streaks;
+  if (!s || !Array.isArray(s.stores)) return [];
+  const rows = s.stores.filter(r => String(r.districtKey || '') === key);
+  // Three tiers: ranked competitors, then window-limited stores (a real day
+  // count, but bounded by their own survey history, so not comparable), then
+  // stores with no survey data at all.
+  const tier = r => (r.status === 'no-data' || r.days == null) ? 2 : (r.windowLimited ? 1 : 0);
+  return rows.sort((a, b) => {
+    if (tier(a) !== tier(b)) return tier(a) - tier(b);
+    if (tier(a) === 2) return String(a.store).localeCompare(String(b.store));
+    if (b.days !== a.days) return b.days - a.days;
+    return String(a.store).localeCompare(String(b.store));
+  });
+}
+
+function fmtStreakDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  if (!m) return null;
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+    .toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+const escHtml = v => String(v == null ? '' : v)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // ============ DM / REGION RANK PARSER (unchanged) ============
 function parseRankSheet(wb, sheetName) {
@@ -681,13 +767,29 @@ async function loadData() {
   if (loading && !state.stores.length) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; }
   try {
     const cacheBust = '?t=' + Date.now();
-    const resp = await fetch(CONFIG.EXCEL_URL + cacheBust);
+    // The detractor-streak feed rides along with the workbook fetch (and the
+    // same refresh window). It never blocks the deck: loadStreaks() swallows
+    // its own errors and just leaves state.streaks null.
+    const prevStreakSig = streakSignature(state.streaks);
+    const [resp] = await Promise.all([
+      fetch(CONFIG.EXCEL_URL + cacheBust),
+      loadStreaks(),
+    ]);
     if (!resp.ok) throw new Error('Could not fetch sales report (HTTP ' + resp.status + ')');
     const buf = await resp.arrayBuffer();
     // Skip the full reload when the file on GitHub hasn't changed — keeps
     // the slideshow running smoothly during background checks.
     const sig = bufferSignature(buf);
-    if (state.dataSig && sig === state.dataSig && state.stores.length) return;
+    if (state.dataSig && sig === state.dataSig && state.stores.length) {
+      // Workbook is unchanged, but the streaks feed may have moved on.
+      if (streakSignature(state.streaks) !== prevStreakSig) {
+        const keep = state.currentSlide;
+        buildSlides();
+        state.currentSlide = Math.min(keep, Math.max(0, state.totalSlides - 1));
+        render();
+      }
+      return;
+    }
     const isUpdate = !!state.dataSig && state.stores.length > 0;
     state.dataSig = sig;
     const wb = XLSX.read(buf, { type: 'array' });
@@ -856,12 +958,12 @@ function parseWorkbook(wb) {
     }
   }
 
-  state.raiseProgram = parseRaiseProgram(wb);
   state.dmRanks      = parseRankSheet(wb, CONFIG.DISTRICT_RANK_SHEET);
   state.regionRanks  = parseRankSheet(wb, CONFIG.REGION_RANK_SHEET);
 }
 
 // ============ SLIDE BUILDING (unchanged logic) ============
+const DETRACTOR_ROWS_PER_PAGE = 12;
 function buildSlides() {
   state.slides = [];
   const visibleStores = filteredStores();
@@ -891,34 +993,21 @@ function buildSlides() {
       district: dist, stores: distStores, label: "Yesterday — " + dist.label });
   }
 
-  if (state.raiseProgram && state.raiseProgram.loaded) {
+  // Days Since Last NPS Detractor — one slide per district, matched on the
+  // feed's districtKey. Dropped wholesale when the feed is missing or stale.
+  if (streaksUsable()) {
     for (const dist of districtsToShow) {
-      const distStores = state.stores.filter(s => storeMatchesDistrict(s, dist));
-      if (!distStores.length) continue;
-      const distDmKeys = (dist.dmMatch || []).map(s => s.toLowerCase());
-      const distStoreNames = distStores.map(s => s.name.toLowerCase());
-      const rpRows = state.raiseProgram.rows.filter(r => {
-        if (!(r.grandTotal > 0)) return false;
-        const storeLower = String(r.store || '').toLowerCase();
-        // Honour the district's store overrides BEFORE falling back to the DM match,
-        // otherwise a store that was moved off its DM (Cicero: East DM, North district)
-        // gets counted in both districts.
-        if (dist.storeExclude && dist.storeExclude.some(m => storeLower.includes(m))) return false;
-        if (distStoreNames.some(n => storeLower === n)) return true;
-        const dmLower = String(r.dm || '').toLowerCase();
-        return distDmKeys.some(k => dmLower.includes(k));
-      });
-      if (!rpRows.length) continue;
-      const sorted = rpRows.slice().sort((a, b) => b.grandTotal - a.grandTotal);
-      const REPS_PER_PAGE = 12;
-      const totalPages = Math.max(1, Math.ceil(sorted.length / REPS_PER_PAGE));
+      const sorted = streakStoresForDistrict(dist.key);
+      if (!sorted.length) continue;
+      const meta = (state.streaks.districts || []).find(d => String(d.key) === dist.key) || null;
+      const totalPages = Math.max(1, Math.ceil(sorted.length / DETRACTOR_ROWS_PER_PAGE));
       for (let pg = 0; pg < totalPages; pg++) {
-        const slice = sorted.slice(pg * REPS_PER_PAGE, (pg + 1) * REPS_PER_PAGE);
+        const slice = sorted.slice(pg * DETRACTOR_ROWS_PER_PAGE, (pg + 1) * DETRACTOR_ROWS_PER_PAGE);
         state.slides.push({
-          type: 'raise', title: 'RAISE PROGRAM',
-          district: dist, rows: slice, allRows: sorted,
+          type: 'detractor', title: 'DAYS SINCE LAST DETRACTOR',
+          district: dist, rows: slice, allRows: sorted, meta: meta,
           page: pg, totalPages: totalPages,
-          label: totalPages > 1 ? `Raise — ${dist.label} (Pg ${pg + 1}/${totalPages})` : `Raise — ${dist.label}`,
+          label: totalPages > 1 ? `Detractor — ${dist.label} (Pg ${pg + 1}/${totalPages})` : `Detractor — ${dist.label}`,
         });
       }
     }
@@ -993,7 +1082,7 @@ const SLIDE_SUBTITLES = {
   'stores': "How each store is tracking toward this month's profit goal",
   'store-detail': 'A closer look at the store and its team',
   'yesterday': 'Who walked in yesterday — and how many became customers',
-  'raise': 'Every $65,000 in year-to-date profit = another $0.50/hr raise',
+  'detractor': 'A detractor is any survey scored 8 or below — the goal is 30 clean days',
   'dm-rank': 'How all district managers stack up across the company',
   'region-rank': 'How the regions stack up — ours are highlighted',
   'promos': "Today's deals to lead with",
@@ -1045,9 +1134,9 @@ function render() {
   } else if (slide.type === 'yesterday') {
     slideTitle = 'YESTERDAY — ' + slide.district.label.toUpperCase();
     slideContent = renderYesterday(slide.district, slide.stores);
-  } else if (slide.type === 'raise') {
-    slideTitle = 'RAISE PROGRAM — ' + slide.district.label.toUpperCase();
-    slideContent = renderRaiseProgram(slide.district, slide.rows, slide);
+  } else if (slide.type === 'detractor') {
+    slideTitle = 'DAYS SINCE LAST DETRACTOR — ' + slide.district.label.toUpperCase();
+    slideContent = renderDetractor(slide.district, slide.rows, slide);
   } else if (slide.type === 'dm-rank') {
     slideTitle = 'DISTRICT MANAGER RANKINGS';
     slideContent = renderRankTable(state.dmRanks, 'dm');
@@ -1090,7 +1179,7 @@ function render() {
         </div>
       </div>
       <div class="header-center">
-        <div class="header-center-title">${slideTitle}</div>
+        <div class="header-center-title${slideTitle.length > 28 ? ' long' : ''}">${slideTitle}</div>
         <div class="header-center-sub">${subtitle}</div>
       </div>
       <div class="header-right">
@@ -1286,43 +1375,120 @@ function renderYesterday(district, distStores) {
     </div>`;
 }
 
-function renderRaiseProgram(district, rows, slide) {
-  const allRows = slide.allRows || rows;
-  const distTotal = allRows.reduce((a, r) => a + r.grandTotal, 0);
+function renderDetractor(district, rows, slide) {
+  const feed = state.streaks || {};
+  const meta = slide.meta || {};
+  const goal = Number(feed.goalDays) || STREAK_GOAL_FALLBACK;
+  const all = slide.allRows || rows;
+  // The producer leaves window-limited stores out of the district maths (their
+  // number is bounded by their own survey history, not by an observed clean
+  // run) — the local fallbacks below mirror that.
+  const live = all.filter(r => r.status !== 'no-data' && r.days != null && !r.windowLimited);
+  const avgDays = meta.avgDays != null ? Number(meta.avgDays)
+    : (live.length ? live.reduce((a, r) => a + Number(r.days || 0), 0) / live.length : 0);
+  const bestDays = meta.bestDays != null ? Number(meta.bestDays)
+    : (live.length ? Math.max.apply(null, live.map(r => Number(r.days || 0))) : 0);
+  const bestStore = meta.bestStore || (live.length ? live[0].store : '—');
+  const goalMetCount = meta.goalMetCount != null ? Number(meta.goalMetCount)
+    : live.filter(r => r.goalMet || r.capped || Number(r.days) >= goal).length;
+  // With no ranked competitors in the district (all window-limited / no-data)
+  // the footer shows em dashes rather than a fake 0.0.
+  const hasRanked = live.length > 0;
+  const avgTxt = (meta.avgDays != null || hasRanked) ? avgDays.toFixed(1) + ' days' : '—';
+  const bestTxt = (meta.bestStore || hasRanked) ? `${escHtml(bestStore)} · ${bestDays} days` : '—';
+  const asOf = fmtStreakDate(feed.asOf);
   const pageInfo = slide.totalPages > 1 ? ` · Page ${slide.page + 1} of ${slide.totalPages}` : '';
-  const cols = '56px 1.3fr 1fr 230px 150px 175px 1.2fr';
-  const compact = rows.length > 10;
+  const cols = '96px 1.45fr 190px 1.5fr 300px 210px';
+  // Rows breathe to fill the panel — a 5-store district gets tall rows; a
+  // hypothetical full 12-row page falls back to the dense variant.
+  const dense = rows.length > 8;
+  const pad = Math.max(10, Math.min(26, Math.round((580 / Math.max(1, rows.length) - 63) / 2)));
+  const rowStyle = dense ? '' : `padding:${pad}px 18px;`;
+
+  // Podium: ranks are shared on ties, so a medal is only awarded when the whole
+  // tied group still fits inside the top three ranked rows. A three-way tie for
+  // 3rd shows "#3" three times rather than handing one arbitrary store a bronze.
+  const rankGroups = {};
+  all.filter(r => r.rankDistrict != null && !r.windowLimited).forEach((r, idx) => {
+    const k = String(r.rankDistrict);
+    if (!rankGroups[k]) rankGroups[k] = { start: idx, count: 0 };
+    rankGroups[k].count++;
+  });
+  const rankBadge = rank => {
+    const g = rankGroups[String(rank)];
+    if (rank <= 3 && g && g.start + g.count <= 3) return medalFor(rank) || ('#' + rank);
+    return '#' + rank;
+  };
+
   const rowsHtml = rows.map((r, i) => {
-    const globalRank = slide.page * 12 + i + 1;
-    const tiers = Math.floor(r.grandTotal / CONFIG.RAISE_TIER_GP);
-    const raise = (tiers * CONFIG.RAISE_AMOUNT).toFixed(2);
-    const intoTier = r.grandTotal - tiers * CONFIG.RAISE_TIER_GP;
-    const progress = (intoTier / CONFIG.RAISE_TIER_GP * 100).toFixed(0);
-    const toGo = CONFIG.RAISE_TIER_GP - intoTier;
-    const maxM = Math.max(1, ...r.months);
-    const spark = r.months.map(m => `<span style="height:${Math.max(8, m / maxM * 100)}%" class="${m === maxM && m > 0 ? 'hot' : ''}" title="${fmtMoney(m)}"></span>`).join('');
+    const name = escHtml(r.store || r.storeFull || '');
+    if (r.status === 'no-data' || r.days == null) {
+      return `
+      <div class="trow stagger streak${dense ? ' streak-dense' : ''} streak-nodata" style="grid-template-columns:${cols};--i:${i};${rowStyle}">
+        <span class="rk">—</span>
+        <span class="nm">${name}</span>
+        <span class="streak-note" style="grid-column:3 / -1;">Awaiting survey data</span>
+      </div>`;
+    }
+    const days = Number(r.days) || 0;
+    // windowLimited = has surveys but no detractor on record yet, so the count
+    // is bounded by history. Never ranked, never a trophy.
+    const limited = !!r.windowLimited;
+    // The trophy stays tied to goalMet alone. goalPending = past the goal, but
+    // the 1–2 day survey lag hasn't cleared yet, so it gets its own state.
+    // The days >= goal fallback keeps older feeds (no atGoal/goalPending) working.
+    const goalMet = !limited && (r.goalMet === true ||
+      (r.goalPending !== true && (r.capped === true || r.atGoal === true || days >= goal)));
+    const goalPending = !limited && !goalMet && r.goalPending === true;
+    const atGoal = goalMet || goalPending || r.atGoal === true || days >= goal;
+    const fresh = !limited && !goalMet && !goalPending && days <= 2;
+    const pct = atGoal ? 100 : Math.max(3, Math.min(100, days / goal * 100));
+    const cls = goalMet ? ' streak-goal' : goalPending ? ' streak-pending'
+      : limited ? ' streak-limited' : fresh ? ' streak-reset' : '';
+    const rank = r.rankDistrict != null ? r.rankDistrict : (slide.page * DETRACTOR_ROWS_PER_PAGE + i + 1);
+    const statTxt = goalMet ? '🏆 GOAL MET'
+      : goalPending ? `⏳ PAST ${goal} · CONFIRMING`
+      : limited ? (atGoal ? 'Unverified' : Math.max(0, goal - days) + ' to go')
+      : Math.max(0, goal - days) + ' to go';
+    const lastDate = fmtStreakDate(r.lastDetractorDate);
+    const since = fmtStreakDate(r.trackingSince);
+    const lastTxt = lastDate
+      ? `${lastDate} · scored <b style="color:var(--low-ink)">${escHtml(r.lastDetractorScore)}</b>`
+      : limited ? `None since ${since || 'tracking began'}` : 'None in the survey window';
+    const best = Number(r.personalBest) || 0;
+    const bestCell = (r.newRecord && !limited)
+      ? '<span class="streak-badge record">🔥 NEW RECORD</span>'
+      : `<span class="streak-sub">Best: <b style="color:var(--text)">${best}</b> day${best === 1 ? '' : 's'}</span>`;
     return `
-      <div class="trow stagger" style="grid-template-columns:${cols};--i:${i};${compact ? 'font-size:17px;padding:6px 16px;' : 'font-size:19px;'}">
-        <span class="rk">${medalFor(globalRank) || '#' + globalRank}</span>
-        <span class="nm">${r.name}</span>
-        <span class="nm" style="color:var(--muted);font-weight:700">${r.store}</span>
-        <span class="spark">${spark}</span>
-        <span class="money">${fmtMoney(r.grandTotal)}</span>
-        <span><span class="tier-chip${tiers > 0 ? '' : ' zero'}">${tiers > 0 ? '+$' + raise + '/hr ' + '⭐'.repeat(Math.min(tiers, 4)) : 'In progress'}</span></span>
-        <span style="display:flex;align-items:center;gap:10px;">
-          <span class="mini-track"><span class="mini-fill" style="--w:${progress}%"></span></span>
-          <span style="font-size:14px;font-weight:800;color:var(--muted);white-space:nowrap;">${fmtMoney(toGo)} to go</span>
+      <div class="trow stagger streak${dense ? ' streak-dense' : ''}${cls}" style="grid-template-columns:${cols};--i:${i};${rowStyle}">
+        <span class="rk">${limited ? '—' : rankBadge(rank)}</span>
+        <span class="nm">${name}</span>
+        <span>
+          <span class="streak-days">${days}<span class="unit">DAY${days === 1 ? '' : 'S'}</span></span>
+          ${limited ? '<span class="streak-flag">Not ranked yet</span>' : ''}
         </span>
+        <span style="display:flex;align-items:center;gap:12px;">
+          <span class="mini-track"><span class="mini-fill" style="--w:${pct.toFixed(0)}%"></span></span>
+          <span class="streak-stat">${statTxt}</span>
+        </span>
+        <span class="streak-sub" style="font-size:17px;">${lastTxt}</span>
+        <span>${bestCell}</span>
       </div>`;
   }).join('');
+
   return `
     <div class="panel">
-      <div class="panel-title">💸 ROAD TO THE NEXT RAISE</div>
-      <div class="panel-sub">Every ${fmtMoney(CONFIG.RAISE_TIER_GP)} of year-to-date GP earns another $${CONFIG.RAISE_AMOUNT.toFixed(2)}/hr · District YTD total: <b style="color:var(--day-ink)">${fmtMoney(distTotal)}</b>${pageInfo}</div>
+      <div class="panel-title">🛡️ CLEAN DAYS — NO DETRACTORS${asOf ? ' · AS OF ' + asOf.toUpperCase() : ''}</div>
+      <div class="panel-sub">Days since this store's last survey scored 8 or below — every store is chasing ${goal} clean days in a row${pageInfo}</div>
       <div class="thead" style="grid-template-columns:${cols}">
-        <span>#</span><span>Team Member</span><span>Store</span><span>GP by Month</span><span>YTD GP</span><span>Raise Earned</span><span>Progress to Next Raise</span>
+        <span>Rank</span><span>Store</span><span>Clean Days</span><span>Progress to ${goal}</span><span>Last Detractor</span><span>Personal Best</span>
       </div>
       <div class="tscroll">${rowsHtml}</div>
+      <div class="streak-foot">
+        <div class="sf"><div class="sfl">District Average</div><div class="sfv">${avgTxt}</div></div>
+        <div class="sf"><div class="sfl">Longest Streak</div><div class="sfv">${bestTxt}</div></div>
+        <div class="sf"><div class="sfl">At ${goal}+ Days</div><div class="sfv">${goalMetCount} of ${all.length} stores</div></div>
+      </div>
     </div>`;
 }
 

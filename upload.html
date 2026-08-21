@@ -747,7 +747,41 @@ const NPS_CONFIG = {
   SUMMARY_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/target-summary.json",
   RSD_FILTER: "Bilbrey",
   MY_EMAIL: "jbilbrey@blufoxmobile.com",
-  HISTORY_DAYS: 95
+  HISTORY_DAYS: 95,
+
+  // --- Days Since Last Detractor -------------------------------------------
+  // Jeff's rule: only a 9 or a 10 is a good survey. Anything at or below this
+  // score is a detractor and resets the store's clean-day counter.
+  DETRACTOR_MAX_SCORE: 8,
+  STREAK_GOAL_DAYS: 30,
+  STREAKS_PATH: "data/nps-detractor-streaks.json",
+  STREAKS_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/nps-detractor-streaks.json",
+
+  // --- District missed-lunch-punch email -----------------------------------
+  // Its own Zapier catch hook, separate from WEBHOOK_URL, so a problem with one
+  // email can never take the other down. Paste the catch-hook URL here to arm it.
+  LUNCH_WEBHOOK_URL: "https://hooks.zapier.com/hooks/catch/20441079/4tab95s/",
+  LUNCH_SENT_LOG_PATH: "data/lunch-sent-log.json",
+  LUNCH_SENT_LOG_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/lunch-sent-log.json",
+  LUNCH_MIN_MINUTES: 30,
+  // A shift shorter than this needs no meal break, so a day with no lunch punch
+  // on a short shift is not a miss. Only the 1-punch case (no clock-out at all)
+  // is always reported, because that is a payroll problem at any shift length.
+  LUNCH_REQUIRED_AFTER_HOURS: 6,
+  // Anything under LUNCH_MIN_MINUTES is reported, but a 28-minute break is a
+  // rounding artefact where a 12-minute break is a real problem. Splitting them
+  // keeps the genuinely short lunches from being buried by near-misses.
+  LUNCH_SHORT_SEVERE_MINUTES: 25,
+  // Punch clocks round. A break measured at 29 min 40 s is a rounding artefact,
+  // not a wage-and-hour violation, and naming someone for it in a compliance
+  // email destroys the credibility of the ones that matter.
+  LUNCH_GRACE_SECONDS: 60,
+  // Surveys reach the Medallia export 1-2 days after the visit, so a milestone
+  // claimed the instant the counter hits it can be retracted the next morning.
+  // The counter itself stays literal; only the AWARD waits out the lag.
+  SURVEY_LAG_DAYS: 2,
+  // Survey cards rendered in the store briefing before the list is summarised.
+  SURVEY_CARDS_MAX: 15
 };
 
 // --- Freshness helpers: read each GitHub file at its NEWEST commit so we bypass
@@ -1069,27 +1103,536 @@ async function npsFetchTSheets(){
   return NPS_TCHARTS;
 }
 
-// ===== Lunch Punch Audit (best-effort) — missed lunch punches per store =====
-// Mirrors the Auto-Punch-Report "By Store" tab: an employee-day with 1–3 punches
-// (fewer than clock-in / lunch-out / lunch-in / clock-out) is a missed lunch
-// punch. Managers are excluded, exactly like the dashboard. Never blocks emails.
-let NPS_PUNCH = { byStore: {}, total: 0, detail: {}, loaded: false };
-const NPS_PUNCH_URL  = "https://raw.githubusercontent.com/BlufoxMobile/Auto-Punch-Report/main/data/punch-data.xlsx";
-const NPS_MGR_TITLES = ["Store Manager", "DM", "Ops Coordinator"];
+// ===== DETRACTOR STREAKS ==================================================
+// "X Days Since The Last NPS Detractor." A detractor is any survey scored at
+// or below NPS_CONFIG.DETRACTOR_MAX_SCORE (8) — Jeff's rule is that only a 9
+// or a 10 is a good survey, so an 8 breaks the streak even though the NPS
+// section of the email still paints an 8 yellow rather than red.
+//
+// The counter CANNOT be derived from nps-responses.json alone: that file keeps
+// a rolling NPS_CONFIG.HISTORY_DAYS (95) window, so once a store passes 95
+// clean days the detractor anchoring its streak ages out of the file and the
+// count would silently reset. So streak state lives in its own file,
+// data/nps-detractor-streaks.json, and each upload only ever moves a store's
+// anchor date FORWARD — never backward, never off the end of the window.
+const NPS_DISTRICTS = [
+  { key: "north",     label: "Chicago North", dm: "idhorajiwala@blufoxmobile.com", dmName: "Imaad Dhorajiwala" },
+  { key: "south",     label: "Chicago South", dm: "jucarrillo@blufoxmobile.com",   dmName: "Juan Carrillo"     },
+  { key: "east",      label: "Chicago East",  dm: "jcabrales@blufoxmobile.com",    dmName: "Jacob Cabrales"    },
+  { key: "west",      label: "Chicago West",  dm: "tchowdhury@blufoxmobile.com",   dmName: "Tanzim Chowdhury"  },
+  { key: "big-south", label: "Big South",     dm: "mbrooks@blufoxmobile.com",      dmName: "Matthew Brooks"    }
+];
 
-// Same logic the punch dashboard uses to read a punch time out of a cell.
-function npsPunchTime(v){
-  if(v == null || v === "") return "";
-  if(v instanceof Date){
-    return String(v.getHours()).padStart(2,"0") + ":" +
-           String(v.getMinutes()).padStart(2,"0") + ":" +
-           String(v.getSeconds()).padStart(2,"0");
-  }
-  const m = String(v).match(/(\d{2}:\d{2}:\d{2})/);
-  return m ? m[1] : "00:00:00";
+function npsDistrictForStore(fullKey, dir){
+  const dm = String(((dir || {}).storeDMs || {})[fullKey] || "").trim().toLowerCase();
+  if(!dm) return null;
+  return NPS_DISTRICTS.find(d => d.dm === dm) || null;
 }
 
-async function npsFetchPunches(){
+// Every store in the directory that no district claims. A silent orphan would
+// quietly delete a store — or a whole district — from the lunch report, so the
+// send is blocked on this rather than shipping a hole nobody can see.
+function npsOrphanStores(dir){
+  return ((dir && dir.stores) || []).filter(Boolean).filter(f => !npsDistrictForStore(f, dir));
+}
+
+const NPS_ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+function npsIsIsoDate(v){ return typeof v === "string" && NPS_ISO_DATE.test(v); }
+
+// Whole days between two YYYY-MM-DD strings. Both are parsed at LOCAL midnight
+// so the result never drifts by an hour across a DST boundary or a UTC day flip.
+function npsDaysBetween(fromISO, toISO){
+  if(!npsIsIsoDate(fromISO) || !npsIsIsoDate(toISO)) return null;
+  const a = new Date(fromISO + "T00:00:00");
+  const b = new Date(toISO + "T00:00:00");
+  if(isNaN(a.getTime()) || isNaN(b.getTime())) return null;
+  return Math.round((b - a) / 86400000);
+}
+
+function npsIsDetractor(score){
+  return typeof score === "number" && isFinite(score) && score <= NPS_CONFIG.DETRACTOR_MAX_SCORE;
+}
+
+let NPS_STREAKS = { byStore: {}, data: null, loaded: false };
+
+// Read the persisted streak file. Never throws — a missing file just means
+// "first run", and the engine rebuilds what it can from survey history.
+async function npsFetchStreaks(){
+  try {
+    const url = (await npsPinnedUrl("Daily-Sales-Report", NPS_CONFIG.STREAKS_PATH)) || NPS_CONFIG.STREAKS_URL;
+    const r = await fetch(url + (url.indexOf("?") === -1 ? "?t=" : "&t=") + Date.now(), { cache: "no-store" });
+    if(r.ok) return await r.json();
+  } catch(e){ console.warn("streak file unavailable (first run?):", e); }
+  return null;
+}
+
+// Build the full streak state. `surveys` is the merged rolling history,
+// `prior` is last run's nps-detractor-streaks.json (or null on first run).
+function npsBuildStreaks(surveys, dir, prior){
+  const today = npsLocalYMD(new Date());
+  const GOAL  = NPS_CONFIG.STREAK_GOAL_DAYS;
+  const priorByStore = {};
+  ((prior && prior.stores) || []).forEach(s => { if(s && s.store) priorByStore[s.store] = s; });
+
+  // --- fold the survey history down to per-store detractor dates ---
+  let windowStart = null;
+  const agg = {};
+  (surveys || []).forEach(s => {
+    const key = s && s.storeKey;
+    const txn = s && s.txnDate;
+    if(!key || !npsIsIsoDate(txn)) return;
+    if(!windowStart || txn < windowStart) windowStart = txn;
+    const a = agg[key] || (agg[key] = { total: 0, firstSeen: txn, detractors: [] });
+    a.total++;
+    if(txn < a.firstSeen) a.firstSeen = txn;
+    if(npsIsDetractor(s.score)){
+      a.detractors.push({ date: txn, resp: npsIsIsoDate(s.respDate) ? s.respDate : txn, score: s.score, id: s.id });
+    }
+  });
+
+  // --- the store universe is the directory, not just stores that had surveys ---
+  const names = new Set();
+  ((dir && dir.stores) || []).forEach(full => {
+    const short = String(full).replace(/\s+Xfinity\s+Store\s*$/i, "").trim();
+    if(short) names.add(short);
+  });
+  Object.keys(agg).forEach(k => names.add(k));
+  Object.keys(priorByStore).forEach(k => names.add(k));
+
+  const rows = [];
+  Array.from(names).forEach(short => {
+    const fullKey = short + " Xfinity Store";
+    const dist    = npsDistrictForStore(fullKey, dir);
+    const a       = agg[short] || { total: 0, firstSeen: null, detractors: [] };
+    const p       = priorByStore[short] || null;
+
+    // Newest detractor visible in the rolling window.
+    let newest = null;
+    a.detractors.forEach(d => { if(!newest || d.date > newest.date) newest = d; });
+
+    // Carry the anchor forward from the persisted file when history no longer
+    // reaches back far enough. The anchor only ever advances, and a value that
+    // is not a clean ISO date is ignored rather than trusted.
+    let anchor = newest;
+    if(p && npsIsIsoDate(p.lastDetractorDate) && (!anchor || p.lastDetractorDate > anchor.date)){
+      anchor = { date: p.lastDetractorDate,
+                 resp: npsIsIsoDate(p.lastDetractorRespDate) ? p.lastDetractorRespDate : p.lastDetractorDate,
+                 score: p.lastDetractorScore, id: p.lastDetractorId };
+    }
+
+    // --- current streak -------------------------------------------------
+    // windowLimited = the number is bounded by how far our data goes back, not
+    // by an observed clean run. Those rows are shown but never ranked, never
+    // crowned, and never allowed to claim the 30-day goal.
+    let days = null, status = "active", windowLimited = false;
+    if(anchor){
+      days = npsDaysBetween(anchor.date, today);
+      if(days != null && days < 0) days = 0;   // a future-dated txn should never read negative
+    } else if(a.total > 0 && a.firstSeen){
+      // Surveys exist but not one detractor since this store's OWN first survey.
+      days = npsDaysBetween(a.firstSeen, today);
+      windowLimited = true;
+    } else if(p && p.days != null && npsIsIsoDate(p.asOf)){
+      // No surveys at all this run. Hold yesterday's number, advanced by the days
+      // that have passed, but only for a short grace period — a store that stops
+      // reporting entirely must not accumulate a fictional streak forever.
+      const elapsed = npsDaysBetween(p.asOf, today);
+      if(elapsed != null && elapsed <= 3){
+        days = p.days + elapsed;
+        windowLimited = !!p.windowLimited;
+      } else {
+        status = "no-data";
+      }
+    } else {
+      status = "no-data";
+    }
+    if(days == null && status === "active") status = "no-data";
+
+    // --- the record book ------------------------------------------------
+    // Two separate numbers, because conflating them makes a new record
+    // impossible to detect:
+    //   priorRecord  = the best COMPLETED run, excluding the streak now running
+    //   maxDaysShown = the highest number this store has been shown on the
+    //                  current run, so the record survives even after the
+    //                  detractors that bracket it age out of the 95-day window
+    const dates = Array.from(new Set(a.detractors.map(d => d.date))).sort();
+    let priorRecord = null;
+    for(let i = 1; i < dates.length; i++){
+      // A detractor on Jun 1 and the next on Jun 10 means the counter read 9 on
+      // the morning of Jun 10, before that day's survey had landed.
+      const run = npsDaysBetween(dates[i-1], dates[i]);
+      if(run != null && run >= 0 && (priorRecord == null || run > priorRecord)) priorRecord = run;
+    }
+    // priorRecord is the field this writes; personalBest is read as a fallback so
+    // a file written by an earlier version still carries its record forward.
+    const pPrior = (p && p.priorRecord != null) ? p.priorRecord : (p ? p.personalBest : null);
+    if(pPrior != null && (priorRecord == null || pPrior > priorRecord)) priorRecord = pPrior;
+
+    const anchorMoved = !!(p && npsIsIsoDate(p.lastDetractorDate) && anchor && anchor.date > p.lastDetractorDate);
+    if(anchorMoved){
+      // The run that just ended is now a completed run. Bank whichever is
+      // larger: the gap we can measure, or the highest figure it ever showed.
+      const ended = npsDaysBetween(p.lastDetractorDate, anchor.date);
+      if(ended != null && ended >= 0 && (priorRecord == null || ended > priorRecord)) priorRecord = ended;
+      if(p.maxDaysShown != null && (priorRecord == null || p.maxDaysShown > priorRecord)) priorRecord = p.maxDaysShown;
+    }
+
+    let maxDaysShown = (!anchorMoved && p && p.maxDaysShown != null) ? p.maxDaysShown : null;
+    if(days != null && !windowLimited && (maxDaysShown == null || days > maxDaysShown)) maxDaysShown = days;
+
+    // The counter is literal, but an AWARD is not retractable. Surveys land 1-2
+    // days after the visit, so a trophy sent the instant the counter reads 30 can
+    // be contradicted the next morning by a detractor that was already in flight.
+    // The milestone therefore has to survive the lag before it is announced.
+    const LAG = NPS_CONFIG.SURVEY_LAG_DAYS;
+    const atGoal    = !windowLimited && status === "active" && days != null && days >= GOAL;
+    const goalMet   = atGoal && days >= GOAL + LAG;
+    const goalPending = atGoal && !goalMet;
+    // A "record" only means something once there is a run worth beating: a store
+    // with two detractors on back-to-back days has an observed best of 0, and
+    // crowning day 3 a record there is noise, not motivation.
+    const newRecord = !windowLimited && status === "active" && days != null &&
+                      priorRecord != null && days > priorRecord + LAG && days >= 3 && priorRecord >= 1;
+
+    rows.push({
+      store: short,
+      storeFull: fullKey,
+      district: dist ? dist.label : "",
+      districtKey: dist ? dist.key : "",
+      days: status === "no-data" ? null : days,
+      capped: goalMet,
+      goalMet: goalMet,
+      atGoal: atGoal,
+      goalPending: goalPending,
+      lastDetractorDate: anchor ? anchor.date : null,
+      lastDetractorRespDate: anchor ? (anchor.resp || anchor.date) : null,
+      lastDetractorScore: anchor && anchor.score != null ? anchor.score : null,
+      lastDetractorId: anchor ? (anchor.id || null) : null,
+      cleanSinceWindowStart: !anchor && a.total > 0,
+      windowLimited: windowLimited,
+      trackingSince: a.firstSeen || null,
+      personalBest: priorRecord,   // "Store best" as shown to the team
+      priorRecord: priorRecord,
+      maxDaysShown: maxDaysShown,
+      newRecord: newRecord,
+      surveysTotal: a.total,
+      status: status,
+      asOf: today,
+      rankMarket: null, marketSize: 0, rankDistrict: null, districtSize: 0
+    });
+  });
+
+  // --- competition ranking: ties share a rank. Rows whose number is bounded by
+  //     the data window rather than an observed run are excluded, so a store
+  //     with one clean survey can never be crowned #1 in the market.
+  const rankable = r => r.status !== "no-data" && r.days != null && !r.windowLimited;
+  const rank = (list, rankKey, sizeKey) => {
+    const active = list.filter(rankable).sort((a,b) => b.days - a.days || a.store.localeCompare(b.store));
+    let last = null, lastRank = 0;
+    active.forEach((r, i) => {
+      if(last === null || r.days !== last){ lastRank = i + 1; last = r.days; }
+      r[rankKey] = lastRank;
+    });
+    list.forEach(r => { r[sizeKey] = active.length; });
+  };
+  rank(rows, "rankMarket", "marketSize");
+  NPS_DISTRICTS.forEach(d => rank(rows.filter(r => r.districtKey === d.key), "rankDistrict", "districtSize"));
+
+  rows.sort((a,b) => {
+    if(a.days == null && b.days == null) return a.store.localeCompare(b.store);
+    if(a.days == null) return 1;
+    if(b.days == null) return -1;
+    return b.days - a.days || a.store.localeCompare(b.store);
+  });
+
+  const districts = NPS_DISTRICTS.map(d => {
+    const mine = rows.filter(r => r.districtKey === d.key && rankable(r));
+    const best = mine.reduce((m, r) => (m && m.days >= r.days ? m : r), null);
+    return {
+      key: d.key, label: d.label,
+      avgDays: mine.length ? Math.round((mine.reduce((s,r) => s + r.days, 0) / mine.length) * 10) / 10 : null,
+      bestDays: best ? best.days : null,
+      bestStore: best ? best.store : null,
+      storeCount: rows.filter(r => r.districtKey === d.key).length,
+      goalMetCount: mine.filter(r => r.atGoal).length
+    };
+  });
+
+  const data = {
+    updatedAt: new Date().toISOString(),
+    asOf: today,
+    windowStart: windowStart,
+    goalDays: GOAL,
+    detractorMaxScore: NPS_CONFIG.DETRACTOR_MAX_SCORE,
+    stores: rows,
+    districts: districts
+  };
+  NPS_STREAKS = { byStore: {}, data: data, loaded: true };
+  rows.forEach(r => { NPS_STREAKS.byStore[r.store] = r; });
+  return data;
+}
+
+// --- Days-since-detractor hero for the store morning briefing --------------
+function npsStreakHeroHtml(shortName){
+  const s = (NPS_STREAKS.byStore || {})[shortName];
+  if(!s) return "";
+  const GOAL = (NPS_STREAKS.data && NPS_STREAKS.data.goalDays) || NPS_CONFIG.STREAK_GOAL_DAYS;
+  const MAXS = (NPS_STREAKS.data && NPS_STREAKS.data.detractorMaxScore) || NPS_CONFIG.DETRACTOR_MAX_SCORE;
+
+  if(s.status === "no-data" || s.days == null){
+    return '<tr><td style="padding:12px 20px 6px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;border:1px solid #dbe3f0;border-radius:14px;"><tr>' +
+      '<td style="padding:14px 18px;font-size:12.5px;color:#64748b;font-weight:600;">' +
+      '&#128225; No NPS surveys on record yet &mdash; the clean-days counter starts with your first survey.</td>' +
+      '</tr></table></td></tr>';
+  }
+
+  const days = s.days;
+  const met  = !!s.goalMet;
+  const pend = !met && !!s.goalPending;
+  const hot  = days <= 2 && !met && !pend;
+  const pct  = Math.max(3, Math.min(100, Math.round((days / GOAL) * 100)));
+
+  const ink  = (met || pend) ? "#047857" : hot ? "#b91c1c" : "#1e3a8a";
+  const bg   = (met || pend) ? "#ecfdf5" : hot ? "#fef2f2" : "#eef4ff";
+  const bd   = (met || pend) ? "#a7f3d0" : hot ? "#fecaca" : "#c7d8f7";
+  const barBg= (met || pend) ? "#a7f3d0" : hot ? "#fecaca" : "#c7d8f7";
+
+  const headline = met
+    ? "&#127942; " + days + " DAYS CLEAN &mdash; GOAL MET"
+    : pend
+      ? "&#9989; " + days + " days clean &mdash; past the " + GOAL + "-day goal"
+      : days + " day" + (days === 1 ? "" : "s") + " since the last NPS detractor";
+
+  const sub = met
+    ? GOAL + " days without a single detractor. That is the standard &mdash; keep it."
+    : pend
+      ? "Waiting on the last surveys to land before the trophy is official &mdash; they arrive a day or two after the visit."
+      : days === 0
+        ? "The streak reset today. Every survey from here starts the next one."
+        : (GOAL - days) + " more clean day" + ((GOAL - days) === 1 ? "" : "s") + " to hit the " + GOAL + "-day goal.";
+
+  // Rank + record chips
+  const chips = [];
+  if(s.rankDistrict && s.districtSize > 1){
+    chips.push('<span style="display:inline-block;background:#ffffff;border:1px solid ' + bd + ';border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:' + ink + ';margin:0 6px 6px 0;">#' +
+      s.rankDistrict + ' of ' + s.districtSize + ' in ' + npsEsc(s.district) + '</span>');
+  }
+  if(s.rankMarket && s.marketSize > 1){
+    chips.push('<span style="display:inline-block;background:#ffffff;border:1px solid ' + bd + ';border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:' + ink + ';margin:0 6px 6px 0;">#' +
+      s.rankMarket + ' of ' + s.marketSize + ' market-wide</span>');
+  }
+  if(s.newRecord){
+    chips.push('<span style="display:inline-block;background:#fff7ed;border:1px solid #fdba74;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;color:#c2410c;margin:0 6px 6px 0;">&#128293; NEW STORE RECORD</span>');
+  } else if(s.personalBest != null && s.personalBest >= 3 && days === s.personalBest){
+    chips.push('<span style="display:inline-block;background:#fffbeb;border:1px solid #fcd34d;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;color:#a16207;margin:0 6px 6px 0;">&#11088; TIES STORE RECORD &mdash; one more day breaks it</span>');
+  } else if(s.personalBest != null && s.personalBest >= 1 && days > s.personalBest){
+    // Past the old record but inside the survey-lag window, so the record is not
+    // called yet. Saying "Store best: 10" beside a counter reading 12 looks broken.
+    chips.push('<span style="display:inline-block;background:#fffbeb;border:1px solid #fcd34d;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;color:#a16207;margin:0 6px 6px 0;">&#11088; PAST THE STORE RECORD OF ' +
+      s.personalBest + ' &mdash; confirming</span>');
+  } else if(s.personalBest != null && s.personalBest >= 1){
+    chips.push('<span style="display:inline-block;background:#ffffff;border:1px solid ' + bd + ';border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#475569;margin:0 6px 6px 0;">Store best: ' +
+      s.personalBest + ' day' + (s.personalBest === 1 ? "" : "s") + '</span>');
+  }
+
+  // What broke the streak, stated plainly so a reset never feels arbitrary.
+  let lastLine = "";
+  if(s.lastDetractorDate){
+    const lateNote = (s.lastDetractorRespDate && s.lastDetractorRespDate !== s.lastDetractorDate)
+      ? ' <span style="color:#94a3b8;">(survey came in ' + npsEsc(npsPrettyDate(s.lastDetractorRespDate)) + ')</span>'
+      : '';
+    lastLine = '<div style="font-size:11.5px;color:#64748b;margin-top:10px;">Last detractor: <b style="color:#334155;">' +
+      npsEsc(npsPrettyDate(s.lastDetractorDate)) + '</b>' +
+      (s.lastDetractorScore != null ? ' &bull; scored <b style="color:#b91c1c;">' + s.lastDetractorScore + '</b>' : '') +
+      lateNote +
+      '<br><span style="color:#94a3b8;">A detractor is any survey scored ' + MAXS + ' or below. Surveys usually arrive 1&ndash;2 days after the visit, so a late one can still move this number.</span></div>';
+  } else if(s.windowLimited){
+    lastLine = '<div style="font-size:11.5px;color:#64748b;margin-top:10px;">No detractor on record since this store&rsquo;s first tracked survey' +
+      (s.trackingSince ? ' (' + npsEsc(npsPrettyDate(s.trackingSince)) + ')' : '') +
+      '. <span style="color:#94a3b8;">Not ranked yet &mdash; the counter needs a full observed run.</span></div>';
+  }
+
+  return '<tr><td style="padding:12px 20px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:14px;"><tr>' +
+    '<td style="width:118px;text-align:center;vertical-align:middle;padding:16px 0 16px 14px;">' +
+      '<div style="font-size:46px;line-height:1;font-weight:800;color:' + ink + ';">' + days + '</div>' +
+      '<div style="font-size:10px;font-weight:800;letter-spacing:1.4px;color:' + ink + ';text-transform:uppercase;margin-top:2px;">Clean Days</div>' +
+    '</td>' +
+    '<td style="padding:14px 18px 14px 14px;vertical-align:middle;">' +
+      '<div style="font-size:13.5px;font-weight:800;color:' + ink + ';">' + headline + '</div>' +
+      '<div style="font-size:12px;color:#475569;margin-top:3px;line-height:1.5;">' + sub + '</div>' +
+      // Attribute-based widths: the Word engine that renders Outlook desktop is
+      // unreliable with CSS width on a nested table, so the fill uses width="".
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:9px;"><tr>' +
+        '<td height="8" bgcolor="' + barBg + '" style="border-radius:5px;line-height:8px;font-size:0;padding:0;">' +
+          '<table role="presentation" width="' + pct + '%" cellpadding="0" cellspacing="0"><tr>' +
+          '<td height="8" bgcolor="' + ink + '" style="border-radius:5px;line-height:8px;font-size:0;">&nbsp;</td>' +
+          '</tr></table>' +
+        '</td>' +
+      '</tr></table>' +
+      '<div style="margin-top:9px;">' + chips.join("") + '</div>' +
+      lastLine +
+    '</td>' +
+    '</tr></table></td></tr>';
+}
+
+// ===== Lunch Punch Audit — month to date, per employee-day ==================
+// An employee-day whose punches do not amount to clock-in / lunch-out /
+// lunch-in / clock-out is a MISSED lunch punch. An employee-day with a real
+// meal break shorter than NPS_CONFIG.LUNCH_MIN_MINUTES is a SHORT lunch — a
+// different problem with the same fix, so it is flagged too.
+//
+// Managers are NOT excluded here (they were in the old per-store email block):
+// a district email that hides an SM's own missed punches is not accountability.
+// They are tagged so the email can list leadership separately.
+let NPS_PUNCH = { byStore: {}, total: 0, detail: {}, days: [], observed: {}, monthDays: 0, shortShiftDays: 0, maxDate: null, month: null, loaded: false };
+const NPS_PUNCH_URL  = "https://raw.githubusercontent.com/BlufoxMobile/Auto-Punch-Report/main/data/punch-data.xlsx";
+const NPS_MGR_TITLES = ["Store Manager", "DM", "Ops Coordinator", "District Manager"];
+// The export's job-title string is not ours to control, so match it loosely.
+// Three behaviours hang off this: the leadership badge, the legacy non-manager
+// count, and which district a DM's own record belongs to.
+function npsIsDmTitle(t){ return /^(dm|district\s*manager)$/i.test(String(t == null ? "" : t).trim()); }
+
+// Read a punch time out of a cell. Returns null when the cell carries a date but
+// no time of day (a "Manual" entry): that is a data-quality problem in its own
+// right, and silently dropping it used to hide a real clock-in failure.
+function npsPunchTime(v){
+  if(v == null || v === "") return null;
+  if(v instanceof Date){
+    const s = String(v.getHours()).padStart(2,"0") + ":" +
+              String(v.getMinutes()).padStart(2,"0") + ":" +
+              String(v.getSeconds()).padStart(2,"0");
+    // No punch in this market lands before 05:00; an exact midnight is a
+    // date-only value that lost its time component, not a real punch.
+    return s === "00:00:00" ? null : s;
+  }
+  const m = String(v).match(/(\d{2}:\d{2}:\d{2})/);
+  if(!m) return null;
+  return m[1] === "00:00:00" ? null : m[1];
+}
+
+// Seconds since midnight. Seconds matter: a 12:00:59 -> 12:30:07 break is
+// 29 minutes 8 seconds, and minute-truncation reported it as a clean 30.
+function npsTimeToSec(t){
+  const p = String(t || "").split(":");
+  if(p.length < 2) return null;
+  const h = Number(p[0]), m = Number(p[1]), s = Number(p[2] || 0);
+  if(!isFinite(h) || !isFinite(m) || !isFinite(s)) return null;
+  return h * 3600 + m * 60 + s;
+}
+function npsTimeToMin(t){ const s = npsTimeToSec(t); return s == null ? null : Math.floor(s / 60); }
+
+// "14:35:00" -> "2:35 PM"
+function npsPrettyTime(t){
+  const sec = npsTimeToSec(t);
+  if(sec == null) return String(t || "");
+  const mins = Math.floor(sec / 60);
+  let h = Math.floor(mins / 60); const m = mins % 60;
+  const ap = h >= 12 ? "PM" : "AM";
+  h = h % 12; if(h === 0) h = 12;
+  return h + ":" + String(m).padStart(2,"0") + " " + ap;
+}
+
+// "2026-08-14" -> "Fri Aug 14"
+function npsShortDate(iso){
+  if(!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  if(isNaN(d.getTime())) return String(iso);
+  const D = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return D[d.getDay()] + " " + M[d.getMonth()] + " " + d.getDate();
+}
+
+function npsMissKind(cnt, unknown, a){
+  if(unknown) return "A punch was entered manually with no time recorded";
+  if(cnt <= 1) return "Only one punch on record — no clock-out";
+  if(a && a.unresolved && a.why) return "Punch record needs review — " + a.why;
+  if(cnt === 2) return "Clocked in and out — no lunch punches at all";
+  return "Lunch punch started but never completed";
+}
+
+// Turn a day's raw punch times into the numbers the audit needs.
+// Handles three things the naive version got wrong:
+//  1. duplicate scans seconds apart are one punch, not two — four punches where
+//     three are re-scans is a MISSED lunch, not a "0-minute lunch"
+//  2. the meal break is the LONGEST interior gap, not always punch 2 -> 3; on a
+//     6-punch day the first gap is a rest break and using it named people for
+//     a "15-minute lunch" they never took
+//  3. an overnight shift wraps past midnight and must not read as a 16-hour day
+const NPS_DUP_PUNCH_SEC = 180;   // re-scans this close together are one punch
+const NPS_MAX_SHIFT_SEC  = 16 * 3600;
+const NPS_MAX_MEAL_SEC   = 2 * 3600;
+function npsAnalyzeDay(rawTimes){
+  const secs = rawTimes.map(npsTimeToSec).filter(v => v != null).sort((a,b) => a - b);
+  if(!secs.length) return { count: 0, spanSec: 0, mealSec: null, times: [], unresolved: true, why: "no usable punch times" };
+
+  // Collapse re-scans. `>` not `>=`: an exactly-180s pair is still a re-scan,
+  // and the boundary case is the most common duplicate signature in this export.
+  const collapsed = [secs[0]];
+  for(let i = 1; i < secs.length; i++){
+    if(secs[i] - collapsed[collapsed.length-1] > NPS_DUP_PUNCH_SEC) collapsed.push(secs[i]);
+  }
+
+  const spanSec = collapsed.length > 1 ? collapsed[collapsed.length-1] - collapsed[0] : 0;
+  const fmt = v => String(Math.floor(v/3600)).padStart(2,"0") + ":" +
+                   String(Math.floor((v%3600)/60)).padStart(2,"0") + ":" +
+                   String(v%60).padStart(2,"0");
+  const out = { count: collapsed.length, spanSec: spanSec, mealSec: null,
+                times: collapsed.map(fmt), unresolved: false, why: "" };
+
+  // A day whose punches do not pair up cannot yield a meal break. Inferring one
+  // anyway is how a work period gets mistaken for a lunch and a genuinely bad
+  // record is reported as clean, so these are surfaced instead of guessed at.
+  if(collapsed.length % 2 === 1){
+    out.unresolved = true;
+    out.why = collapsed.length === 1
+      ? "only one punch on record — no clock-out"
+      : "punches do not pair up (" + collapsed.length + " on record)";
+    return out;
+  }
+  if(spanSec >= NPS_MAX_SHIFT_SEC){
+    // Almost certainly an overnight shift recorded against one date, or a
+    // missing clock-out. Either way the span is not a real workday.
+    out.unresolved = true; out.why = "punches span more than 16 hours";
+    return out;
+  }
+
+  // Interior gaps: punch 2->3, 4->5, ... are away-from-work breaks. The meal is
+  // the longest of them.
+  for(let i = 1; i + 1 < collapsed.length; i += 2){
+    const gap = collapsed[i+1] - collapsed[i];
+    if(out.mealSec == null || gap > out.mealSec) out.mealSec = gap;
+  }
+  if(out.mealSec != null && out.mealSec > NPS_MAX_MEAL_SEC){
+    // A split shift has one enormous gap (the hours off between halves) and a
+    // real meal break elsewhere. Prefer the largest gap that could plausibly BE
+    // a meal; only give up when no gap qualifies.
+    let fallback = null;
+    for(let i = 1; i + 1 < collapsed.length; i += 2){
+      const gap = collapsed[i+1] - collapsed[i];
+      if(gap <= NPS_MAX_MEAL_SEC && (fallback == null || gap > fallback)) fallback = gap;
+    }
+    if(fallback != null){
+      out.mealSec = fallback;
+    } else {
+      out.unresolved = true;
+      out.why = "a gap of " + Math.floor(out.mealSec/60) + " minutes looks like a missing punch, not a lunch";
+      out.mealSec = null;
+    }
+  }
+  return out;
+}
+
+async function npsFetchPunches(dir){
+  // Restrict to this market's stores. The shared punch export covers ~153
+  // stores company-wide and npsShortFromRaw falls through to the raw name for
+  // anything it does not recognise, so without this filter the audit would pull
+  // in every other RSD's data.
+  const marketSet = new Set(((dir && dir.stores) || [])
+    .map(f => String(f).replace(/\s+Xfinity\s+Store\s*$/i, "").trim())
+    .filter(Boolean));
+
   const purl = (await npsPinnedUrl("Auto-Punch-Report","data/punch-data.xlsx")) || NPS_PUNCH_URL;
   const resp = await fetch(purl + "?t=" + Date.now(), { cache: "no-store" });
   if(!resp.ok) throw new Error("Punch data HTTP " + resp.status);
@@ -1099,16 +1642,23 @@ async function npsFetchPunches(){
           || wb.SheetNames.find(s => /punch/i.test(s))
           || wb.SheetNames[0];
   const ws = wb.Sheets[sn];
-  if(!ws){ NPS_PUNCH = { byStore: {}, total: 0, detail: {}, loaded: true }; return NPS_PUNCH; }
+  const month = npsLocalYMD(new Date()).slice(0,7);
+  const blank = { byStore: {}, total: 0, detail: {}, days: [], observed: {}, monthDays: 0, shortShiftDays: 0, maxDate: null, month: month, loaded: true };
+  if(!ws){ NPS_PUNCH = blank; return NPS_PUNCH; }
   const rows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: true, cellDates: true });
-  if(!rows.length){ NPS_PUNCH = { byStore: {}, total: 0, detail: {}, loaded: true }; return NPS_PUNCH; }
+  if(!rows.length){ NPS_PUNCH = blank; return NPS_PUNCH; }
 
   const H = Object.keys(rows[0]);
   const findH = re => H.find(h => re.test(String(h).trim()));
   const cPunchTime = findH(/^punch\s*time$/i);
 
-  // Collapse rows into per-(store, employee, date) day records → punch count.
+  // Collapse rows into per-(store, employee, date) day records.
   const days = {};
+  const touch = (store, title, name, dstr) => {
+    const k = String(store||"") + "||" + String(name||"") + "||" + dstr;
+    if(!days[k]) days[k] = { store: String(store||""), title: String(title||""), name: String(name||""), date: dstr, raw: [], unknown: 0 };
+    return days[k];
+  };
   if(cPunchTime){
     // Long form: one row per punch.
     const cStore = findH(/^store$/i)       || "Store";
@@ -1116,13 +1666,11 @@ async function npsFetchPunches(){
     const cTitle = findH(/^job\s*title$/i) || findH(/^title$/i)    || "Title";
     const cDate  = findH(/^date$/i)        || findH(/punch.*in.*date/i) || "Date";
     rows.forEach(r => {
-      const t = npsPunchTime(r[cPunchTime]);
-      if(!t || t === "00:00:00") return;
       const dstr = npsDateStr(r[cDate]) || String(r[cDate]||"").slice(0,10);
-      const k = String(r[cStore]||"") + "||" + String(r[cName]||"") + "||" + dstr;
-      if(!days[k]) days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), name: String(r[cName]||""), date: dstr, times: [], cnt: 0 };
-      days[k].cnt++;
-      days[k].times.push(t);
+      if(!dstr) return;
+      const rec = touch(r[cStore], r[cTitle], r[cName], dstr);
+      const t = npsPunchTime(r[cPunchTime]);
+      if(t) rec.raw.push(t); else rec.unknown++;
     });
   } else {
     // Wide form: one row per employee-day with up to 4 punch columns.
@@ -1135,34 +1683,397 @@ async function npsFetchPunches(){
                     findH(/punch.?2.*time.*in\b/i) || "Punch 2 Time In",
                     findH(/punch.?2.*time.*out/i)  || "Punch 2 Time Out"];
     rows.forEach(r => {
-      let cnt = 0; const tms = [];
-      cols.forEach(c => { const t = npsPunchTime(r[c]); if(t && t !== "00:00:00"){ cnt++; tms.push(t); } });
-      if(!cnt) return;
       const dstr = npsDateStr(r[cDate]) || String(r[cDate]||"").slice(0,10);
-      const k = String(r[cStore]||"") + "||" + String(r[cEmp]||"") + "||" + dstr;
-      days[k] = { store: String(r[cStore]||""), title: String(r[cTitle]||""), name: String(r[cEmp]||""), date: dstr, times: tms, cnt: cnt };
+      if(!dstr) return;
+      const rec = touch(r[cStore], r[cTitle], r[cEmp], dstr);
+      cols.forEach(c => { const t = npsPunchTime(r[c]); if(t) rec.raw.push(t); });
+      if(!rec.raw.length) rec.unknown++;
     });
   }
 
-  // Per store: count employee-days with 1–3 punches, managers excluded, keyed by
-  // the same short store name the email loop uses.
-  const byStore = {};
-  const detail = {};
-  let total = 0;
+  const MINSEC = NPS_CONFIG.LUNCH_MIN_MINUTES * 60;
+  const MINH   = NPS_CONFIG.LUNCH_REQUIRED_AFTER_HOURS;
+
+  const byStore = {}; const detail = {}; const list = [];
+  let total = 0, shortShiftDays = 0, monthDays = 0, maxDate = null;
+  const observed = {};   // store -> employee-days seen this month, clean ones included
+
   Object.keys(days).forEach(k => {
     const d = days[k];
-    if(NPS_MGR_TITLES.includes(d.title)) return;
-    if(d.cnt >= 1 && d.cnt < 4){
-      const short = npsShortFromRaw(d.store);
-      if(short){
-        byStore[short] = (byStore[short] || 0) + 1; total++;
-        (detail[short] = detail[short] || []).push({ rep: d.name, date: d.date, punches: d.cnt, clockOut: (d.times.length ? d.times.slice().sort().pop() : "") });
-      }
+    const short = npsShortFromRaw(d.store);
+    if(!short) return;
+    if(marketSet.size && !marketSet.has(short)) return;   // another RSD's store
+    if(!maxDate || d.date > maxDate) maxDate = d.date;
+    if(String(d.date).slice(0,7) !== month) return;
+    if(!d.raw.length && !d.unknown) return;
+    monthDays++;                                          // a real employee-day in scope
+    observed[short] = (observed[short] || 0) + 1;
+
+    const a = npsAnalyzeDay(d.raw);
+    const isManager = NPS_MGR_TITLES.includes(String(d.title || "").trim());
+    const spanH = a.spanSec / 3600;
+    const lunchOwed = spanH >= MINH;
+
+    // Reported without exception: an untimed manual punch, a lone punch, and any
+    // day whose punches cannot be paired into a shift. We cannot tell whether the
+    // meal break happened, and the record itself needs fixing either way.
+    const unknown = d.unknown > 0;
+    const noClockOut = a.count <= 1;
+    const missed = unknown || noClockOut || a.unresolved || (a.count < 4 && lunchOwed);
+    if(!missed && a.count >= 2 && a.count < 4){ shortShiftDays++; return; }
+
+    let lunchMin = null, shortLunch = false;
+    if(!missed && a.count >= 4 && lunchOwed && a.mealSec != null){
+      lunchMin = Math.floor(a.mealSec / 60);
+      shortLunch = a.mealSec < (MINSEC - NPS_CONFIG.LUNCH_GRACE_SECONDS);
     }
+    if(!missed && !shortLunch) return;                    // clean day, nothing to report
+
+    const rec = {
+      store: short, storeRaw: d.store, rep: d.name, title: d.title, isManager: isManager,
+      date: d.date, punches: a.count, rawPunches: d.raw.length, unknownPunches: d.unknown, times: a.times,
+      clockIn: a.times[0] || "", clockOut: a.times.length ? a.times[a.times.length-1] : "",
+      shiftHours: a.spanSec ? Math.round(spanH * 10) / 10 : null,
+      missed: missed,
+      unresolved: a.unresolved, why: a.why,
+      kind: missed ? npsMissKind(a.count, unknown, a) : "Lunch break under " + NPS_CONFIG.LUNCH_MIN_MINUTES + " minutes",
+      lunchMin: lunchMin, lunchSec: a.mealSec, shortLunch: shortLunch
+    };
+    list.push(rec);
+    (detail[short] = detail[short] || []).push(rec);
+    // byStore keeps its original meaning — non-manager MISSED punches — so the
+    // existing payload field does not change shape under anyone reading it.
+    if(missed && !isManager){ byStore[short] = (byStore[short] || 0) + 1; total++; }
   });
-  NPS_PUNCH = { byStore: byStore, total: total, detail: detail, loaded: true };
+
+  Object.keys(detail).forEach(s => detail[s].sort((a,b) =>
+    String(a.rep).localeCompare(String(b.rep)) || String(a.date).localeCompare(String(b.date))));
+
+  NPS_PUNCH = { byStore: byStore, total: total, detail: detail, days: list,
+                observed: observed, monthDays: monthDays, shortShiftDays: shortShiftDays,
+                maxDate: maxDate, month: month, loaded: true };
   return NPS_PUNCH;
 }
+
+// ===== District lunch-punch email ==========================================
+// Roll the audit up per district, then per store, then per rep.
+//
+// District managers are excluded outright: this email is a tool for a DM to run
+// their district with, not a report on the DM. A DM punches in at whichever store
+// they are visiting, so without this their rows would surface under other
+// districts' stores as well as their own.
+function npsLunchDistrictData(dist, dir){
+  const stores = ((dir && dir.stores) || [])
+    .filter(full => { const d = npsDistrictForStore(full, dir); return d && d.key === dist.key; })
+    .map(full => String(full).replace(/\s+Xfinity\s+Store\s*$/i, "").trim())
+    .sort();
+
+  const isDmRecord = r => npsIsDmTitle(r.title);
+
+  let missedDays = 0, shortDays = 0;
+  const repSet = {};
+  const groupReps = (recs) => {
+    const byRep = {};
+    recs.forEach(r => {
+      const key = String(r.rep || "").trim();
+      if(!key) return;
+      const b = byRep[key] || (byRep[key] = { rep: key, title: r.title, isManager: r.isManager, missed: [], short: [] });
+      if(r.missed) b.missed.push(r); else b.short.push(r);
+    });
+    return Object.keys(byRep).map(k => byRep[k]).sort((a,b) =>
+      (b.missed.length + b.short.length) - (a.missed.length + a.short.length) || a.rep.localeCompare(b.rep));
+  };
+
+  const storeBlocks = stores.map(short => {
+    const recs = ((NPS_PUNCH.detail || {})[short] || []).filter(r => !isDmRecord(r));
+    const reps = groupReps(recs);
+    reps.forEach(rp => {
+      missedDays += rp.missed.length; shortDays += rp.short.length;
+      repSet[short + "||" + rp.rep] = true;
+    });
+    return {
+      store: short,
+      storeFull: short + " Xfinity Store",
+      sm: ((dir && dir.storeManagerNames) || {})[short + " Xfinity Store"] || "",
+      reps: reps,
+      missed: reps.reduce((s,r) => s + r.missed.length, 0),
+      short: reps.reduce((s,r) => s + r.short.length, 0)
+    };
+  });
+
+  storeBlocks.sort((a,b) => (b.missed + b.short) - (a.missed + a.short) || a.store.localeCompare(b.store));
+  // Employee-days actually observed in THIS district this month. A district with
+  // none has an empty file, not a perfect month.
+  const observedDays = stores.reduce((s, st) => s + ((NPS_PUNCH.observed || {})[st] || 0), 0);
+  return {
+    stores: storeBlocks,
+    observedDays: observedDays,
+    missedDays: missedDays,
+    shortDays: shortDays,
+    repCount: Object.keys(repSet).length,
+    storesAffected: storeBlocks.filter(s => s.missed + s.short > 0).length,
+    storeCount: storeBlocks.length
+  };
+}
+
+function npsMonthLabel(month){
+  if(!month) return "";
+  const [y,m] = String(month).split("-").map(Number);
+  const M = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  return (M[m-1] || "") + " " + y;
+}
+
+function npsCleanEmails(list){
+  return (list || []).map(e => String(e == null ? "" : e).trim()).filter(Boolean);
+}
+
+// Build the full HTML email + webhook payload for one district.
+function buildLunchPayload(dist, dir){
+  const data   = npsLunchDistrictData(dist, dir);
+  const month  = NPS_PUNCH.month || npsLocalYMD(new Date()).slice(0,7);
+  const MINL   = NPS_CONFIG.LUNCH_MIN_MINUTES;
+  const SEVERE = NPS_CONFIG.LUNCH_SHORT_SEVERE_MINUTES;
+  // "Clean" requires that we actually looked at some data. Zero violations out
+  // of zero records is not a perfect month, it is an empty file.
+  const clean  = (data.missedDays + data.shortDays) === 0 && data.observedDays > 0 && data.storeCount > 0;
+  // Distinct from clean: we have no punch records for this district this month at
+  // all. Saying "all clear" over an empty set is the failure mode this whole gate
+  // exists to prevent, so it gets its own honest message.
+  const noData = data.observedDays === 0;
+
+  // --- recipients: DM to, every store manager in the district cc'd ---
+  const dmEmail  = npsCleanEmails([dist.dm])[0] || NPS_CONFIG.MY_EMAIL;
+  const smEmails = npsCleanEmails(data.stores.map(s => ((dir && dir.storeManagers) || {})[s.storeFull]));
+  const to = dmEmail;
+  const seen = new Set([to.toLowerCase()]);
+  const cc = smEmails.concat(npsCleanEmails([NPS_CONFIG.MY_EMAIL])).filter(e => {
+    const k = e.toLowerCase();
+    if(seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  }).join(",");
+
+  const headerHtml =
+    '<tr><td style="background:#0f2350;background:linear-gradient(135deg,#0f2350 0%,#22408f 100%);padding:22px 24px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+    '<td style="vertical-align:middle;">' +
+    '<div style="color:#9fc0ff;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;">Blufox Mobile &nbsp;&bull;&nbsp; Lunch Punch Accountability</div>' +
+    '<div style="color:#ffffff;font-size:28px;font-weight:800;letter-spacing:-0.6px;margin-top:6px;">Missed Lunch Punches</div>' +
+    '<div style="color:#ffffff;font-size:20px;font-weight:700;margin-top:2px;">' + npsEsc(dist.label) + '</div>' +
+    '<div style="color:#c7d6f3;font-size:13px;margin-top:6px;">' + npsEsc(npsMonthLabel(month)) + ' &nbsp;&bull;&nbsp; month to date &nbsp;&bull;&nbsp; ' + data.storeCount + ' stores</div>' +
+    '</td>' +
+    '<td style="vertical-align:middle;text-align:right;width:132px;">' +
+    '<table role="presentation" cellpadding="0" cellspacing="0" align="right" style="background:rgba(255,255,255,0.08);border:1px solid rgba(159,192,255,0.35);border-radius:14px;">' +
+    '<tr><td style="padding:12px 16px;text-align:center;">' +
+    '<div style="color:' + (clean ? '#86efac' : '#fdba74') + ';font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;">Missed Punches</div>' +
+    '<div style="color:#ffffff;font-size:30px;font-weight:800;line-height:1.05;margin-top:3px;">' + data.missedDays + '</div>' +
+    '<div style="color:#9fc0ff;font-size:11px;font-weight:600;margin-top:1px;">this month</div>' +
+    '</td></tr></table></td>' +
+    '</tr></table></td></tr>';
+
+  // --- the ask, stated once and up front ---
+  const askHtml =
+    '<tr><td style="padding:16px 20px 6px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fff7ed;border:1px solid #fdba74;border-radius:14px;"><tr>' +
+    '<td style="width:52px;text-align:center;vertical-align:top;padding:16px 0 16px 10px;font-size:26px;">&#127869;</td>' +
+    '<td style="padding:14px 16px;vertical-align:middle;">' +
+    '<div style="font-size:14px;font-weight:800;color:#9a3412;">Please remind your team today</div>' +
+    '<div style="font-size:12.5px;color:#7c2d12;margin-top:5px;line-height:1.6;">' +
+    'Every employee must <b>clock in and out for lunch</b> &mdash; all four punches, every shift. ' +
+    'And every employee is entitled to a <b>minimum ' + MINL + '-minute lunch break</b>. ' +
+    'Missed and short punches create payroll corrections and wage-and-hour compliance exposure, and they are avoidable. ' +
+    'A quick reminder at the start of each shift fixes almost all of this.' +
+    '</div></td></tr></table></td></tr>';
+
+  // --- summary strip ---
+  const stat = (label, value, color) =>
+    '<td width="25%" style="padding:0 5px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;"><tr><td style="padding:11px 12px;text-align:center;">' +
+    '<div style="font-size:22px;font-weight:800;color:' + color + ';line-height:1.1;">' + value + '</div>' +
+    '<div style="font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#64748b;margin-top:3px;">' + label + '</div>' +
+    '</td></tr></table></td>';
+
+  const summaryHtml =
+    '<tr><td style="padding:10px 15px 4px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+    stat("Missed punches", data.missedDays, data.missedDays ? "#b91c1c" : "#047857") +
+    stat("Short lunches", data.shortDays, data.shortDays ? "#b45309" : "#047857") +
+    stat("Employees", data.repCount, "#1e3a8a") +
+    stat("Stores affected", data.storesAffected + " of " + data.storeCount, "#1e3a8a") +
+    '</tr></table></td></tr>';
+
+  if(noData){
+    const emptyHtml =
+      '<tr><td style="padding:14px 20px 6px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;border:1px solid #dbe3f0;border-radius:14px;"><tr>' +
+      '<td style="padding:22px 20px;text-align:center;">' +
+      '<div style="font-size:15px;font-weight:800;color:#334155;">No punch records yet for ' + npsEsc(npsMonthLabel(month)) + '</div>' +
+      '<div style="font-size:13px;color:#64748b;margin-top:6px;line-height:1.6;">This is not a clean sheet &mdash; there is simply no data for ' + npsEsc(dist.label) +
+      ' in this month&rsquo;s punch export yet. The report will fill in as the month goes on.</div>' +
+      '</td></tr></table></td></tr>';
+    return npsLunchEnvelope(dist, to, cc, headerHtml + askHtml + emptyHtml, data, month, false);
+  }
+
+  // --- clean sheet ---
+  if(clean){
+    const cleanHtml =
+      '<tr><td style="padding:14px 20px 6px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:14px;"><tr>' +
+      '<td style="padding:24px 20px;text-align:center;">' +
+      '<div style="font-size:34px;line-height:1;">&#127881;</div>' +
+      '<div style="font-size:17px;font-weight:800;color:#047857;margin-top:8px;">Zero missed lunch punches this month</div>' +
+      '<div style="font-size:13px;color:#065f46;margin-top:6px;line-height:1.6;">Every employee in ' + npsEsc(dist.label) +
+      ' clocked a full ' + MINL + '-minute lunch on every shift so far in ' + npsEsc(npsMonthLabel(month)) + '. ' +
+      'That is what perfect looks like &mdash; please tell your teams.</div>' +
+      '</td></tr></table></td></tr>';
+    return npsLunchEnvelope(dist, to, cc, headerHtml + askHtml + summaryHtml + cleanHtml, data, month, true);
+  }
+
+  // --- per-rep card, shared by store blocks and the leadership block ---
+  const repCard = (rep) => {
+    const line = (recs, isShort, marginal) => {
+      if(!recs.length) return '';
+      const col = !isShort ? "#b91c1c" : (marginal ? "#a16207" : "#b45309");
+      const label = isShort
+        ? (marginal ? "Lunch just short (" + SEVERE + "-" + (MINL - 1) + " min)" : "Lunch under " + SEVERE + " min")
+        : (recs.every(r => r.unresolved) ? "Punch record needs review"
+          : recs.every(r => r.unknownPunches) ? "Untimed manual punch"
+          : recs.every(r => r.punches <= 1) ? "No clock-out"
+          : recs.every(r => r.punches === 3) ? "Incomplete lunch punch"
+          : "No lunch punches");
+      const items = recs.slice().sort((a,b) => String(a.date).localeCompare(String(b.date))).map(r => {
+        // On a record that needs review, the reason IS the useful part — telling a
+        // manager "no lunch punches" next to a day with five punches reads as a
+        // broken report rather than something to fix.
+        const note = isShort
+          ? (r.lunchMin != null ? r.lunchMin + " min" : "short")
+          : (r.unresolved && r.why ? r.why
+             : r.punches + "p" + (r.shiftHours ? " / " + r.shiftHours + "h" : ""));
+        const wrap = (isShort || !r.unresolved) ? ['(', ')'] : ['\u2014 ', ''];
+        return npsEsc(npsShortDate(r.date)) + ' <span style="color:#94a3b8;">' + wrap[0] + npsEsc(note) + wrap[1] + '</span>';
+      }).join(', ');
+      return '<div style="font-size:11.5px;line-height:1.7;padding:3px 0 0;">' +
+        '<span style="color:' + col + ';font-weight:700;">' + label + ' &bull; ' + recs.length + ' day' + (recs.length === 1 ? '' : 's') + ':</span> ' +
+        '<span style="color:#475569;">' + items + '</span></div>';
+    };
+    const count = rep.missed.length + rep.short.length;
+    const mgrTag = rep.isManager
+      ? '<span style="display:inline-block;background:#eef4ff;color:#1e3a8a;border:1px solid #c7d8f7;border-radius:20px;padding:1px 7px;font-size:9.5px;font-weight:800;letter-spacing:0.4px;margin-left:7px;">' + npsEsc(String(rep.title || "LEADERSHIP").toUpperCase()) + '</span>'
+      : '';
+    return '<tr><td style="padding:0 14px 8px 14px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #fecaca;border-radius:10px;"><tr><td style="padding:9px 12px;">' +
+      '<div style="font-size:12.5px;font-weight:800;color:#0f172a;">' + npsEsc(rep.rep) + mgrTag +
+      '<span style="font-size:11px;color:#b91c1c;font-weight:700;"> &mdash; ' + count + ' day' + (count === 1 ? '' : 's') + '</span></div>' +
+      line(rep.missed.filter(r => !r.unresolved), false) +
+      line(rep.missed.filter(r => r.unresolved), false) +
+      line(rep.short.filter(r => r.lunchMin == null || r.lunchMin < SEVERE), true, false) +
+      line(rep.short.filter(r => r.lunchMin != null && r.lunchMin >= SEVERE), true, true) +
+      '</td></tr></table></td></tr>';
+  };
+
+  const panel = (title, subtitle, badge, bodyRows, ok) =>
+    '<tr><td style="padding:8px 20px 0;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + (ok ? '#f8fafc' : '#fef7f7') + ';border:1px solid ' + (ok ? '#e2e8f0' : '#fecaca') + ';border-radius:14px;">' +
+    '<tr><td style="padding:12px 14px 8px 14px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+    '<td style="vertical-align:middle;"><div style="font-size:14.5px;font-weight:800;color:#0f172a;">' + title + '</div>' +
+    (subtitle ? '<div style="font-size:11px;color:#64748b;margin-top:2px;">' + subtitle + '</div>' : '') +
+    '</td><td style="vertical-align:middle;text-align:right;">' + badge + '</td>' +
+    '</tr></table></td></tr>' + bodyRows +
+    '</table></td></tr>';
+
+  const storeHtml = data.stores.map(st => {
+    const ok = (st.missed + st.short) === 0;
+    const badge = ok
+      ? '<span style="display:inline-block;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;">&#10003; ALL CLEAR</span>'
+      : '<span style="display:inline-block;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;">' +
+        st.missed + ' MISSED' + (st.short ? ' &bull; ' + st.short + ' SHORT' : '') + '</span>';
+    return panel(npsEsc(st.store), st.sm ? 'SM: ' + npsEsc(st.sm) : '', badge, ok ? '' : st.reps.map(repCard).join(''), ok);
+  }).join("");
+
+  return npsLunchEnvelope(dist, to, cc, headerHtml + askHtml + summaryHtml + storeHtml, data, month, false);
+}
+
+// Shared wrapper so the clean-sheet and detail variants can never drift apart.
+function npsLunchEnvelope(dist, to, cc, inner, data, month, clean){
+  const footerHtml =
+    '<tr><td style="padding:16px 20px 22px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0f2350;border-radius:14px;"><tr><td style="padding:16px 18px;text-align:center;">' +
+    '<div style="color:#9fc0ff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Fix Punches Here</div>' +
+    '<a href="https://blufoxmobile.github.io/Auto-Punch-Report/" style="color:#fdba74;font-size:12.5px;font-weight:700;text-decoration:none;">Punch Audit Dashboard</a>' +
+    '<div style="color:#7f97c9;font-size:11px;margin-top:12px;line-height:1.6;">' +
+    'A missed punch is an employee-day without a full set of four punches on a shift of ' + NPS_CONFIG.LUNCH_REQUIRED_AFTER_HOURS + '+ hours. ' +
+    'A short lunch is a meal break under ' + NPS_CONFIG.LUNCH_MIN_MINUTES + ' minutes, with a ' + NPS_CONFIG.LUNCH_GRACE_SECONDS + '-second allowance for clock rounding' +
+    (NPS_PUNCH.shortShiftDays ? ', so ' + NPS_PUNCH.shortShiftDays + ' short shift' + (NPS_PUNCH.shortShiftDays === 1 ? '' : 's') + ' market-wide with no meal break owed were excluded' : '') + '.<br>' +
+    'District managers&rsquo; own punches are not included.<br>' +
+    'Sent every morning to district and store leadership. Questions? Reply to this email.</div>' +
+    '</td></tr></table></td></tr>';
+
+  const bodyHtml =
+'<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+'<title>Missed Lunch Punches For ' + npsEsc(dist.label) + '</title></head>' +
+'<body style="margin:0;padding:0;background:#e9eef6;">' +
+'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e9eef6;font-family:\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;">' +
+'<tr><td align="center" style="padding:22px 12px;">' +
+'<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #dbe3f0;">' +
+inner + footerHtml +
+'</table></td></tr></table></body></html>';
+
+  return {
+    email_type: "district_lunch",
+    district: dist.label,
+    district_key: dist.key,
+    to: to, cc: cc,
+    subject: "Missed Lunch Punches For " + dist.label,
+    body_html: bodyHtml,
+    missed_punches: data.missedDays,
+    short_lunches: data.shortDays,
+    employees: data.repCount,
+    stores_affected: data.storesAffected,
+    store_count: data.storeCount,
+    clean_sheet: !!clean,
+    month: month,
+    date: npsLocalYMD(new Date())
+  };
+}
+
+function npsLunchHookReady(){
+  return /^https:\/\/hooks\.zapier\.com\//.test(NPS_CONFIG.LUNCH_WEBHOOK_URL || "");
+}
+
+async function npsPostLunchWebhook(payload){
+  const resp = await fetch(NPS_CONFIG.LUNCH_WEBHOOK_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  });
+  if(!resp.ok) throw new Error("Lunch webhook HTTP " + resp.status);
+}
+
+// One email per district, skipping any already delivered today.
+// Returns { sent, errors:[], districts:[] }.
+async function npsSendLunchEmails(dir, alreadySent){
+  const done = new Set((alreadySent || []).map(s => String(s).toLowerCase()));
+  const sent = []; const errors = [];
+  const npsSleep = ms => new Promise(r => setTimeout(r, ms));
+  for(let i = 0; i < NPS_DISTRICTS.length; i++){
+    const dist = NPS_DISTRICTS[i];
+    if(done.has(dist.label.toLowerCase())) continue;
+    try {
+      const payload = buildLunchPayload(dist, dir);
+      let lastErr = null;
+      for(let attempt = 1; attempt <= 3; attempt++){
+        try { await npsPostLunchWebhook(payload); lastErr = null; break; }
+        catch(e){ lastErr = e; if(attempt < 3) await npsSleep(600 * attempt); }
+      }
+      if(lastErr) throw lastErr;
+      sent.push(dist.label);
+    } catch(e){ errors.push(dist.label + ": " + e.message); }
+    if(i < NPS_DISTRICTS.length - 1) await npsSleep(350);
+  }
+  return { sent: sent.length, districts: sent, errors: errors };
+}
+
 
 // Minimal CSV parser (same semantics as the CRM's parseFuCSV).
 function npsParseCsv(text){
@@ -1802,10 +2713,23 @@ function npsSectionHtml(shortName, surveys, good, ok, bad, tnps){
   const sorted = surveys.slice().sort((a,b) =>
     (order[npsBucket(a.score)] - order[npsBucket(b.score)]) || (a.score - b.score) ||
     String(b.txnDate || "").localeCompare(String(a.txnDate || "")));
+  // Gmail truncates a message body at roughly 102KB and hides everything after
+  // the cut behind a "Message clipped" link. Each survey card is ~1.9KB, so a
+  // Monday catch-up batch would push the streak block and the footer past the
+  // line. Detractors sort first, so the cap always keeps what matters.
+  const CAP = NPS_CONFIG.SURVEY_CARDS_MAX;
+  const shown = sorted.slice(0, CAP);
+  const hidden = total - shown.length;
+  const moreLine = hidden > 0
+    ? '<div style="font-size:11.5px;color:#64748b;margin-top:4px;">and ' + hidden + ' more survey' + (hidden === 1 ? '' : 's') +
+      ' &mdash; <a href="' + NPS_CONFIG.DASHBOARD_URL + '" style="color:#c2410c;font-weight:700;text-decoration:none;">see them all on the NPS Index</a></div>'
+    : '';
   const listHtml = total
     ? '<div style="border-top:1px solid #eef2f7;margin-top:14px;padding-top:12px;">' +
-      '<div style="font-size:10.5px;font-weight:800;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;margin-bottom:10px;">Every survey from yesterday &bull; ' + total + ' total</div>' +
-      sorted.map(npsSurveyBoxHtml).join("") + '</div>'
+      '<div style="font-size:10.5px;font-weight:800;letter-spacing:0.8px;color:#64748b;text-transform:uppercase;margin-bottom:10px;">' +
+      (hidden > 0 ? 'Surveys needing attention first &bull; showing ' + shown.length + ' of ' + total
+                  : 'Every survey from yesterday &bull; ' + total + ' total') + '</div>' +
+      shown.map(npsSurveyBoxHtml).join("") + moreLine + '</div>'
     : '';
   const emptyLine = total
     ? ''
@@ -1860,63 +2784,6 @@ function npsPlaybookHtml(shortName){
     '<div style="font-size:12px;color:#64748b;margin:5px 0 12px;">Your biggest ranking gains in the company right now. Move these and you climb the board.</div>' +
     movesHtml + strengthHtml +
     '</td></tr></table></td></tr>';
-}
-
-// --- Lunch punch reminder ---
-function npsLunchReminderHtml(shortName){
-  const loaded = NPS_PUNCH.loaded;
-  const detail = (NPS_PUNCH.detail || {})[shortName] || [];
-  // Group missed-punch days by rep.
-  const byRep = {};
-  detail.forEach(d => { const k = String(d.rep || "").trim(); if(!k) return; (byRep[k] = byRep[k] || []).push(d); });
-  // Roster: non-manager reps at this store (from Rep Rank), unioned with anyone who missed.
-  const roster = (NPS_REPS || [])
-    .filter(r => String(r.store).trim().toLowerCase() === shortName.toLowerCase())
-    .filter(r => !NPS_MGR_TITLES.includes(String(r.title || "").trim()));
-  const rosterNames = roster.map(r => String(r.name).trim()).filter(Boolean);
-  const allNames = Array.from(new Set(rosterNames.concat(Object.keys(byRep))));
-  const rows = allNames.map(name => {
-    const misses = (byRep[name] || []).slice().sort((a,b) => String(a.date).localeCompare(String(b.date)));
-    return { name: name, count: misses.length, misses: misses };
-  }).sort((a,b) => b.count - a.count || a.name.localeCompare(b.name));
-
-  const header =
-    '<td style="width:52px;text-align:center;vertical-align:middle;padding:14px 0 14px 8px;font-size:26px;">&#127869;</td>' +
-    '<td style="padding:12px 14px;vertical-align:middle;">' +
-    '<div style="font-size:13px;font-weight:800;color:#1e3a8a;">Lunch Punches &mdash; clock in &amp; out every day</div>' +
-    '<div style="font-size:12px;color:#475569;margin-top:3px;line-height:1.5;">Missed meal punches create compliance issues and hold up payroll. Here&rsquo;s who&rsquo;s clean and who needs to fix punches this month.</div>' +
-    '</td>';
-
-  let listHtml = '';
-  if(loaded && !rows.length){
-    listHtml = '<tr><td colspan="2" style="padding:0 14px 14px 14px;"><div style="font-size:12px;color:#047857;font-weight:700;">&#10003; No missed lunch punches this month &mdash; nice work, team.</div></td></tr>';
-  } else if(loaded){
-    const rowHtml = rows.map(r => {
-      const ok = r.count === 0;
-      const icon = ok ? "&#10003;" : "&#10007;";
-      const col  = ok ? "#047857" : "#b91c1c";
-      const bg   = ok ? "#ecfdf5" : "#fef2f2";
-      const bd   = ok ? "#a7f3d0" : "#fecaca";
-      const dates = r.misses.map(m => npsEsc(npsPrettyDate(m.date) || m.date) + (m.clockOut ? ' <span style="color:#94a3b8;font-weight:500;">(out ' + npsEsc(m.clockOut) + ')</span>' : '')).join(', ');
-      const status = ok
-        ? 'All lunches clocked'
-        : r.count + ' missed day' + (r.count===1?"":"s") + ' this month &bull; ' + dates;
-      return '<tr><td colspan="2" style="padding:0 14px 8px 14px;">' +
-        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:10px;"><tr>' +
-        '<td style="width:26px;text-align:center;vertical-align:middle;padding:8px 4px 8px 10px;color:' + col + ';font-size:15px;font-weight:800;">' + icon + '</td>' +
-        '<td style="padding:8px 12px;vertical-align:middle;">' +
-        '<span style="font-size:12.5px;font-weight:800;color:#0f172a;">' + npsEsc(r.name) + '</span>' +
-        '<span style="font-size:11.5px;color:' + col + ';font-weight:600;"> &mdash; ' + status + '</span>' +
-        '</td></tr></table></td></tr>';
-    }).join("");
-    listHtml = '<tr><td colspan="2" style="padding:2px 0 0 0;font-size:0;line-height:0;">&nbsp;</td></tr>' + rowHtml +
-      '<tr><td colspan="2" style="padding:0 14px 12px 14px;"><div style="font-size:11px;color:#64748b;">Fix any misses in the Punch Audit.</div></td></tr>';
-  }
-
-  return '<tr><td style="padding:12px 20px 6px;">' +
-    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef4ff;border:1px solid #c7d8f7;border-radius:14px;">' +
-    '<tr>' + header + '</tr>' + listHtml +
-    '</table></td></tr>';
 }
 
 // --- Footer ---
@@ -1989,11 +2856,14 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
   const dmEmail  = (dir.storeDMs || {})[fullKey] || "";
   const smName   = (dir.storeManagerNames || {})[fullKey] || "";
 
-  const repEmails = ((dir.storeEmployees || {})[fullKey] || []).map(e => (e && typeof e === 'object') ? (e.email || '') : e).filter(Boolean);
-  const to = smEmail || asmEmail || dmEmail || (repEmails[0] || "") || NPS_CONFIG.MY_EMAIL;
+  const repEmails = npsCleanEmails(((dir.storeEmployees || {})[fullKey] || []).map(e => (e && typeof e === 'object') ? (e.email || '') : e));
+  // Trim before deduping: a trailing space in the directory used to put the same
+  // person in both To and Cc, and a whitespace-only entry put an empty address in
+  // the Cc header of the email that reaches every rep.
+  const [smE, asmE, dmE] = [smEmail, asmEmail, dmEmail].map(e => String(e == null ? "" : e).trim());
+  const to = smE || asmE || dmE || (repEmails[0] || "") || NPS_CONFIG.MY_EMAIL;
   const seen = new Set([to.toLowerCase()]);
-  const cc = [asmEmail, dmEmail, ...repEmails, NPS_CONFIG.MY_EMAIL].filter(e => {
-    if(!e) return false;
+  const cc = npsCleanEmails([asmE, dmE].concat(repEmails).concat([NPS_CONFIG.MY_EMAIL])).filter(e => {
     const k = e.toLowerCase();
     if(seen.has(k)) return false;
     seen.add(k);
@@ -2051,13 +2921,14 @@ function buildNpsPayload(shortName, surveys, salesStores, dir){
     .sort((a,b) => a.rank - b.rank);
   const teamHtml = (storeReps.length && repN) ? npsTeamScorecardHtml(shortName, storeReps, repN) : "";
 
-  // --- Conversion / NPS / Playbook / Lunch / Footer ---
+  // --- Conversion / NPS / Playbook / Clean-day streak / Footer ---
   const convHtml = npsConversionHeroHtml(shortName);
   const npsHtml  = npsSectionHtml(shortName, surveys, good, ok, bad, tnps);
   const playHtml = npsPlaybookHtml(shortName);
-  const lunchHtml = npsLunchReminderHtml(shortName);
+  const streakHtml = npsStreakHeroHtml(shortName);
   const footerHtml = npsFooterHtml();
   const punchCount = (NPS_PUNCH.byStore || {})[shortName] || 0;
+  const streak = (NPS_STREAKS.byStore || {})[shortName] || null;
 
   const bodyHtml =
 '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
@@ -2071,15 +2942,20 @@ reportCardHtml +
 storeGoalsHtml +
 teamHtml +
 convHtml +
+streakHtml +
 npsHtml +
 playHtml +
-lunchHtml +
 footerHtml +
 '</table></td></tr></table></body></html>';
 
-  const subject = "Morning Briefing for " + shortName + " — " +
+  const streakTag = (streak && streak.days != null)
+    ? (streak.goalMet
+        ? " \u2014 \ud83c\udfc6 " + streak.days + " days clean"
+        : " \u2014 " + streak.days + " day" + (streak.days === 1 ? "" : "s") + " clean")
+    : "";
+  const subject = "Morning Briefing for " + shortName + " \u2014 " +
     (surveys.length ? surveys.length + " NPS survey" + (surveys.length === 1 ? "" : "s") : "no NPS surveys") +
-    (bad.length ? " (" + bad.length + " need attention)" : "");
+    (bad.length ? " (" + bad.length + " need attention)" : "") + streakTag;
 
   return {
     store: shortName, store_full: fullKey,
@@ -2087,7 +2963,16 @@ footerHtml +
     good: good.length, ok: ok.length, bad: bad.length,
     total: surveys.length, tnps: tnps,
     open_orders: 0, aged_orders: 0, follow_ups: 0,
+    // Kept for backwards compatibility with the existing Zap; the store email
+    // no longer renders lunch punches - those go to the district email now.
     missed_lunch_punches: punchCount,
+    days_since_detractor: (streak && streak.days != null) ? streak.days : null,
+    detractor_goal_met: !!(streak && streak.goalMet),
+    detractor_personal_best: (streak && streak.personalBest != null) ? streak.personalBest : null,
+    detractor_new_record: !!(streak && streak.newRecord),
+    last_detractor_date: (streak && streak.lastDetractorDate) || null,
+    detractor_rank_district: (streak && streak.rankDistrict) || null,
+    detractor_rank_market: (streak && streak.rankMarket) || null,
     tcharts: (NPS_TCHARTS.byStore || {})[shortName] || 0,
     date: npsDateStr(new Date())
   };
@@ -2116,7 +3001,7 @@ async function npsSendEmails(surveys, salesStores, dir){
   await Promise.all([
     npsFetchTSheets().catch(e => console.warn("t-sheets unavailable:", e)),
     npsFetchCrmActions().catch(e => console.warn("crm actions unavailable:", e)),
-    npsFetchPunches().catch(e => console.warn("punch data unavailable:", e)),
+    npsFetchPunches(dir).catch(e => console.warn("punch data unavailable:", e)),
     npsFetchConversion().catch(e => console.warn("conversion unavailable:", e)),
     npsFetchTargets().catch(e => console.warn("targets unavailable:", e)),
     npsFetchOneOnOne().catch(e => console.warn("one-on-one ranking unavailable:", e))
@@ -2127,6 +3012,10 @@ async function npsSendEmails(surveys, salesStores, dir){
   const _punch = NPS_FRESH["data/punch-data.xlsx"];
   const _stale = [];
   if(_sales && _sales.date && _sales.date !== _today) _stale.push("Sales Report (" + _sales.date + ")");
+  // Fail closed: when the report could not be read at all there is no freshness
+  // record to check, and the email would go out silently missing its report card,
+  // store goals and team scorecard.
+  if(!(salesStores || []).length) _stale.push("Sales Report (could not be read)");
   if(_punch && _punch.date && _punch.date !== _today) _stale.push("Punch data (" + _punch.date + ")");
   if(_stale.length){
     console.warn("NPS send skipped — data not current for today (" + _today + "): " + _stale.join(", ") + ". Will send on next upload once updated.");
@@ -2211,12 +3100,28 @@ async function uploadNpsFile(file){
     surveys: merged
   })), 'Update NPS responses — ' + new Date().toLocaleDateString());
 
-  // 3) Fire one email per store with new surveys.
+  // 3) Days Since Last Detractor. Built from the merged history PLUS the
+  //    persisted streak file, so a store's anchor date survives even after the
+  //    detractor that set it rolls out of the 95-day survey window.
+  const dir = await npsFetchDirectory();
+  let streakData = null;
+  try {
+    setStatus('Updating clean-day streaks...', 'info');
+    const priorStreaks = await npsFetchStreaks();
+    streakData = npsBuildStreaks(merged, dir, priorStreaks);
+    await pushToGitHub(REPOS.sales, NPS_CONFIG.STREAKS_PATH,
+      npsToB64(JSON.stringify(streakData)),
+      'Update detractor streaks \u2014 ' + new Date().toLocaleDateString());
+  } catch(e){
+    // A streak failure must never stop the morning email going out.
+    console.warn('detractor streak update failed:', e);
+  }
+
+  // 4) Fire one email per store with new surveys.
   let sent = 0, storeCount = 0, errors = [];
   const hookReady = npsHookReady();
   if(fresh.length && hookReady){
     setStatus('Building & sending NPS emails...', 'info');
-    const dir = await npsFetchDirectory();
     let salesStores = [];
     try { salesStores = await npsFetchSalesStores(); }
     catch(e){ console.warn('Sales report unavailable for email header:', e); }
@@ -2229,7 +3134,7 @@ async function uploadNpsFile(file){
       // missing data (e.g. today's Sales Report / Punch data) has been uploaded.
       setStatus("Emails held \u2014 waiting for today's " + (res.stale || []).join(" & ") + ". They'll send automatically on your next upload once that data is current.", 'info');
     } else {
-      // 4) Record ONLY surveys whose store email actually went out. Surveys for
+      // 5) Record ONLY surveys whose store email actually went out. Surveys for
       // stores that errored stay OUT of the log, so the next upload picks them
       // up as "fresh" and retries them automatically. (Surveys with no storeKey
       // can never be emailed to a store, so they're logged once the batch ran.)
@@ -2250,11 +3155,126 @@ async function uploadNpsFile(file){
     }
   }
 
+  // 6) District missed-lunch-punch emails. Independent of the store briefings:
+  //    they go out even on a morning with no new surveys, and they are held (not
+  //    skipped) when the punch file is not today's, so nobody gets stale numbers.
+  const lunch = await npsSendLunchRun(dir);
+
   return {
     total: parsed.surveys.length, fresh: fresh.length,
     sent: sent, storeCount: storeCount,
-    unmatched: parsed.unmatched, hookReady: hookReady, errors: errors
+    unmatched: parsed.unmatched, hookReady: hookReady, errors: errors,
+    lunch: lunch
   };
+}
+
+// Districts already emailed from this page session, so a repeat upload can never
+// double-send even if the sent-log read comes back stale. Keyed by date: this page
+// is often left open overnight, and an undated guard would silently suppress the
+// next morning's send while reporting it as a successful dedupe.
+const NPS_LUNCH_SESSION = { date: null, districts: [] };
+const NPS_LUNCH_SESSION_KEY = 'nps-lunch-sent-v1';
+function npsLunchSessionLoad(today){
+  if(NPS_LUNCH_SESSION.date === today) return;
+  NPS_LUNCH_SESSION.date = today; NPS_LUNCH_SESSION.districts = [];
+  // Survives a reload, which the in-memory guard alone does not — the only
+  // remaining double-send path is a different browser on a morning where the
+  // sent-log push also failed three times.
+  try {
+    const raw = localStorage.getItem(NPS_LUNCH_SESSION_KEY);
+    if(raw){
+      const v = JSON.parse(raw);
+      if(v && v.date === today && Array.isArray(v.districts)) NPS_LUNCH_SESSION.districts = v.districts.slice();
+    }
+  } catch(e){ /* private mode / storage disabled */ }
+}
+function npsLunchSessionSave(){
+  try { localStorage.setItem(NPS_LUNCH_SESSION_KEY, JSON.stringify(NPS_LUNCH_SESSION)); } catch(e){ /* ignore */ }
+}
+
+// Guarded daily run for the district lunch emails: arms only when the hook is
+// configured and today's punch data is actually up, and dedupes on a sent log so
+// re-uploading the survey file twice in a morning does not double-send.
+async function npsSendLunchRun(dir){
+  const today = npsLocalYMD(new Date());
+  if(!npsLunchHookReady()){
+    return { ran: false, reason: 'no-hook', sent: 0, errors: [] };
+  }
+  // A store nobody claims would silently disappear from every district email,
+  // and an unclaimed district would send a congratulatory "zero misses" note
+  // that hides real violations. Neither is acceptable, so we refuse to send.
+  const orphans = npsOrphanStores(dir);
+  if(orphans.length){
+    return { ran: false, reason: 'orphan-stores', orphans: orphans, sent: 0, errors: [] };
+  }
+  try {
+    if(!NPS_PUNCH.loaded) await npsFetchPunches(dir);
+  } catch(e){
+    console.warn('punch data unavailable for lunch emails:', e);
+    return { ran: false, reason: 'punch-unavailable', sent: 0, errors: [String(e.message || e)] };
+  }
+  // Freshness, judged on the data itself rather than a GitHub API lookup that
+  // can silently fail: the newest punch in the file must be today or yesterday.
+  const yesterday = npsLocalYMD(new Date(Date.now() - 86400000));
+  if(!NPS_PUNCH.maxDate || NPS_PUNCH.maxDate < yesterday){
+    return { ran: false, reason: 'punch-stale', staleDate: NPS_PUNCH.maxDate || 'unknown', sent: 0, errors: [] };
+  }
+  // An empty current month (the file still holds last month on the 1st) must
+  // never be reported as a perfect month.
+  if(!NPS_PUNCH.monthDays){
+    return { ran: false, reason: 'no-month-data', month: NPS_PUNCH.month, sent: 0, errors: [] };
+  }
+
+  // Dedupe per district, not per day, so a partial failure retries on the next
+  // upload instead of being suppressed until tomorrow. The log is read at its
+  // newest commit because raw.githubusercontent's CDN ignores cache-busting
+  // query strings and serves a stale copy for up to five minutes after a push.
+  let log = { lastSentDate: null, districts: [], history: [] };
+  try {
+    const url = (await npsPinnedUrl("Daily-Sales-Report", NPS_CONFIG.LUNCH_SENT_LOG_PATH)) || NPS_CONFIG.LUNCH_SENT_LOG_URL;
+    const r = await fetch(url + (url.indexOf("?") === -1 ? "?t=" : "&t=") + Date.now(), { cache: 'no-store' });
+    if(r.ok) log = await r.json();
+  } catch(e){ /* first run */ }
+  const already = (log && log.lastSentDate === today) ? (log.districts || []).slice() : [];
+  // Belt and braces: a second upload in the same page session can't re-send even
+  // if the pinned read fails.
+  npsLunchSessionLoad(today);
+  NPS_LUNCH_SESSION.districts.forEach(d => { if(already.indexOf(d) === -1) already.push(d); });
+  // Membership, not a count: a stale or renamed label in the log must never be
+  // able to stand in for a district that has not actually been emailed.
+  const done = new Set(already.map(s => String(s).toLowerCase()));
+  const pending = NPS_DISTRICTS.filter(d => !done.has(d.label.toLowerCase()));
+  if(!pending.length){
+    return { ran: false, reason: 'already-sent', sent: 0, errors: [] };
+  }
+
+  setStatus('Sending district lunch punch emails...', 'info');
+  const res = await npsSendLunchEmails(dir, already);
+  res.districts.forEach(d => { if(NPS_LUNCH_SESSION.districts.indexOf(d) === -1) NPS_LUNCH_SESSION.districts.push(d); });
+  npsLunchSessionSave();
+  let logSaved = true;
+  if(res.sent > 0){
+    // Keep only labels that still name a real district, so the log cannot rot.
+    const valid = new Set(NPS_DISTRICTS.map(d => d.label.toLowerCase()));
+    const allDistricts = already.concat(res.districts).filter(d => valid.has(String(d).toLowerCase()));
+    logSaved = false;
+    for(let attempt = 1; attempt <= 3 && !logSaved; attempt++){
+      try {
+        await pushToGitHub(REPOS.sales, NPS_CONFIG.LUNCH_SENT_LOG_PATH, npsToB64(JSON.stringify({
+          lastSentDate: today,
+          lastSentAt: new Date().toISOString(),
+          districts: allDistricts,
+          history: ((log && log.history) || []).slice(-60).concat([{ date: today, sent: res.sent, errors: res.errors.length }])
+        })), 'Lunch punch email log \u2014 ' + today);
+        logSaved = true;
+      } catch(e){
+        console.warn('lunch sent-log push failed (attempt ' + attempt + '):', e);
+        if(attempt < 3) await new Promise(r => setTimeout(r, 800 * attempt));
+      }
+    }
+  }
+  return { ran: true, reason: 'sent', sent: res.sent, districts: res.districts, errors: res.errors,
+           skipped: NPS_DISTRICTS.length - pending.length, logSaved: logSaved };
 }
 // === END NPS UPLOAD HANDLER ============================
 
@@ -2442,6 +3462,25 @@ async function uploadFiles() {
           label += ` — ⚠ ${res.errors.length} store email${res.errors.length === 1 ? '' : 's'} failed (will retry on next upload): ${res.errors.join('; ')}`;
         }
         parts.push(label);
+        const L = res.lunch || {};
+        if (L.ran) {
+          let ll = `Lunch Punch emails (${L.sent} of 5 districts sent)`;
+          if (L.errors && L.errors.length) ll += ` — ⚠ ${L.errors.join('; ')}`;
+          if (L.logSaved === false) ll += ' — ⚠ the sent-log could not be saved. Do NOT re-upload today or these districts will be emailed twice.';
+          parts.push(ll);
+        } else if (L.reason === 'no-hook') {
+          parts.push('Lunch Punch emails OFF — paste the catch hook URL into NPS_CONFIG.LUNCH_WEBHOOK_URL');
+        } else if (L.reason === 'punch-stale') {
+          parts.push(`Lunch Punch emails held — newest punch in the file is ${L.staleDate}. They send on your next upload once it is current.`);
+        } else if (L.reason === 'no-month-data') {
+          parts.push(`Lunch Punch emails held — the punch file has no ${L.month} data yet, so there is nothing to report for this month.`);
+        } else if (L.reason === 'orphan-stores') {
+          parts.push(`⚠ Lunch Punch emails BLOCKED — no district owns: ${L.orphans.join('; ')}. Check the DM email in store-directory.json.`);
+        } else if (L.reason === 'already-sent') {
+          parts.push('Lunch Punch emails already sent today — skipped to avoid a duplicate.');
+        } else if (L.reason === 'punch-unavailable') {
+          parts.push('⚠ Lunch Punch emails skipped — punch data could not be read.');
+        }
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('NPS Surveys: ' + e.message); }
     });
