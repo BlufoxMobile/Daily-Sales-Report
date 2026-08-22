@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-22T14:14:03.822599+00:00",
+  "updatedAt": "2026-08-22T14:15:29.601651+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -75,7 +75,6 @@
       "DM or Director Submission"
     ],
     "Evanston Xfinity Store": [
-      "Aedo Yonan",
       "Anaf Rahman",
       "Arilello Payne",
       "Jamal Lomax",
@@ -111,6 +110,7 @@
       "DM or Director Submission"
     ],
     "Glenview Xfinity Store": [
+      "Aedo Yonan",
       "Aedo Yonana",
       "Alexandro Flores",
       "Anthony Greer",
@@ -245,6 +245,7 @@
       "Garrett Gill",
       "Jason Lilly",
       "Jorge Tafoya",
+      "Raymond Reid",
       "New Hire",
       "DM or Director Submission"
     ],
