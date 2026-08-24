@@ -16456,10 +16456,11 @@
     "pendingUntil": "2026-08-18"
   },
   "1002300599682051": {
-    "status": "Can Not Close",
-    "ts": "2026-08-24T18:32:58.875Z",
+    "status": "Pending Install",
+    "ts": "2026-08-24T18:33:08.293Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Burbank"
+    "store": "Burbank",
+    "pendingUntil": "2026-08-28"
   },
   "1002300595782053": {
     "status": "Pending Install",
