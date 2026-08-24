@@ -11044,11 +11044,10 @@
     "store": "Bourbonnais"
   },
   "2439666141": {
-    "status": "Pending Install",
-    "ts": "2026-08-08T22:30:23.213Z",
+    "status": "Closed",
+    "ts": "2026-08-24T19:19:10.596Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-15"
+    "store": "Evanston"
   },
   "2439731588": {
     "status": "Can Not Close",
