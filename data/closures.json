@@ -9835,11 +9835,10 @@
     "store": "Bourbonnais"
   },
   "2426058056": {
-    "status": "Pending Install",
-    "ts": "2026-08-11T22:50:55.689Z",
+    "status": "Closed",
+    "ts": "2026-08-24T19:09:46.748Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-18"
+    "store": "Evanston"
   },
   "2426285196": {
     "status": "Closed",
