@@ -14469,11 +14469,10 @@
     "pendingUntil": "2026-07-15"
   },
   "1002290092852055": {
-    "status": "Pending Install",
-    "ts": "2026-07-29T00:10:25.298Z",
-    "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-07-29"
+    "status": "Closed",
+    "ts": "2026-08-24T18:41:04.261Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank"
   },
   "1002290288352050": {
     "status": "Pending Install",
