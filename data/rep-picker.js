@@ -432,8 +432,11 @@
     now.setUTCSeconds(0, 0);
     now.setUTCMinutes(Math.floor(now.getUTCMinutes() / 5) * 5);
     var bust = '?d=' + now.toISOString().slice(0, 16).replace(/[-T:]/g, '');
-    jget(DIR_RAW + bust)
-      .catch(function () { return jget(DIR_PAGES + bust); })
+    /* Pages first: it is same-origin with the quote sheets and updates the
+       instant a commit builds, whereas the raw.githubusercontent CDN can serve
+       a stale copy for several minutes after an Admin Panel save. */
+    jget(DIR_PAGES + bust)
+      .catch(function () { return jget(DIR_RAW + bust); })
       .then(function (d) {
         buildMaps(d);
         storeList = (d && Array.isArray(d.stores) && d.stores.length)
