@@ -426,7 +426,12 @@
     refreshRep();
 
     /* then the live directory */
-    var bust = '?d=' + new Date().toISOString().slice(0, 13).replace(/[-T:]/g, '');
+    /* 5-minute cache bucket: fresh enough that an Admin Panel edit reaches reps
+       quickly, coarse enough that the CDN still does its job. */
+    var now = new Date();
+    now.setUTCSeconds(0, 0);
+    now.setUTCMinutes(Math.floor(now.getUTCMinutes() / 5) * 5);
+    var bust = '?d=' + now.toISOString().slice(0, 16).replace(/[-T:]/g, '');
     jget(DIR_RAW + bust)
       .catch(function () { return jget(DIR_PAGES + bust); })
       .then(function (d) {
