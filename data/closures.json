@@ -12146,11 +12146,10 @@
     "store": "Oak Ridge"
   },
   "2448822828": {
-    "status": "Pending Install",
-    "ts": "2026-08-14T21:30:09.426Z",
+    "status": "Closed",
+    "ts": "2026-08-24T23:34:12.626Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-21"
+    "store": "Evanston"
   },
   "2449058844": {
     "status": "Can Not Close",
