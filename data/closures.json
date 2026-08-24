@@ -10467,11 +10467,10 @@
     "store": "Greeneville"
   },
   "2436170755": {
-    "status": "Pending Install",
-    "ts": "2026-08-07T17:53:01.826Z",
-    "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-08-11"
+    "status": "Closed",
+    "ts": "2026-08-24T18:55:49.403Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank"
   },
   "2436173277": {
     "status": "Closed",
