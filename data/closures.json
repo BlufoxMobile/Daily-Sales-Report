@@ -17203,5 +17203,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart",
     "pendingUntil": "2026-08-26"
+  },
+  "1002303453502050": {
+    "status": "Pending Install",
+    "ts": "2026-08-24T18:31:55.118Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-08-28"
   }
 }
