@@ -244,6 +244,30 @@
     "Uptown Xfinity Store": "Jordan Berry",
     "Valparaiso Xfinity Store": "Denzel Brent"
   },
+  "storeDMNames": {
+    "Bourbonnais Xfinity Store": "Juan Carrillo",
+    "Cicero Xfinity Store": "Imaad Dhorajiwala",
+    "Elkhart Xfinity Store": "Jacob Cabrales",
+    "Evanston Xfinity Store": "Imaad Dhorajiwala",
+    "Frankfort Xfinity Store": "Juan Carrillo",
+    "Greeneville Xfinity Store": "Matthew Brooks",
+    "Hammond Xfinity Store": "Jacob Cabrales",
+    "Johnson City Xfinity Store": "Matthew Brooks",
+    "Kildeer Xfinity Store": "Imaad Dhorajiwala",
+    "Michigan City Xfinity Store": "Jacob Cabrales",
+    "Oak Ridge Xfinity Store": "Matthew Brooks",
+    "Schererville Xfinity Store": "Jacob Cabrales",
+    "South Bend Xfinity Store": "Jacob Cabrales",
+    "South Knoxville Xfinity Store": "Matthew Brooks",
+    "Tinley Park Xfinity Store": "Juan Carrillo",
+    "Uptown Xfinity Store": "Imaad Dhorajiwala",
+    "Valparaiso Xfinity Store": "Jacob Cabrales",
+    "Evergreen Park Xfinity Store": "Juan Carrillo",
+    "South Skokie Xfinity Store": "Imaad Dhorajiwala",
+    "Machesney Park Xfinity Store": "Imaad Dhorajiwala",
+    "Oak Lawn Xfinity Store": "Juan Carrillo",
+    "North Knoxville Xfinity Store": "Matthew Brooks"
+  },
   "storeEmployees": {
     "Oak Lawn Xfinity Store": [
       {
