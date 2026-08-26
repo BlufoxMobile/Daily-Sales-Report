@@ -12427,11 +12427,23 @@
     "store": "Elkhart",
     "pendingUntil": "2026-08-21"
   },
+  "2455484896": {
+    "status": "Closed",
+    "ts": "2026-08-26T22:41:14.123Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2455501271": {
     "status": "Closed",
     "ts": "2026-08-18T14:45:51.197Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2455560358": {
+    "status": "Closed",
+    "ts": "2026-08-26T22:41:13.075Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2455609427": {
     "status": "Pending Install",
@@ -12439,6 +12451,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart",
     "pendingUntil": "2026-08-21"
+  },
+  "2455989318": {
+    "status": "Closed",
+    "ts": "2026-08-26T22:41:11.802Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2456035785": {
     "status": "Closed",
@@ -12452,9 +12470,21 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2456267281": {
+    "status": "Closed",
+    "ts": "2026-08-26T22:41:10.554Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2456281185": {
     "status": "Closed",
     "ts": "2026-08-26T22:41:08.962Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "2456741395": {
+    "status": "Closed",
+    "ts": "2026-08-26T22:47:18.202Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
