@@ -17415,5 +17415,12 @@
     "ts": "2026-08-24T18:47:35.612Z",
     "dm": "Tanzim Chowdhury",
     "store": "Burbank"
+  },
+  "1002302118892054": {
+    "status": "Pending Install",
+    "ts": "2026-08-27T14:16:42.460Z",
+    "dm": "Jacob Cabrales",
+    "store": "South Bend",
+    "pendingUntil": "2026-08-31"
   }
 }
