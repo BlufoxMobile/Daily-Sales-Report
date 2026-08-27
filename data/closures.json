@@ -12408,6 +12408,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2452189350": {
+    "status": "Pending Install",
+    "ts": "2026-08-27T20:29:20.488Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park",
+    "pendingUntil": "2026-09-03"
+  },
   "2452990767": {
     "status": "Closed",
     "ts": "2026-08-17T16:05:08.430Z",
