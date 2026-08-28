@@ -10403,8 +10403,8 @@
     "store": "Valparaiso"
   },
   "2435661918": {
-    "status": "Closed",
-    "ts": "2026-08-12T18:28:10.940Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-28T20:22:56.741Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
@@ -10826,6 +10826,12 @@
     "ts": "2026-08-11T20:39:15.920Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2437969120": {
+    "status": "Can Not Close",
+    "ts": "2026-08-28T20:25:28.966Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2437970136": {
     "status": "Closed",
