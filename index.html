@@ -345,6 +345,277 @@ body {
   display:none; font-family:inherit; font-size:17px; font-weight:900; color:#fff;
   background:var(--day-ink); border:none; border-radius:999px; padding:12px 34px; cursor:pointer;
 }
+
+/* ---------- YESTERDAY'S CONVERSION — big-number scoreboard ---------- */
+/* ============================================================
+   YESTERDAY / WALK-INS → SALES  (big-number scoreboard)
+   All classes prefixed .conv- so nothing collides with the
+   existing dashboard styles. Sizing is driven by custom
+   properties set inline on .conv-panel by renderYesterday().
+   ============================================================ */
+
+/* Panel shell — slightly tighter top padding buys height for numerals. */
+.conv-panel { padding:16px 26px 18px; }
+.conv-panel .panel-sub { margin-bottom:12px; }
+
+/* Column-label strip (one small uppercase header row). */
+.conv-head {
+  display:grid;
+  grid-template-columns: var(--ccols);
+  gap: var(--cgap-x, 20px);
+  align-items:end;
+  padding:0 var(--cpad, 26px) 9px;
+  margin-bottom:7px;
+  border-bottom:2px solid var(--day-soft);
+  flex-shrink:0;
+}
+.conv-lbl {
+  font-size: var(--clbl, 16px);
+  font-weight:900;
+  color: var(--muted);
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.conv-lbl.conv-lbl-name { text-align:left; }
+.conv-lbl.conv-lbl-hero { color: var(--day-ink); }
+
+/* Body: bands share the remaining height evenly. */
+.conv-body {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap: var(--cgap-y, 10px);
+}
+
+/* One store band. */
+.conv-row {
+  display:grid;
+  grid-template-columns: var(--ccols);
+  gap: var(--cgap-x, 20px);
+  align-items:center;
+  flex:1 1 0;
+  min-height:0;
+  max-height: var(--cmaxh, 210px);
+  padding:0 var(--cpad, 26px);
+  border-radius:20px;
+  background:#FBF9F5;
+}
+.conv-row:nth-child(even) { background: var(--day-tint); }
+.conv-row.conv-total {
+  background: var(--day-soft);
+  outline:2px solid var(--day-line);
+  outline-offset:-2px;
+}
+
+/* Store name. */
+.conv-name {
+  font-size: var(--cname, 44px);
+  font-weight:900;
+  line-height:1;
+  letter-spacing:-.5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.conv-total .conv-name { color: var(--day-ink); letter-spacing:0; }
+
+/* Metric numerals. */
+.conv-val {
+  font-size: var(--cnum, 84px);
+  font-weight:900;
+  line-height:.82;
+  letter-spacing:-.035em;
+  text-align:center;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space:nowrap;
+}
+.conv-val.conv-soft { color: var(--muted); }
+
+/* Hero metric: conversion %. */
+.conv-hero {
+  font-size: var(--chero, 105px);
+  line-height:.82;
+  color: var(--day-ink);
+}
+.conv-hero .conv-pct {
+  font-size:.46em;
+  font-weight:900;
+  letter-spacing:0;
+  margin-left:.04em;
+  vertical-align:.22em;
+}
+.conv-dash { font-size:.5em; letter-spacing:0; }
+.conv-good { color: var(--good-ink); }
+.conv-warn { color: var(--warn-ink); }
+.conv-low  { color: var(--low-ink); }
+.conv-none { color: var(--muted); }
+
+.conv-empty {
+  margin:auto;
+  font-size:24px;
+  font-weight:800;
+  color: var(--muted);
+}
+
+/* ---------- DAYS SINCE THE LAST BAD SURVEY — tiered ranker ---------- */
+/* ============================================================
+   DAYS SINCE THE LAST BAD SURVEY — contest ranker
+   Every class here is prefixed `bsv-` so nothing can collide
+   with the existing dashboard styles. Reuses .panel /
+   .panel-title / .panel-sub / .stagger / .tscroll /
+   .streak-foot untouched.
+   ============================================================ */
+
+/* Tighter panel chrome so the ranker rows get the vertical budget. */
+.bsv-panel { padding:14px 22px 16px; }
+
+/* Sub-line + tier legend share one row. */
+.bsv-head { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:9px; }
+.bsv-head .panel-sub { margin-bottom:0; }
+.bsv-legend { display:flex; gap:7px; flex-shrink:0; }
+.bsv-lg {
+  display:inline-flex; align-items:center; gap:6px;
+  border-radius:999px; padding:3px 11px;
+  font-size:14px; font-weight:900; letter-spacing:.5px; white-space:nowrap;
+}
+.bsv-lg i { width:11px; height:11px; border-radius:50%; display:inline-block; font-style:normal; }
+.bsv-lg-red   { background:var(--low-bg);  color:var(--low-ink);  }
+.bsv-lg-red i   { background:var(--low-ink); }
+.bsv-lg-amber { background:#FFF8CE; color:#6E4A00; }
+.bsv-lg-amber i { background:#D8A400; }
+.bsv-lg-green { background:var(--good-bg); color:var(--good-ink); }
+.bsv-lg-green i { background:var(--good-ink); }
+.bsv-lg-gold  { background:linear-gradient(100deg,#FFE9A0,#FFC93A); color:#523300; box-shadow:inset 0 0 0 2px #D28A00; }
+.bsv-lg-gold i  { background:linear-gradient(150deg,#FFD54D,#C07E00); }
+
+/* ---------- the ranker list ---------- */
+.bsv-list { display:flex; flex-direction:column; justify-content:center; }
+
+.bsv-row {
+  display:grid; align-items:center; column-gap:38px;
+  position:relative; overflow:hidden;
+  border-radius:20px;
+  background:var(--card);
+  box-shadow:inset 0 0 0 2px var(--track);
+}
+/* left accent bar — the color read from across the room */
+.bsv-row::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:12px;
+  background:var(--track);
+}
+
+/* rank badge */
+.bsv-rank {
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; line-height:1;
+  color:var(--muted);
+}
+
+/* store name */
+.bsv-name {
+  font-weight:900; line-height:1; letter-spacing:-.5px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  color:var(--text);
+  display:flex; align-items:center; gap:.35em; min-width:0;
+}
+.bsv-name .bsv-nametext { overflow:hidden; text-overflow:ellipsis; }
+
+/* the number */
+.bsv-numwrap { display:flex; align-items:baseline; justify-content:flex-end; gap:.5em; min-width:0; }
+.bsv-num {
+  font-weight:900; line-height:.72; letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums lining-nums;
+  font-feature-settings:'tnum' 1;
+  color:var(--text); white-space:nowrap;
+}
+.bsv-unit {
+  font-weight:900; letter-spacing:1.5px; color:var(--muted);
+  text-transform:uppercase; white-space:nowrap; opacity:.85;
+}
+
+/* tiny gray date, far right */
+.bsv-date {
+  text-align:right; font-weight:800; color:var(--muted);
+  line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.bsv-date b { font-weight:900; color:var(--muted); }
+.bsv-date .bsv-datelabel {
+  display:block; font-weight:900; letter-spacing:1.2px;
+  text-transform:uppercase; opacity:.72;
+}
+
+/* small "Not ranked yet" / "Awaiting survey data" copy */
+.bsv-flag {
+  font-weight:900; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--muted); white-space:nowrap;
+}
+.bsv-note { font-weight:800; font-style:italic; color:var(--muted); white-space:nowrap; }
+
+/* ---------- TIER: 0–5 DAYS · RED ---------- */
+.bsv-t-red { background:var(--low-bg); box-shadow:inset 0 0 0 2px #F3A9A9; }
+.bsv-t-red::before { background:var(--low-ink); }
+.bsv-t-red .bsv-name, .bsv-t-red .bsv-num, .bsv-t-red .bsv-rank { color:var(--low-ink); }
+.bsv-t-red .bsv-unit { color:#B24141; }
+
+/* ---------- TIER: 6–10 DAYS · AMBER ---------- */
+.bsv-t-amber { background:#FFFAD4; box-shadow:inset 0 0 0 2px #E9CE55; }
+.bsv-t-amber::before { background:#D8A400; }
+.bsv-t-amber .bsv-name, .bsv-t-amber .bsv-num, .bsv-t-amber .bsv-rank { color:#6E4A00; }
+.bsv-t-amber .bsv-unit { color:#8A6100; }
+
+/* ---------- TIER: 11–19 DAYS · GREEN ---------- */
+.bsv-t-green { background:var(--good-bg); box-shadow:inset 0 0 0 2px #7BD98C; }
+.bsv-t-green::before { background:var(--good-ink); }
+.bsv-t-green .bsv-name, .bsv-t-green .bsv-num, .bsv-t-green .bsv-rank { color:var(--good-ink); }
+.bsv-t-green .bsv-unit { color:#3E9A50; }
+
+/* ---------- TIER: 20+ DAYS · GOLD (the big deal) ---------- */
+.bsv-t-gold {
+  background:linear-gradient(102deg,#FFF1BE 0%,#FFDF77 30%,#FFC93A 58%,#FFE79B 100%);
+  box-shadow:inset 0 0 0 3px #D28A00, 0 6px 26px rgba(206,140,0,.40);
+}
+.bsv-t-gold::before { background:linear-gradient(180deg,#FFCE3D,#B87700); width:15px; }
+.bsv-t-gold .bsv-name, .bsv-t-gold .bsv-num { color:#523300; }
+.bsv-t-gold .bsv-rank { color:#8A5C00; }
+.bsv-t-gold .bsv-unit { color:#8A5C00; opacity:1; }
+.bsv-t-gold .bsv-date { color:#8A6516; }
+/* slow shine sweep — one pass, then a long rest, so a TV can loop it all day */
+.bsv-t-gold::after {
+  content:''; position:absolute; inset:-40% -20%;
+  background:linear-gradient(104deg, rgba(255,255,255,0) 38%, rgba(255,255,255,.72) 50%, rgba(255,255,255,0) 62%);
+  transform:translateX(-130%);
+  animation: bsvShine 9s cubic-bezier(.45,0,.25,1) infinite;
+  pointer-events:none;
+}
+@keyframes bsvShine {
+  0%   { transform:translateX(-130%); }
+  26%  { transform:translateX(130%); }
+  100% { transform:translateX(130%); }
+}
+.bsv-crown {
+  display:inline-block; line-height:1;
+  filter:drop-shadow(0 2px 3px rgba(150,105,0,.4));
+  animation: bsvCrown 4.5s ease-in-out infinite;
+}
+@keyframes bsvCrown {
+  0%,100% { transform:translateY(0) rotate(-4deg); }
+  50%     { transform:translateY(-8%) rotate(4deg); }
+}
+
+/* ---------- NEUTRAL: window-limited (real count, never ranked) ---------- */
+.bsv-t-neutral { background:var(--day-tint); box-shadow:inset 0 0 0 2px var(--day-line); }
+.bsv-t-neutral::before { background:var(--day-line); }
+.bsv-t-neutral .bsv-name, .bsv-t-neutral .bsv-num { color:var(--text); }
+
+/* ---------- NO DATA ---------- */
+.bsv-t-none { background:var(--track); box-shadow:inset 0 0 0 2px #E7E1D6; }
+.bsv-t-none::before { background:#DCD5C8; }
+.bsv-t-none .bsv-name { color:var(--muted); }
 </style>
 </head>
 <body>
@@ -1004,10 +1275,10 @@ function buildSlides() {
       for (let pg = 0; pg < totalPages; pg++) {
         const slice = sorted.slice(pg * DETRACTOR_ROWS_PER_PAGE, (pg + 1) * DETRACTOR_ROWS_PER_PAGE);
         state.slides.push({
-          type: 'detractor', title: 'DAYS SINCE LAST DETRACTOR',
+          type: 'detractor', title: 'DAYS SINCE THE LAST BAD SURVEY',
           district: dist, rows: slice, allRows: sorted, meta: meta,
           page: pg, totalPages: totalPages,
-          label: totalPages > 1 ? `Detractor — ${dist.label} (Pg ${pg + 1}/${totalPages})` : `Detractor — ${dist.label}`,
+          label: totalPages > 1 ? `Bad Survey — ${dist.label} (Pg ${pg + 1}/${totalPages})` : `Bad Survey — ${dist.label}`,
         });
       }
     }
@@ -1082,7 +1353,7 @@ const SLIDE_SUBTITLES = {
   'stores': "How each store is tracking toward this month's profit goal",
   'store-detail': 'A closer look at the store and its team',
   'yesterday': 'Who walked in yesterday — and how many became customers',
-  'detractor': 'A detractor is any survey scored 8 or below — the goal is 30 clean days',
+  'detractor': 'A bad survey is any survey scored 8 or below — the goal is 30 clean days in a row',
   'dm-rank': 'How all district managers stack up across the company',
   'region-rank': 'How the regions stack up — ours are highlighted',
   'promos': "Today's deals to lead with",
@@ -1135,7 +1406,7 @@ function render() {
     slideTitle = 'YESTERDAY — ' + slide.district.label.toUpperCase();
     slideContent = renderYesterday(slide.district, slide.stores);
   } else if (slide.type === 'detractor') {
-    slideTitle = 'DAYS SINCE LAST DETRACTOR — ' + slide.district.label.toUpperCase();
+    slideTitle = 'DAYS SINCE THE LAST BAD SURVEY — ' + slide.district.label.toUpperCase();
     slideContent = renderDetractor(slide.district, slide.rows, slide);
   } else if (slide.type === 'dm-rank') {
     slideTitle = 'DISTRICT MANAGER RANKINGS';
@@ -1330,47 +1601,104 @@ function renderYesterday(district, distStores) {
   if (!y || (!y.loaded && !y.error)) {
     return '<div class="panel"><div class="panel-sub" style="font-size:24px;margin:auto;">Loading yesterday\'s data…</div></div>';
   }
+
+  // ---- data (same sources, same maths) ------------------------------------
   const rows = distStores.map(s => {
     const z = y.rows[s.name] || {};
     const traffic = z.traffic || 0;
     const mobile  = z.mobile  || 0;
     const mcr     = (z.mcr != null) ? z.mcr : null;
     const tcharts = (y.tsheets && y.tsheets[s.name]) || 0;
-    const tpct    = traffic > 0 ? (tcharts / traffic * 100).toFixed(1) + '%' : '0%';
-    return { name: s.name, traffic, mobile, mcr, tcharts, tpct };
+    return { name: s.name, traffic, mobile, mcr, tcharts };
   });
-  const maxTraffic = Math.max(1, ...rows.map(r => r.traffic));
-  const tot = rows.reduce((a, r) => ({ traffic: a.traffic + r.traffic, mobile: a.mobile + r.mobile, tcharts: a.tcharts + r.tcharts }), { traffic:0, mobile:0, tcharts:0 });
-  const totMcr = tot.traffic > 0 ? (tot.mobile / tot.traffic * 100).toFixed(1) + '%' : '—';
-  const totTpct = tot.traffic > 0 ? (tot.tcharts / tot.traffic * 100).toFixed(1) + '%' : '—';
-  const cols = '1.1fr 1.5fr 170px 170px 150px 170px';
-  const compact = rows.length > 9;
-  const rowsHtml = rows.map((r, i) => `
-    <div class="trow stagger" style="grid-template-columns:${cols};--i:${i};${compact ? 'font-size:18px;padding:8px 16px;' : ''}">
-      <span class="nm">${r.name}</span>
-      <span style="display:flex;align-items:center;gap:10px;"><span class="money" style="min-width:46px;">${r.traffic}</span><span class="mini-track"><span class="mini-fill" style="--w:${(r.traffic / maxTraffic * 100).toFixed(0)}%"></span></span></span>
-      <span class="money">${r.mobile}</span>
-      <span class="rk">${r.mcr != null ? r.mcr.toFixed(1) + '%' : '—'}</span>
-      <span class="money">${r.tcharts}</span>
-      <span class="rk">${r.tpct}</span>
-    </div>`).join('');
+  const tot = rows.reduce((a, r) => ({
+    traffic: a.traffic + r.traffic,
+    mobile:  a.mobile  + r.mobile,
+    tcharts: a.tcharts + r.tcharts
+  }), { traffic: 0, mobile: 0, tcharts: 0 });
+  const totMcr = tot.traffic > 0 ? (tot.mobile / tot.traffic * 100) : null;
+
+  const fmtN = v => Number(v || 0).toLocaleString('en-US');
+  const fmtR = v => (v == null) ? '—' : v.toFixed(1);
+  const all = rows.concat([{ traffic: tot.traffic, mobile: tot.mobile, mcr: totMcr, tcharts: tot.tcharts }]);
+
+  // ---- size ladder ---------------------------------------------------------
+  // Every band (one per store + the district total) splits the ~670px panel
+  // body, so the numerals grow for a 4-store district and step down cleanly
+  // all the way to 12 rows without ever overflowing.
+  const bands = Math.max(1, rows.length) + 1;
+  const AVAIL = 668;                                   // usable body height
+  const gapY  = bands <= 6 ? 12 : (bands <= 9 ? 9 : 7);
+  const bandH = Math.max(26, (AVAIL - gapY * (bands - 1)) / bands);
+
+  // Rough advance widths for Nunito 900 (em units) — used to reserve exactly
+  // as much room as the numbers need, leaving the rest to the store name.
+  const strW = (s, size) => {
+    let w = 0;
+    for (let i = 0; i < s.length; i++) { const c = s.charAt(i); w += (c === '.' || c === ',') ? 0.30 : 0.60; }
+    return w * size;
+  };
+  const lblW = (s, size) => s.length * (0.64 * size + 1.7) + 6;
+  const maxW = (arr, size) => arr.reduce((m, s) => Math.max(m, strW(s, size)), 0);
+
+  const MINNAME = 300;                                 // never squeeze the name away
+  let hero, num, nameSz, lblSz, padX, gapX, wT, wM, wC, wK, usable;
+  hero = Math.round(Math.max(30, Math.min(130, bandH * 1.05)));
+  for (;;) {
+    num    = Math.round(hero * 0.80);
+    nameSz = Math.round(Math.max(20, Math.min(50, hero * 0.44)));
+    lblSz  = Math.round(Math.max(13, Math.min(18, hero * 0.16)));
+    padX   = Math.round(Math.max(14, Math.min(32, hero * 0.24)));
+    gapX   = Math.round(Math.max(10, Math.min(28, hero * 0.18)));
+    const pad = 14;
+    usable = 1788 - 2 * padX;                          // panel inner width
+    const fl  = usable * 0.115;                        // keeps the number block
+    const flC = usable * 0.150;                        // anchored at any row count
+    wT = Math.round(Math.max(maxW(all.map(r => fmtN(r.traffic)), num), lblW('WALK-INS', lblSz) , fl)) + pad;
+    wM = Math.round(Math.max(maxW(all.map(r => fmtN(r.mobile)),  num), lblW('MOBILE SALES', lblSz), fl)) + pad;
+    wK = Math.round(Math.max(maxW(all.map(r => fmtN(r.tcharts)), num), lblW('T-CHARTS', lblSz) , fl)) + pad;
+    wC = Math.round(Math.max(maxW(all.map(r => fmtR(r.mcr)), hero) + 0.42 * hero, lblW('CONVERSION', lblSz), flC)) + pad;
+    if (hero <= 30 || (wT + wM + wC + wK + 4 * gapX + MINNAME) <= usable) break;
+    hero -= 3;
+  }
+  const cols = 'minmax(0,1fr) ' + wT + 'px ' + wM + 'px ' + wC + 'px ' + wK + 'px';
+  const vars = '--ccols:' + cols + ';--cgap-x:' + gapX + 'px;--cgap-y:' + gapY + 'px;--cpad:' + padX +
+               'px;--cnum:' + num + 'px;--chero:' + hero + 'px;--cname:' + nameSz + 'px;--clbl:' + lblSz +
+               'px;--cmaxh:' + Math.round(hero * 1.6) + 'px;';
+
+  // ---- rows ----------------------------------------------------------------
+  const rateClass = v => (v == null) ? 'conv-none' : (v >= 10 ? 'conv-good' : (v >= 6 ? 'conv-warn' : 'conv-low'));
+  const rateHtml  = v => (v == null) ? '<span class="conv-dash">—</span>' : fmtR(v) + '<span class="conv-pct">%</span>';
+
+  const band = (r, i, isTotal) => `
+      <div class="conv-row stagger${isTotal ? ' conv-total' : ''}" style="--i:${i}">
+        <div class="conv-name">${escHtml(r.name)}</div>
+        <div class="conv-val${r.traffic ? '' : ' conv-soft'}">${fmtN(r.traffic)}</div>
+        <div class="conv-val${r.mobile  ? '' : ' conv-soft'}">${fmtN(r.mobile)}</div>
+        <div class="conv-val conv-hero ${rateClass(r.mcr)}">${rateHtml(r.mcr)}</div>
+        <div class="conv-val${r.tcharts ? '' : ' conv-soft'}">${fmtN(r.tcharts)}</div>
+      </div>`;
+
+  const rowsHtml = rows.map((r, i) => band(r, i, false)).join('');
+  const totalHtml = band({ name: 'DISTRICT TOTAL', traffic: tot.traffic, mobile: tot.mobile, mcr: totMcr, tcharts: tot.tcharts }, rows.length, true);
+
+  const sub = tot.traffic > 0
+    ? `${fmtN(tot.traffic)} people walked in yesterday — ${fmtN(tot.mobile)} of them walked out as mobile customers.`
+    : 'No walk-in traffic recorded yesterday.';
+
   return `
-    <div class="panel">
+    <div class="panel conv-panel" style="${vars}">
       <div class="panel-title">🚶 WALK-INS → SALES${y.date ? ' · ' + y.date : ''}</div>
-      <div class="panel-sub">Walk-in traffic, mobile sales made, close rate, and T-Charts completed</div>
-      <div class="thead" style="grid-template-columns:${cols}">
-        <span>Store</span><span>Walk-ins</span><span>Mobile Sales</span><span>Close Rate</span><span>T-Charts</span><span>T-Chart %</span>
+      <div class="panel-sub">${sub}</div>
+      <div class="conv-head">
+        <div class="conv-lbl conv-lbl-name">Store</div>
+        <div class="conv-lbl">Walk-ins</div>
+        <div class="conv-lbl">Mobile Sales</div>
+        <div class="conv-lbl conv-lbl-hero">Conversion</div>
+        <div class="conv-lbl">T-Charts</div>
       </div>
-      <div class="tscroll">
-        ${rowsHtml}
-        <div class="trow total" style="grid-template-columns:${cols};${compact ? 'font-size:18px;padding:8px 16px;' : ''}">
-          <span class="nm">DISTRICT TOTAL</span>
-          <span class="money">${tot.traffic}</span>
-          <span class="money">${tot.mobile}</span>
-          <span class="rk">${totMcr}</span>
-          <span class="money">${tot.tcharts}</span>
-          <span class="rk">${totTpct}</span>
-        </div>
+      <div class="tscroll conv-body">
+        ${rows.length ? rowsHtml + totalHtml : '<div class="conv-empty">No stores in this district.</div>'}
       </div>
     </div>`;
 }
@@ -1398,12 +1726,6 @@ function renderDetractor(district, rows, slide) {
   const bestTxt = (meta.bestStore || hasRanked) ? `${escHtml(bestStore)} · ${bestDays} days` : '—';
   const asOf = fmtStreakDate(feed.asOf);
   const pageInfo = slide.totalPages > 1 ? ` · Page ${slide.page + 1} of ${slide.totalPages}` : '';
-  const cols = '96px 1.45fr 190px 1.5fr 300px 210px';
-  // Rows breathe to fill the panel — a 5-store district gets tall rows; a
-  // hypothetical full 12-row page falls back to the dense variant.
-  const dense = rows.length > 8;
-  const pad = Math.max(10, Math.min(26, Math.round((580 / Math.max(1, rows.length) - 63) / 2)));
-  const rowStyle = dense ? '' : `padding:${pad}px 18px;`;
 
   // Podium: ranks are shared on ties, so a medal is only awarded when the whole
   // tied group still fits inside the top three ranked rows. A three-way tie for
@@ -1420,70 +1742,107 @@ function renderDetractor(district, rows, slide) {
     return '#' + rank;
   };
 
+  // ---- size ladder -------------------------------------------------------
+  // The list box is ~636px tall once the title, sub+legend line and the
+  // footer stat strip are taken out of the 812px slide area. Everything on a
+  // row is derived from the height one row is allowed to occupy, so 1 row and
+  // 12 rows both fill the panel without ever overflowing .tscroll.
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const n = Math.max(1, rows.length);
+  const AVAIL = 628;
+  const gap = n <= 5 ? 12 : n <= 8 ? 9 : 6;
+  // capped so a 1-3 store district gets a proper hero row instead of one
+  // absurd 600px slab; the list centres what is left of the box.
+  const rowH = Math.min(172, Math.floor((AVAIL - gap * (n - 1)) / n));
+  const nameSize = Math.round(clamp(rowH * 0.54, 22, 64));
+  const numSize = Math.round(clamp(rowH * 1.18, 40, 150));
+  const badgeW = Math.round(clamp(rowH * 0.70, 44, 108));
+  const rankSize = Math.round(clamp(badgeW * 0.42, 17, 42));
+  const numW = Math.round(clamp(numSize * 2.25, 165, 430));
+  const dateW = Math.round(clamp(nameSize * 3.0, 124, 200));
+  const unitSize = Math.round(clamp(numSize * 0.155, 11, 21));
+  const dateSize = Math.round(clamp(nameSize * 0.36, 13, 22));
+  const dateLabelSize = Math.round(clamp(dateSize * 0.72, 10, 15));
+  const noteSize = Math.round(clamp(nameSize * 0.46, 14, 26));
+  const flagSize = Math.round(clamp(nameSize * 0.30, 11, 18));
+  const crownSize = Math.round(clamp(nameSize * 0.82, 20, 54));
+  const padX = Math.round(clamp(rowH * 0.22, 16, 30));
+  const cols = `${badgeW}px minmax(0,1fr) ${numW}px ${dateW}px`;
+  const rowStyle = `grid-template-columns:${cols};height:${rowH}px;padding:0 ${padX}px 0 ${padX + 6}px;`;
+
+  // ---- tiers -------------------------------------------------------------
+  // 0-5 red · 6-10 amber · 11-19 green · 20+ gold. A store that has hit the
+  // company goal is never shown as anything less than gold.
+  const tierFor = (days, atGoal) => {
+    if (atGoal || days >= 20) return 'gold';
+    if (days >= 11) return 'green';
+    if (days >= 6) return 'amber';
+    return 'red';
+  };
+
   const rowsHtml = rows.map((r, i) => {
     const name = escHtml(r.store || r.storeFull || '');
+    // No survey data at all: muted, unranked, no tier color.
     if (r.status === 'no-data' || r.days == null) {
       return `
-      <div class="trow stagger streak${dense ? ' streak-dense' : ''} streak-nodata" style="grid-template-columns:${cols};--i:${i};${rowStyle}">
-        <span class="rk">—</span>
-        <span class="nm">${name}</span>
-        <span class="streak-note" style="grid-column:3 / -1;">Awaiting survey data</span>
+      <div class="bsv-row bsv-t-none stagger" style="${rowStyle};--i:${i};">
+        <span class="bsv-rank" style="font-size:${rankSize}px;">—</span>
+        <span class="bsv-name" style="font-size:${nameSize}px;"><span class="bsv-nametext">${name}</span></span>
+        <span class="bsv-note" style="grid-column:3 / -1;text-align:right;font-size:${noteSize}px;">Awaiting survey data</span>
       </div>`;
     }
     const days = Number(r.days) || 0;
-    // windowLimited = has surveys but no detractor on record yet, so the count
-    // is bounded by history. Never ranked, never a trophy.
+    // windowLimited = has surveys but no bad survey on record yet, so the count
+    // is bounded by history. Never ranked, never a medal, never a tier color.
     const limited = !!r.windowLimited;
-    // The trophy stays tied to goalMet alone. goalPending = past the goal, but
-    // the 1–2 day survey lag hasn't cleared yet, so it gets its own state.
-    // The days >= goal fallback keeps older feeds (no atGoal/goalPending) working.
     const goalMet = !limited && (r.goalMet === true ||
       (r.goalPending !== true && (r.capped === true || r.atGoal === true || days >= goal)));
     const goalPending = !limited && !goalMet && r.goalPending === true;
     const atGoal = goalMet || goalPending || r.atGoal === true || days >= goal;
-    const fresh = !limited && !goalMet && !goalPending && days <= 2;
-    const pct = atGoal ? 100 : Math.max(3, Math.min(100, days / goal * 100));
-    const cls = goalMet ? ' streak-goal' : goalPending ? ' streak-pending'
-      : limited ? ' streak-limited' : fresh ? ' streak-reset' : '';
+    const tier = limited ? 'neutral' : tierFor(days, atGoal);
+    const gold = tier === 'gold';
     const rank = r.rankDistrict != null ? r.rankDistrict : (slide.page * DETRACTOR_ROWS_PER_PAGE + i + 1);
-    const statTxt = goalMet ? '🏆 GOAL MET'
-      : goalPending ? `⏳ PAST ${goal} · CONFIRMING`
-      : limited ? (atGoal ? 'Unverified' : Math.max(0, goal - days) + ' to go')
-      : Math.max(0, goal - days) + ' to go';
     const lastDate = fmtStreakDate(r.lastDetractorDate);
     const since = fmtStreakDate(r.trackingSince);
-    const lastTxt = lastDate
-      ? `${lastDate} · scored <b style="color:var(--low-ink)">${escHtml(r.lastDetractorScore)}</b>`
-      : limited ? `None since ${since || 'tracking began'}` : 'None in the survey window';
-    const best = Number(r.personalBest) || 0;
-    const bestCell = (r.newRecord && !limited)
-      ? '<span class="streak-badge record">🔥 NEW RECORD</span>'
-      : `<span class="streak-sub">Best: <b style="color:var(--text)">${best}</b> day${best === 1 ? '' : 's'}</span>`;
+    // Far-right date: the last bad survey when there is one. A window-limited
+    // store has never had one on record, so it shows when tracking started.
+    // The column header rides on the first row only — repeating "Last bad
+    // survey" down every row was noise against a big-name/big-number layout.
+    const dateLabel = (limited && since) ? 'Clean since' : (i === 0 ? 'Last bad survey' : '');
+    const dateTxt = lastDate ? escHtml(lastDate)
+      : (limited && since) ? escHtml(since)
+      : 'None yet';
     return `
-      <div class="trow stagger streak${dense ? ' streak-dense' : ''}${cls}" style="grid-template-columns:${cols};--i:${i};${rowStyle}">
-        <span class="rk">${limited ? '—' : rankBadge(rank)}</span>
-        <span class="nm">${name}</span>
-        <span>
-          <span class="streak-days">${days}<span class="unit">DAY${days === 1 ? '' : 'S'}</span></span>
-          ${limited ? '<span class="streak-flag">Not ranked yet</span>' : ''}
+      <div class="bsv-row bsv-t-${tier} stagger" style="${rowStyle};--i:${i};">
+        <span class="bsv-rank" style="font-size:${rankSize}px;">${limited ? '—' : rankBadge(rank)}</span>
+        <span class="bsv-name" style="font-size:${nameSize}px;">
+          <span class="bsv-nametext">${name}</span>
+          ${gold ? `<span class="bsv-crown" style="font-size:${crownSize}px;">👑</span>` : ''}
+          ${limited ? `<span class="bsv-flag" style="font-size:${flagSize}px;">Not ranked yet</span>` : ''}
         </span>
-        <span style="display:flex;align-items:center;gap:12px;">
-          <span class="mini-track"><span class="mini-fill" style="--w:${pct.toFixed(0)}%"></span></span>
-          <span class="streak-stat">${statTxt}</span>
+        <span class="bsv-numwrap">
+          <span class="bsv-num" style="font-size:${numSize}px;">${days}</span>
+          <span class="bsv-unit" style="font-size:${unitSize}px;">DAY${days === 1 ? '' : 'S'}</span>
         </span>
-        <span class="streak-sub" style="font-size:17px;">${lastTxt}</span>
-        <span>${bestCell}</span>
+        <span class="bsv-date" style="font-size:${dateSize}px;">
+          ${dateLabel ? `<span class="bsv-datelabel" style="font-size:${dateLabelSize}px;">${dateLabel}</span>` : ''}${dateTxt}
+        </span>
       </div>`;
   }).join('');
 
   return `
-    <div class="panel">
-      <div class="panel-title">🛡️ CLEAN DAYS — NO DETRACTORS${asOf ? ' · AS OF ' + asOf.toUpperCase() : ''}</div>
-      <div class="panel-sub">Days since this store's last survey scored 8 or below — every store is chasing ${goal} clean days in a row${pageInfo}</div>
-      <div class="thead" style="grid-template-columns:${cols}">
-        <span>Rank</span><span>Store</span><span>Clean Days</span><span>Progress to ${goal}</span><span>Last Detractor</span><span>Personal Best</span>
+    <div class="panel bsv-panel">
+      <div class="panel-title">🏆 CLEAN DAYS LEADERBOARD${asOf ? ' · AS OF ' + asOf.toUpperCase() : ''}</div>
+      <div class="bsv-head">
+        <div class="panel-sub">A bad survey is any survey scored 8 or below — every store is chasing ${goal} clean days in a row${pageInfo}</div>
+        <div class="bsv-legend">
+          <span class="bsv-lg bsv-lg-red"><i></i>0–5</span>
+          <span class="bsv-lg bsv-lg-amber"><i></i>6–10</span>
+          <span class="bsv-lg bsv-lg-green"><i></i>11–19</span>
+          <span class="bsv-lg bsv-lg-gold"><i></i>20+ 👑</span>
+        </div>
       </div>
-      <div class="tscroll">${rowsHtml}</div>
+      <div class="tscroll bsv-list" style="gap:${gap}px;">${rowsHtml}</div>
       <div class="streak-foot">
         <div class="sf"><div class="sfl">District Average</div><div class="sfv">${avgTxt}</div></div>
         <div class="sf"><div class="sfl">Longest Streak</div><div class="sfv">${bestTxt}</div></div>
