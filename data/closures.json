@@ -12501,6 +12501,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2456254181": {
+    "status": "Closed",
+    "ts": "2026-08-28T19:56:15.709Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2456255991": {
     "status": "Closed",
     "ts": "2026-08-26T22:41:07.651Z",
@@ -17598,5 +17604,12 @@
     "ts": "2026-08-28T15:56:54.066Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "1002302331502050": {
+    "status": "Pending Install",
+    "ts": "2026-08-28T19:53:50.045Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park",
+    "pendingUntil": "2026-09-04"
   }
 }
