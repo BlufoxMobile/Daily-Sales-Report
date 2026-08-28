@@ -12417,7 +12417,7 @@
   },
   "2452361046": {
     "status": "Closed",
-    "ts": "2026-08-28T14:47:05.948Z",
+    "ts": "2026-08-28T14:47:02.480Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
@@ -12627,11 +12627,11 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2465669769": {
+  "2465390794": {
     "status": "Closed",
-    "ts": "2026-08-28T14:48:25.798Z",
+    "ts": "2026-08-28T14:47:48.975Z",
     "dm": "Jacob Cabrales",
-    "store": "Michigan City"
+    "store": "Elkhart"
   },
   "2466330106": {
     "status": "Pending Install",
@@ -12646,6 +12646,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park",
     "pendingUntil": "2026-09-03"
+  },
+  "2467387533": {
+    "status": "Closed",
+    "ts": "2026-08-28T14:48:54.583Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2467473394": {
     "status": "Closed",
