@@ -9356,14 +9356,14 @@
     "store": "Uptown"
   },
   "2420591358": {
-    "status": "Closed",
-    "ts": "2026-08-12T17:31:15.926Z",
+    "status": "Cancelled Order",
+    "ts": "2026-08-28T20:11:52.294Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
   "2420619675": {
-    "status": "Closed",
-    "ts": "2026-08-12T17:31:13.902Z",
+    "status": "Cancelled Order",
+    "ts": "2026-08-28T20:11:53.758Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
