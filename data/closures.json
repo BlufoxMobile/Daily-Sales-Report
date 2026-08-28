@@ -12640,6 +12640,12 @@
     "store": "Michigan City",
     "pendingUntil": "2026-08-28"
   },
+  "2465390794": {
+    "status": "Closed",
+    "ts": "2026-08-28T15:55:07.401Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2465669769": {
     "status": "Closed",
     "ts": "2026-08-28T14:48:25.798Z",
@@ -12659,6 +12665,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park",
     "pendingUntil": "2026-09-03"
+  },
+  "2467387533": {
+    "status": "Closed",
+    "ts": "2026-08-28T15:55:06.322Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2467473394": {
     "status": "Closed",
@@ -17572,7 +17584,7 @@
   },
   "1002304439702053": {
     "status": "Closed",
-    "ts": "2026-08-28T15:53:54.649Z",
+    "ts": "2026-08-28T15:55:08.578Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   }
