@@ -17545,5 +17545,17 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-09-01"
+  },
+  "1002304750222053": {
+    "status": "Closed",
+    "ts": "2026-08-28T15:06:44.744Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
+  "1002304680362052": {
+    "status": "Closed",
+    "ts": "2026-08-28T15:06:46.217Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
