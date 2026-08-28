@@ -17471,11 +17471,10 @@
     "store": "Elkhart"
   },
   "1001367950042119": {
-    "status": "Pending Install",
-    "ts": "2026-08-18T15:11:15.935Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-28T15:58:15.715Z",
     "dm": "Jacob Cabrales",
-    "store": "Elkhart",
-    "pendingUntil": "2026-08-25"
+    "store": "Elkhart"
   },
   "1002301658252059": {
     "status": "Closed",
