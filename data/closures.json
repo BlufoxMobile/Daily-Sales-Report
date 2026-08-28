@@ -10409,8 +10409,8 @@
     "store": "Frankfort"
   },
   "2435661940": {
-    "status": "Closed",
-    "ts": "2026-08-12T18:28:14.507Z",
+    "status": "Can Not Close",
+    "ts": "2026-08-28T20:22:55.094Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
@@ -10816,11 +10816,10 @@
     "store": "Glenview"
   },
   "2437930064": {
-    "status": "Pending Install",
-    "ts": "2026-08-12T18:40:50.747Z",
+    "status": "Cancelled Order",
+    "ts": "2026-08-28T20:22:49.052Z",
     "dm": "Juan Carrillo",
-    "store": "Frankfort",
-    "pendingUntil": "2026-08-19"
+    "store": "Frankfort"
   },
   "2437930617": {
     "status": "Closed",
