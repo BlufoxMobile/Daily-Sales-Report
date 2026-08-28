@@ -12699,6 +12699,12 @@
     "store": "Tinley Park",
     "pendingUntil": "2026-09-03"
   },
+  "2466850191": {
+    "status": "Closed",
+    "ts": "2026-08-28T20:08:03.741Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2466851880": {
     "status": "Pending Install",
     "ts": "2026-08-27T20:33:02.869Z",
@@ -17677,6 +17683,13 @@
   "1002303762902058": {
     "status": "Pending Install",
     "ts": "2026-08-28T20:01:38.772Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park",
+    "pendingUntil": "2026-09-04"
+  },
+  "1002304315552051": {
+    "status": "Pending Install",
+    "ts": "2026-08-28T20:03:01.852Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park",
     "pendingUntil": "2026-09-04"
