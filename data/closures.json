@@ -12633,6 +12633,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2465390794": {
+    "status": "Closed",
+    "ts": "2026-08-28T14:47:48.975Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2465669769": {
     "status": "Closed",
     "ts": "2026-08-28T14:48:25.798Z",
@@ -12652,6 +12658,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park",
     "pendingUntil": "2026-09-03"
+  },
+  "2467387533": {
+    "status": "Closed",
+    "ts": "2026-08-28T14:48:54.583Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2467473394": {
     "status": "Closed",
@@ -17532,5 +17544,11 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City",
     "pendingUntil": "2026-09-01"
+  },
+  "1002304750222053": {
+    "status": "Closed",
+    "ts": "2026-08-28T14:53:07.210Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
