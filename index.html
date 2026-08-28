@@ -259,14 +259,19 @@ body {
 /* ---------- PROMO SLIDES ---------- */
 .promo-wrap { height:100%; display:flex; align-items:center; justify-content:center; }
 .promo-frame {
-  background:var(--card); border-radius:28px; padding:22px;
+  background:var(--card); border-radius:28px; padding:26px;
   box-shadow:0 14px 40px rgba(70,60,45,.14); border:1px solid #F3EFE8;
   animation: sway 6s ease-in-out infinite alternate;
   max-width:92%; max-height:94%;
   display:flex; align-items:center; justify-content:center;
 }
 @keyframes sway { from{ transform:rotate(-.5deg) translateY(0);} to{ transform:rotate(.5deg) translateY(-10px);} }
-.promo-frame img { max-width:100%; max-height:780px; border-radius:16px; display:block; }
+/* Sized so the image can never outgrow its frame: 680 + 52px of padding is
+   732px, comfortably inside the frame's 763px cap even while it sways. */
+.promo-frame img {
+  max-width:1560px; max-height:680px; width:auto; height:auto;
+  object-fit:contain; border-radius:16px; display:block;
+}
 .promo-missing { padding:80px 100px; text-align:center; color:var(--muted); font-size:28px; font-weight:800; }
 
 /* ---------- FOOTER / CONTROLS ---------- */
@@ -413,7 +418,7 @@ body {
 
 /* Store name. */
 .conv-name {
-  font-size: var(--cname, 44px);
+  font-size: var(--cname, 44px);   /* matched to --cnum by renderYesterday */
   font-weight:900;
   line-height:1;
   letter-spacing:-.5px;
@@ -1352,7 +1357,7 @@ const smartAcc = v => Math.abs(v) <= 1.5 ? pctStr(v) : fmtMoney(v);
 const SLIDE_SUBTITLES = {
   'stores': "How each store is tracking toward this month's profit goal",
   'store-detail': 'A closer look at the store and its team',
-  'yesterday': 'Who walked in yesterday — and how many became customers',
+  'yesterday': 'Yesterday\'s traffic — how many became customers, and how much of the door we charted',
   'detractor': 'A bad survey is any survey scored 8 or below — the goal is 30 clean days in a row',
   'dm-rank': 'How all district managers stack up across the company',
   'region-rank': 'How the regions stack up — ours are highlighted',
@@ -1609,7 +1614,10 @@ function renderYesterday(district, distStores) {
     const mobile  = z.mobile  || 0;
     const mcr     = (z.mcr != null) ? z.mcr : null;
     const tcharts = (y.tsheets && y.tsheets[s.name]) || 0;
-    return { name: s.name, traffic, mobile, mcr, tcharts };
+    // T-Charts are shown as a share of traffic — how much of the door we
+    // actually put on a chart — not as a raw count.
+    const tpct = traffic > 0 ? (tcharts / traffic * 100) : null;
+    return { name: s.name, traffic, mobile, mcr, tcharts, tpct };
   });
   const tot = rows.reduce((a, r) => ({
     traffic: a.traffic + r.traffic,
@@ -1617,10 +1625,11 @@ function renderYesterday(district, distStores) {
     tcharts: a.tcharts + r.tcharts
   }), { traffic: 0, mobile: 0, tcharts: 0 });
   const totMcr = tot.traffic > 0 ? (tot.mobile / tot.traffic * 100) : null;
+  const totTpct = tot.traffic > 0 ? (tot.tcharts / tot.traffic * 100) : null;
 
   const fmtN = v => Number(v || 0).toLocaleString('en-US');
   const fmtR = v => (v == null) ? '—' : v.toFixed(1);
-  const all = rows.concat([{ traffic: tot.traffic, mobile: tot.mobile, mcr: totMcr, tcharts: tot.tcharts }]);
+  const all = rows.concat([{ name: 'DISTRICT TOTAL', traffic: tot.traffic, mobile: tot.mobile, mcr: totMcr, tcharts: tot.tcharts, tpct: totTpct }]);
 
   // ---- size ladder ---------------------------------------------------------
   // Every band (one per store + the district total) splits the ~670px panel
@@ -1642,11 +1651,17 @@ function renderYesterday(district, distStores) {
   const maxW = (arr, size) => arr.reduce((m, s) => Math.max(m, strW(s, size)), 0);
 
   const MINNAME = 300;                                 // never squeeze the name away
+  // The store name is set at the SAME size as the metric numerals, so a row
+  // reads as one line of type rather than a small label beside big figures.
+  // The fitting loop below therefore has to reserve room for the longest
+  // actual name at that size — capped at 44% of the row so one absurdly long
+  // store can ellipsise instead of shrinking the whole slide.
+  const nameStrs = all.map(r => String(r.name || ''));
   let hero, num, nameSz, lblSz, padX, gapX, wT, wM, wC, wK, usable;
   hero = Math.round(Math.max(30, Math.min(130, bandH * 1.05)));
   for (;;) {
-    num    = Math.round(hero * 0.80);
-    nameSz = Math.round(Math.max(20, Math.min(50, hero * 0.44)));
+    num    = Math.max(18, Math.round(hero * 0.80) - 1);
+    nameSz = num;
     lblSz  = Math.round(Math.max(13, Math.min(18, hero * 0.16)));
     padX   = Math.round(Math.max(14, Math.min(32, hero * 0.24)));
     gapX   = Math.round(Math.max(10, Math.min(28, hero * 0.18)));
@@ -1654,11 +1669,12 @@ function renderYesterday(district, distStores) {
     usable = 1788 - 2 * padX;                          // panel inner width
     const fl  = usable * 0.115;                        // keeps the number block
     const flC = usable * 0.150;                        // anchored at any row count
-    wT = Math.round(Math.max(maxW(all.map(r => fmtN(r.traffic)), num), lblW('WALK-INS', lblSz) , fl)) + pad;
+    wT = Math.round(Math.max(maxW(all.map(r => fmtN(r.traffic)), num), lblW('TRAFFIC', lblSz) , fl)) + pad;
     wM = Math.round(Math.max(maxW(all.map(r => fmtN(r.mobile)),  num), lblW('MOBILE SALES', lblSz), fl)) + pad;
-    wK = Math.round(Math.max(maxW(all.map(r => fmtN(r.tcharts)), num), lblW('T-CHARTS', lblSz) , fl)) + pad;
+    wK = Math.round(Math.max(maxW(all.map(r => fmtR(r.tpct)), num) + 0.42 * num, lblW('T-CHART %', lblSz) , fl)) + pad;
     wC = Math.round(Math.max(maxW(all.map(r => fmtR(r.mcr)), hero) + 0.42 * hero, lblW('CONVERSION', lblSz), flC)) + pad;
-    if (hero <= 30 || (wT + wM + wC + wK + 4 * gapX + MINNAME) <= usable) break;
+    const needName = Math.min(usable * 0.44, Math.max(MINNAME, maxW(nameStrs, nameSz) + 10));
+    if (hero <= 30 || (wT + wM + wC + wK + 4 * gapX + needName) <= usable) break;
     hero -= 3;
   }
   const cols = 'minmax(0,1fr) ' + wT + 'px ' + wM + 'px ' + wC + 'px ' + wK + 'px';
@@ -1676,26 +1692,26 @@ function renderYesterday(district, distStores) {
         <div class="conv-val${r.traffic ? '' : ' conv-soft'}">${fmtN(r.traffic)}</div>
         <div class="conv-val${r.mobile  ? '' : ' conv-soft'}">${fmtN(r.mobile)}</div>
         <div class="conv-val conv-hero ${rateClass(r.mcr)}">${rateHtml(r.mcr)}</div>
-        <div class="conv-val${r.tcharts ? '' : ' conv-soft'}">${fmtN(r.tcharts)}</div>
+        <div class="conv-val${r.tpct ? '' : ' conv-soft'}">${r.tpct == null ? '<span class="conv-dash">—</span>' : fmtR(r.tpct) + '<span class="conv-pct">%</span>'}</div>
       </div>`;
 
   const rowsHtml = rows.map((r, i) => band(r, i, false)).join('');
-  const totalHtml = band({ name: 'DISTRICT TOTAL', traffic: tot.traffic, mobile: tot.mobile, mcr: totMcr, tcharts: tot.tcharts }, rows.length, true);
+  const totalHtml = band(all[all.length - 1], rows.length, true);
 
   const sub = tot.traffic > 0
-    ? `${fmtN(tot.traffic)} people walked in yesterday — ${fmtN(tot.mobile)} of them walked out as mobile customers.`
-    : 'No walk-in traffic recorded yesterday.';
+    ? `${fmtN(tot.traffic)} people came through the door yesterday — ${fmtN(tot.mobile)} of them walked out as mobile customers.`
+    : 'No traffic recorded yesterday.';
 
   return `
     <div class="panel conv-panel" style="${vars}">
-      <div class="panel-title">🚶 WALK-INS → SALES${y.date ? ' · ' + y.date : ''}</div>
+      <div class="panel-title">🚶 TRAFFIC → SALES${y.date ? ' · ' + y.date : ''}</div>
       <div class="panel-sub">${sub}</div>
       <div class="conv-head">
         <div class="conv-lbl conv-lbl-name">Store</div>
-        <div class="conv-lbl">Walk-ins</div>
+        <div class="conv-lbl">Traffic</div>
         <div class="conv-lbl">Mobile Sales</div>
         <div class="conv-lbl conv-lbl-hero">Conversion</div>
-        <div class="conv-lbl">T-Charts</div>
+        <div class="conv-lbl">T-Chart %</div>
       </div>
       <div class="tscroll conv-body">
         ${rows.length ? rowsHtml + totalHtml : '<div class="conv-empty">No stores in this district.</div>'}
@@ -1754,19 +1770,42 @@ function renderDetractor(district, rows, slide) {
   // capped so a 1-3 store district gets a proper hero row instead of one
   // absurd 600px slab; the list centres what is left of the box.
   const rowH = Math.min(172, Math.floor((AVAIL - gap * (n - 1)) / n));
-  const nameSize = Math.round(clamp(rowH * 0.54, 22, 64));
-  const numSize = Math.round(clamp(rowH * 1.18, 40, 150));
+  // metaSize drives the small furniture (date, captions) and stays small.
+  const metaSize = Math.round(clamp(rowH * 0.54, 22, 64));
   const badgeW = Math.round(clamp(rowH * 0.70, 44, 108));
   const rankSize = Math.round(clamp(badgeW * 0.42, 17, 42));
-  const numW = Math.round(clamp(numSize * 2.25, 165, 430));
-  const dateW = Math.round(clamp(nameSize * 3.0, 124, 200));
-  const unitSize = Math.round(clamp(numSize * 0.155, 11, 21));
-  const dateSize = Math.round(clamp(nameSize * 0.36, 13, 22));
+  const dateW = Math.round(clamp(metaSize * 3.0, 124, 200));
+  const dateSize = Math.round(clamp(metaSize * 0.36, 13, 22));
   const dateLabelSize = Math.round(clamp(dateSize * 0.72, 10, 15));
-  const noteSize = Math.round(clamp(nameSize * 0.46, 14, 26));
-  const flagSize = Math.round(clamp(nameSize * 0.30, 11, 18));
-  const crownSize = Math.round(clamp(nameSize * 0.82, 20, 54));
+  const noteSize = Math.round(clamp(metaSize * 0.46, 14, 26));
+  const flagSize = Math.round(clamp(metaSize * 0.30, 11, 18));
   const padX = Math.round(clamp(rowH * 0.22, 16, 30));
+
+  // Store name is set at the SAME size as the day count — "a large print
+  // store name and a large print number beside it". Both shrink together
+  // until this district's longest name fits its column, so a district of
+  // long names reads a notch smaller rather than ellipsising.
+  const emW = str => {
+    let w = 0;
+    for (let i = 0; i < str.length; i++) w += /[ .,'-]/.test(str.charAt(i)) ? 0.28 : 0.60;
+    return w;
+  };
+  const longestEm = rows.reduce((m, r) => Math.max(m, emW(String(r.store || r.storeFull || ''))), 0);
+  // A gold row carries a crown after the name; reserve for it if any row can.
+  const goldPossible = rows.some(r => r.days != null && !r.windowLimited &&
+    (Number(r.days) >= 20 || r.goalMet === true || Number(r.days) >= goal));
+  const crownEm = goldPossible ? 0.55 + 0.35 : 0;
+  let numSize = Math.max(40, Math.round(clamp(rowH * 1.18, 40, 150)) - 1);
+  let numW = Math.round(clamp(numSize * 2.25, 165, 430));
+  while (numSize > 40) {
+    numW = Math.round(clamp(numSize * 2.25, 165, 430));
+    const nameAvail = 1788 - (2 * padX + 6) - badgeW - numW - dateW - 3 * 38;
+    if ((longestEm + crownEm) * numSize + 8 <= nameAvail) break;
+    numSize -= 2;
+  }
+  const nameSize = numSize;
+  const unitSize = Math.round(clamp(numSize * 0.155, 11, 21));
+  const crownSize = Math.round(clamp(nameSize * 0.55, 20, 64));
   const cols = `${badgeW}px minmax(0,1fr) ${numW}px ${dateW}px`;
   const rowStyle = `grid-template-columns:${cols};height:${rowH}px;padding:0 ${padX}px 0 ${padX + 6}px;`;
 
