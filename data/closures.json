@@ -9859,8 +9859,8 @@
     "store": "Burbank"
   },
   "2426463411": {
-    "status": "Closed",
-    "ts": "2026-08-12T17:31:33.111Z",
+    "status": "Cancelled Order",
+    "ts": "2026-08-28T20:11:57.390Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
@@ -9871,8 +9871,8 @@
     "store": "Hammond"
   },
   "2426691774": {
-    "status": "Closed",
-    "ts": "2026-08-12T18:04:34.118Z",
+    "status": "Cancelled Order",
+    "ts": "2026-08-28T20:11:55.902Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
@@ -17020,7 +17020,7 @@
   },
   "1002299476762053": {
     "status": "Pending Install",
-    "ts": "2026-08-12T18:40:56.331Z",
+    "ts": "2026-08-28T20:22:45.372Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-08-19"
