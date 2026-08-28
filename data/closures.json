@@ -12731,6 +12731,13 @@
     "store": "Tinley Park",
     "pendingUntil": "2026-09-04"
   },
+  "2468017872": {
+    "status": "Pending Install",
+    "ts": "2026-08-28T20:02:56.669Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park",
+    "pendingUntil": "2026-09-04"
+  },
   "2468085605": {
     "status": "Closed",
     "ts": "2026-08-28T14:41:03.292Z",
