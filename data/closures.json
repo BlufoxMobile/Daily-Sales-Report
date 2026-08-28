@@ -12284,6 +12284,12 @@
     "store": "Uptown",
     "pendingUntil": "2026-08-19"
   },
+  "2450115983": {
+    "status": "Closed",
+    "ts": "2026-08-28T20:25:34.878Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2450145297": {
     "status": "Pending Install",
     "ts": "2026-08-15T14:17:42.676Z",
@@ -17025,7 +17031,7 @@
   },
   "1002299476762053": {
     "status": "Pending Install",
-    "ts": "2026-08-28T20:22:45.372Z",
+    "ts": "2026-08-28T20:25:32.725Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort",
     "pendingUntil": "2026-08-19"
