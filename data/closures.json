@@ -12606,6 +12606,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2457594448": {
+    "status": "Pending Install",
+    "ts": "2026-08-28T20:31:57.797Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-09-04"
+  },
   "2457703610": {
     "status": "Closed",
     "ts": "2026-08-26T23:02:55.747Z",
