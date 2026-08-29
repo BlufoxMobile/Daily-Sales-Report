@@ -43,6 +43,30 @@ const partsFmt = new Intl.DateTimeFormat('en-CA', {
 });
 function localYMD(d) { return partsFmt.format(d); }   // "2026-08-28"
 
+const YFMT = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric' });
+const MFMT = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, month: '2-digit' });
+const DFMT = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, day: '2-digit' });
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+const pad2 = n => String(n).padStart(2, '0');
+
+/**
+ * Blufox fiscal cycle: the 22nd through the 21st, named for the month it ENDS in.
+ * Aug 22 - Sep 21 is "September". Verified against the live T-Sheet-Submissions
+ * dashboard 2026-08-29 (Aug 21 out, Aug 22 in, Sep 21 in, Sep 22 out).
+ *
+ * MTD MUST use this window, not the calendar month, or the quote sheets disagree
+ * with the dashboard — they did: Cicero showed 532 (calendar Aug) vs 126 (fiscal).
+ */
+function cycleFor(d) {
+  const y = Number(YFMT.format(d)), m = Number(MFMT.format(d)), day = Number(DFMT.format(d));
+  let sy = y, sm = m;
+  if (day < 22) { sm = m - 1; if (sm < 1) { sm = 12; sy = y - 1; } }
+  let ey = sy, em = sm + 1;
+  if (em > 12) { em = 1; ey = sy + 1; }
+  return { start: `${sy}-${pad2(sm)}-22`, end: `${ey}-${pad2(em)}-21`, label: `${MONTHS[em-1]} ${ey}` };
+}
+
 async function main() {
   const ctrl = new AbortController();
   const killer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
@@ -57,8 +81,9 @@ async function main() {
   const rows = Array.isArray(data.submissions) ? data.submissions : [];
   const fetchMs = Date.now() - t0;
 
-  const today = localYMD(new Date());
-  const month = today.slice(0, 7);
+  const now = new Date();
+  const today = localYMD(now);
+  const cycle = cycleFor(now);
   const stores = {};
 
   let skipped = 0;
@@ -70,7 +95,8 @@ async function main() {
     if (isNaN(d.getTime())) { skipped++; continue; }
 
     const ymd = localYMD(d);
-    if (ymd.slice(0, 7) !== month) continue;        // month-to-date only
+    // MTD = inside the fiscal cycle (22nd-21st), NOT the calendar month.
+    if (ymd < cycle.start || ymd > cycle.end) continue;
 
     const isToday = ymd === today;
     const rep = String(r.rep_name == null ? '' : r.rep_name).trim() || '(unknown)';
@@ -87,7 +113,10 @@ async function main() {
     generated_at: new Date().toISOString(),
     timezone: TZ,
     day: today,
-    month: month,
+    cycle_start: cycle.start,
+    cycle_end: cycle.end,
+    cycle_label: cycle.label,
+    month: cycle.end.slice(0, 7),   // kept for backwards compatibility
     source_rows: rows.length,
     stores: stores
   };
@@ -108,6 +137,7 @@ async function main() {
 
   fs.writeFileSync(OUT, JSON.stringify(out) + '\n');
   const bytes = fs.statSync(OUT).size;
+  console.log('cycle ' + cycle.label + ' (' + cycle.start + ' .. ' + cycle.end + ')');
   console.log(
     'wrote ' + OUT + ' — ' + Object.keys(stores).length + ' stores, ' +
     bytes + ' bytes, from ' + rows.length + ' rows (' + skipped + ' skipped) in ' + fetchMs + 'ms'
