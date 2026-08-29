@@ -28,7 +28,7 @@
     "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115",
     "North Knoxville Xfinity Store": ""
   },
-  "updatedAt": "2026-08-25T13:43:13.881Z",
+  "updatedAt": "2026-08-29T18:43:41.122Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -117,11 +117,42 @@
     "jbilbrey@blufoxmobile.com",
     "tchowdhury@blufoxmobile.com"
   ],
+  "districts": [
+    {
+      "id": "north-side",
+      "name": "North Side",
+      "dm": "IDhorajiwala@blufoxmobile.com",
+      "dmName": "Imaad Dhorajiwala"
+    },
+    {
+      "id": "south-side",
+      "name": "South Side",
+      "dm": "juCarrillo@blufoxmobile.com",
+      "dmName": "Juan Carrillo"
+    },
+    {
+      "id": "east-side",
+      "name": "East Side",
+      "dm": "jcabrales@blufoxmobile.com",
+      "dmName": "Jacob Cabrales"
+    },
+    {
+      "id": "big-south",
+      "name": "Big South",
+      "dm": "mbrooks@blufoxmobile.com",
+      "dmName": "Matthew Brooks"
+    },
+    {
+      "id": "west-side",
+      "name": "West Side",
+      "dm": "tchowdhury@blufoxmobile.com",
+      "dmName": "Tanzim Chowdhury"
+    }
+  ],
   "storeManagers": {
     "Burbank Xfinity Store": "ZSalazar@blufoxmobile.com",
     "Cicero Xfinity Store": "fSalazar@blufoxmobile.com",
     "Calumet City Xfinity Store": "ereyes@blufoxmobile.com",
-    "Dekalb Xfinity Store": "ZMitchell@blufoxmobile.com",
     "Elkhart Xfinity Store": "dRegan@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "mRivera@blufoxmobile.com",
     "Evanston Xfinity Store": "jLomax@blufoxmobile.com",
@@ -130,7 +161,6 @@
     "Greeneville Xfinity Store": "jTrentham@blufoxmobile.com",
     "Hammond Xfinity Store": "ABell@blufoxmobile.com",
     "Johnson City Xfinity Store": "vHuerto@blufoxmobile.com",
-    "Kildeer Xfinity Store": "GWilliams@blufoxmobile.com",
     "Michigan City Xfinity Store": "CCrooks@blufoxmobile.com",
     "Oak Ridge Xfinity Store": "kKirkland@blufoxmobile.com",
     "Round Lake Beach Xfinity Store": "brPerez@blufoxmobile.com",
@@ -138,7 +168,6 @@
     "South Knoxville Xfinity Store": "zSpradling@blufoxmobile.com",
     "Tinley Park Xfinity Store": "sOrozco@blufoxmobile.com",
     "Uptown Xfinity Store": "HDodge@blufoxmobile.com",
-    "Valparaiso Xfinity Store": "EWashington@blufoxmobile.com",
     "Bourbonnais Xfinity Store": "jSoto@blufoxmobile.com",
     "South Bend Xfinity Store": "jLilly@blufoxmobile.com",
     "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
@@ -153,7 +182,6 @@
     "Glenview Xfinity Store": "LWeeks@blufoxmobile.com",
     "Greeneville Xfinity Store": "dMitchell@blufoxmobile.com",
     "Johnson City Xfinity Store": "rCampbell@blufoxmobile.com",
-    "Kildeer Xfinity Store": "ISolis@blufoxmobile.com",
     "Valparaiso Xfinity Store": "dBrent@blufoxmobile.com",
     "Tinley Park Xfinity Store": "eGuzman@blufoxmobile.com",
     "South Skokie Xfinity Store": "aleRodriguez@blufoxmobile.com",
@@ -164,7 +192,8 @@
     "Hammond Xfinity Store": "dCharles@blufoxmobile.com",
     "Burbank Xfinity Store": "jBenitez@blufoxmobile.com",
     "Calumet City Xfinity Store": "kaThomas@blufoxmobile.com",
-    "Uptown Xfinity Store": "JBerry@blufoxmobile.com"
+    "Uptown Xfinity Store": "JBerry@blufoxmobile.com",
+    "Elkhart Xfinity Store": "eSoto-Moreno@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -195,11 +224,39 @@
     "Oak Lawn Xfinity Store": "juCarrillo@blufoxmobile.com",
     "North Knoxville Xfinity Store": "mbrooks@blufoxmobile.com"
   },
+  "storeDistricts": {
+    "Bourbonnais Xfinity Store": "south-side",
+    "Burbank Xfinity Store": "west-side",
+    "Calumet City Xfinity Store": "west-side",
+    "Cicero Xfinity Store": "north-side",
+    "Dekalb Xfinity Store": "west-side",
+    "Elkhart Xfinity Store": "east-side",
+    "Evanston Xfinity Store": "north-side",
+    "Evergreen Park Xfinity Store": "south-side",
+    "Frankfort Xfinity Store": "south-side",
+    "Glenview Xfinity Store": "west-side",
+    "Greeneville Xfinity Store": "big-south",
+    "Hammond Xfinity Store": "east-side",
+    "Johnson City Xfinity Store": "big-south",
+    "Kildeer Xfinity Store": "north-side",
+    "Machesney Park Xfinity Store": "north-side",
+    "Michigan City Xfinity Store": "east-side",
+    "North Knoxville Xfinity Store": "big-south",
+    "Oak Lawn Xfinity Store": "south-side",
+    "Oak Ridge Xfinity Store": "big-south",
+    "Round Lake Beach Xfinity Store": "west-side",
+    "Schererville Xfinity Store": "east-side",
+    "South Bend Xfinity Store": "east-side",
+    "South Knoxville Xfinity Store": "big-south",
+    "South Skokie Xfinity Store": "north-side",
+    "Tinley Park Xfinity Store": "south-side",
+    "Uptown Xfinity Store": "north-side",
+    "Valparaiso Xfinity Store": "east-side"
+  },
   "storeManagerNames": {
     "Burbank Xfinity Store": "Zuri Salazar",
     "Calumet City Xfinity Store": "Eric Reyes",
     "Cicero Xfinity Store": "Francisco Salazar",
-    "Dekalb Xfinity Store": "ZQ Mitchell",
     "Elkhart Xfinity Store": "DJ Regan",
     "Evergreen Park Xfinity Store": "Michael Rivera",
     "Evanston Xfinity Store": "Jamal Lomax",
@@ -209,11 +266,9 @@
     "Hammond Xfinity Store": "Alexis Bell",
     "Johnson City Xfinity Store": "VG Huerto",
     "Michigan City Xfinity Store": "Collin Crooks",
-    "Kildeer Xfinity Store": "Gavin Williams",
     "Oak Ridge Xfinity Store": "Kayla Kirkland",
     "Schererville Xfinity Store": "Michael Jackson",
     "Round Lake Beach Xfinity Store": "Bryan Perez",
-    "Valparaiso Xfinity Store": "Emari Washington",
     "Uptown Xfinity Store": "Hunter Dodge",
     "Tinley Park Xfinity Store": "Sebas Orozco",
     "South Knoxville Xfinity Store": "Zoe Spradling",
@@ -234,7 +289,6 @@
     "Greeneville Xfinity Store": "Daniel Mitchell Jr.",
     "Hammond Xfinity Store": "Darryl Charles",
     "Johnson City Xfinity Store": "Richard Campbell",
-    "Kildeer Xfinity Store": "Irvin Solis",
     "Michigan City Xfinity Store": "Anthony Evans",
     "Oak Ridge Xfinity Store": "Erika McFall",
     "Schererville Xfinity Store": "April Vasquez",
@@ -242,7 +296,8 @@
     "South Skokie Xfinity Store": "Alexis Rodriguez",
     "Tinley Park Xfinity Store": "Emily Guzman",
     "Uptown Xfinity Store": "Jordan Berry",
-    "Valparaiso Xfinity Store": "Denzel Brent"
+    "Valparaiso Xfinity Store": "Denzel Brent",
+    "Elkhart Xfinity Store": "Emanuel Soto-Moreno"
   },
   "storeDMNames": {
     "Bourbonnais Xfinity Store": "Juan Carrillo",
