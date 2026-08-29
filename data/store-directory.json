@@ -28,7 +28,7 @@
     "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115",
     "North Knoxville Xfinity Store": ""
   },
-  "updatedAt": "2026-08-29T18:48:42.150Z",
+  "updatedAt": "2026-08-29T18:50:44.012Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -196,7 +196,9 @@
     "Uptown Xfinity Store": "JBerry@blufoxmobile.com",
     "Elkhart Xfinity Store": "eSoto-Moreno@blufoxmobile.com",
     "Oak Lawn Xfinity Store": "eGuzman@blufoxmobile.com",
-    "Evanston Xfinity Store": "sUllah@blufoxmobile.com"
+    "Evanston Xfinity Store": "sUllah@blufoxmobile.com",
+    "Machesney Park Xfinity Store": "LBryant@blufoxmobile.com",
+    "Round Lake Beach Xfinity Store": "juPadilla@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -303,7 +305,9 @@
     "Valparaiso Xfinity Store": "Denzel Brent",
     "Elkhart Xfinity Store": "Emanuel Soto-Moreno",
     "Oak Lawn Xfinity Store": "Emily Guzman",
-    "Evanston Xfinity Store": "Suyal Ullah"
+    "Evanston Xfinity Store": "Suyal Ullah",
+    "Machesney Park Xfinity Store": "Leslie Bryant",
+    "Round Lake Beach Xfinity Store": "Juan Padilla"
   },
   "storeDMNames": {
     "Bourbonnais Xfinity Store": "Juan Carrillo",
