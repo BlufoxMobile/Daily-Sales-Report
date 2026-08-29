@@ -28,7 +28,7 @@
     "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115",
     "North Knoxville Xfinity Store": ""
   },
-  "updatedAt": "2026-08-29T18:43:41.122Z",
+  "updatedAt": "2026-08-29T18:46:19.840Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -173,7 +173,9 @@
     "South Skokie Xfinity Store": "OsGarcia@blufoxmobile.com",
     "Machesney Park Xfinity Store": "tCollins@blufoxmobile.com",
     "Oak Lawn Xfinity Store": "jBotero@blufoxmobile.com",
-    "North Knoxville Xfinity Store": ""
+    "North Knoxville Xfinity Store": "",
+    "Dekalb Xfinity Store": "jWolek@blufoxmobile.com",
+    "Kildeer Xfinity Store": "kamThomas@blufoxmobile.com"
   },
   "storeAMs": {
     "Bourbonnais Xfinity Store": "NTrombley@blufoxmobile.com",
@@ -270,14 +272,16 @@
     "Schererville Xfinity Store": "Michael Jackson",
     "Round Lake Beach Xfinity Store": "Bryan Perez",
     "Uptown Xfinity Store": "Hunter Dodge",
-    "Tinley Park Xfinity Store": "Sebas Orozco",
+    "Tinley Park Xfinity Store": "Brittany Henderson Rodriguez",
     "South Knoxville Xfinity Store": "Zoe Spradling",
     "Bourbonnais Xfinity Store": "Jamil Soto",
     "South Bend Xfinity Store": "Jason Lilly",
     "South Skokie Xfinity Store": "Ozzie Garcia",
     "Machesney Park Xfinity Store": "Tim Collins",
     "Oak Lawn Xfinity Store": "Jorge Bortero",
-    "North Knoxville Xfinity Store": ""
+    "North Knoxville Xfinity Store": "",
+    "Dekalb Xfinity Store": "Joseph Wolek",
+    "Kildeer Xfinity Store": "Kameron Thomas"
   },
   "storeAMNames": {
     "Bourbonnais Xfinity Store": "Nancy Trombley",
