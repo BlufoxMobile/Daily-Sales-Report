@@ -17955,5 +17955,12 @@
     "ts": "2026-08-31T18:12:51.268Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "1002305238222052": {
+    "status": "Pending Install",
+    "ts": "2026-08-31T18:13:28.209Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart",
+    "pendingUntil": "2026-09-10"
   }
 }
