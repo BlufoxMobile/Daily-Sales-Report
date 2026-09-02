@@ -12815,6 +12815,12 @@
     "store": "Tinley Park",
     "pendingUntil": "2026-09-03"
   },
+  "2467383014": {
+    "status": "Can Not Close",
+    "ts": "2026-09-02T15:15:00.004Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2467387533": {
     "status": "Closed",
     "ts": "2026-08-28T15:55:06.322Z",
