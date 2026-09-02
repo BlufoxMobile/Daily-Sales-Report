@@ -8210,8 +8210,8 @@
     "store": "Valparaiso"
   },
   "2398410024": {
-    "status": "Closed",
-    "ts": "2026-08-13T17:25:51.848Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-02T14:54:13.828Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
@@ -12901,6 +12901,24 @@
     "ts": "2026-09-02T14:08:28.150Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2472816665": {
+    "status": "Closed",
+    "ts": "2026-09-02T15:02:12.895Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
+  "2473191099": {
+    "status": "Closed",
+    "ts": "2026-09-02T15:02:14.392Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
+  "2473338988": {
+    "status": "Closed",
+    "ts": "2026-09-02T15:02:15.503Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   },
   "2474394739": {
     "status": "Closed",
