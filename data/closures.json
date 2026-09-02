@@ -11417,8 +11417,8 @@
     "store": "Hammond"
   },
   "2442299821": {
-    "status": "Closed",
-    "ts": "2026-08-13T18:11:55.363Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-02T15:44:27.250Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
@@ -12805,18 +12805,6 @@
     "ts": "2026-08-28T15:55:07.401Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2465512822": {
-    "status": "Closed",
-    "ts": "2026-09-02T15:44:02.107Z",
-    "dm": "Jacob Cabrales",
-    "store": "Hammond"
-  },
-  "2465515218": {
-    "status": "Closed",
-    "ts": "2026-09-02T15:41:15.323Z",
-    "dm": "Jacob Cabrales",
-    "store": "Hammond"
   },
   "2465669769": {
     "status": "Closed",
@@ -16608,10 +16596,11 @@
     "pendingUntil": "2026-08-26"
   },
   "1002297720332053": {
-    "status": "Closed",
-    "ts": "2026-09-02T15:39:27.027Z",
+    "status": "Pending Install",
+    "ts": "2026-08-03T18:07:23.118Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond"
+    "store": "Hammond",
+    "pendingUntil": "2026-08-19"
   },
   "1002297891512053": {
     "status": "Pending Install",
@@ -18062,12 +18051,5 @@
     "ts": "2026-09-02T14:20:12.804Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "1002304309422055": {
-    "status": "Pending Install",
-    "ts": "2026-09-02T15:39:59.219Z",
-    "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-09-04"
   }
 }
