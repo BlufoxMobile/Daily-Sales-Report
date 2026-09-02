@@ -12878,6 +12878,13 @@
     "store": "Frankfort",
     "pendingUntil": "2026-09-04"
   },
+  "2469970416": {
+    "status": "Pending Install",
+    "ts": "2026-09-02T15:09:15.857Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-09-12"
+  },
   "2470059656": {
     "status": "Closed",
     "ts": "2026-09-02T14:21:38.180Z",
