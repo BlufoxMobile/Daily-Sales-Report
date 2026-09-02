@@ -12535,6 +12535,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2455741050": {
+    "status": "Closed",
+    "ts": "2026-09-02T15:40:30.561Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2455989318": {
     "status": "Closed",
     "ts": "2026-08-26T22:41:11.802Z",
@@ -16591,10 +16597,11 @@
     "pendingUntil": "2026-08-26"
   },
   "1002297720332053": {
-    "status": "Closed",
-    "ts": "2026-09-02T15:39:27.027Z",
+    "status": "Pending Install",
+    "ts": "2026-08-03T18:07:23.118Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond"
+    "store": "Hammond",
+    "pendingUntil": "2026-08-19"
   },
   "1002297891512053": {
     "status": "Pending Install",
@@ -18045,12 +18052,5 @@
     "ts": "2026-09-02T14:20:12.804Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "1002304309422055": {
-    "status": "Pending Install",
-    "ts": "2026-09-02T15:39:59.219Z",
-    "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-09-04"
   }
 }
