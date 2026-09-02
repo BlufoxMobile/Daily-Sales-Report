@@ -12897,8 +12897,14 @@
     "store": "Elkhart"
   },
   "2472683365": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-02T14:08:28.150Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
+  "2474394739": {
     "status": "Closed",
-    "ts": "2026-08-31T17:26:02.071Z",
+    "ts": "2026-09-02T14:17:54.220Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
