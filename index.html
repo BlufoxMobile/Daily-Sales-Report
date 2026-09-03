@@ -341,20 +341,28 @@ body {
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ---------- LOADING ---------- */
+/* Dark on purpose (2026-09-03). This screen is up for the whole workbook
+   fetch + parse - 5-15 s on store wifi, indefinitely when the fetch hangs -
+   and cookcountycooks.com shows this page inside a TV on a dark break-room
+   plate. The old near-white --day-tint/--paper wash was a lit white rectangle
+   on that wall for that whole window. The ground is the report's own warm
+   charcoal (--text, its darkest neutral) so a framing page that ignores the
+   ready handshake below still never shows white; the day accent keeps the
+   spinner and heading on the daily palette. The slides are untouched. */
 #loading {
   position:fixed; inset:0; z-index:50;
-  background:linear-gradient(160deg, var(--day-tint), var(--paper));
+  background:linear-gradient(160deg, #46413B 0%, #2B2825 100%);
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
   font-family:'Nunito', sans-serif;
 }
 .spinner {
   width:64px; height:64px; border-radius:50%;
-  border:7px solid var(--day-soft); border-top-color:var(--day-ink);
+  border:7px solid rgba(255,255,255,.14); border-top-color:var(--day-mid);
   animation:spin 1s linear infinite;
 }
 @keyframes spin { to { transform:rotate(360deg); } }
-#loading h2 { font-size:26px; font-weight:900; color:var(--text); }
-#errorMsg { display:none; color:var(--low-ink); font-size:17px; font-weight:700; max-width:520px; text-align:center; }
+#loading h2 { font-size:26px; font-weight:900; color:var(--day-soft); }
+#errorMsg { display:none; color:var(--low-bg); font-size:17px; font-weight:700; max-width:520px; text-align:center; }
 #retryBtn {
   display:none; font-family:inherit; font-size:17px; font-weight:900; color:#fff;
   background:var(--day-ink); border:none; border-radius:999px; padding:12px 34px; cursor:pointer;
@@ -1054,12 +1062,31 @@ function parseRankSheet(wb, sheetName) {
   return rows;
 }
 
+// ============ READY HANDSHAKE FOR A FRAMING PAGE ============
+// Handshake (2026-09-03): cookcountycooks.com frames this report as the Break
+// Room TV and keeps a dark branded card over the frame until the report has
+// actually drawn. From outside, the only thing a cross-origin frame ever says
+// is its `load` event - and `load` is the wrong signal in both directions:
+// it fires BEFORE the workbook fetch + parse (5-15 s on store wifi, measured
+// framed: white at 8:12 PM, data at 8:22 PM), and it is held back by the
+// 365 KB promo-card probe and the Google Fonts sheet, so on a slow link it
+// fires AFTER the slides are already up. So the report tells the frame
+// itself: `loading` when the spinner goes up, `ready` the moment #loading is
+// hidden and the first slide is drawn, `error` when the Retry screen shows.
+// Standalone (window.parent === window) this is a no-op; it never throws.
+function postBoardState(phase, extra) {
+  try {
+    if (window.parent === window) return;
+    window.parent.postMessage(Object.assign({ source: 'ccc-board', board: 'daily-sales', state: phase }, extra || {}), '*');
+  } catch (e) { /* a frame that cannot be messaged is still a working report */ }
+}
+
 // ============ DATA LOADING (unchanged) ============
 async function loadData() {
   const loading = document.getElementById('loading');
   const errorMsg = document.getElementById('errorMsg');
   const retryBtn = document.getElementById('retryBtn');
-  if (loading && !state.stores.length) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; }
+  if (loading && !state.stores.length) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; postBoardState('loading'); }
   try {
     const cacheBust = '?t=' + Date.now();
     // The detractor-streak feed rides along with the workbook fetch (and the
@@ -1116,11 +1143,13 @@ async function loadData() {
     state.currentSlide = Math.min(keepSlide, Math.max(0, state.totalSlides - 1));
     if (loading) loading.style.display = 'none';
     render();
+    postBoardState('ready');   // first slide is drawn - the frame can lift its card
     startSlideshow();
     if (isUpdate) showToast('📊 Fresh sales report just loaded — numbers updated!');
   } catch(err) {
     console.error(err);
     if (loading) { loading.style.display='flex'; errorMsg.textContent = err.message; errorMsg.style.display = 'block'; retryBtn.style.display = 'block'; }
+    postBoardState('error', { reason: String(err && err.message || err).slice(0, 120) });
     if (!state.stores.length) showLocalFallback();
   }
 }
@@ -1145,6 +1174,7 @@ async function loadLocalFile(e) {
   buildSlides();
   document.getElementById('loading').style.display = 'none';
   render();
+  postBoardState('ready');
   startSlideshow();
 }
 
