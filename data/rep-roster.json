@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-03T01:06:48.035790+00:00",
+  "updatedAt": "2026-09-03T01:43:11.478881+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -226,6 +226,7 @@
     ],
     "Valparaiso Xfinity Store": [
       "Alexandria Giglio",
+      "Kyle Sanchez",
       "Mario Stevens",
       "Nathaniel Brogdon",
       "Samantha Laingren",
