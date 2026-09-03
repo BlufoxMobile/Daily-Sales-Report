@@ -3,6 +3,13 @@ name: Build t-sheet counts
 # Calls the Apps Script submissions feed ONCE for the whole company and commits a
 # small counts file the quote sheets read from GitHub Pages. This replaces every
 # sheet calling Apps Script directly, which was starving the submission endpoint.
+#
+# The same run also commits data/tsheet-flags.json — today's rapid-fire clusters,
+# which need per-submission timestamps the counts file does not carry. This runner
+# is the only machine that can reach the feed, so it computes them here. The two
+# files carry a shared run_id and the builder writes them together or not at all;
+# they must therefore be committed together too, in ONE commit, or a consumer can
+# fetch a matched pair from Pages only after both have landed.
 on:
   schedule:
     - cron: '*/10 * * * *'   # every 10 minutes (GitHub may delay under load)
@@ -26,21 +33,21 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Build counts file
+      - name: Build counts + flags files
         env:
           FEED_URL: ${{ secrets.TSHEET_FEED_URL }}
         run: node scripts/build-tsheet-counts.js
 
       - name: Commit if changed
         run: |
-          if [[ -z "$(git status --porcelain data/tsheet-counts.json)" ]]; then
+          if [[ -z "$(git status --porcelain data/tsheet-counts.json data/tsheet-flags.json)" ]]; then
             echo "no change to commit"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/tsheet-counts.json
-          git commit -m "chore: refresh t-sheet counts [skip ci]"
+          git add data/tsheet-counts.json data/tsheet-flags.json
+          git commit -m "chore: refresh t-sheet counts + rapid-fire flags [skip ci]"
           # The schedule can overlap a manual run; rebase rather than fail.
           git pull --rebase --autostash
           git push
