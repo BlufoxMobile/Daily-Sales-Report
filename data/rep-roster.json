@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-03T04:57:13.949183+00:00",
+  "updatedAt": "2026-09-03T13:13:37.064956+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -13,6 +13,7 @@
     ],
     "Burbank Xfinity Store": [
       "Antonio Carradine",
+      "Arturo Cahue",
       "Eric Bartkowiak",
       "Jalen Logan",
       "Omar Bustamante",
@@ -21,23 +22,28 @@
       "DM or Director Submission"
     ],
     "Calumet City Xfinity Store": [
+      "Edgar Flowers",
       "Ejuan Miller",
       "Eric Reyes",
       "Jazmine Barrera",
+      "Jose Pugas",
       "New Hire",
       "DM or Director Submission"
     ],
     "Cicero Xfinity Store": [
       "Francisco Salazar",
       "Jonathan Rosa",
+      "Julia Ariza",
       "Kevin Morales",
       "Leonardo Zavala",
       "Leslie Diaz",
+      "Sarah Penablanca",
       "Williams Perez-Arellano",
       "New Hire",
       "DM or Director Submission"
     ],
     "Dekalb Xfinity Store": [
+      "Caleb Green",
       "Joseph Wolek",
       "Kyin Edwards",
       "Nevaeh Patton",
@@ -52,12 +58,15 @@
       "Dylan Regan",
       "Fredy Aguilera",
       "Karla Gonzalez",
+      "Kathrynn Kirkman",
+      "Killian Thaxton",
       "Shawn Ellis",
       "New Hire",
       "DM or Director Submission"
     ],
     "Evanston Xfinity Store": [
       "Anaf Rahman",
+      "Arilello Payne",
       "Jamal Lomax",
       "Nayeri Hernandez",
       "Suyal Ullah",
@@ -65,8 +74,13 @@
       "DM or Director Submission"
     ],
     "Evergreen Park Xfinity Store": [
+      "Adrian Bustamante",
+      "Alicia Valdez",
       "Crystal Perez",
       "D'andre Jenkins",
+      "Frankie Pedraza-Scalfano",
+      "Jesus Romo",
+      "Marshawn Sykes",
       "Michael Rivera",
       "New Hire",
       "DM or Director Submission"
@@ -74,13 +88,16 @@
     "Frankfort Xfinity Store": [
       "Aiden Bolhuis",
       "Deontay Moore",
+      "Noah Cleveland",
       "Terron Taylor",
       "Tyrone Wilson jr",
       "New Hire",
       "DM or Director Submission"
     ],
     "Glenview Xfinity Store": [
+      "Aedo Yonan",
       "Aedo Yonana",
+      "Alexandro Flores",
       "Anthony Greer",
       "Linda Weeks",
       "Okeefe Perkins",
@@ -92,22 +109,28 @@
       "Alexander Harned",
       "Dalton Arwood",
       "Dalton Fox",
+      "Jared Reaves",
       "Josh Trentham",
       "Joshua Huerto",
       "Nicholes Gilland",
+      "Sheradon Lindsey",
       "New Hire",
       "DM or Director Submission"
     ],
     "Hammond Xfinity Store": [
       "Alexis Bell",
+      "Daquita White",
       "Darryl Charles",
       "Jada Borders",
       "Jeremiah Watson",
+      "Reina Salgado",
+      "Victoria Ponce de Leon",
       "New Hire",
       "DM or Director Submission"
     ],
     "Johnson City Xfinity Store": [
       "Deaundre Mitchell",
+      "Garrett Johnson",
       "Joshua Jones",
       "Richard Campbell",
       "VG Huerto",
@@ -116,6 +139,7 @@
     ],
     "Kildeer Xfinity Store": [
       "Alexander Wallace",
+      "Eddy Buckley",
       "Jose Gomez",
       "Kameron Thomas",
       "Matthew Sak",
@@ -125,6 +149,8 @@
     ],
     "Machesney Park Xfinity Store": [
       "Catherine Fannin",
+      "Gustavo Sanchez",
+      "Kevin Schumaker",
       "Quaevon Blackwell",
       "Tim Collins",
       "New Hire",
@@ -135,6 +161,7 @@
       "Collin Crooks",
       "Dalton Hogan",
       "Hannah Ingram",
+      "Jaxon Miehle",
       "New Hire",
       "DM or Director Submission"
     ],
@@ -146,6 +173,7 @@
     ],
     "Oak Lawn Xfinity Store": [
       "Briana Marquez",
+      "Christopher Coleman",
       "Emily Guzman",
       "Jerold Cunningham",
       "Jorge Bortero",
@@ -157,6 +185,7 @@
       "Connor McIlwain",
       "Dontavius Rogers",
       "Erika McFall",
+      "Jacori Wimes",
       "James Jones",
       "Kayla Kirkland",
       "Shane Yoho",
@@ -167,15 +196,18 @@
       "Bryan Perez",
       "Fernando Alvarez",
       "Jose Maldonado",
+      "Joseph Vasquez",
       "Yandel Alvarez",
       "New Hire",
       "DM or Director Submission"
     ],
     "Schererville Xfinity Store": [
+      "April Vasquez",
       "Christopher Salazar",
       "Daisy Faria",
       "Maliyah Jackson",
       "Michael Jackson",
+      "Thristian Manuel",
       "Ty Perry",
       "Victoria Moore",
       "New Hire",
@@ -199,6 +231,7 @@
     ],
     "South Skokie Xfinity Store": [
       "Alexis Rodriguez",
+      "Dayan Delgado",
       "Ozzie Garcia",
       "Shazaib Mukhi",
       "Steev Qaryo",
@@ -218,14 +251,19 @@
     "Uptown Xfinity Store": [
       "Hunter Dodge",
       "Jordan Berry",
+      "Kenisha Banks",
       "Oleksandr Kostenko",
       "Ronaldinho Llivi",
+      "Shayna Perez",
       "Tyroy French",
       "New Hire",
       "DM or Director Submission"
     ],
     "Valparaiso Xfinity Store": [
+      "Airelle Young",
       "Alexandria Giglio",
+      "Daniel Long",
+      "Denzel Brent",
       "Kyle Sanchez",
       "Mario Stevens",
       "Nathaniel Brogdon",
