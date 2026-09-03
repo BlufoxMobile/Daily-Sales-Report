@@ -119,6 +119,21 @@ jobs:
       - name: Build rep roster (store -> rep names)
         run: python3 scripts/build-roster.py
 
+      # PROTOTYPE (2026-09-02): pre-parse the workbook to data/sales-report.json
+      # with the same SheetJS build the dashboards use, so they can fetch ~140 KB
+      # of JSON instead of the 902 KB xlsx and skip the ~1 s XLSX.read on every
+      # open. No dashboard reads the file yet - see scripts/build-sales-json.js.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build sales-report.json (pre-parsed workbook)
+        # SheetJS is installed OUTSIDE the checkout so no node_modules/ can leak
+        # into the Pages artifact assembled by the rsync step below.
+        run: |
+          mkdir -p /tmp/sheetjs && echo '{"private":true}' > /tmp/sheetjs/package.json
+          npm install --prefix /tmp/sheetjs --no-audit --no-fund xlsx@0.18.5
+          NODE_PATH=/tmp/sheetjs/node_modules node scripts/build-sales-json.js
+
       # Same push fix as above. The retry loop handles another upload landing
       # a commit on main while this run is in flight (pull --rebase, push again).
       - name: Commit rep roster
@@ -126,6 +141,7 @@ jobs:
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           git add -f data/rep-roster.json 2>/dev/null || true
+          git add -f data/sales-report.json 2>/dev/null || true
           if ! git diff --staged --quiet; then
             git commit -m "Auto: refresh rep-roster.json [skip ci]"
             for i in 1 2 3; do

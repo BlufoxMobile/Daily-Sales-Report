@@ -4,10 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Cook County Cooks - Daily Sales Report</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Perf (2026-09-02): `defer` so the 316 KB SheetJS download no longer blocks
+     parsing (and the workbook fetch below now starts in parallel with it). A
+     hung cdnjs used to leave this page blank; now the spinner paints first.
+     loadData() waits for DOMContentLoaded before XLSX.read if the workbook
+     arrives first. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<!-- Perf (2026-09-02): media="print" + onload swap makes the Google Fonts CSS
+     non-render-blocking, so a slow/hung fonts.googleapis.com can no longer
+     hold up first paint (Nunito swaps in when it arrives; fallback is the
+     system sans in the body font stack). -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 /* ============================================================
    COOK COUNTY COOKS — DAILY SALES REPORT (Pastel Redesign)
@@ -855,11 +864,21 @@ function yesterdayISO() {
 }
 async function loadTSheetCounts() {
   const url = CONFIG.TSHEET_API_URL + '?t=' + Date.now();
+  // Perf (2026-09-02): this Apps Script feed was fetched with NO timeout, so
+  // when it hung (store wifi) the promise never settled. Measured 2026-09-02:
+  // a normal answer takes 12.7-16.7 s and is ~2.3 MB; one call in three came
+  // back 404 after 56 s. The 45 s cap is therefore a safety net above the
+  // normal latency, NOT a speed-up - the deck no longer waits for this call
+  // at all (see loadData). On abort the slide shows no T-Chart counts, exactly
+  // as a failed call already did.
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const killer = setTimeout(() => { if (ctrl) ctrl.abort(); }, 45000);
   let resp;
-  try { resp = await fetch(url, { method: 'GET' }); }
-  catch (e) { return { counts: {}, date: null, ok: false }; }
-  if (!resp.ok) return { counts: {}, date: null, ok: false };
+  try { resp = await fetch(url, { method: 'GET', signal: ctrl ? ctrl.signal : undefined }); }
+  catch (e) { clearTimeout(killer); return { counts: {}, date: null, ok: false }; }
+  if (!resp.ok) { clearTimeout(killer); return { counts: {}, date: null, ok: false }; }
   const data = await resp.json().catch(() => null);
+  clearTimeout(killer);
   const subs = (data && data.submissions) || [];
   if (!subs.length) return { counts: {}, date: null, ok: false };
   const byDate = {};
@@ -1068,9 +1087,28 @@ async function loadData() {
     }
     const isUpdate = !!state.dataSig && state.stores.length > 0;
     state.dataSig = sig;
+    // Perf (2026-09-02): SheetJS is now a deferred script; on a fast link the
+    // workbook can land before it has run. Deferred scripts execute while
+    // readyState is already 'interactive', and DOMContentLoaded fires after
+    // they finish, so wait for DOMContentLoaded (or load, if the CDN script
+    // failed and DOMContentLoaded already went by) unless the page is complete.
+    if (typeof XLSX === 'undefined' && document.readyState !== 'complete') {
+      await new Promise(r => { document.addEventListener('DOMContentLoaded', r, { once: true }); window.addEventListener('load', r, { once: true }); });
+    }
     const wb = XLSX.read(buf, { type: 'array' });
     parseWorkbook(wb);
-    await loadYesterday(wb);
+    // Perf (2026-09-02): loadYesterday() waits on the T-Sheet Apps Script feed
+    // (normally 12.7-16.7 s, sometimes never). It used to be awaited HERE, so
+    // every open sat on "Loading Sales Report..." until the feed answered -
+    // forever when it hung. The deck now renders as soon as the workbook is
+    // parsed; the Yesterday slides show their existing "Loading yesterday's
+    // data..." placeholder and re-render when the counts land. Measured
+    // time-to-first-slide with the feed at 13 s: LTE 16.0 s -> 2.6 s,
+    // fast-3G 27.1 s -> 11.5 s; feed hung: never -> 2.8 s.
+    loadYesterday(wb).then(() => {
+      const cur = state.slides[state.currentSlide];
+      if (cur && cur.type === 'yesterday') render();
+    });
     state.promos = CONFIG.PROMO_URL;
     state.lastRefresh = new Date();
     const keepSlide = state.currentSlide;
