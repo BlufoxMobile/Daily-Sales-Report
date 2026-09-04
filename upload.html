@@ -223,12 +223,20 @@
   </div>
 
 
-  <!-- === NPS SURVEYS SECTION =================================================
-       The separate daily "Responses" card is gone. The month-to-date Responses
-       export is a superset of it, so the MTD file now drives everything: the
-       Month to Date tab, the rolling response history, the clean-day streaks
-       and the morning store briefings. One less file to pull every morning. -->
+  <!-- === NPS SURVEYS SECTION === -->
   <div class="section-label">NPS Surveys</div>
+
+  <div class="upload-zone" id="npsZone">
+    <input type="file" id="npsFile" accept=".xlsx,.xls">
+    <div class="upload-icon">&#128172;</div>
+    <h3>Responses</h3>
+    <p>Drop your Responses_*.xlsx &mdash; Store ID (col BE), NTID (col F), score (col J), comments (col L)</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Feeds NPS Report dashboard + auto-emails SM/DM digests via Zapier</p>
+    <div class="file-name" id="npsFileName"></div>
+  </div>
+
+  <!-- === MONTH-TO-DATE NPS SECTION === -->
+  <div class="section-label">Month-to-Date NPS</div>
 
   <div class="upload-zone" id="mtdExpressZone">
     <input type="file" id="mtdExpressFile" accept=".xlsx,.xls">
@@ -241,9 +249,9 @@
   <div class="upload-zone" id="mtdRespZone">
     <input type="file" id="mtdRespFile" accept=".xlsx,.xls">
     <div class="upload-icon">&#128202;</div>
-    <h3>Responses (Month to Date)</h3>
-    <p>Drop the month's Responses_*.xlsx &mdash; Store ID (col BE), NTID (col F), score (col J), comments (col L)</p>
-    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Feeds the MTD tab + clean-day streaks &middot; auto-emails the SM/DM morning briefings</p>
+    <h3>MTD</h3>
+    <p>Drop the month's Responses_*.xlsx &mdash; the comments shown on the MTD tab</p>
+    <p style="color:#22c55e;font-size:11px;font-weight:600;margin-top:4px;letter-spacing:0.4px;">Feeds the NPS Report &ldquo;Month to Date&rdquo; tab &middot; does NOT send emails</p>
     <div class="file-name" id="mtdRespFileName"></div>
   </div>
 
@@ -369,6 +377,7 @@ const promoInput      = document.getElementById('promoFile');
 const exceptionsInput = document.getElementById('exceptionsFile');
 const punchInput      = document.getElementById('punchFile');
 const shopperInput    = document.getElementById('shopperFile');
+const npsInput        = document.getElementById('npsFile');
 const mtdExpressInput = document.getElementById('mtdExpressFile');
 const mtdRespInput    = document.getElementById('mtdRespFile');
 const uploadBtn       = document.getElementById('uploadBtn');
@@ -388,25 +397,9 @@ function bindFileZone(inputEl, zoneId, labelId) {
     checkReady();
   });
   const zone = document.getElementById(zoneId);
-  zone.addEventListener('dragenter', e => { e.preventDefault(); zone.classList.add('dragover'); });
-  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
   zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-  // A dropped file has to be handed to the input by hand. The old handler called
-  // preventDefault() and stopped there, which ALSO cancelled the file input's own
-  // default drop handling — so every file dropped on a card landed on the floor:
-  // no filename, no green border, nothing queued. Assign the file, then fire the
-  // same 'change' event click-to-browse fires so the label and the Upload button
-  // update through one code path.
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.classList.remove('dragover');
-    const dropped = e.dataTransfer && e.dataTransfer.files;
-    if (!dropped || !dropped.length) return;
-    const dt = new DataTransfer();
-    dt.items.add(dropped[0]);
-    inputEl.files = dt.files;
-    inputEl.dispatchEvent(new Event('change', { bubbles: true }));
-  });
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); });
 }
 
 bindFileZone(excelInput, 'excelZone', 'excelFileName');
@@ -414,11 +407,12 @@ bindFileZone(promoInput, 'promoZone', 'promoFileName');
 bindFileZone(exceptionsInput, 'exceptionsZone', 'exceptionsFileName');
 bindFileZone(punchInput, 'punchZone', 'punchFileName');
 bindFileZone(shopperInput, 'shopperZone', 'shopperFileName');
+bindFileZone(npsInput, 'npsZone', 'npsFileName');
 bindFileZone(mtdExpressInput, 'mtdExpressZone', 'mtdExpressFileName');
 bindFileZone(mtdRespInput, 'mtdRespZone', 'mtdRespFileName');
 
 function checkReady() {
-  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0] || mtdExpressInput.files[0] || mtdRespInput.files[0];
+  const hasFiles = excelInput.files[0] || promoInput.files[0] || exceptionsInput.files[0] || punchInput.files[0] || shopperInput.files[0] || npsInput.files[0] || mtdExpressInput.files[0] || mtdRespInput.files[0];
   uploadBtn.disabled = !hasFiles;
 }
 
@@ -755,16 +749,6 @@ const NPS_CONFIG = {
   MY_EMAIL: "jbilbrey@blufoxmobile.com",
   HISTORY_DAYS: 95,
 
-  // How far back a survey may be and still earn a store briefing. The sent log
-  // is the real dedupe — this is the backstop. The morning run reads the whole
-  // month-to-date Responses export now, so on the day the sent log is lost or
-  // reset, without this window one upload would blast a full fiscal month of
-  // surveys at all 27 stores. It is deliberately wider than "yesterday": the MTD
-  // export is keyed on Transaction Date, which runs about two days behind the
-  // Response Date the old daily export used, and a skipped morning (Sunday, a
-  // holiday) has to still go out the next day rather than vanish.
-  EMAIL_WINDOW_DAYS: 7,
-
   // --- Days Since Last Detractor -------------------------------------------
   // Jeff's rule: only a 9 or a 10 is a good survey. Anything at or below this
   // score is a detractor and resets the store's clean-day counter.
@@ -994,6 +978,21 @@ async function npsFetchSalesStores(){
   if(hr < 0) return [];
   const h = rows[hr].map(c => c == null ? "" : String(c).trim());
   const num = v => { const n = Number(v); return isNaN(n) ? 0 : n; };
+  // Column lookup that survives Comcast reweighting the scorecard. Match the
+  // METRIC NAME only and never the "N Pts" suffix — the weights move between
+  // months (Sep 2026 swapped GIG 10 Pts -> 5 Pts and Plus Mix 5 Pts -> 10 Pts),
+  // and a regex pinned to a weight silently returns -1, which renders as 0.0%
+  // on every store with no error anywhere. Falls back to the known column
+  // position, but only when the header sitting there still names the metric.
+  const colIdx = (pred, fixedIdx, sanityRe) => {
+    const byName = h.findIndex(c => c && pred(String(c)));
+    if(byName >= 0) return byName;
+    const at = (h[fixedIdx] != null) ? String(h[fixedIdx]) : "";
+    return (sanityRe && sanityRe.test(at)) ? fixedIdx : -1;
+  };
+  // the scorecard repeats each metric later as "... Rank" / "... Points" — those
+  // are placements, not percentages, so they must never win the lookup
+  const notPlacement = c => !/\b(rank|points)\b/i.test(c);
   const idx = {
     rank:      h.findIndex(c => c.trim() === "Rank"),
     region:    h.findIndex(c => c.toLowerCase().includes("region")),
@@ -1005,8 +1004,8 @@ async function npsFetchSalesStores(){
     mobileCR:  h.findIndex(c => c.toLowerCase().includes("mobile close rate")),
     fiscalCR:  h.findIndex(c => c.toLowerCase().includes("fiscal close rate")),
     nonTrad:   h.findIndex(c => c.toLowerCase().includes("non traditional")),
-    gigPct:    h.findIndex(c => /^GIG\s*Plans[\s\S]*%[\s\S]*10\s*Pts/i.test(c)),
-    plusMix:   h.findIndex(c => /Mobile\s*Plus\s*Mix[\s\S]*5\s*Pts/i.test(c)),
+    gigPct:    colIdx(c => /GIG\s*Plans/i.test(c) && c.indexOf("%") >= 0 && notPlacement(c), 61, /GIG\s*Plans/i),   // BJ
+    plusMix:   colIdx(c => /Mobile\s*Plus\s*Mix/i.test(c) && notPlacement(c), 71, /Mobile\s*Plus/i),                 // BT
     newToUpg:  h.findIndex(c => /NEW\s*TO\s*UPGR\s*%/i.test(c)),
     accPerDev: h.findIndex(c => /Accessory.*per\s*Device.*Net/i.test(c)),
     nps:       h.findIndex(c => c.toLowerCase().includes("fiscal nps") && !c.toLowerCase().includes("last")),
@@ -1053,8 +1052,10 @@ function npsParseReps(wb){
   const iName   = h.findIndex(c => c.toLowerCase().includes("employee"));
   const iLoc    = h.findIndex(c => c.toLowerCase().includes("location"));
   const iGP     = h.findIndex(c => /^GP\s*\$/i.test(c));
-  const iPlus   = h.findIndex(c => /Mobile\s*Plus\s*Mix[\s\S]*5\s*Pts/i.test(c));
-  const iGig    = h.findIndex(c => /^GIG\s*Plans[\s\S]*commissions\s*plan\)\s*%$/i.test(c));
+  // same rule as Store Rank: name the metric, never the point weight
+  const notPlace = c => !/\b(rank|points)\b/i.test(c);
+  const iPlus   = h.findIndex(c => /Mobile\s*Plus\s*Mix/i.test(c) && notPlace(c));
+  const iGig    = h.findIndex(c => /GIG\s*Plans/i.test(c) && c.indexOf("%") >= 0 && notPlace(c));
   const iMobile = h.findIndex(c => /^Mobile\s*MTD$/i.test(c));
   const iTablet = h.findIndex(c => /^Tablet\s*MTD$/i.test(c));
   const iWatch  = h.findIndex(c => /^Watches\s*MTD$/i.test(c));
@@ -2969,9 +2970,7 @@ footerHtml +
         ? " \u2014 \ud83c\udfc6 " + streak.days + " days clean"
         : " \u2014 " + streak.days + " day" + (streak.days === 1 ? "" : "s") + " clean")
     : "";
-  const subject = "Morning Briefing for " + shortName + " \u2014 " +
-    (surveys.length ? surveys.length + " NPS survey" + (surveys.length === 1 ? "" : "s") : "no NPS surveys") +
-    (bad.length ? " (" + bad.length + " need attention)" : "") + streakTag;
+  const subject = "Morning Message For " + shortName;
 
   return {
     store: shortName, store_full: fullKey,
@@ -3078,18 +3077,12 @@ function npsToB64(str){
   return btoa(binary);
 }
 
-// The whole morning NPS run, given an already-parsed set of survey rows:
-// refresh the rolling response history, rebuild the clean-day streaks, send one
-// briefing per store for anything new, and then the district lunch-punch emails.
-//
-// This used to be uploadNpsFile() and was fed by its own daily "Responses" card.
-// That card is gone: the month-to-date Responses export contains every row the
-// daily one did (verified against a month of both — inside the fiscal window the
-// MTD file was a strict superset, and carried surveys the daily export never
-// delivered), so uploadMtdNps() feeds this instead and there is one less file to
-// pull every morning.
-async function npsDailyRun(parsed){
-  if(!parsed || !(parsed.surveys || []).length) throw new Error('No survey rows to send briefings from');
+async function uploadNpsFile(file){
+  setStatus('Reading NPS survey export...', 'info');
+  const buf = await readFileAsArrayBuffer(file);
+  const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+  const parsed = parseNpsWorkbook(wb);
+  if(!parsed.surveys.length) throw new Error('No survey rows found in the file');
 
   // 1) Load the sent log — anything already emailed is skipped (dedupe by Survey ID).
   let sentLog = { sentIds: [], batches: [] };
@@ -3098,20 +3091,7 @@ async function npsDailyRun(parsed){
     if(r.ok) sentLog = await r.json();
   } catch(e){ /* first run — no log yet */ }
   const sentSet = new Set(sentLog.sentIds || []);
-  // New = never emailed AND recent. Response Date is the right clock (the day the
-  // customer actually answered); the MTD export may not carry it, so fall back to
-  // Transaction Date. A survey outside the window is counted as 'held', never
-  // marked sent — if it turns out a store should have heard about it, widening
-  // EMAIL_WINDOW_DAYS picks it up on the next upload.
-  const emailCutoff = npsDateStr(new Date(Date.now() - NPS_CONFIG.EMAIL_WINDOW_DAYS * 86400000));
-  let heldOld = 0;
-  const fresh = (parsed.surveys || []).filter(s => {
-    if(sentSet.has(s.id)) return false;
-    const day = npsIsIsoDate(s.respDate) ? s.respDate
-              : (npsIsIsoDate(s.txnDate) ? s.txnDate : null);
-    if(day && day < emailCutoff){ heldOld++; return false; }
-    return true;
-  });
+  const fresh = parsed.surveys.filter(s => !sentSet.has(s.id));
 
   // 2) Merge into rolling history (powers the dashboard's Yesterday + MTD tabs).
   let hist = { surveys: [] };
@@ -3196,10 +3176,9 @@ async function npsDailyRun(parsed){
   const lunch = await npsSendLunchRun(dir);
 
   return {
-    total: parsed.surveys.length, fresh: fresh.length, heldOld: heldOld,
-    windowFrom: emailCutoff,
+    total: parsed.surveys.length, fresh: fresh.length,
     sent: sent, storeCount: storeCount,
-    unmatched: parsed.unmatched || [], hookReady: hookReady, errors: errors,
+    unmatched: parsed.unmatched, hookReady: hookReady, errors: errors,
     lunch: lunch
   };
 }
@@ -3357,10 +3336,7 @@ async function uploadMtdNps(expressFile, respFile){
   let parsed = { surveys:[], unmatched:[] };
   if(respFile){ const wb = XLSX.read(await readFileAsArrayBuffer(respFile), { type:"array", cellDates:true }); parsed = parseNpsWorkbook(wb); }
   if(!parsed.surveys.length && !express.reps.length) throw new Error("No usable rows in the MTD files");
-  // respDate is kept now that this file drives the morning run — the clean-day
-  // streak engine reads it, and it is the correct clock for the email window.
-  // It is simply absent (null) if the export has no Response Date column.
-  const surveys = parsed.surveys.map(s => ({ id:s.id, score:s.score, txnDate:s.txnDate, respDate:s.respDate || null, ntid:s.ntid, comment:s.comment, txnType:s.txnType, storeKey:s.storeKey, storeRaw:s.storeRaw }));
+  const surveys = parsed.surveys.map(s => ({ id:s.id, score:s.score, txnDate:s.txnDate, ntid:s.ntid, comment:s.comment, txnType:s.txnType, storeKey:s.storeKey, storeRaw:s.storeRaw }));
   const dates = surveys.map(s=>s.txnDate).filter(Boolean).sort();
   const window = { startYMD:dates[0]||null, endYMD:dates[dates.length-1]||null };
   const byEmp={}; surveys.forEach(s=>{ if(s.ntid)(byEmp[s.ntid]=byEmp[s.ntid]||[]).push(s); });
@@ -3376,20 +3352,7 @@ async function uploadMtdNps(expressFile, respFile){
     expressAll:express.reps.map(e=>({ name:e.name, rank:e.rank, tnps:e.tnps, records:e.records, issueResolved:e.issueResolved, waitPct:e.waitPct })), stores };
   setStatus("Saving MTD NPS (" + surveys.length + " responses, " + scored + " reps scored)...", "info");
   await pushToGitHub(REPOS.sales, MTD_NPS_PATH, npsToB64(JSON.stringify(payload)), "Update MTD NPS — " + new Date().toLocaleDateString());
-
-  // The MTD file is saved before the morning run so the Month to Date tab is
-  // updated even if the briefings fail — and so re-uploading after a failure is
-  // always safe. The run itself is caught rather than thrown: a Zapier hiccup
-  // must not turn a good MTD upload into a red banner, and the sent log means
-  // anything that did not go out is retried on the next upload.
-  let daily = null, dailyError = null;
-  if(respFile){
-    try { daily = await npsDailyRun(parsed); }
-    catch(e){ dailyError = e.message; console.warn('morning NPS run failed:', e); }
-  }
-  return { responses:surveys.length, reps:Object.keys(employees).length, scored:scored,
-           stores:Object.keys(stores).length, unmatched:parsed.unmatched,
-           daily:daily, dailyError:dailyError };
+  return { responses:surveys.length, reps:Object.keys(employees).length, scored:scored, stores:Object.keys(stores).length, unmatched:parsed.unmatched };
 }
 
 async function uploadFiles() {
@@ -3495,36 +3458,26 @@ async function uploadFiles() {
     });
   }
 
-  if (mtdExpressInput.files[0] || mtdRespInput.files[0]) {
+  if (npsInput.files[0]) {
     totalSteps++;
     tasks.push(async () => {
       try {
-        const res = await uploadMtdNps(mtdExpressInput.files[0] || null, mtdRespInput.files[0] || null);
+        const res = await uploadNpsFile(npsInput.files[0]);
         completed++;
-        let label = `NPS (${res.responses} response${res.responses === 1 ? '' : 's'} MTD, ${res.scored} rep${res.scored === 1 ? '' : 's'} scored)`;
-        if (res.unmatched.length) { label += ` — ⚠ unmatched store(s): ${res.unmatched.join('; ')}`; }
-        parts.push(label);
-
-        // The morning briefings now ride on this upload.
-        const d = res.daily;
-        if (res.dailyError) {
-          parts.push(`⚠ Store briefings FAILED — ${res.dailyError}. The MTD tab is updated; re-upload the Responses file to retry the emails.`);
-        } else if (!d) {
-          parts.push('Store briefings skipped — no Responses file in this upload (the Express Report alone cannot send them).');
-        } else if (!d.hookReady) {
-          parts.push('Store briefings OFF — paste your Zapier hook URL into NPS_CONFIG.WEBHOOK_URL');
-        } else if (!d.fresh) {
-          let nn = 'Store briefings — nothing new to send';
-          if (d.heldOld) nn += ` (${d.heldOld} survey${d.heldOld === 1 ? '' : 's'} in the file are older than ${d.windowFrom} and were left alone)`;
-          parts.push(nn + '.');
+        let label = `NPS Surveys (${res.fresh} new of ${res.total}`;
+        if (res.hookReady) {
+          label += `, ${res.sent} email${res.sent === 1 ? '' : 's'} sent)`;
         } else {
-          let sl = `Store briefings (${d.fresh} new survey${d.fresh === 1 ? '' : 's'} → ${d.sent} of ${d.storeCount} stores emailed)`;
-          if (d.heldOld) sl += ` — ${d.heldOld} older survey${d.heldOld === 1 ? '' : 's'} skipped (before ${d.windowFrom})`;
-          if (d.errors.length) sl += ` — ⚠ ${d.errors.length} store email${d.errors.length === 1 ? '' : 's'} failed (will retry on next upload): ${d.errors.join('; ')}`;
-          parts.push(sl);
+          label += ', emails OFF — paste your Zapier hook URL in NPS_CONFIG)';
         }
-
-        const L = (d && d.lunch) || {};
+        if (res.unmatched.length) {
+          label += ` — ⚠ unmatched store(s): ${res.unmatched.join('; ')}`;
+        }
+        if (res.errors.length) {
+          label += ` — ⚠ ${res.errors.length} store email${res.errors.length === 1 ? '' : 's'} failed (will retry on next upload): ${res.errors.join('; ')}`;
+        }
+        parts.push(label);
+        const L = res.lunch || {};
         if (L.ran) {
           let ll = `Lunch Punch emails (${L.sent} of 5 districts sent)`;
           if (L.errors && L.errors.length) ll += ` — ⚠ ${L.errors.join('; ')}`;
@@ -3544,19 +3497,22 @@ async function uploadFiles() {
           parts.push('⚠ Lunch Punch emails skipped — punch data could not be read.');
         }
         setProgress(20 + (completed / totalSteps) * 70);
-      } catch (e) { throw new Error('NPS: ' + e.message); }
+      } catch (e) { throw new Error('NPS Surveys: ' + e.message); }
     });
   }
 
-  // Nothing attached is not a success. The old code ran an empty task list and
-  // painted the green "uploaded successfully!" banner with an empty file list —
-  // which is exactly what a morning looks like when the files never registered.
-  if (!tasks.length) {
-    setProgress(0);
-    setStatus('⚠️ Nothing was uploaded — no files are attached. Each card has to show its filename in green before you hit Upload.', 'error');
-    uploadBtn.disabled = false;
-    uploadBtn.textContent = 'Upload to Dashboards';
-    return;
+  if (mtdExpressInput.files[0] || mtdRespInput.files[0]) {
+    totalSteps++;
+    tasks.push(async () => {
+      try {
+        const res = await uploadMtdNps(mtdExpressInput.files[0] || null, mtdRespInput.files[0] || null);
+        completed++;
+        let label = `MTD NPS (${res.responses} response${res.responses === 1 ? '' : 's'}, ${res.scored} rep${res.scored === 1 ? '' : 's'} scored)`;
+        if (res.unmatched.length) { label += ` — ⚠ unmatched store(s): ${res.unmatched.join('; ')}`; }
+        parts.push(label);
+        setProgress(20 + (completed / totalSteps) * 70);
+      } catch (e) { throw new Error('MTD NPS: ' + e.message); }
+    });
   }
 
   try {
