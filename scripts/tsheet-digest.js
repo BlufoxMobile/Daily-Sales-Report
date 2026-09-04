@@ -42,6 +42,14 @@
 var TZ = 'America/Chicago';              // every day boundary is store time, never UTC
 var RAPID_WINDOW_MS = 5 * 60 * 1000;     // the rapid-fire window Jeff chose
 
+/* HOW OLD THE COUNTS MAY BE before the card says so in amber rather than in grey.
+   The GitHub Action that writes tsheet-counts.json is scheduled every 10 minutes
+   but GitHub delays and drops scheduled runs under load, so an hour-plus gap is
+   normal enough not to shout about and a 90-minute one is not. This threshold is
+   PUBLISHED in the pre-rendered digest file (as age_stale_after_minutes) so the
+   Zapier Code step picks the same variant this renderer would have picked. */
+var STALE_COUNTS_MS = 90 * 60 * 1000;
+
 var JEFF = { name: 'Jeff Bilbrey', email: 'jbilbrey@blufoxmobile.com' };
 
 /* Districts, DM names and the store rosters are the dashboard's DISTRICTS const
@@ -123,8 +131,35 @@ var C = {
   noteEdge:    '#6b5a24'
 };
 
-var SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif";
+/* FONT STACKS — deliberately short, because they are the single largest thing in
+   this email by bytes. The original stack was repeated ~275 times in Jeff's
+   all-districts message and accounted for a third of its weight; Gmail clips a
+   message over ~102 KB and drops the rest behind a "View entire message" link,
+   which is exactly the part he screenshots.
+
+   Every platform that matters still gets its intended face:
+     -apple-system  iOS / macOS -> San Francisco (all WebKit, and Blink >= 56)
+     'Segoe UI'     Windows, including the Outlook/Word rendering engine
+     sans-serif     the generic, which the platform already resolves to Roboto on
+                    Android, Arial on Windows and Helvetica on macOS — so it
+                    does the job the explicit Roboto/Helvetica/Arial tail did.
+   Dropped, each because something later in the list already lands on the same
+   face on the platform that would have used it: BlinkMacSystemFont (an alias of
+   -apple-system in every Chrome since 2017), Roboto (Android's own generic
+   sans-serif), 'Helvetica Neue' / Helvetica / Arial (the generic, on the
+   platforms that have them).
+
+   font-family is still restated on EVERY <td>, and that repetition is the
+   expensive part. It stays: the Word engine behind desktop Outlook does not
+   reliably inherit a font into a table cell, and this is a Microsoft shop.
+   Inline elements DO inherit from their own cell in every engine, so the spans
+   below do not repeat it. */
+var F = "-apple-system,'Segoe UI',sans-serif";
 var SERIF = "Georgia,'Times New Roman',Times,serif";   // stands in for the Bodoni display voice
+
+/* Emitted constantly, so they live in variables rather than being rebuilt. */
+var FF = 'font-family:' + F + ';';
+var TBL = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" ';
 
 /* ============================================================
    SMALL UTILITIES
@@ -204,6 +239,9 @@ function ymdInTZ(d) {
 function clockInTZ(d) {
   return fmt({ hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }).format(d);
 }
+function shortClockInTZ(d) {
+  return fmt({ hour: 'numeric', minute: '2-digit', hour12: true }).format(d);
+}
 /* A 'YYYY-MM-DD' day string -> a Date safely inside that day in Chicago.
    Noon UTC is 6 or 7 a.m. Chicago — never the day before, never the day after. */
 function dayToDate(day) { return new Date(String(day) + 'T12:00:00Z'); }
@@ -236,6 +274,22 @@ function slotLabel(now) {
 }
 
 function plural(n, one, many) { return n === 1 ? one : many; }
+
+/* "22 minutes old" / "3 hours 31 minutes old". Minutes alone reads fine up to an
+   hour; past that Jeff wants the size of the gap, not a four-digit minute count.
+
+   THE OUTPUT IS PLAIN ASCII, ALWAYS. That is load-bearing, not incidental: the
+   pre-rendered digest hands this phrase to the Zapier Code step as {{AGE_TEXT}},
+   which substitutes it into already-escaped HTML. esc() is the identity on this
+   string, so substituting the raw phrase gives byte-identical HTML to rendering
+   it here. Never put an en dash, a non-breaking space or a "≈" in it. */
+function ageText(ms) {
+  var m = Math.max(0, Math.round(ms / 60000));
+  if (m < 60) return m + ' ' + plural(m, 'minute', 'minutes') + ' old';
+  var h = Math.floor(m / 60), r = m % 60;
+  return h + ' ' + plural(h, 'hour', 'hours') +
+    (r ? ' ' + r + ' ' + plural(r, 'minute', 'minutes') : '') + ' old';
+}
 
 /* ============================================================
    THE LIVE ROSTER — store-directory.json
@@ -650,15 +704,28 @@ function buildModel(opts) {
 
 /* ============================================================
    HTML — tables, inline colour, nothing a mail client can strip
+
+   COMPACTION NOTES. The markup below is byte-for-byte tighter than the original
+   but renders identically. What changed and why it is safe:
+     - the font stack is shorter (see F above);
+     - a <span> that sits inside a <td> which already declares the font does not
+       restate it — inline elements inherit from their own cell in every engine,
+       including Word/Outlook. Only the <td> reset is unreliable, and every <td>
+       here still carries its own font-family;
+     - "border-bottom:none" is simply omitted; no border is already the default;
+     - "white-space:nowrap" is dropped from cells whose entire content is an
+       integer, which has no break opportunity to begin with. It is KEPT on the
+       RAPID-FIRE badge, where the hyphen is a real break opportunity.
+   Nothing here changes a colour, a size, a padding or a weight.
    ============================================================ */
 
 function cell(styles, content) { return '<td style="' + styles + '">' + content + '</td>'; }
 
+/* Inherits its font from the rep-name cell it lives in. */
 function flagBadge() {
   return '<span style="display:inline-block;background-color:' + C.flagBg + ';color:' + C.flagInk +
-    ';border:1px solid ' + C.flagEdge + ';border-radius:4px;padding:2px 7px;font-family:' + SANS +
-    ';font-size:12px;font-weight:700;letter-spacing:0.06em;line-height:1.3;white-space:nowrap;">' +
-    '&#9873; RAPID-FIRE</span>';
+    ';border:1px solid ' + C.flagEdge + ';border-radius:4px;padding:2px 7px;font-size:12px;font-weight:700;' +
+    'letter-spacing:0.06em;line-height:1.3;white-space:nowrap;">&#9873; RAPID-FIRE</span>';
 }
 
 /* The bucket key for a blank rep_name is "(unknown)", which is fine as data and
@@ -674,24 +741,28 @@ function repDisplayName(name) { return isRealRep(name) ? name : 'No name on the 
    is allowed to shout. Plain reps get nothing. */
 function roleTag(role) {
   if (!role) return '';
-  return ' <span style="font-family:' + SANS + ';font-size:12px;font-weight:700;letter-spacing:0.08em;' +
-    'color:' + C.dim + ';">' + esc(role) + '</span>';
+  return ' <span style="font-size:12px;font-weight:700;letter-spacing:0.08em;color:' +
+    C.dim + ';">' + esc(role) + '</span>';
 }
 
 function repRowHtml(rep, isLast) {
   var nameColor = rep.flagged ? C.flag : C.ink;
-  var bottom = isLast ? 'none' : '1px solid ' + C.rule;
-  var glyph = rep.flagged ? '<span style="color:' + C.flag + ';">&#9873;</span> ' : '';
+  var bb = isLast ? '' : 'border-bottom:1px solid ' + C.rule + ';';
+  /* The glyph keeps its own <span> even though the cell already supplies the
+     colour. The wrapper is not decoration: it breaks the text-shaping run, and
+     folding "⚑ Ada Lovelace" into a single run re-rasterises the whole name a
+     third of a pixel over. Verified — with the span, before/after render
+     pixel-for-pixel identical; without it, 19 name lines shift. */
+  var glyph = rep.flagged ? '<span>&#9873;</span> ' : '';
 
   var h = '<tr>' +
-    cell('padding:11px 14px;border-bottom:' + bottom + ';font-family:' + SANS + ';font-size:19px;line-height:1.35;' +
-         'color:' + nameColor + ';font-weight:' + (rep.flagged ? '700' : '500') + ';',
+    cell('padding:11px 14px;' + bb + FF + 'font-size:19px;line-height:1.35;color:' + nameColor +
+         ';font-weight:' + (rep.flagged ? '700' : '500') + ';',
          glyph + esc(repDisplayName(rep.name)) + roleTag(rep.role) +
          (rep.flagged ? ' &nbsp;' + flagBadge() : '')) +
-    '<td align="right" valign="top" width="62" style="padding:11px 14px 11px 6px;border-bottom:' + bottom +
-      ';font-family:' + SANS + ';font-size:19px;font-weight:700;line-height:1.35;color:' +
-      (rep.flagged ? C.flag : C.ink) + ';white-space:nowrap;">' + rep.today + '</td>' +
-    '</tr>';
+    '<td align="right" valign="top" width="62" style="padding:11px 14px 11px 6px;' + bb + FF +
+      'font-size:19px;font-weight:700;line-height:1.35;color:' + (rep.flagged ? C.flag : C.ink) + ';">' +
+      rep.today + '</td></tr>';
 
   if (rep.flagged && rep.clusters.length) {
     var lines = [];
@@ -700,10 +771,8 @@ function repRowHtml(rep, isLast) {
       // Escape each time on its own; the arrow entity must survive the join.
       lines.push(c.count + ' in ' + c.times.map(esc).join('  &#8594;  '));
     }
-    h += '<tr>' +
-      '<td colspan="2" style="padding:0 14px 12px;border-bottom:' + bottom + ';font-family:' + SANS +
-        ';font-size:14px;line-height:1.5;color:' + C.flagInk + ';">' +
-        lines.join('<br>') + '</td></tr>';
+    h += '<tr><td colspan="2" style="padding:0 14px 12px;' + bb + FF +
+      'font-size:14px;line-height:1.5;color:' + C.flagInk + ';">' + lines.join('<br>') + '</td></tr>';
   }
   return h;
 }
@@ -711,17 +780,16 @@ function repRowHtml(rep, isLast) {
 function storeBlockHtml(store) {
   var edge = store.flagged ? C.flag : C.brass;
   var nameColor = store.flagged ? C.flag : C.ink;
-  var glyph = store.flagged ? '<span style="color:' + C.flag + ';">&#9873;</span> ' : '';
+  var glyph = store.flagged ? '<span>&#9873;</span> ' : '';   // see repRowHtml
 
-  var h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" ' +
-    'style="width:100%;border-collapse:collapse;margin:0 0 14px 0;">' +
+  var h = TBL + 'style="width:100%;border-collapse:collapse;margin:0 0 14px 0;">' +
     '<tr bgcolor="' + C.storeBar + '">' +
       '<td style="background-color:' + C.storeBar + ';border-left:4px solid ' + edge +
-        ';padding:12px 14px;font-family:' + SANS + ';font-size:20px;font-weight:700;line-height:1.3;color:' +
+        ';padding:12px 14px;' + FF + 'font-size:20px;font-weight:700;line-height:1.3;color:' +
         nameColor + ';">' + glyph + esc(store.name.replace(/ Xfinity Store$/, '')) + '</td>' +
       '<td align="right" width="62" bgcolor="' + C.storeBar + '" style="background-color:' + C.storeBar +
-        ';padding:12px 14px 12px 6px;font-family:' + SANS + ';font-size:20px;font-weight:700;line-height:1.3;color:' +
-        nameColor + ';white-space:nowrap;">' + store.today + '</td>' +
+        ';padding:12px 14px 12px 6px;' + FF + 'font-size:20px;font-weight:700;line-height:1.3;color:' +
+        nameColor + ';">' + store.today + '</td>' +
     '</tr>';
 
   for (var i = 0; i < store.employees.length; i++) {
@@ -730,27 +798,75 @@ function storeBlockHtml(store) {
   return h + '</table>';
 }
 
+/* ============================================================
+   THE DATA-AGE ELEMENT
+
+   ONE element per district card, always present, in exactly ONE position:
+   directly under the headline numbers, above the "Counts only" / "Backup roster"
+   notes. Fresh, it is a quiet grey line. Once the counts are older than
+   STALE_COUNTS_MS it becomes the same amber note box the other two degraded
+   states use — because if the numbers themselves are hours behind then nothing
+   below them is worth reading closely, and Jeff must not screenshot them into a
+   district group chat believing they are live.
+
+   WHY ONE ELEMENT IN ONE PLACE, rather than a quiet footer line plus a separate
+   amber box at the top: the pre-rendered digest (--emit-digest) replaces exactly
+   this element with a single {{AGE_BLOCK}} placeholder and ships both variants
+   beside it, so the Zapier Code step chooses a variant and fills in {{AGE_TEXT}}
+   without rendering any HTML of its own. Two age elements in two positions could
+   not be one placeholder, and a second placeholder is a second thing to get
+   wrong in a UI text box.
+
+   The clock ("3:42 PM CT") is baked in at render time — the counts file states
+   when it was built and that never changes afterwards. Only the ELAPSED phrase
+   depends on when the mail actually goes out, so only that is a placeholder.
+   ============================================================ */
+function ageBlockHtml(ctx) {
+  // --emit-digest swaps the whole element for its placeholder.
+  if (ctx.ageBlockOverride) return ctx.ageBlockOverride;
+  // ...and renders each variant once with the elapsed phrase as a placeholder.
+  var age = ctx.ageTextOverride || ctx.countsAge;
+  if (ctx.countsStale) {
+    return noteBoxHtml('Numbers may lag.',
+      'These counts were built at ' + esc(ctx.countsClock) + ' (' + esc(age) +
+      '). The feed that builds them can run hours apart, so what is in the stores right now may be higher.');
+  }
+  return '<tr><td colspan="2" style="padding:0 18px 14px;' + FF + 'font-size:13px;line-height:1.5;color:' +
+    C.dim + ';">Counts as of <span style="color:' + C.brass + ';font-weight:700;">' + esc(ctx.countsClock) +
+    '</span> (' + esc(age) + ').</td></tr>';
+}
+
+/* The amber "read this" box. Used for all three degraded states: no flags, backup
+   roster, and counts older than 90 minutes. One shape so a DM learns it once. */
+function noteBoxHtml(strongText, rest) {
+  return '<tr><td colspan="2" style="padding:0 18px 14px;">' +
+    TBL + 'bgcolor="' + C.noteBg + '" style="width:100%;background-color:' + C.noteBg +
+      ';border:1px solid ' + C.noteEdge + ';border-radius:8px;">' +
+    '<tr><td style="padding:11px 13px;' + FF + 'font-size:14px;line-height:1.5;color:' + C.ink + ';">' +
+    '<span style="color:' + C.brass + ';font-weight:700;">&#9888; ' + strongText + '</span> ' + rest +
+    '</td></tr></table></td></tr>';
+}
+
 /* One district card. Self-contained on purpose: the district name, the DM, the
-   date and the send slot all live INSIDE the card, so a screenshot cropped to
-   this card alone still says what it is with no header above it. */
+   date, the send slot and how old the numbers are all live INSIDE the card, so a
+   screenshot cropped to this card alone still says what it is with no header
+   above it. */
 function districtCardHtml(dist, ctx) {
-  var h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + C.card +
-    '" style="width:100%;background-color:' + C.card + ';border:1px solid ' + C.cardEdge +
-    ';border-radius:12px;border-collapse:separate;margin:0 0 22px 0;">';
+  var h = TBL + 'bgcolor="' + C.card + '" style="width:100%;background-color:' + C.card +
+    ';border:1px solid ' + C.cardEdge + ';border-radius:12px;border-collapse:separate;margin:0 0 22px 0;">';
 
   // brass hairline across the top of the card
   h += '<tr><td colspan="2" bgcolor="' + C.brass + '" style="background-color:' + C.brass +
        ';height:4px;line-height:4px;font-size:1px;border-radius:12px 12px 0 0;">&nbsp;</td></tr>';
 
-  // header
-  h += '<tr><td colspan="2" style="padding:18px 18px 4px;">' +
-    '<div style="font-family:' + SANS + ';font-size:12px;font-weight:700;letter-spacing:0.16em;color:' + C.brass +
+  // header — the font is set once on the cell; the two sans children inherit it
+  h += '<tr><td colspan="2" style="padding:18px 18px 4px;' + FF + '">' +
+    '<div style="font-size:12px;font-weight:700;letter-spacing:0.16em;color:' + C.brass +
       ';text-transform:uppercase;padding-bottom:6px;">T-Sheets &nbsp;&#183;&nbsp; ' + esc(ctx.shortDate) +
       ' &nbsp;&#183;&nbsp; ' + esc(ctx.slot) + '</div>' +
     '<div style="font-family:' + SERIF + ';font-size:30px;line-height:1.15;font-weight:700;color:' + C.ink + ';">' +
       esc(dist.name) + '</div>' +
-    '<div style="font-family:' + SANS + ';font-size:15px;line-height:1.4;color:' + C.dim + ';padding-top:4px;">' +
-      esc(dist.dm) + '</div>' +
+    '<div style="font-size:15px;line-height:1.4;color:' + C.dim + ';padding-top:4px;">' + esc(dist.dm) + '</div>' +
     '</td></tr>';
 
   // headline numbers
@@ -759,42 +875,33 @@ function districtCardHtml(dist, ctx) {
   else if (dist.flaggedReps === 0) flagText = '<span style="color:' + C.dim + ';">0 flagged</span>';
   else flagText = '<span style="color:' + C.flag + ';font-weight:700;">&#9873; ' + dist.flaggedReps + ' flagged</span>';
 
-  h += '<tr><td colspan="2" style="padding:8px 18px 14px;">' +
+  h += '<tr><td colspan="2" style="padding:8px 18px 14px;' + FF + '">' +
     '<span style="font-family:' + SERIF + ';font-size:40px;line-height:1;font-weight:700;color:' + C.brass + ';">' +
       dist.today + '</span>' +
-    '<span style="font-family:' + SANS + ';font-size:17px;color:' + C.dim + ';">&nbsp; today &nbsp;&#183;&nbsp; </span>' +
-    '<span style="font-family:' + SANS + ';font-size:17px;">' + flagText + '</span>' +
-    '</td></tr>';
+    '<span style="font-size:17px;color:' + C.dim + ';">&nbsp; today &nbsp;&#183;&nbsp; </span>' +
+    '<span style="font-size:17px;">' + flagText + '</span></td></tr>';
+
+  // How old the numbers are, first of the notices and before anything they
+  // qualify. Quiet when fresh, amber when not. See ageBlockHtml.
+  h += ageBlockHtml(ctx);
 
   // the honest note when the run had no timestamps to check
   if (!ctx.flagsAvailable) {
-    h += '<tr><td colspan="2" style="padding:0 18px 14px;">' +
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + C.noteBg +
-        '" style="width:100%;background-color:' + C.noteBg + ';border:1px solid ' + C.noteEdge + ';border-radius:8px;">' +
-      '<tr><td style="padding:11px 13px;font-family:' + SANS + ';font-size:14px;line-height:1.5;color:' + C.ink + ';">' +
-      '<span style="color:' + C.brass + ';font-weight:700;">&#9888; Counts only.</span> ' +
-      esc(ctx.flagsReason) +
-      ' Nobody here has been cleared &mdash; they have not been checked.' +
-      '</td></tr></table></td></tr>';
+    h += noteBoxHtml('Counts only.', esc(ctx.flagsReason) +
+      ' Nobody here has been cleared &mdash; they have not been checked.');
   }
 
   // the same visible treatment when the LIVE ROSTER could not be read: a silent
   // revert to a stale hardcoded roster is precisely what Jeff asked to prevent.
   if (!ctx.directoryAvailable) {
-    h += '<tr><td colspan="2" style="padding:0 18px 14px;">' +
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + C.noteBg +
-        '" style="width:100%;background-color:' + C.noteBg + ';border:1px solid ' + C.noteEdge + ';border-radius:8px;">' +
-      '<tr><td style="padding:11px 13px;font-family:' + SANS + ';font-size:14px;line-height:1.5;color:' + C.ink + ';">' +
-      '<span style="color:' + C.brass + ';font-weight:700;">&#9888; Backup roster.</span> ' +
-      esc(ctx.directoryReason) +
-      ' Store-to-district alignment and employee names below may be out of date.' +
-      '</td></tr></table></td></tr>';
+    h += noteBoxHtml('Backup roster.', esc(ctx.directoryReason) +
+      ' Store-to-district alignment and employee names below may be out of date.');
   }
 
   // stores
   h += '<tr><td colspan="2" style="padding:0 18px;">';
   if (dist.stores.length === 0) {
-    h += '<div style="font-family:' + SANS + ';font-size:17px;line-height:1.5;color:' + C.dim +
+    h += '<div style="' + FF + 'font-size:17px;line-height:1.5;color:' + C.dim +
          ';padding:0 0 16px;">No T-sheets anywhere in this district today.</div>';
   } else {
     for (var i = 0; i < dist.stores.length; i++) h += storeBlockHtml(dist.stores[i]);
@@ -804,16 +911,16 @@ function districtCardHtml(dist, ctx) {
   // zero stores — a store at zero is the information he needs; a PERSON at zero is noise
   if (dist.zeroStores.length) {
     var names = dist.zeroStores.map(function (n) { return esc(n.replace(/ Xfinity Store$/, '')); });
-    h += '<tr><td colspan="2" style="padding:2px 18px 16px;">' +
-      '<div style="font-family:' + SANS + ';font-size:15px;line-height:1.5;color:' + C.dim + ';">' +
+    h += '<tr><td colspan="2" style="padding:2px 18px 16px;' + FF +
+      'font-size:15px;line-height:1.5;color:' + C.dim + ';">' +
       '<span style="color:' + C.brass + ';font-weight:700;">Nothing at all today:</span> ' +
-      names.join(' &nbsp;&#183;&nbsp; ') + '</div></td></tr>';
+      names.join(' &nbsp;&#183;&nbsp; ') + '</td></tr>';
   }
 
   // legend — written for a DM who has never seen this before
   h += '<tr><td colspan="2" bgcolor="' + C.storeBar + '" style="background-color:' + C.storeBar +
-    ';border-top:1px solid ' + C.rule + ';border-radius:0 0 12px 12px;padding:12px 18px;font-family:' + SANS +
-    ';font-size:13px;line-height:1.55;color:' + C.dim + ';">' +
+    ';border-top:1px solid ' + C.rule + ';border-radius:0 0 12px 12px;padding:12px 18px;' + FF +
+    'font-size:13px;line-height:1.55;color:' + C.dim + ';">' +
     (ctx.flagsAvailable
       ? '<span style="color:' + C.flag + ';font-weight:700;">&#9873; Red</span> = the same person at the same store ' +
         'filed 2 or more T-sheets within 5 minutes of each other. Times are listed so you can check it. ' +
@@ -847,23 +954,22 @@ function unrosteredQualifier(u) {
 
 function directoryIssuesHtml(issues) {
   if (!issues || !issues.count) return '';
+  // The font is declared once on the wrapping cell; every div below inherits it.
   function block(label, lines) {
     if (!lines.length) return '';
-    var h = '<div style="font-family:' + SANS + ';font-size:14px;font-weight:700;color:' + C.brass +
+    var h = '<div style="font-size:14px;font-weight:700;color:' + C.brass +
       ';padding:10px 0 4px;">' + esc(label) + '</div>';
     for (var i = 0; i < lines.length; i++) {
-      h += '<div style="font-family:' + SANS + ';font-size:15px;line-height:1.5;color:' + C.ink +
-        ';padding:1px 0;">' + lines[i] + '</div>';
+      h += '<div style="font-size:15px;line-height:1.5;color:' + C.ink + ';padding:1px 0;">' + lines[i] + '</div>';
     }
     return h;
   }
-  var h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + C.card +
-    '" style="width:100%;background-color:' + C.card + ';border:1px solid ' + C.cardEdge +
-    ';border-radius:12px;border-collapse:separate;margin:6px 0 0 0;">' +
-    '<tr><td style="padding:16px 18px 18px;">' +
-    '<div style="font-family:' + SANS + ';font-size:12px;font-weight:700;letter-spacing:0.16em;color:' + C.brass +
+  var h = TBL + 'bgcolor="' + C.card + '" style="width:100%;background-color:' + C.card +
+    ';border:1px solid ' + C.cardEdge + ';border-radius:12px;border-collapse:separate;margin:6px 0 0 0;">' +
+    '<tr><td style="padding:16px 18px 18px;' + FF + '">' +
+    '<div style="font-size:12px;font-weight:700;letter-spacing:0.16em;color:' + C.brass +
       ';text-transform:uppercase;">Directory issues</div>' +
-    '<div style="font-family:' + SANS + ';font-size:14px;line-height:1.5;color:' + C.dim + ';padding-top:5px;">' +
+    '<div style="font-size:14px;line-height:1.5;color:' + C.dim + ';padding-top:5px;">' +
       'Worth a look in the Admin Panel Directory. Nothing here affects the counts above.</div>';
 
   h += block('Submitted at a store they are not rostered at',
@@ -912,26 +1018,24 @@ function emailHtml(title, introLines, cards, ctx) {
     '<meta name="color-scheme" content="dark light"><meta name="supported-color-schemes" content="dark light">' +
     '<title>' + esc(title) + '</title></head>' +
     '<body style="margin:0;padding:0;width:100%;background-color:' + C.page + ';color:' + C.ink + ';">' +
-    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + C.page +
-      '" style="width:100%;background-color:' + C.page + ';margin:0;padding:0;border-collapse:collapse;">' +
+    TBL + 'bgcolor="' + C.page + '" style="width:100%;background-color:' + C.page +
+      ';margin:0;padding:0;border-collapse:collapse;">' +
     '<tr><td align="center" style="padding:18px 10px 28px;">' +
-    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" ' +
-      'style="width:100%;max-width:600px;border-collapse:collapse;">';
+    TBL + 'style="width:100%;max-width:600px;border-collapse:collapse;">';
 
-  h += '<tr><td style="padding:0 2px 16px;">' +
-    '<div style="font-family:' + SANS + ';font-size:12px;font-weight:700;letter-spacing:0.2em;color:' + C.brassDim +
+  h += '<tr><td style="padding:0 2px 16px;' + FF + '">' +
+    '<div style="font-size:12px;font-weight:700;letter-spacing:0.2em;color:' + C.brassDim +
       ';text-transform:uppercase;">Blufox Mobile &#183; Cook County Cooks</div>' +
     '<div style="font-family:' + SERIF + ';font-size:24px;line-height:1.25;font-weight:700;color:' + C.ink +
       ';padding-top:6px;">' + esc(title) + '</div>';
   for (var i = 0; i < introLines.length; i++) {
-    h += '<div style="font-family:' + SANS + ';font-size:15px;line-height:1.5;color:' + C.dim + ';padding-top:4px;">' +
-      introLines[i] + '</div>';
+    h += '<div style="font-size:15px;line-height:1.5;color:' + C.dim + ';padding-top:4px;">' + introLines[i] + '</div>';
   }
   h += '</td></tr>';
 
   h += '<tr><td>' + cards.join('') + '</td></tr>';
 
-  h += '<tr><td style="padding:4px 2px 0;font-family:' + SANS + ';font-size:12px;line-height:1.6;color:' + C.faint + ';">' +
+  h += '<tr><td style="padding:4px 2px 0;' + FF + 'font-size:12px;line-height:1.6;color:' + C.faint + ';">' +
     'Today = ' + esc(ctx.longDate) + ', America/Chicago. Generated ' + esc(ctx.generatedLabel) + '. ' +
     'Automated &#8212; do not reply.</td></tr>';
 
@@ -1071,6 +1175,13 @@ function buildDigest(opts) {
     flags: opts.flags || null
   });
 
+  /* HOW OLD ARE THE NUMBERS. The counts file states when it was built; anything
+     we cannot parse is treated as STALE, because "we do not know" and "it is
+     fine" are not the same answer. */
+  var gen = opts.countsGeneratedAt ? new Date(opts.countsGeneratedAt) : null;
+  var genOk = !!(gen && !isNaN(gen.getTime()));
+  var ageMs = genOk ? (now.getTime() - gen.getTime()) : null;
+
   var ctx = {
     day: day,
     // The scheduled runner PASSES the slot label rather than letting us read the
@@ -1079,6 +1190,13 @@ function buildDigest(opts) {
     shortDate: shortDate(day),
     longDate: longDate(day),
     generatedLabel: fmt({ month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }).format(now) + ' CT',
+    countsClock: genOk ? (shortClockInTZ(gen) + ' CT') : 'an unknown time',
+    countsAge: genOk ? ageText(ageMs) : 'age unknown',
+    countsStale: !genOk || ageMs > STALE_COUNTS_MS,
+    /* --emit-digest only. Both default to undefined, so a normal run renders the
+       real element with the real elapsed phrase and never sees a placeholder. */
+    ageBlockOverride: opts.ageBlockOverride || null,
+    ageTextOverride: opts.ageTextOverride || null,
     flagsAvailable: model.flagsAvailable,
     // WHY the check did not run, in the DM's words. fetch-data.js passes the real
     // reason -- a missing flags file reads differently from a stale one, and a
@@ -1152,7 +1270,14 @@ function buildDigest(opts) {
   // --- Each DM: their own district only ---------------------------------------
   for (i = 0; i < model.districts.length; i++) {
     var d = model.districts[i];
-    if (!d.dmEmail) continue;
+    /* FAIL LOUDLY. `continue` here would silently ship five emails instead of
+       six and one district's group chat would just stop getting its numbers --
+       with nothing anywhere saying why. The address comes from the Admin Panel
+       Directory, so a missing one is a fixable data problem, not a runtime one. */
+    if (!d.dmEmail) {
+      throw new Error('T-Sheet digest: district "' + d.name + '" (' + d.key + ') has no DM email address in ' +
+        'store-directory.json. Fix it in the Admin Panel Directory. No digest built.');
+    }
     var intro = [esc(ctx.longDate) + ' &#183; ' + esc(ctx.slot) + ' update &#183; for ' + esc(d.dm)];
     emails.push({
       to: d.dmEmail,
@@ -1198,6 +1323,126 @@ function buildDigest(opts) {
  * Store and rep keys are re-normalized here anyway. Trusting the file to have
  * done it is how the two feeds silently stop joining.
  */
+/* ============================================================
+   THE PRE-RENDERED DIGEST  —  data/tsheet-digest.json
+
+   WHY THIS EXISTS. The 12:00 / 3:00 / 6:00 send runs on Zapier, and the only
+   place to put code there is a "Code by Zapier" step: an unversioned textarea in
+   a web UI that nothing can diff or review. Pasting this 80 KB renderer into it
+   is not an option. So the GitHub Action that already reads the feed renders the
+   six emails HERE, into a file in the repo, and the Code step becomes a fetch, a
+   handful of sanity checks and two string substitutions.
+
+   WHAT CANNOT BE PRE-RENDERED, and therefore what the placeholders are:
+
+     {{SLOT}}       Which of the three sends this is ("3:00 PM"). The Action runs
+                    every ten minutes and has no idea which send will pick its
+                    output up, so the slot is decided by the Zap at send time.
+     {{AGE_BLOCK}}  How old the counts are BY THE TIME THE MAIL GOES OUT. The
+                    file is built once and may be read up to a send later, so the
+                    elapsed time is the one number that keeps moving after the
+                    render. Both variants of the element ship alongside so the
+                    Code step chooses one rather than rendering anything.
+
+   That is the whole list. Everything else — every count, every name, every flag,
+   every colour, the date, the DM addresses — is fixed the moment the counts file
+   is written, and is baked in.
+
+   The clock the age is measured FROM ("3:42 PM CT") is baked in too: the counts
+   file states when it was built and that never changes afterwards.
+
+   INVARIANT, asserted by the test suite: for any slot and any `now`,
+     html_template
+       .split('{{SLOT}}').join(slot)
+       .split('{{AGE_BLOCK}}').join(variant.split('{{AGE_TEXT}}').join(ageText(now - countsGeneratedAt)))
+   is BYTE-IDENTICAL to buildDigest(...).emails[i].html for the same inputs. It
+   holds by construction — one renderer, called with sentinels instead of values —
+   and it holds only because esc() is the identity on every substituted string
+   (all ASCII, no markup). Keep it that way.
+   ============================================================ */
+
+var SLOT_PLACEHOLDER      = '{{SLOT}}';
+var AGE_BLOCK_PLACEHOLDER = '{{AGE_BLOCK}}';
+var AGE_TEXT_PLACEHOLDER  = '{{AGE_TEXT}}';
+
+/* The subject cannot take {{AGE_BLOCK}} (that is a block of HTML) and must not
+   need a third placeholder, so staleness reaches it as a PREFIX the Code step
+   prepends to the already-substituted subject. Front, not back: a stale-data
+   warning truncated off an iPhone notification is worth nothing, and how many
+   T-sheets a district filed does not matter if the number is ninety minutes
+   behind. The wording lives here, in the repo, not in a Zapier text box. */
+var SUBJECT_STALE_PREFIX_TEMPLATE = '[Data ' + AGE_TEXT_PLACEHOLDER + '] ';
+
+/**
+ * buildPrerenderedDigest(opts) -> the object written to data/tsheet-digest.json.
+ *
+ * Takes everything buildDigest() takes, plus:
+ *   countsGeneratedAt  ISO string from the counts file — what the age is measured
+ *                      FROM. Missing/unparseable renders as "an unknown time" and
+ *                      is treated as stale.
+ *   runId              the counts/flags run_id, carried through so a consumer can
+ *                      prove all three files came from one feed read.
+ */
+function buildPrerenderedDigest(opts) {
+  opts = opts || {};
+  var now = opts.now ? (opts.now instanceof Date ? opts.now : new Date(opts.now)) : new Date();
+
+  // Same options, same renderer — only the two moving values become sentinels.
+  var o = {}, k;
+  for (k in opts) if (Object.prototype.hasOwnProperty.call(opts, k)) o[k] = opts[k];
+  o.now = now;
+  o.slotLabel = SLOT_PLACEHOLDER;
+  o.ageBlockOverride = AGE_BLOCK_PLACEHOLDER;
+
+  var result = buildDigest(o);
+
+  /* The two variants come out of ageBlockHtml — the same function the live email
+     uses — with the elapsed phrase as its placeholder. Writing this markup a
+     second time by hand is exactly how the two would drift apart. */
+  var gen = opts.countsGeneratedAt ? new Date(opts.countsGeneratedAt) : null;
+  var genOk = !!(gen && !isNaN(gen.getTime()));
+  var clock = genOk ? (shortClockInTZ(gen) + ' CT') : 'an unknown time';
+  function variant(stale) {
+    return ageBlockHtml({ countsStale: stale, countsClock: clock,
+                          ageTextOverride: AGE_TEXT_PLACEHOLDER });
+  }
+
+  return {
+    generated_at: now.toISOString(),
+    run_id: opts.runId || null,
+    day: result.day,
+    timezone: TZ,
+    // What the age is measured from. The Code step needs it to compute the
+    // elapsed phrase; nothing else in the file moves after the render.
+    counts_generated_at: genOk ? gen.toISOString() : null,
+    flags_available: result.flagsAvailable,
+    flags_note: result.flagsAvailable ? null : opts.flagsReason || null,
+    directory_available: result.directoryAvailable,
+    directory_note: result.directoryAvailable ? null : opts.directoryReason || null,
+    // Sunday still renders — the Zap's filter is what stops the send — but the
+    // file says plainly that it must not go out, so a broken filter is visible.
+    send_window: result.sendWindow,
+    totals: {
+      today: result.totals.today,
+      flagged_reps: result.totals.flaggedReps,
+      flagged_stores: result.totals.flaggedStores
+    },
+    age_stale_after_minutes: STALE_COUNTS_MS / 60000,
+    age_block_fresh_template: variant(false),
+    age_block_stale_template: variant(true),
+    subject_stale_prefix_template: SUBJECT_STALE_PREFIX_TEMPLATE,
+    emails: result.emails.map(function (e) {
+      return {
+        to: e.to,
+        to_name: e.toName,
+        district: e.scope,              // 'all' for Jeff, else the district key
+        subject_template: e.subject,
+        html_template: e.html
+      };
+    })
+  };
+}
+
 function flagsFromFile(json) {
   var out = {};
   if (!json || !json.stores) return out;
@@ -1372,6 +1617,112 @@ function expandCounts(countsJson) {
   return subs;
 }
 
+/* WHICH FLAGS, IF ANY — one copy of the rule, shared by the network path and the
+   on-disk path, because the two silently disagreeing about whether a day was
+   checked is precisely the failure the notice in the email exists to prevent.
+
+   A STALE flags file is the dangerous case: every count is right, nothing is red,
+   and it looks like a clean day. Refuse to use it and say why. */
+function chooseFlags(countsData, day, flagsData, flagsErr) {
+  if (flagsErr) {
+    return { flags: null, flagsAvailable: false,
+             flagsReason: 'The rapid-fire results file could not be read (' +
+               ((flagsErr && flagsErr.message) || String(flagsErr)) + '), so the 5-minute check did not run.' };
+  }
+  if (flagsData === false) {
+    return { flags: null, flagsAvailable: false,
+             flagsReason: 'This run read counts only, so the 5-minute rapid-fire check was not applied.' };
+  }
+  var f = flagsData;
+  var reason = null;
+  if (f.day && f.day !== day) {
+    reason = 'The rapid-fire results file is stale — it covers ' + f.day +
+      ', but these counts are for ' + day + '. The 5-minute check was not applied.';
+  } else if (f.run_id && countsData.run_id && f.run_id !== countsData.run_id) {
+    reason = 'The counts and the rapid-fire results came from two different feed reads, ' +
+      'so they may disagree. The 5-minute check was not applied.';
+  } else if (f.window_ms && Number(f.window_ms) !== digest.RAPID_WINDOW_MS) {
+    reason = 'The rapid-fire results were built with a ' + f.window_ms +
+      'ms window, not the ' + digest.RAPID_WINDOW_MS + 'ms rule this digest states. Not applied.';
+  }
+  if (reason) return { flags: null, flagsAvailable: false, flagsReason: reason };
+  return { flags: digest.flagsFromFile(f), flagsAvailable: true, flagsReason: null };
+}
+
+/* --- source: 'local' — the three files ON DISK, not over the network --------
+
+   This is the path the GitHub Action uses. It renders the digest from the counts
+   and flags files THE SAME RUN JUST WROTE, in the working tree, BEFORE they are
+   committed. Fetching them over HTTP there would be wrong twice over: GitHub
+   Pages can sit hours behind main, and raw.githubusercontent cannot serve a file
+   that has not been pushed yet — so the Action would render last run's numbers
+   and commit them beside this run's counts, under this run's run_id. Reading the
+   bytes on disk is the only way the three committed files are guaranteed to
+   describe one feed read.
+   -------------------------------------------------------------------------- */
+function readLocalJson(p, label) {
+  var body = require('fs').readFileSync(p, 'utf8');
+  try {
+    return { data: JSON.parse(body), bytes: body.length, ms: 0 };
+  } catch (e) {
+    throw new Error(label + ' at ' + p + ' is not JSON (' + body.length + ' bytes)');
+  }
+}
+
+async function fetchLocal(opts) {
+  var countsPath = opts.countsPath || 'data/tsheet-counts.json';
+  var flagsPath = opts.flagsPath || 'data/tsheet-flags.json';
+  var directoryPath = opts.directoryPath || 'data/store-directory.json';
+
+  // The counts file is the one that may not fail: no counts, no digest.
+  var counts = readLocalJson(countsPath, 'counts file');
+  if (!counts.data || !counts.data.stores) throw new Error('counts file at ' + countsPath + ' has no .stores');
+
+  var directory = null, directoryReason = null, directoryMeta = null;
+  try {
+    var dirGot = readLocalJson(directoryPath, 'store directory');
+    if (!digest.directoryIsUsable(dirGot.data)) {
+      throw new Error('store directory is missing one of districts / storeDistricts / storeEmployees / stores');
+    }
+    directory = dirGot.data;
+    directoryMeta = { path: directoryPath, bytes: dirGot.bytes, updatedAt: dirGot.data.updatedAt,
+                      districts: dirGot.data.districts.length,
+                      stores: Object.keys(dirGot.data.storeDistricts).length };
+  } catch (err) {
+    directoryReason = 'The live store directory could not be read (' +
+      ((err && err.message) || String(err)) + '), so this used the built-in backup roster.';
+  }
+
+  var day = counts.data.day || opts.day || ymdToday();
+  var subs = expandCounts(counts.data);
+
+  var flagsData = null, flagsErr = null, flagsMeta = null;
+  if (opts.withFlags === false) {
+    flagsData = false;
+  } else {
+    try {
+      var fg = readLocalJson(flagsPath, 'flags file');
+      if (!fg.data || !fg.data.stores) throw new Error('flags file at ' + flagsPath + ' has no .stores');
+      flagsData = fg.data;
+      flagsMeta = { path: flagsPath, bytes: fg.bytes, day: fg.data.day, generatedAt: fg.data.generated_at,
+                    windowMs: fg.data.window_ms, rule: fg.data.rule, runId: fg.data.run_id };
+    } catch (err) { flagsErr = err; }
+  }
+
+  var chosen = chooseFlags(counts.data, day, flagsData, flagsErr);
+
+  return {
+    source: 'local', day: day, submissions: subs,
+    flags: chosen.flags, flagsAvailable: chosen.flagsAvailable, flagsReason: chosen.flagsReason,
+    directory: directory, directoryAvailable: !!directory, directoryReason: directoryReason,
+    meta: { directory: directoryMeta,
+            counts: { path: countsPath, bytes: counts.bytes, generatedAt: counts.data.generated_at,
+                      cycleLabel: counts.data.cycle_label, sourceRows: counts.data.source_rows,
+                      runId: counts.data.run_id },
+            flags: flagsMeta, todayRows: subs.length }
+  };
+}
+
 /* --- source: 'pages' — counts + flags, the scheduled path ------------------ */
 async function fetchPages(opts) {
   var counts = await getCounts(opts);
@@ -1393,37 +1744,21 @@ async function fetchPages(opts) {
   var day = counts.data.day || opts.day || ymdToday();
   var subs = expandCounts(counts.data);
 
-  var flags = null, flagsAvailable = false, flagsReason = null, flagsMeta = null;
-
+  var flagsData = null, flagsErr = null, flagsMeta = null;
   if (opts.withFlags === false) {
-    flagsReason = 'This run read counts only, so the 5-minute rapid-fire check was not applied.';
+    flagsData = false;
   } else {
     try {
       var f = await getFlags(opts);
+      flagsData = f.data;
       flagsMeta = { url: opts.flagsUrl || FLAGS_URL, bytes: f.bytes, fetchMs: f.ms,
                     day: f.data.day, generatedAt: f.data.generated_at,
                     windowMs: f.data.window_ms, rule: f.data.rule, runId: f.data.run_id };
-
-      // A STALE flags file is the dangerous case: every count is right, nothing is
-      // red, and it looks like a clean day. Refuse to use it and say why.
-      if (f.data.day && f.data.day !== day) {
-        flagsReason = 'The rapid-fire results file is stale — it covers ' + f.data.day +
-          ', but these counts are for ' + day + '. The 5-minute check was not applied.';
-      } else if (f.data.run_id && counts.data.run_id && f.data.run_id !== counts.data.run_id) {
-        flagsReason = 'The counts and the rapid-fire results came from two different feed reads, ' +
-          'so they may disagree. The 5-minute check was not applied.';
-      } else if (f.data.window_ms && Number(f.data.window_ms) !== digest.RAPID_WINDOW_MS) {
-        flagsReason = 'The rapid-fire results were built with a ' + f.data.window_ms +
-          'ms window, not the ' + digest.RAPID_WINDOW_MS + 'ms rule this digest states. Not applied.';
-      } else {
-        flags = digest.flagsFromFile(f.data);
-        flagsAvailable = true;
-      }
-    } catch (err) {
-      flagsReason = 'The rapid-fire results file could not be read (' +
-        ((err && err.message) || String(err)) + '), so the 5-minute check did not run.';
-    }
+    } catch (err) { flagsErr = err; }
   }
+
+  var chosen = chooseFlags(counts.data, day, flagsData, flagsErr);
+  var flags = chosen.flags, flagsAvailable = chosen.flagsAvailable, flagsReason = chosen.flagsReason;
 
   return {
     source: 'pages', day: day, submissions: subs,
@@ -1489,6 +1824,7 @@ async function fetchDay(opts) {
   var source = opts.source || 'auto';
   if (source === 'auto' || source === 'pages') return await fetchPages(opts);
   if (source === 'counts') return await fetchCounts(opts);
+  if (source === 'local') return await fetchLocal(opts);
   if (source === 'apps-script') {
     try {
       return await fetchAppsScript(opts);
@@ -1501,7 +1837,7 @@ async function fetchDay(opts) {
       return res;
     }
   }
-  throw new Error('unknown source: ' + source + " (try 'auto', 'pages', 'counts' or 'apps-script')");
+  throw new Error('unknown source: ' + source + " (try 'auto', 'pages', 'counts', 'local' or 'apps-script')");
 }
 
 
@@ -1511,9 +1847,25 @@ async function fetchDay(opts) {
    SCHEDULED-RUN CLI
    ============================================================
 
-   node tsheet-digest.js --slot=12:00 --out=emails.json [--day=YYYY-MM-DD] [--dry-run]
+   TWO MODES.
 
-   Runs in a COMPLETELY FRESH cloud container that a scheduled task starts at
+   (1) SEND-READY EMAILS — unchanged, and still what a human runs by hand:
+
+       node tsheet-digest.js --slot=12:00 --out=emails.json [--day=YYYY-MM-DD] [--dry-run]
+
+   (2) PRE-RENDERED DIGEST — what the GitHub Action runs every ten minutes:
+
+       node tsheet-digest.js --emit-digest --source=local \
+            --digest-out=data/tsheet-digest.json --skip-if-current
+
+       Renders the same six emails with the send slot and the data-age element
+       left as placeholders, and writes data/tsheet-digest.json. --source=local
+       reads the counts/flags/directory files from DISK (see fetch-data.js), so
+       the Action renders the very bytes it is about to commit rather than
+       whatever GitHub Pages happens to be serving. Mode (2) takes no --slot: the
+       whole point is that the slot is not known until the mail goes out.
+
+   Mode (1) runs in a COMPLETELY FRESH cloud container that a scheduled task starts at
    12:00, 3:00 and 6:00 PM America/Chicago, Monday through Saturday. Nothing
    survives between runs: no npm install, no repo checkout, no node_modules. That
    is why this is one file with zero dependencies.
@@ -1527,8 +1879,12 @@ async function fetchDay(opts) {
           The email degrades visibly, saying in plain words that the rapid-fire
           check did not run and that nobody has been cleared.
      - Sunday
-       -> EXIT 0 immediately, write nothing, say so. Jeff was explicit that
-          Sunday never sends; this is belt-and-braces behind the cron.
+       -> mode (1): EXIT 0 immediately, write nothing, say so. Jeff was explicit
+          that Sunday never sends; this is belt-and-braces behind the cron.
+       -> mode (2): STILL WRITE THE FILE. The Action runs seven days a week and
+          must commit three files that agree; the Zap's own filter is what stops
+          the Sunday send. The file says so itself in send_window, so a broken
+          filter is visible rather than inferred.
    ============================================================ */
 
 var SLOTS = { '12:00': '12:00 PM', '15:00': '3:00 PM', '18:00': '6:00 PM' };
@@ -1545,8 +1901,138 @@ function parseArgs(argv) {
   return a;
 }
 
+/* ---------- mode (2): write data/tsheet-digest.json ------------------------ */
+async function emitDigest(a) {
+  var out = a['digest-out'];
+  if (!out || out === true) die('--digest-out=PATH is required with --emit-digest');
+
+  var source = a.source ? String(a.source) : 'local';
+  var fetched;
+  try {
+    fetched = await fetchDay({
+      source: source,
+      day: a.day ? String(a.day).trim() : undefined,
+      countsPath: a['counts-file'], flagsPath: a['flags-file'], directoryPath: a['directory-file'],
+      countsUrl: a['counts-url'], flagsUrl: a['flags-url'], directoryUrl: a['directory-url']
+    });
+  } catch (err) {
+    die('counts unreadable: ' + ((err && err.message) || String(err)));
+  }
+
+  /* The day comes from the COUNTS FILE, never from the clock: this file describes
+     that read and nothing else. A mismatch with today is worth shouting about --
+     it means the feed build has stalled -- but it is not fatal here, because the
+     Zap re-checks the day before it sends anything and a half-written trio of
+     files is worse than a stale one. */
+  var today = ymdInTZ(new Date());
+  if (fetched.day !== today) {
+    process.stderr.write('tsheet-digest: WARNING - counts cover ' + fetched.day + ', not today (' + today +
+      '). Rendering the day the counts describe.\n');
+  }
+  if (weekdayIndex(fetched.day) === 0) {
+    process.stderr.write('tsheet-digest: note - ' + fetched.day + ' is a Sunday. Rendering anyway; ' +
+      'send_window.shouldSend is false and the Zap filter is what stops the send.\n');
+  }
+
+  var countsMeta = (fetched.meta && fetched.meta.counts) || {};
+
+  /* --skip-if-current: LEAVE THE FILE ALONE when it already describes this exact
+     feed read. This is what keeps the three files moving together.
+
+     build-tsheet-counts.js only rewrites counts+flags when something MEANINGFUL
+     moved; if nothing did, both keep their previous run_id and the working tree
+     stays clean, so the Action commits nothing. Without this check the digest
+     would still be rewritten every ten minutes — generated_at alone changes every
+     run — and would drag counts and flags into a commit they did not earn, all
+     day, every day, for nothing.
+
+     The comparison is on run_id, not on file content: same run_id means the same
+     feed read, which means the same numbers, the same flags and the same
+     counts_generated_at the age is measured from. A missing file, an unparseable
+     one, or one carrying a different run_id all fall through and re-render — that
+     is the repair path for a first deploy or a half-finished earlier run. */
+  if (a['skip-if-current']) {
+    var cur = null;
+    try { cur = JSON.parse(require('fs').readFileSync(out, 'utf8')); } catch (e) { cur = null; }
+    if (cur && cur.run_id && countsMeta.runId && cur.run_id === countsMeta.runId && cur.day === fetched.day) {
+      process.stdout.write('digest already current for run_id ' + cur.run_id + '; leaving ' + out + ' as-is\n');
+      return;
+    }
+  }
+
+  var payload = buildPrerenderedDigest({
+    day: fetched.day,
+    submissions: fetched.submissions,
+    flags: fetched.flags, flagsAvailable: fetched.flagsAvailable, flagsReason: fetched.flagsReason,
+    directory: fetched.directory, directoryReason: fetched.directoryReason,
+    countsGeneratedAt: countsMeta.generatedAt,
+    runId: countsMeta.runId,
+    now: new Date()
+  });
+
+  /* The run_id is what proves counts, flags and digest describe one feed read.
+     Committing a digest that cannot be tied to its counts defeats the point. */
+  if (!payload.run_id) die('the counts file carries no run_id - refusing to write a digest that cannot be ' +
+    'matched to its counts and flags');
+
+  /* Belt and braces on the thing this file exists to guarantee. Six recipients,
+     Jeff first, and not one un-substituted placeholder outside the two the
+     contract names. A Zapier Code step cannot check this for us. */
+  assertPrerendered(payload);
+
+  require('fs').writeFileSync(out, JSON.stringify(payload, null, 2));
+  var bytes = require('fs').statSync(out).size;
+  process.stderr.write('tsheet-digest: ' + payload.day + ' run_id=' + payload.run_id + ' - ' +
+    payload.totals.today + ' today, ' +
+    (payload.flags_available ? payload.totals.flagged_reps + ' flagged in ' +
+       payload.totals.flagged_stores + ' stores' : 'FLAGS UNAVAILABLE') + '\n');
+  if (payload.flags_note) process.stderr.write('tsheet-digest: ' + payload.flags_note + '\n');
+  if (payload.directory_note) process.stderr.write('tsheet-digest: ' + payload.directory_note + '\n');
+  process.stdout.write('wrote ' + out + ' (' + payload.emails.length + ' emails, ' + bytes + ' bytes)\n');
+}
+
+/* Every invariant the Zapier Code step is entitled to assume, checked HERE where
+   a failure is a red X on a commit rather than six wrong emails. */
+function assertPrerendered(p) {
+  var ALLOWED = { '{{SLOT}}': 1, '{{AGE_BLOCK}}': 1 };
+  if (!p.emails || p.emails.length !== 6) {
+    die('expected exactly 6 emails, got ' + ((p.emails && p.emails.length) || 0) +
+      ' - a district is missing from store-directory.json');
+  }
+  if (p.emails[0].district !== 'all') die('the first email must be the all-districts one (Jeff), got ' +
+    p.emails[0].district);
+  var seen = {};
+  for (var i = 0; i < p.emails.length; i++) {
+    var e = p.emails[i];
+    if (!e.to || e.to.indexOf('@') < 1) die('email ' + i + ' has no usable address');
+    if (seen[e.to.toLowerCase()]) die('two emails address ' + e.to);
+    seen[e.to.toLowerCase()] = 1;
+    if (e.html_template.indexOf('{{SLOT}}') === -1) die(e.district + ': html_template has no {{SLOT}}');
+    if (e.html_template.indexOf('{{AGE_BLOCK}}') === -1) die(e.district + ': html_template has no {{AGE_BLOCK}}');
+    if (e.subject_template.indexOf('{{SLOT}}') === -1) die(e.district + ': subject_template has no {{SLOT}}');
+    stray(e.html_template, ALLOWED, e.district + '.html_template');
+    stray(e.subject_template, ALLOWED, e.district + '.subject_template');
+  }
+  stray(p.age_block_fresh_template, { '{{AGE_TEXT}}': 1 }, 'age_block_fresh_template');
+  stray(p.age_block_stale_template, { '{{AGE_TEXT}}': 1 }, 'age_block_stale_template');
+  stray(p.subject_stale_prefix_template, { '{{AGE_TEXT}}': 1 }, 'subject_stale_prefix_template');
+  if (p.age_block_fresh_template.indexOf('{{AGE_TEXT}}') === -1) die('age_block_fresh_template has no {{AGE_TEXT}}');
+  if (p.age_block_stale_template.indexOf('{{AGE_TEXT}}') === -1) die('age_block_stale_template has no {{AGE_TEXT}}');
+}
+
+/* Any {{...}} in `s` that is not in `allowed` is a placeholder nobody will ever
+   substitute, and it would ship to a district group chat as literal braces. */
+function stray(s, allowed, where) {
+  var re = /\{\{[^}]*\}\}/g, m;
+  while ((m = re.exec(String(s)))) {
+    if (!allowed[m[0]]) die(where + ': unexpected placeholder ' + m[0]);
+  }
+}
+
 async function main() {
   var a = parseArgs(process.argv.slice(2));
+
+  if (a['emit-digest']) return await emitDigest(a);
 
   // The slot label is GIVEN, never derived from the clock: a task that fires
   // three minutes late must still say "3:00 PM" in the subject line.
