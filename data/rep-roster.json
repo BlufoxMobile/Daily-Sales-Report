@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-03T17:50:57.740190+00:00",
+  "updatedAt": "2026-09-04T13:09:13.422134+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -15,6 +15,7 @@
       "Antonio Carradine",
       "Arturo Cahue",
       "Eric Bartkowiak",
+      "Jacqueline Benitez",
       "Jalen Logan",
       "Omar Bustamante",
       "Zuri Salazar",
@@ -27,11 +28,13 @@
       "Eric Reyes",
       "Jazmine Barrera",
       "Jose Pugas",
+      "Kamar Thomas",
       "New Hire",
       "DM or Director Submission"
     ],
     "Cicero Xfinity Store": [
       "Francisco Salazar",
+      "Jaime Rodriguez",
       "Jonathan Rosa",
       "Julia Ariza",
       "Kevin Morales",
@@ -56,6 +59,7 @@
       "Alyissa Davis",
       "DJ Regan",
       "Dylan Regan",
+      "Emanuel Soto-Moreno",
       "Fredy Aguilera",
       "Karla Gonzalez",
       "Kathrynn Kirkman",
@@ -78,10 +82,13 @@
       "Alicia Valdez",
       "Crystal Perez",
       "D'andre Jenkins",
+      "Erica Young",
       "Frankie Pedraza-Scalfano",
       "Jesus Romo",
+      "Juan Carrillo",
       "Marshawn Sykes",
       "Michael Rivera",
+      "Wendy Cerda Bacilio",
       "New Hire",
       "DM or Director Submission"
     ],
@@ -99,6 +106,7 @@
       "Aedo Yonana",
       "Alexandro Flores",
       "Anthony Greer",
+      "Eric Gonzalez",
       "Linda Weeks",
       "Okeefe Perkins",
       "Tanzim Chowdhury",
@@ -109,9 +117,11 @@
       "Alexander Harned",
       "Dalton Arwood",
       "Dalton Fox",
+      "Daniel Mitchell Jr.",
       "Jared Reaves",
       "Josh Trentham",
       "Joshua Huerto",
+      "Matthew Brooks",
       "Nicholes Gilland",
       "Sheradon Lindsey",
       "New Hire",
@@ -123,6 +133,7 @@
       "Darryl Charles",
       "Jada Borders",
       "Jeremiah Watson",
+      "Matthew Gallardo",
       "Reina Salgado",
       "Victoria Ponce de Leon",
       "New Hire",
@@ -131,6 +142,7 @@
     "Johnson City Xfinity Store": [
       "Deaundre Mitchell",
       "Garrett Johnson",
+      "Jesse Grawberg",
       "Joshua Jones",
       "Richard Campbell",
       "VG Huerto",
@@ -162,16 +174,19 @@
       "Dalton Hogan",
       "Hannah Ingram",
       "Jaxon Miehle",
+      "Keegan Canada",
       "New Hire",
       "DM or Director Submission"
     ],
     "North Knoxville Xfinity Store": [
+      "Cleophus McKamey",
       "Gregory Martin",
       "Zoe Spradling",
       "New Hire",
       "DM or Director Submission"
     ],
     "Oak Lawn Xfinity Store": [
+      "Ahmad Allan",
       "Briana Marquez",
       "Christopher Coleman",
       "Emily Guzman",
@@ -188,6 +203,8 @@
       "Jacori Wimes",
       "James Jones",
       "Kayla Kirkland",
+      "Michael Wade",
+      "Quentin Furlong",
       "Shane Yoho",
       "New Hire",
       "DM or Director Submission"
@@ -197,6 +214,7 @@
       "Fernando Alvarez",
       "Jose Maldonado",
       "Joseph Vasquez",
+      "Juan Padilla",
       "Yandel Alvarez",
       "New Hire",
       "DM or Director Submission"
@@ -230,11 +248,13 @@
       "DM or Director Submission"
     ],
     "South Skokie Xfinity Store": [
+      "Afan Aziz",
       "Alexis Rodriguez",
       "Dayan Delgado",
       "Ozzie Garcia",
       "Shazaib Mukhi",
       "Steev Qaryo",
+      "Taiyeeb Chowdhury",
       "New Hire",
       "DM or Director Submission"
     ],
