@@ -10,6 +10,24 @@ name: Build t-sheet counts
 # files carry a shared run_id and the builder writes them together or not at all;
 # they must therefore be committed together too, in ONE commit, or a consumer can
 # fetch a matched pair from Pages only after both have landed.
+#
+# ...and data/tsheet-digest.json — the SIX DIGEST EMAILS, fully rendered, with the
+# send slot and the data-age element left as placeholders. The 12:00/3:00/6:00
+# send runs on Zapier, whose only place to put code is an unversioned textarea in
+# a web UI; rendering here instead makes the Zap a fetch, a few sanity checks and
+# two string substitutions, and keeps the 100 KB of renderer in this repo where it
+# can be reviewed and diffed. See scripts/tsheet-digest.js and
+# scripts/DIGEST-CONTRACT.md.
+#
+# The digest is rendered from the counts and flags files ON DISK — the bytes this
+# run just wrote, before they are pushed. Over the network it would be wrong twice
+# over: GitHub Pages can sit most of a day behind main (it only redeploys when
+# update.yml runs), and raw.githubusercontent cannot serve a commit that has not
+# happened yet. So the Action would render the PREVIOUS run's numbers and commit
+# them beside this run's counts, under this run's run_id — three files that claim
+# to agree and do not. On disk is the only way they actually do.
+#
+# All three files therefore carry ONE run_id and are committed in ONE commit.
 on:
   schedule:
     - cron: '*/10 * * * *'   # every 10 minutes (GitHub may delay under load)
@@ -38,16 +56,40 @@ jobs:
           FEED_URL: ${{ secrets.TSHEET_FEED_URL }}
         run: node scripts/build-tsheet-counts.js
 
+      # Reads the two files above FROM DISK and renders the six emails. Fails the
+      # job — before anything is committed — if the roster has lost a DM address,
+      # if the counts carry no run_id, or if a placeholder ended up somewhere the
+      # Zapier step will not substitute it. A red X here is the cheap version of
+      # that failure; the expensive version is five emails instead of six, or a
+      # district group chat reading a literal "{{SLOT}}".
+      #
+      # --skip-if-current leaves the file untouched when it already carries this
+      # run_id, which is what keeps this step from forcing a commit every ten
+      # minutes on a quiet day: build-tsheet-counts.js rewrites nothing when
+      # nothing moved, so there is nothing here to re-render either.
+      - name: Render the pre-rendered digest
+        run: |
+          node scripts/tsheet-digest.js \
+            --emit-digest --source=local \
+            --counts-file=data/tsheet-counts.json \
+            --flags-file=data/tsheet-flags.json \
+            --directory-file=data/store-directory.json \
+            --digest-out=data/tsheet-digest.json \
+            --skip-if-current
+
       - name: Commit if changed
         run: |
-          if [[ -z "$(git status --porcelain data/tsheet-counts.json data/tsheet-flags.json)" ]]; then
+          # JOINT detection, now over all THREE files. Any one of them moving
+          # commits all three, so a consumer can never fetch a mismatched set:
+          # the digest's run_id always names the counts and flags beside it.
+          if [[ -z "$(git status --porcelain data/tsheet-counts.json data/tsheet-flags.json data/tsheet-digest.json)" ]]; then
             echo "no change to commit"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/tsheet-counts.json data/tsheet-flags.json
-          git commit -m "chore: refresh t-sheet counts + rapid-fire flags [skip ci]"
+          git add data/tsheet-counts.json data/tsheet-flags.json data/tsheet-digest.json
+          git commit -m "chore: refresh t-sheet counts + rapid-fire flags + digest [skip ci]"
           # The schedule can overlap a manual run; rebase rather than fail.
           git pull --rebase --autostash
           git push
