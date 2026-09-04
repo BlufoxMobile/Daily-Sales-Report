@@ -50,6 +50,16 @@ var RAPID_WINDOW_MS = 5 * 60 * 1000;     // the rapid-fire window Jeff chose
    Zapier Code step picks the same variant this renderer would have picked. */
 var STALE_COUNTS_MS = 90 * 60 * 1000;
 
+/* LAYOUT_VERSION — bump this whenever the RENDERED OUTPUT changes shape, even if
+   the data does not. --skip-if-current leaves data/tsheet-digest.json alone when
+   the counts run_id has not moved, which is right for a quiet feed and wrong for
+   a template edit: a new renderer with unchanged numbers would never reach the
+   Zap. The version travels in the digest file, so a mismatch forces one re-render
+   on the very next Action run and then goes quiet again.
+     v1  one block per district: store bar + every employee under it
+     v2  two labelled sections: 1 store counts (zeros included), 2 flagged only */
+var LAYOUT_VERSION = 2;
+
 var JEFF = { name: 'Jeff Bilbrey', email: 'jbilbrey@blufoxmobile.com' };
 
 /* Districts, DM names and the store rosters are the dashboard's DISTRICTS const
@@ -1505,6 +1515,9 @@ function buildPrerenderedDigest(opts) {
     run_id: opts.runId || null,
     day: result.day,
     timezone: TZ,
+    // See LAYOUT_VERSION. Lets --skip-if-current tell "same numbers, same email"
+    // from "same numbers, NEW email" — only the first may be skipped.
+    layout_version: LAYOUT_VERSION,
     // What the age is measured from. The Code step needs it to compute the
     // elapsed phrase; nothing else in the file moves after the render.
     counts_generated_at: genOk ? gen.toISOString() : null,
@@ -2047,9 +2060,21 @@ async function emitDigest(a) {
   if (a['skip-if-current']) {
     var cur = null;
     try { cur = JSON.parse(require('fs').readFileSync(out, 'utf8')); } catch (e) { cur = null; }
-    if (cur && cur.run_id && countsMeta.runId && cur.run_id === countsMeta.runId && cur.day === fetched.day) {
-      process.stdout.write('digest already current for run_id ' + cur.run_id + '; leaving ' + out + ' as-is\n');
+    // The RENDERER must match too. Same run_id with a different layout_version
+    // means the numbers are unchanged but the email that carries them is not —
+    // skipping there would strand a template change in the repo forever, which
+    // is exactly what happened the first time the two sections shipped.
+    var sameRun = cur && cur.run_id && countsMeta.runId &&
+                  cur.run_id === countsMeta.runId && cur.day === fetched.day;
+    var sameLayout = cur && cur.layout_version === LAYOUT_VERSION;
+    if (sameRun && sameLayout) {
+      process.stdout.write('digest already current for run_id ' + cur.run_id +
+        ' (layout v' + cur.layout_version + '); leaving ' + out + ' as-is\n');
       return;
+    }
+    if (sameRun && !sameLayout) {
+      process.stdout.write('same run_id but layout v' + (cur && cur.layout_version) +
+        ' -> v' + LAYOUT_VERSION + '; re-rendering\n');
     }
   }
 
