@@ -847,6 +847,91 @@ function noteBoxHtml(strongText, rest) {
     '</td></tr></table></td></tr>';
 }
 
+/* ============================================================
+   THE TWO SECTIONS
+
+   Jeff screenshots these into two different chats, so they are two visually
+   separate blocks inside one card, each labelled, each readable on its own:
+
+     SECTION 1  T-SHEETS PER STORE  -- every store in the district, zeros
+                included, counts only. This is the district scoreboard; it goes
+                to the district chat and says nothing about individuals.
+     SECTION 2  FILING 2+ WITHIN 5 MINUTES -- ONLY the people who tripped the
+                rapid-fire rule, grouped under their store, in red, with the
+                timestamps that triggered it. This is the one he sends to a
+                store manager, so it must contain nothing a manager has to sift.
+
+   Employees who submitted normally appear in NEITHER section by design. They are
+   in the store count in section 1; naming them added length to both screenshots
+   without adding anything a manager acts on.
+   ============================================================ */
+function sectionHeadHtml(label) {
+  return '<tr><td colspan="2" style="padding:2px 18px 8px;' + FF +
+    'font-size:12px;font-weight:700;letter-spacing:0.16em;color:' + C.brass +
+    ';text-transform:uppercase;border-top:1px solid ' + C.rule + ';padding-top:16px;">' +
+    esc(label) + '</td></tr>';
+}
+
+/* SECTION 1. One row per store, biggest first, then the zeros alphabetically —
+   dist.stores is already sorted desc and dist.zeroStores alphabetically, so
+   concatenating preserves both orders. A zero store is dimmed rather than
+   hidden: "who did nothing today" is the whole reason this table exists. */
+function storeCountsTableHtml(dist) {
+  var rows = [];
+  for (var i = 0; i < dist.stores.length; i++) {
+    rows.push({ name: dist.stores[i].name, today: dist.stores[i].today, flagged: dist.stores[i].flagged });
+  }
+  for (var z = 0; z < dist.zeroStores.length; z++) {
+    rows.push({ name: dist.zeroStores[z], today: 0, flagged: false });
+  }
+  if (!rows.length) {
+    return '<div style="' + FF + 'font-size:17px;line-height:1.5;color:' + C.dim +
+           ';padding:0 0 16px;">No stores in this district.</div>';
+  }
+  var h = TBL + 'style="width:100%;border-collapse:collapse;margin:0 0 16px 0;">';
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r];
+    var zero = row.today === 0;
+    var color = row.flagged ? C.flag : zero ? C.dim : C.ink;
+    var glyph = row.flagged ? '<span>&#9873;</span> ' : '';   // see repRowHtml
+    var bb = r === rows.length - 1 ? '' : 'border-bottom:1px solid ' + C.rule + ';';
+    h += '<tr>' +
+      cell('padding:11px 14px;' + bb + FF + 'font-size:19px;line-height:1.35;font-weight:' +
+           (zero ? '500' : '700') + ';color:' + color + ';',
+           glyph + esc(row.name.replace(/ Xfinity Store$/, ''))) +
+      '<td align="right" valign="top" width="62" style="padding:11px 14px 11px 6px;' + bb + FF +
+        'font-size:19px;font-weight:700;line-height:1.35;color:' + color + ';">' +
+        row.today + '</td></tr>';
+  }
+  return h + '</table>';
+}
+
+/* SECTION 2. Only stores that actually have a flagged person, and inside them
+   only the flagged people. A store with nobody flagged does not appear at all —
+   its clean record is already visible in section 1. */
+function flaggedStoresHtml(dist, ctx) {
+  if (!ctx.flagsAvailable) {
+    return '<div style="' + FF + 'font-size:17px;line-height:1.5;color:' + C.dim +
+           ';padding:0 0 16px;">The 5-minute check did not run on this update, so nobody here has been ' +
+           'cleared &#8212; they have not been checked.</div>';
+  }
+  var blocks = '';
+  for (var i = 0; i < dist.stores.length; i++) {
+    var st = dist.stores[i];
+    var flaggedReps = [];
+    for (var j = 0; j < st.employees.length; j++) {
+      if (st.employees[j].flagged) flaggedReps.push(st.employees[j]);
+    }
+    if (!flaggedReps.length) continue;
+    blocks += storeBlockHtml({ name: st.name, today: st.today, flagged: true, employees: flaggedReps });
+  }
+  if (!blocks) {
+    return '<div style="' + FF + 'font-size:17px;line-height:1.5;color:' + C.dim +
+           ';padding:0 0 16px;">Nobody in this district filed 2 or more T-sheets within 5 minutes today.</div>';
+  }
+  return blocks;
+}
+
 /* One district card. Self-contained on purpose: the district name, the DM, the
    date, the send slot and how old the numbers are all live INSIDE the card, so a
    screenshot cropped to this card alone still says what it is with no header
@@ -898,24 +983,13 @@ function districtCardHtml(dist, ctx) {
       ' Store-to-district alignment and employee names below may be out of date.');
   }
 
-  // stores
-  h += '<tr><td colspan="2" style="padding:0 18px;">';
-  if (dist.stores.length === 0) {
-    h += '<div style="' + FF + 'font-size:17px;line-height:1.5;color:' + C.dim +
-         ';padding:0 0 16px;">No T-sheets anywhere in this district today.</div>';
-  } else {
-    for (var i = 0; i < dist.stores.length; i++) h += storeBlockHtml(dist.stores[i]);
-  }
-  h += '</td></tr>';
+  // SECTION 1 -- t-sheets per store, every store, zeros included
+  h += sectionHeadHtml('1 \u00b7 T-sheets per store');
+  h += '<tr><td colspan="2" style="padding:0 18px;">' + storeCountsTableHtml(dist) + '</td></tr>';
 
-  // zero stores — a store at zero is the information he needs; a PERSON at zero is noise
-  if (dist.zeroStores.length) {
-    var names = dist.zeroStores.map(function (n) { return esc(n.replace(/ Xfinity Store$/, '')); });
-    h += '<tr><td colspan="2" style="padding:2px 18px 16px;' + FF +
-      'font-size:15px;line-height:1.5;color:' + C.dim + ';">' +
-      '<span style="color:' + C.brass + ';font-weight:700;">Nothing at all today:</span> ' +
-      names.join(' &nbsp;&#183;&nbsp; ') + '</td></tr>';
-  }
+  // SECTION 2 -- only the people who tripped the 5-minute rule
+  h += sectionHeadHtml('2 \u00b7 Filing 2+ within 5 minutes');
+  h += '<tr><td colspan="2" style="padding:0 18px;">' + flaggedStoresHtml(dist, ctx) + '</td></tr>';
 
   // legend — written for a DM who has never seen this before
   h += '<tr><td colspan="2" bgcolor="' + C.storeBar + '" style="background-color:' + C.storeBar +
@@ -924,8 +998,8 @@ function districtCardHtml(dist, ctx) {
     (ctx.flagsAvailable
       ? '<span style="color:' + C.flag + ';font-weight:700;">&#9873; Red</span> = the same person at the same store ' +
         'filed 2 or more T-sheets within 5 minutes of each other. Times are listed so you can check it. ' +
-        'Only people who submitted today are listed.'
-      : 'Only people who submitted today are listed. The rapid-fire check did not run on this update.') +
+        'Section 2 lists only those people; everyone else who submitted is counted in section 1.'
+      : 'Section 1 counts every store. The rapid-fire check did not run on this update, so section 2 is empty.') +
     '</td></tr>';
 
   return h + '</table>';
@@ -1058,33 +1132,52 @@ function districtText(dist, ctx) {
     L.push('  Nobody here has been cleared -- they have not been checked.');
   }
   L.push('');
-  if (!dist.stores.length) {
-    L.push('  No T-sheets anywhere in this district today.');
+  L.push('1 - T-SHEETS PER STORE');
+  var i, j, k, s2, sn;
+  if (!dist.stores.length && !dist.zeroStores.length) {
+    L.push('  No stores in this district.');
   }
-  for (var i = 0; i < dist.stores.length; i++) {
-    var s = dist.stores[i];
-    var sn = s.name.replace(/ Xfinity Store$/, '');
-    L.push((s.flagged ? '(!) ' : '') + sn + ' -- ' + s.today);
-    for (var j = 0; j < s.employees.length; j++) {
-      var r = s.employees[j];
-      L.push('    ' + (r.flagged ? '(!) ' : '    ') + repDisplayName(r.name) +
-             (r.role ? ' [' + r.role + ']' : '') + '  ' + r.today);
-      for (var k = 0; k < r.clusters.length; k++) {
-        L.push('          ' + r.clusters[k].count + ' in ' + r.clusters[k].times.join(' -> '));
+  for (i = 0; i < dist.stores.length; i++) {
+    s2 = dist.stores[i];
+    sn = s2.name.replace(/ Xfinity Store$/, '');
+    L.push('  ' + (s2.flagged ? '(!) ' : '    ') + sn + ' -- ' + s2.today);
+  }
+  for (i = 0; i < dist.zeroStores.length; i++) {
+    L.push('      ' + dist.zeroStores[i].replace(/ Xfinity Store$/, '') + ' -- 0');
+  }
+
+  L.push('');
+  L.push('2 - FILING 2+ WITHIN 5 MINUTES');
+  if (!ctx.flagsAvailable) {
+    L.push('  The 5-minute check did not run on this update, so nobody here has been');
+    L.push('  cleared -- they have not been checked.');
+  } else {
+    var any = false;
+    for (i = 0; i < dist.stores.length; i++) {
+      s2 = dist.stores[i];
+      var flaggedReps = [];
+      for (j = 0; j < s2.employees.length; j++) {
+        if (s2.employees[j].flagged) flaggedReps.push(s2.employees[j]);
+      }
+      if (!flaggedReps.length) continue;
+      any = true;
+      L.push('  (!) ' + s2.name.replace(/ Xfinity Store$/, '') + ' -- ' + s2.today);
+      for (j = 0; j < flaggedReps.length; j++) {
+        var r = flaggedReps[j];
+        L.push('        ' + repDisplayName(r.name) + (r.role ? ' [' + r.role + ']' : '') + '  ' + r.today);
+        for (k = 0; k < r.clusters.length; k++) {
+          L.push('          ' + r.clusters[k].count + ' in ' + r.clusters[k].times.join(' -> '));
+        }
       }
     }
-    L.push('');
+    if (!any) L.push('  Nobody in this district filed 2 or more T-sheets within 5 minutes today.');
   }
-  if (dist.zeroStores.length) {
-    L.push('Nothing at all today: ' + dist.zeroStores.map(function (n) {
-      return n.replace(/ Xfinity Store$/, '');
-    }).join(', '));
-    L.push('');
-  }
+
+  L.push('');
   L.push(ctx.flagsAvailable
     ? '(!) = same person, same store, 2+ T-sheets within 5 minutes of each other.'
     : 'Rapid-fire check did not run on this update.');
-  L.push('Only people who submitted today are listed.');
+  L.push('Section 2 lists only those people; everyone else who submitted is counted in section 1.');
   return L.join('\n');
 }
 
