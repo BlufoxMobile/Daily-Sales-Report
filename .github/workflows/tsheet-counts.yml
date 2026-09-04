@@ -51,10 +51,32 @@ jobs:
         with:
           node-version: '20'
 
+      # continue-on-error, deliberately. The Apps Script feed 404s on maybe one
+      # run in five — Google's problem, not ours, and it clears by itself. When
+      # it does, data/tsheet-counts.json and data/tsheet-flags.json are still on
+      # disk from the last good run, and rendering the digest from THOSE is
+      # strictly better than rendering nothing: the age element already tells the
+      # reader how old the numbers are, the subject gets "[Data 3 hours old]"
+      # past 90 minutes, and the Zapier step refuses outright to mail a digest
+      # whose `day` is not today. A hard failure here, by contrast, froze the
+      # digest at whatever the last successful run produced with no notice at all
+      # — which is exactly how a renderer change sat undeployed.
+      #
+      # The step still reports its failure (the annotation stays); it just no
+      # longer takes the two steps after it down with it.
       - name: Build counts + flags files
+        id: counts
+        continue-on-error: true
         env:
           FEED_URL: ${{ secrets.TSHEET_FEED_URL }}
         run: node scripts/build-tsheet-counts.js
+
+      # Make the feed outage visible in the run summary rather than only in a red
+      # step somebody has to expand.
+      - name: Note a feed outage
+        if: steps.counts.outcome == 'failure'
+        run: |
+          echo "::warning::The submissions feed could not be read this run. The digest below was rendered from the counts and flags already on disk; check data/tsheet-counts.json generated_at for how old they are."
 
       # Reads the two files above FROM DISK and renders the six emails. Fails the
       # job — before anything is committed — if the roster has lost a DM address,
