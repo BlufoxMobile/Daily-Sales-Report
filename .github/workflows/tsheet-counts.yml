@@ -28,22 +28,46 @@ name: Build t-sheet counts
 # to agree and do not. On disk is the only way they actually do.
 #
 # All three files therefore carry ONE run_id and are committed in ONE commit.
+#
+# WHY THIS RUNS IN A LOOP RATHER THAN ON THE CRON
+# -----------------------------------------------
+# The cron used to say `*/10 * * * *`. GitHub honoured roughly one firing in
+# twenty. Measured 2026-09-04, the only scheduled runs all day were 12:51 AM,
+# 6:02 AM, 9:56 AM and 1:16 PM Central -- about every three and a half hours.
+# GitHub de-prioritises high-frequency schedules and says so in its docs; the
+# more often you ask, the more it drops. So at noon the dashboard was showing
+# 15 t-sheets from the 9:57 AM build when the real number was near 150, and the
+# rep-facing panel on the quote sheets was hours behind on every store.
+#
+# Asking more often makes it worse, so this asks LESS often and then stays
+# resident: each firing rebuilds every REFRESH_SECONDS until the shop day ends.
+# One honoured trigger now covers the rest of the day instead of one moment of
+# it. `cancel-in-progress: true` means a newer firing simply takes over.
 on:
   schedule:
-    - cron: '*/10 * * * *'   # every 10 minutes (GitHub may delay under load)
+    # Hourly, at :07 -- deliberately NOT on the hour, which is the busiest slot
+    # on GitHub's scheduler and the most likely to be dropped. 11:00-03:00 UTC
+    # is 6 AM - 10 PM Central, the only hours the numbers move.
+    - cron: '7 11-23,0-3 * * *'
   workflow_dispatch:          # lets you run it on demand from the Actions tab
 
-# Least privilege: this job only needs to push the one data file.
+# Least privilege: this job only needs to push the data files.
 permissions:
   contents: write
 
 concurrency:
   group: tsheet-counts
-  cancel-in-progress: false
+  # A fresh trigger should replace a resident loop, not queue behind it. The
+  # loop only ever holds an unpushed commit for a moment, so cancelling it is
+  # safe -- the next run rebuilds from the feed anyway.
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # The loop below stops itself at the end of the shop day; this is only a
+    # backstop so a wedged run can never sit on the concurrency group forever.
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
 
@@ -51,67 +75,83 @@ jobs:
         with:
           node-version: '20'
 
-      # continue-on-error, deliberately. The Apps Script feed 404s on maybe one
-      # run in five — Google's problem, not ours, and it clears by itself. When
-      # it does, data/tsheet-counts.json and data/tsheet-flags.json are still on
-      # disk from the last good run, and rendering the digest from THOSE is
-      # strictly better than rendering nothing: the age element already tells the
-      # reader how old the numbers are, the subject gets "[Data 3 hours old]"
-      # past 90 minutes, and the Zapier step refuses outright to mail a digest
-      # whose `day` is not today. A hard failure here, by contrast, froze the
-      # digest at whatever the last successful run produced with no notice at all
-      # — which is exactly how a renderer change sat undeployed.
+      # ONE RESIDENT STEP. The three things that used to be separate steps --
+      # build the counts, render the digest, commit if anything moved -- now run
+      # together once every REFRESH_SECONDS until STOP_HOUR_UTC.
       #
-      # The step still reports its failure (the annotation stays); it just no
-      # longer takes the two steps after it down with it.
-      - name: Build counts + flags files
-        id: counts
-        continue-on-error: true
+      # Failure handling, per cycle, deliberately asymmetric:
+      #   feed unreadable  -> warn, keep the counts already on disk, carry on.
+      #     The Apps Script endpoint 404s on roughly one call in five (Google's
+      #     problem; it clears itself). The digest still renders from the last
+      #     good numbers, the age line says how old they are, the subject gains
+      #     "[Data 3 hours old]" past 90 minutes, and the Zapier step refuses
+      #     outright to mail a digest whose `day` is not today.
+      #   digest render fails -> log an error and carry on. A bad render must
+      #     not stop the counts refreshing for the rest of the day.
+      #   push fails -> leave the commit local and retry it next cycle.
+      # Nothing in a single cycle is allowed to end the loop.
+      - name: Refresh counts, flags and digest until the shop day ends
         env:
           FEED_URL: ${{ secrets.TSHEET_FEED_URL }}
-        run: node scripts/build-tsheet-counts.js
-
-      # Make the feed outage visible in the run summary rather than only in a red
-      # step somebody has to expand.
-      - name: Note a feed outage
-        if: steps.counts.outcome == 'failure'
+          REFRESH_SECONDS: '300'   # 5 minutes
+          STOP_HOUR_UTC: '3'       # 10 PM Central
         run: |
-          echo "::warning::The submissions feed could not be read this run. The digest below was rendered from the counts and flags already on disk; check data/tsheet-counts.json generated_at for how old they are."
-
-      # Reads the two files above FROM DISK and renders the six emails. Fails the
-      # job — before anything is committed — if the roster has lost a DM address,
-      # if the counts carry no run_id, or if a placeholder ended up somewhere the
-      # Zapier step will not substitute it. A red X here is the cheap version of
-      # that failure; the expensive version is five emails instead of six, or a
-      # district group chat reading a literal "{{SLOT}}".
-      #
-      # --skip-if-current leaves the file untouched when it already carries this
-      # run_id, which is what keeps this step from forcing a commit every ten
-      # minutes on a quiet day: build-tsheet-counts.js rewrites nothing when
-      # nothing moved, so there is nothing here to re-render either.
-      - name: Render the pre-rendered digest
-        run: |
-          node scripts/tsheet-digest.js \
-            --emit-digest --source=local \
-            --counts-file=data/tsheet-counts.json \
-            --flags-file=data/tsheet-flags.json \
-            --directory-file=data/store-directory.json \
-            --digest-out=data/tsheet-digest.json \
-            --skip-if-current
-
-      - name: Commit if changed
-        run: |
-          # JOINT detection, now over all THREE files. Any one of them moving
-          # commits all three, so a consumer can never fetch a mismatched set:
-          # the digest's run_id always names the counts and flags beside it.
-          if [[ -z "$(git status --porcelain data/tsheet-counts.json data/tsheet-flags.json data/tsheet-digest.json)" ]]; then
-            echo "no change to commit"
-            exit 0
-          fi
+          set -uo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/tsheet-counts.json data/tsheet-flags.json data/tsheet-digest.json
-          git commit -m "chore: refresh t-sheet counts + rapid-fire flags + digest [skip ci]"
-          # The schedule can overlap a manual run; rebase rather than fail.
-          git pull --rebase --autostash
-          git push
+
+          cycle=0
+          while :; do
+            cycle=$(( cycle + 1 ))
+            echo "::group::cycle $cycle - $(date -u '+%H:%M:%SZ')"
+
+            if node scripts/build-tsheet-counts.js; then
+              :
+            else
+              echo "::warning::cycle $cycle: the submissions feed could not be read; keeping the counts already on disk"
+            fi
+
+            if node scripts/tsheet-digest.js \
+                 --emit-digest --source=local \
+                 --counts-file=data/tsheet-counts.json \
+                 --flags-file=data/tsheet-flags.json \
+                 --directory-file=data/store-directory.json \
+                 --digest-out=data/tsheet-digest.json \
+                 --skip-if-current; then
+              :
+            else
+              echo "::error::cycle $cycle: the digest failed to render"
+            fi
+
+            # JOINT detection over all THREE files. Any one of them moving
+            # commits all three, so a consumer can never fetch a mismatched
+            # set: the digest's run_id always names the counts and flags
+            # beside it.
+            if [[ -n "$(git status --porcelain data/tsheet-counts.json data/tsheet-flags.json data/tsheet-digest.json)" ]]; then
+              git add data/tsheet-counts.json data/tsheet-flags.json data/tsheet-digest.json
+              git commit -m "chore: refresh t-sheet counts + rapid-fire flags + digest [skip ci]"
+            else
+              echo "no change this cycle"
+            fi
+
+            # Push anything unpushed -- including a commit whose push failed on
+            # an earlier cycle, which is why this is not inside the block above.
+            if [[ -n "$(git log --oneline origin/main..HEAD 2>/dev/null)" ]]; then
+              if git pull --rebase --autostash && git push; then
+                echo "pushed"
+              else
+                echo "::warning::cycle $cycle: push failed; retrying next cycle"
+              fi
+            fi
+            echo "::endgroup::"
+
+            # Stop at the end of the shop day. The next morning's cron picks it
+            # up again; nothing needs to run overnight.
+            hour_utc=$(( 10#$(date -u +%H) ))
+            if [[ $hour_utc -ge $STOP_HOUR_UTC && $hour_utc -lt 11 ]]; then
+              echo "past ${STOP_HOUR_UTC}:00 UTC - stopping until the morning schedule"
+              break
+            fi
+
+            sleep "$REFRESH_SECONDS"
+          done
