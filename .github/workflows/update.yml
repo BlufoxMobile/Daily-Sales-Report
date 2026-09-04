@@ -10,6 +10,11 @@ on:
       - '!data/monday-ops-submissions/**'
       - '!data/monday-ops-photos/**'
       - 'index.html'
+      # upload.html and crm.html are served by Pages too. They were missing
+      # here, so an edit to either sat in the repo and never reached the live
+      # site until an unrelated data/ commit happened to redeploy it.
+      - 'upload.html'
+      - 'crm.html'
   schedule:
     - cron: '15 14 * * 1-5'
   workflow_dispatch:
