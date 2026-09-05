@@ -88,13 +88,35 @@ jobs:
       #     outright to mail a digest whose `day` is not today.
       #   digest render fails -> log an error and carry on. A bad render must
       #     not stop the counts refreshing for the rest of the day.
-      #   push fails -> leave the commit local and retry it next cycle.
+      #   push fails -> drop the local commit; next cycle rebuilds and re-pushes.
       # Nothing in a single cycle is allowed to end the loop.
+      #
+      # WHY EVERY CYCLE STARTS WITH A HARD RESET, AND WHY THERE IS NO REBASE
+      # -------------------------------------------------------------------
+      # On 2026-09-04 this loop stopped committing at 1:33 PM and sat there,
+      # alive but silent, until a scheduled run cancelled it at 2:58 PM -- 85
+      # minutes of a dashboard Jeff watches showing numbers that had stopped
+      # moving, with no red X anywhere to say so. The likely culprit was the
+      # `git pull --rebase` that used to live in the push block: a rebase can
+      # stop and wait for a human, and there is no human on a runner.
+      #
+      # There is nothing here worth merging. All three data files are generated
+      # from the feed every cycle and never hand-edited, so the correct response
+      # to "origin moved" is not to reconcile, it is to throw away whatever is
+      # local and rebuild. Each cycle therefore begins at origin/main exactly,
+      # and a commit that fails to push is simply discarded -- the next cycle
+      # regenerates it five minutes later from fresher numbers anyway.
+      #
+      # Every command that touches the network or the feed is wrapped in
+      # `timeout` for the same reason: a cycle may fail, but it may not hang.
       - name: Refresh counts, flags and digest until the shop day ends
         env:
           FEED_URL: ${{ secrets.TSHEET_FEED_URL }}
           REFRESH_SECONDS: '300'   # 5 minutes
           STOP_HOUR_UTC: '3'       # 10 PM Central
+          FEED_TIMEOUT: '240'      # the feed returns ~14k rows; 15-40s normal
+          RENDER_TIMEOUT: '120'
+          GIT_TIMEOUT: '90'
         run: |
           set -uo pipefail
           git config user.name  "github-actions[bot]"
@@ -105,13 +127,22 @@ jobs:
             cycle=$(( cycle + 1 ))
             echo "::group::cycle $cycle - $(date -u '+%H:%M:%SZ')"
 
-            if node scripts/build-tsheet-counts.js; then
+            # Start from origin/main, always. Discards a commit an earlier
+            # cycle could not push and any drift the runner picked up. Safe
+            # because all three data files are generated, never authored.
+            if timeout "$GIT_TIMEOUT" git fetch --quiet --force origin main:refs/remotes/origin/main; then
+              git reset --hard --quiet origin/main
+            else
+              echo "::warning::cycle $cycle: could not fetch origin; working from the local tree"
+            fi
+
+            if timeout "$FEED_TIMEOUT" node scripts/build-tsheet-counts.js; then
               :
             else
               echo "::warning::cycle $cycle: the submissions feed could not be read; keeping the counts already on disk"
             fi
 
-            if node scripts/tsheet-digest.js \
+            if timeout "$RENDER_TIMEOUT" node scripts/tsheet-digest.js \
                  --emit-digest --source=local \
                  --counts-file=data/tsheet-counts.json \
                  --flags-file=data/tsheet-flags.json \
@@ -134,13 +165,16 @@ jobs:
               echo "no change this cycle"
             fi
 
-            # Push anything unpushed -- including a commit whose push failed on
-            # an earlier cycle, which is why this is not inside the block above.
+            # Push it. No rebase: the cycle started at origin/main, so a
+            # rejected push means origin moved underneath us in the last few
+            # seconds, and the right answer is to let the next cycle rebuild
+            # on top of whatever landed -- not to reconcile two generated
+            # files. The reset at the top of the next cycle drops this commit.
             if [[ -n "$(git log --oneline origin/main..HEAD 2>/dev/null)" ]]; then
-              if git pull --rebase --autostash && git push; then
+              if timeout "$GIT_TIMEOUT" git push; then
                 echo "pushed"
               else
-                echo "::warning::cycle $cycle: push failed; retrying next cycle"
+                echo "::warning::cycle $cycle: push rejected or timed out; next cycle rebuilds from origin"
               fi
             fi
             echo "::endgroup::"
