@@ -1,1 +1,1 @@
-{"generated_at":"2026-09-07T06:00:52.786Z","run_id":"2026-09-07T06:00:52Z#16cd09","day":"2026-09-07","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-09-07T16:27:25.251Z","run_id":"2026-09-07T16:27:25Z#7d870b","day":"2026-09-07","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"Evanston Xfinity Store":{"reps":{"Suyal Ullah":{"flagged":2,"clusters":[["2026-09-07T15:40:51.891Z","2026-09-07T15:44:32.761Z"]]}}}}}
