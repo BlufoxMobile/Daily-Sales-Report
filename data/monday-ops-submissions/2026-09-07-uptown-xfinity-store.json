@@ -1,0 +1,38 @@
+{
+  "submittedAt": "2026-09-07T15:11:55.171Z",
+  "store": "Uptown Xfinity Store",
+  "name": "Hunter Dodge",
+  "email": "HDodge@blufoxmobile.com",
+  "dm": "Imaad Dhorajiwala",
+  "dmEmail": "IDhorajiwala@blufoxmobile.com",
+  "asmEmail": "JBerry@blufoxmobile.com",
+  "date": "2026-09-07",
+  "answers": {
+    "depositBags": "Yes",
+    "pciChecklist": "Yes",
+    "scheduleWeeks": "Yes",
+    "uniformsNeeded": "No",
+    "cashFloat": "Yes",
+    "returnsShipped": "No"
+  },
+  "notes": "Chairs are old and worn out cuts have hard time getting in and out ",
+  "linksOpened": {
+    "depositOrderForm": false,
+    "pciChecklist": true,
+    "uniformOrderForm": false,
+    "cashFloatTracker": true
+  },
+  "photoUrls": {
+    "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/week1.jpg",
+    "week2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/week2.jpg",
+    "week3": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/week3.jpg",
+    "week4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/week4.jpg",
+    "upgrades": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/upgrades.jpg",
+    "tradeins": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/tradeins.jpg",
+    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/brinks.jpg",
+    "facility1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/facility1.jpg",
+    "facility2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/facility2.jpg",
+    "facility3": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/facility3.jpg",
+    "facility4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-07-uptown-xfinity-store/facility4.jpg"
+  }
+}
