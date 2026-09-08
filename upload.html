@@ -3103,6 +3103,26 @@ function npsToB64(str){
 // MTD file was a strict superset, and carried surveys the daily export never
 // delivered), so uploadMtdNps() feeds this instead and there is one less file to
 // pull every morning.
+// One briefing per store per morning. The survey-ID sent log decides which
+// surveys count as NEW *inside* the email; this decides whether the email goes
+// out at all. Separating the two is the whole point: the briefing is a daily
+// store report card (close rates, NPS, GIG/Plus attach, goals) and the surveys
+// are one section of it, so it must still go out on a morning when Medallia's
+// export has not advanced. Mirrors the lunch-punch guard so a second upload on
+// the same day can never double-send.
+const NPS_BRIEF_SESSION_KEY = 'nps-brief-sent-v1';
+function npsBriefingsSentToday(sentLog, today){
+  try {
+    const v = JSON.parse(localStorage.getItem(NPS_BRIEF_SESSION_KEY) || 'null');
+    if(v && v.date === today) return true;
+  } catch(e){ /* ignore */ }
+  return ((sentLog && sentLog.batches) || [])
+    .some(x => x && x.date === today && (x.emailsSent || 0) > 0);
+}
+function npsBriefingsMarkSent(today){
+  try { localStorage.setItem(NPS_BRIEF_SESSION_KEY, JSON.stringify({ date: today })); } catch(e){ /* ignore */ }
+}
+
 async function npsDailyRun(parsed){
   if(!parsed || !(parsed.surveys || []).length) throw new Error('No survey rows to send briefings from');
 
@@ -3167,10 +3187,16 @@ async function npsDailyRun(parsed){
     console.warn('detractor streak update failed:', e);
   }
 
-  // 4) Fire one email per store with new surveys.
+  // 4) Fire the morning briefing to every store on the roster.
+  //    This used to be gated on `fresh.length`, so a morning where the Medallia
+  //    export had not advanced sent NOTHING — no report card, no goals, nothing —
+  //    even though the briefing's value is mostly the Sales Report numbers, not
+  //    the surveys. It now runs every morning and is deduped by DATE instead.
   let sent = 0, storeCount = 0, errors = [];
+  let held = false, stale = [];
   const hookReady = npsHookReady();
-  if(fresh.length && hookReady){
+  const alreadySentToday = npsBriefingsSentToday(sentLog, today);
+  if(hookReady && !alreadySentToday){
     setStatus('Building & sending NPS emails...', 'info');
     let salesStores = [];
     try { salesStores = await npsFetchSalesStores(); }
@@ -3182,7 +3208,8 @@ async function npsDailyRun(parsed){
       // Today's data isn't fully updated yet — hold the send and do NOT mark these
       // surveys as sent, so they go out automatically on the next upload once the
       // missing data (e.g. today's Sales Report / Punch data) has been uploaded.
-      setStatus("Emails held \u2014 waiting for today's " + (res.stale || []).join(" & ") + ". They'll send automatically on your next upload once that data is current.", 'info');
+      held = true; stale = res.stale || [];
+      setStatus("Emails held \u2014 waiting for today's " + stale.join(" & ") + ". They'll send automatically on your next upload once that data is current.", 'info');
     } else {
       // 5) Record ONLY surveys whose store email actually went out. Surveys for
       // stores that errored stay OUT of the log, so the next upload picks them
@@ -3191,6 +3218,7 @@ async function npsDailyRun(parsed){
       const okStores = new Set(res.sentStores || []);
       const sentSurveys = fresh.filter(s => !s.storeKey || okStores.has(s.storeKey));
       if(sent > 0){
+        npsBriefingsMarkSent(today);
         const allIds = Array.from(sentSet);
         sentSurveys.forEach(s => allIds.push(s.id));
         await pushToGitHub(REPOS.sales, NPS_CONFIG.SENT_LOG_PATH, npsToB64(JSON.stringify({
@@ -3225,6 +3253,7 @@ async function npsDailyRun(parsed){
     total: parsed.surveys.length, fresh: fresh.length, heldOld: heldOld,
     windowFrom: emailCutoff, newestDay: newestDay,
     sent: sent, storeCount: storeCount,
+    alreadySentToday: alreadySentToday, held: held, stale: stale,
     unmatched: parsed.unmatched || [], hookReady: hookReady, errors: errors,
     lunch: lunch
   };
@@ -3539,13 +3568,14 @@ async function uploadFiles() {
           parts.push('Store briefings skipped — no Responses file in this upload (the Express Report alone cannot send them).');
         } else if (!d.hookReady) {
           parts.push('Store briefings OFF — paste your Zapier hook URL into NPS_CONFIG.WEBHOOK_URL');
-        } else if (!d.fresh) {
-          let nn = 'Store briefings — nothing new to send';
-          if (d.newestDay) nn += `: all ${d.total} survey${d.total === 1 ? '' : 's'} in this export were already emailed, and the newest one in it is ${d.newestDay}`;
-          if (d.heldOld) nn += ` (${d.heldOld} survey${d.heldOld === 1 ? '' : 's'} in the file are older than ${d.windowFrom} and were left alone)`;
-          parts.push(nn + '. Nothing is lost — they go out on the next export that has newer responses.');
+        } else if (d.alreadySentToday) {
+          parts.push('Store briefings already sent today — skipped to avoid a duplicate.');
+        } else if (d.held) {
+          parts.push(`Store briefings held — waiting for today's ${d.stale.join(' & ')}. They send automatically on your next upload once that data is current.`);
         } else {
-          let sl = `Store briefings (${d.fresh} new survey${d.fresh === 1 ? '' : 's'} → ${d.sent} of ${d.storeCount} stores emailed)`;
+          let sl = d.fresh
+            ? `Store briefings (${d.fresh} new survey${d.fresh === 1 ? '' : 's'} → ${d.sent} of ${d.storeCount} stores emailed)`
+            : `Store briefings (${d.sent} of ${d.storeCount} stores emailed — no new surveys in this export${d.newestDay ? `, newest is ${d.newestDay}` : ''}, so today's is the report card and goals)`;
           if (d.heldOld) sl += ` — ${d.heldOld} older survey${d.heldOld === 1 ? '' : 's'} skipped (before ${d.windowFrom})`;
           if (d.errors.length) sl += ` — ⚠ ${d.errors.length} store email${d.errors.length === 1 ? '' : 's'} failed (will retry on next upload): ${d.errors.join('; ')}`;
           parts.push(sl);
