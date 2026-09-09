@@ -12398,12 +12398,6 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
-  "2451591048": {
-    "status": "Closed",
-    "ts": "2026-09-09T16:07:51.544Z",
-    "dm": "Matthew Brooks",
-    "store": "Greeneville"
-  },
   "2451665433": {
     "status": "Closed",
     "ts": "2026-08-18T15:03:43.808Z",
@@ -12452,6 +12446,12 @@
     "ts": "2026-08-25T21:59:11.495Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
+  },
+  "2451947490": {
+    "status": "Closed",
+    "ts": "2026-09-09T16:07:53.598Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2452189350": {
     "status": "Pending Install",
