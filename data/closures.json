@@ -10343,7 +10343,7 @@
   },
   "2434720114": {
     "status": "Closed",
-    "ts": "2026-08-25T17:39:13.672Z",
+    "ts": "2026-09-09T17:51:37.613Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
@@ -12215,8 +12215,8 @@
     "store": "Oak Ridge"
   },
   "2449104256": {
-    "status": "Closed",
-    "ts": "2026-08-25T17:45:53.640Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-09T17:54:48.820Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
@@ -13210,12 +13210,6 @@
     "ts": "2026-09-08T16:29:36.394Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2483791340": {
-    "status": "Closed",
-    "ts": "2026-09-09T17:54:31.897Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
   },
   "2483950301": {
     "status": "Can Not Close",
