@@ -10343,7 +10343,7 @@
   },
   "2434720114": {
     "status": "Closed",
-    "ts": "2026-09-09T17:51:37.613Z",
+    "ts": "2026-08-25T17:39:13.672Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
@@ -13007,6 +13007,12 @@
     "ts": "2026-09-02T15:26:08.545Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
+  },
+  "2468457631": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-09T18:02:41.676Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City"
   },
   "2468512303": {
     "status": "Pending Install",
