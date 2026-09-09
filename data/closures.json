@@ -12529,8 +12529,8 @@
     "pendingUntil": "2026-08-21"
   },
   "2455611027": {
-    "status": "Closed",
-    "ts": "2026-09-09T15:30:30.599Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-09T15:30:33.751Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
@@ -12563,6 +12563,12 @@
     "ts": "2026-08-18T14:38:29.860Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2456103511": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-09T15:31:17.894Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2456110776": {
     "status": "Closed",
