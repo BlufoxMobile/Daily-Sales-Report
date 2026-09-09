@@ -13115,6 +13115,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2478110114": {
+    "status": "Closed",
+    "ts": "2026-09-09T17:36:06.473Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2479545425": {
     "status": "Can Not Close",
     "ts": "2026-09-08T16:03:06.334Z",
@@ -18438,6 +18444,12 @@
   "1002308087852052": {
     "status": "Closed",
     "ts": "2026-09-09T17:22:31.713Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
+  "1002308054272052": {
+    "status": "Closed",
+    "ts": "2026-09-09T17:22:37.889Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   }
