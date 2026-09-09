@@ -13017,6 +13017,13 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2475220594": {
+    "status": "Pending Install",
+    "ts": "2026-09-09T15:18:01.294Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge",
+    "pendingUntil": "2026-09-16"
+  },
   "2475674663": {
     "status": "Pending Install",
     "ts": "2026-09-04T19:52:35.991Z",
