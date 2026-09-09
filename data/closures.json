@@ -16772,11 +16772,10 @@
     "store": "Schererville"
   },
   "1002297416202057": {
-    "status": "Pending Install",
-    "ts": "2026-09-09T17:04:11.966Z",
+    "status": "Closed",
+    "ts": "2026-09-09T17:04:21.735Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-09-14"
+    "store": "Schererville"
   },
   "1002297946522057": {
     "status": "Pending Install",
@@ -16793,11 +16792,10 @@
     "pendingUntil": "2026-08-17"
   },
   "1002298195362054": {
-    "status": "Pending Install",
-    "ts": "2026-08-13T17:38:37.671Z",
+    "status": "Closed",
+    "ts": "2026-09-09T17:04:20.376Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-08-24"
+    "store": "Schererville"
   },
   "1002297709232050": {
     "status": "Can Not Close",
