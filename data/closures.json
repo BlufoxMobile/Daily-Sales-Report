@@ -13223,6 +13223,13 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2485613494": {
+    "status": "Pending Install",
+    "ts": "2026-09-09T17:45:29.935Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-09-11"
+  },
   "2485894949": {
     "status": "Closed",
     "ts": "2026-09-09T16:10:13.767Z",
