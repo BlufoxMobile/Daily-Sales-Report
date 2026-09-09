@@ -18275,5 +18275,23 @@
     "ts": "2026-09-04T20:06:10.449Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "1002307997072058": {
+    "status": "Closed",
+    "ts": "2026-09-09T15:37:39.131Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
+  "1002307954142050": {
+    "status": "Closed",
+    "ts": "2026-09-09T15:39:58.547Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
+  "1002307384232059": {
+    "status": "Can Not Close",
+    "ts": "2026-09-09T15:46:37.085Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
