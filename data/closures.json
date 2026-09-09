@@ -12897,6 +12897,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2467135756": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-09T18:00:14.788Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City"
+  },
   "2467383014": {
     "status": "Can Not Close",
     "ts": "2026-09-02T15:15:00.004Z",
@@ -12942,7 +12948,7 @@
   },
   "2467526670": {
     "status": "Cancelled Order",
-    "ts": "2026-09-09T18:00:05.764Z",
+    "ts": "2026-09-09T18:00:17.916Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
@@ -12967,7 +12973,7 @@
   },
   "2467753209": {
     "status": "Cancelled Order",
-    "ts": "2026-09-09T18:00:12.860Z",
+    "ts": "2026-09-09T18:00:19.572Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
