@@ -10343,7 +10343,7 @@
   },
   "2434720114": {
     "status": "Closed",
-    "ts": "2026-09-09T17:51:37.613Z",
+    "ts": "2026-08-25T17:39:13.672Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
@@ -12215,8 +12215,8 @@
     "store": "Oak Ridge"
   },
   "2449104256": {
-    "status": "Can Not Close",
-    "ts": "2026-09-09T17:54:48.820Z",
+    "status": "Closed",
+    "ts": "2026-08-25T17:45:53.640Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
@@ -12853,12 +12853,6 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
-  "2465580603": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-09T17:56:15.300Z",
-    "dm": "Tanzim Chowdhury",
-    "store": "Calumet City"
-  },
   "2465669769": {
     "status": "Closed",
     "ts": "2026-08-28T14:48:25.798Z",
@@ -13217,6 +13211,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2483791340": {
+    "status": "Closed",
+    "ts": "2026-09-09T17:54:31.897Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2483950301": {
     "status": "Can Not Close",
     "ts": "2026-09-09T16:17:29.247Z",
@@ -13248,6 +13248,13 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-09-10"
+  },
+  "2485806574": {
+    "status": "Pending Install",
+    "ts": "2026-09-09T17:56:23.303Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville",
+    "pendingUntil": "2026-09-11"
   },
   "2485894949": {
     "status": "Closed",
