@@ -12940,6 +12940,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
+  "2467526670": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-09T18:00:05.764Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City"
+  },
   "2467729278": {
     "status": "Closed",
     "ts": "2026-08-28T20:38:49.406Z",
@@ -12956,6 +12962,12 @@
   "2467753140": {
     "status": "Cancelled Order",
     "ts": "2026-09-09T18:00:03.180Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City"
+  },
+  "2467753209": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-09T18:00:12.860Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
