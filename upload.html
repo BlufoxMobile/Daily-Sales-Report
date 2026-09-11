@@ -1110,29 +1110,202 @@ function npsShortFromRaw(raw){
   return npsMapStore(raw) || npsMapStore(stripped) || (stripped || null);
 }
 
-// T-Sheet Submissions feed → MTD t-chart counts by store + by rep.
-async function npsFetchTSheets(){
-  const resp = await fetch(NPS_CONFIG.TSHEET_URL + "?_=" + Date.now(), { cache: "no-store" });
-  if(!resp.ok) throw new Error("T-Sheet HTTP " + resp.status);
-  const data = await resp.json();
-  if(!data || !data.success || !Array.isArray(data.submissions)) throw new Error("T-Sheet payload malformed");
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-  const byStore = {}, byRep = {};
-  let total = 0;
-  for(const s of data.submissions){
-    const ts = Date.parse(s.timestamp);
-    if(!isFinite(ts) || ts < startOfMonth) continue;
-    total++;
-    const shortName = npsShortFromRaw(s.store);
-    if(shortName) byStore[shortName] = (byStore[shortName] || 0) + 1;
-    const rep = String(s.rep_name || "").trim().toLowerCase();
-    if(rep && shortName){
-      const key = rep + "||" + shortName.toLowerCase();
-      byRep[key] = (byRep[key] || 0) + 1;
+// ===== T-SHEETS: one fetch, retried, with a snapshot fallback =====================
+// The t-sheet numbers in the morning briefing used to come from ONE unguarded
+// fetch of the 2.8 MB Apps Script feed. When that single request failed (the feed
+// 404s / serves HTML / times out intermittently), the .catch() swallowed it and
+// every store tile and every rep's T-CH cell rendered 0 - which is exactly what
+// went out on 9/10 and 9/11 while "Yesterday's Conversion", fetching the same feed
+// a few seconds later, still showed real numbers. So now:
+//   1. both consumers share ONE feed request per run (half the load on the script),
+//   2. that request is retried with a timeout and never accepts a zero-row read,
+//   3. if the feed still fails, the numbers come from data/tsheet-counts.json -
+//      the file the Build t-sheet counts Action writes for the T-Sheet Submissions
+//      dashboard, the quote sheets and the 12/3/6 digest,
+//   4. and if BOTH fail, the email shows a dash, never a made-up 0.
+// MTD is counted on the fiscal 22nd-21st cycle, the same window the T-Sheet
+// Submissions dashboard uses, so the email and the dashboard show the same number.
+const NPS_TSHEET_COUNTS_PATH = "data/tsheet-counts.json";
+const NPS_TSHEET_COUNTS_URL  = "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/tsheet-counts.json";
+const NPS_TSHEET_MEMO_MS = 5 * 60 * 1000;
+
+// Fiscal t-sheet cycle containing `now`: the 22nd through the 21st of the next month.
+function npsTSheetCycle(now){
+  now = now || new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const start = now.getDate() >= 22 ? new Date(y, m, 22) : new Date(y, m - 1, 22);
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, 21);
+  const today = new Date(y, m, now.getDate());
+  const days = Math.round((end - start) / 86400000) + 1;
+  const dayNum = Math.round((today - start) / 86400000) + 1;
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return {
+    startYMD: npsLocalYMD(start), endYMD: npsLocalYMD(end), days: days,
+    elapsed: Math.min(1, Math.max(0, dayNum / days)), daysLeft: Math.max(0, days - dayNum),
+    label: M[start.getMonth()] + " " + start.getDate() + " &ndash; " + M[end.getMonth()] + " " + end.getDate()
+  };
+}
+
+let NPS_TSHEET_FEED = null;   // { at, promise } - shared by npsFetchTSheets + npsFetchConversion
+function npsTSheetFeed(){
+  if(NPS_TSHEET_FEED && (Date.now() - NPS_TSHEET_FEED.at) < NPS_TSHEET_MEMO_MS) return NPS_TSHEET_FEED.promise;
+  const memo = { at: Date.now(), promise: null };
+  memo.promise = npsFetchTSheetFeedRaw().catch(e => { if(NPS_TSHEET_FEED === memo) NPS_TSHEET_FEED = null; throw e; });
+  NPS_TSHEET_FEED = memo;
+  return memo.promise;
+}
+
+async function npsFetchTSheetFeedRaw(){
+  const TRIES = 2, TIMEOUT_MS = 45000;
+  let lastErr = null;
+  for(let attempt = 1; attempt <= TRIES; attempt++){
+    const ctl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    const timer = ctl ? setTimeout(() => ctl.abort(), TIMEOUT_MS) : null;
+    try {
+      const resp = await fetch(NPS_CONFIG.TSHEET_URL + "?_=" + Date.now(), { cache: "no-store", signal: ctl ? ctl.signal : undefined });
+      if(!resp.ok) throw new Error("T-Sheet HTTP " + resp.status);
+      const txt = await resp.text();
+      let data = null;
+      try { data = JSON.parse(txt); } catch(e){ throw new Error("T-Sheet feed returned non-JSON: " + txt.slice(0, 80).replace(/\s+/g, " ")); }
+      if(!data || !data.success || !Array.isArray(data.submissions)) throw new Error("T-Sheet payload malformed" + (data && data.error ? " (" + data.error + ")" : ""));
+      if(!data.submissions.length) throw new Error("T-Sheet feed returned zero rows");
+      return data.submissions;
+    } catch(e){
+      lastErr = e;
+      console.warn("T-Sheet feed attempt " + attempt + "/" + TRIES + " failed:", e);
+      if(attempt < TRIES) await new Promise(r => setTimeout(r, 3000 * attempt));
+    } finally {
+      if(timer) clearTimeout(timer);
     }
   }
-  NPS_TCHARTS = { byStore: byStore, byRep: byRep, total: total, loaded: true };
+  throw lastErr || new Error("T-Sheet feed unavailable");
+}
+
+let NPS_TSHEET_SNAP = null;   // { at, promise }
+function npsFetchTSheetSnapshot(){
+  if(NPS_TSHEET_SNAP && (Date.now() - NPS_TSHEET_SNAP.at) < NPS_TSHEET_MEMO_MS) return NPS_TSHEET_SNAP.promise;
+  const memo = { at: Date.now(), promise: null };
+  memo.promise = (async () => {
+    const url = (await npsPinnedUrl("Daily-Sales-Report", NPS_TSHEET_COUNTS_PATH)) || NPS_TSHEET_COUNTS_URL;
+    const r = await fetch(url + (url.indexOf("?") === -1 ? "?t=" : "&t=") + Date.now(), { cache: "no-store" });
+    if(!r.ok) throw new Error("tsheet-counts.json HTTP " + r.status);
+    const j = await r.json();
+    if(!j || !j.stores || typeof j.stores !== "object" || !Object.keys(j.stores).length) throw new Error("tsheet-counts.json has no stores");
+    return j;
+  })().catch(e => { if(NPS_TSHEET_SNAP === memo) NPS_TSHEET_SNAP = null; throw e; });
+  NPS_TSHEET_SNAP = memo;
+  return memo.promise;
+}
+
+// Typed rep names on the quote sheets drift from the Rep Rank spelling
+// ("Connor Mcllwain" / Connor McIlwain, "Jamie" / Jaime, "Chris" / Christopher,
+// "Tyrone Wilson Jr." / "Tyrone Wilson jr"). Exact match first; a close spelling
+// only counts when it points at exactly ONE rep on that store's roster, so two
+// real people with similar names can never have their t-sheets merged.
+function npsNameNorm(s){
+  return String(s == null ? "" : s).toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z\s'-]/g, " ").replace(/['-]/g, " ")
+    .replace(/\b(jr|sr|ii|iii|iv)\b/g, " ")
+    .replace(/\s+/g, " ").trim();
+}
+function npsOsaDist(a, b){
+  const m = a.length, n = b.length;
+  if(Math.abs(m - n) > 2) return 3;
+  const d = [];
+  for(let i = 0; i <= m; i++){ d[i] = [i]; }
+  for(let j = 0; j <= n; j++){ d[0][j] = j; }
+  for(let i = 1; i <= m; i++){
+    for(let j = 1; j <= n; j++){
+      const cost = a[i-1] === b[j-1] ? 0 : 1;
+      d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + cost);
+      if(i > 1 && j > 1 && a[i-1] === b[j-2] && a[i-2] === b[j-1]) d[i][j] = Math.min(d[i][j], d[i-2][j-2] + 1);
+    }
+  }
+  return d[m][n];
+}
+function npsNamesClose(rosterNorm, typedNorm){
+  const a = rosterNorm.split(" "), b = typedNorm.split(" ");
+  if(a.length < 2 || b.length < 2) return false;
+  const af = a[0], bf = b[0], al = a[a.length-1], bl = b[b.length-1];
+  const short = (x, y) => Math.min(x.length, y.length);
+  const firstOk = af === bf
+    || (short(af, bf) >= 3 && (af.indexOf(bf) === 0 || bf.indexOf(af) === 0))
+    || (short(af, bf) >= 5 && npsOsaDist(af, bf) <= 1);
+  const lastOk = al === bl
+    || (short(al, bl) >= 4 && npsOsaDist(al, bl) <= 1)
+    || (short(al, bl) >= 7 && npsOsaDist(al, bl) <= 2);
+  return firstOk && lastOk;
+}
+// Rep Rank roster names for one store -> { lowercased roster name: t-sheet count }.
+function npsTcByRoster(shortName, rosterNames){
+  const typed = ((NPS_TCHARTS.repsByStore || {})[String(shortName).trim().toLowerCase()]) || {};
+  const roster = (rosterNames || []).map(nm => ({ key: String(nm).trim().toLowerCase(), norm: npsNameNorm(nm), n: 0 }));
+  const leftovers = [];
+  Object.keys(typed).forEach(raw => {
+    const norm = npsNameNorm(raw);
+    if(!norm) return;
+    const exact = roster.filter(x => x.norm === norm);
+    if(exact.length === 1) exact[0].n += typed[raw];
+    else if(!exact.length) leftovers.push({ norm: norm, n: typed[raw] });
+  });
+  leftovers.forEach(e => {
+    const close = roster.filter(x => x.norm && npsNamesClose(x.norm, e.norm));
+    if(close.length === 1) close[0].n += e.n;
+  });
+  const out = {};
+  roster.forEach(x => { out[x.key] = (out[x.key] || 0) + x.n; });
+  return out;
+}
+
+// T-Sheet Submissions -> fiscal-MTD t-sheet counts by store + by typed rep name.
+// Throws only when neither the live feed nor the counts snapshot can be read, and
+// in that case leaves NPS_TCHARTS.loaded false so the email shows a dash.
+async function npsFetchTSheets(){
+  const cyc = npsTSheetCycle();
+  const byStore = {}, byRep = {}, repsByStore = {};
+  let total = 0, source = "";
+  const add = (shortName, rep, n) => {
+    byStore[shortName] = (byStore[shortName] || 0) + n;
+    total += n;
+    rep = String(rep == null ? "" : rep).trim();
+    if(!rep) return;
+    const sk = shortName.toLowerCase(), rk = rep.toLowerCase();
+    byRep[rk + "||" + sk] = (byRep[rk + "||" + sk] || 0) + n;
+    const m = repsByStore[sk] || (repsByStore[sk] = {});
+    m[rep] = (m[rep] || 0) + n;
+  };
+  try {
+    const subs = await npsTSheetFeed();
+    for(const s of subs){
+      const ts = Date.parse(s && s.timestamp);
+      if(!isFinite(ts)) continue;
+      const ymd = npsLocalYMD(new Date(ts));
+      if(ymd < cyc.startYMD || ymd > cyc.endYMD) continue;
+      const shortName = npsShortFromRaw(s.store);
+      if(shortName) add(shortName, s.rep_name, 1);
+    }
+    source = "live feed";
+  } catch(feedErr){
+    NPS_TCHARTS = { byStore: {}, byRep: {}, repsByStore: {}, total: 0, loaded: false, source: "", cycle: cyc };
+    const snap = await npsFetchTSheetSnapshot().catch(e => { throw new Error("T-Sheet feed failed (" + feedErr.message + ") and tsheet-counts.json is unavailable (" + e.message + ")"); });
+    if(snap.cycle_start !== cyc.startYMD) throw new Error("T-Sheet feed failed (" + feedErr.message + ") and tsheet-counts.json is for another cycle (" + snap.cycle_start + ")");
+    const snapAge = Date.now() - Date.parse(snap.generated_at || "");
+    if(!(snapAge < 36 * 3600 * 1000)) throw new Error("T-Sheet feed failed (" + feedErr.message + ") and tsheet-counts.json is too old to trust (" + snap.generated_at + ")");
+    Object.keys(snap.stores).forEach(full => {
+      const shortName = npsShortFromRaw(full);
+      const st = snap.stores[full] || {};
+      if(!shortName) return;
+      const reps = st.reps || {};
+      let repSum = 0;
+      Object.keys(reps).forEach(rep => { const n = Number(reps[rep] && reps[rep].mtd) || 0; if(n){ add(shortName, rep, n); repSum += n; } });
+      const rest = (Number(st.mtd) || 0) - repSum;
+      if(rest > 0) add(shortName, "", rest);
+    });
+    source = "tsheet-counts.json snapshot (" + (snap.generated_at || "unknown time") + ")";
+    console.warn("T-Sheet feed failed; using " + source + ":", feedErr);
+  }
+  NPS_TCHARTS = { byStore: byStore, byRep: byRep, repsByStore: repsByStore, total: total, loaded: true, source: source, cycle: cyc };
   return NPS_TCHARTS;
 }
 
@@ -2339,7 +2512,7 @@ async function npsFetchConversion(){
             const mcrRaw = r[7];
             const traffic = Number(r[8]) || 0;
             const mcr = (typeof mcrRaw === "number") ? (mcrRaw <= 1 ? mcrRaw*100 : mcrRaw) : null;
-            conv[sn] = { traffic: traffic, mobile: mobile, mcr: mcr, tcharts: 0, tpct: null };
+            conv[sn] = { traffic: traffic, mobile: mobile, mcr: mcr, tcharts: null, tpct: null };
           }
         }
       }
@@ -2356,18 +2529,32 @@ async function npsFetchConversion(){
       }
       NPS_CONV.byStore = conv;
     }
-    const tr = await fetch(NPS_CONFIG.TSHEET_URL + "?_=" + Date.now(), { cache: "no-store" });
-    if(tr.ok){
-      const data = await tr.json();
-      const subs = (data && data.submissions) || [];
+    // Same shared feed request as npsFetchTSheets (retried); snapshot fallback.
+    // Days are bucketed in LOCAL time: the feed's timestamps are UTC, so slicing
+    // the ISO string put every t-sheet filed after 7 PM Central on the wrong day.
+    let subs = null;
+    try { subs = await npsTSheetFeed(); }
+    catch(e){ console.warn("conversion: t-sheet feed unavailable, trying tsheet-counts.json:", e); }
+    const yd = new Date(); yd.setDate(yd.getDate() - 1);
+    const yISO = npsLocalYMD(yd);
+    let counts = null, useDate = null;
+    if(subs){
       const byDate = {};
-      for(const s of subs){ const ts = s.timestamp; if(!ts) continue; const day = String(ts).slice(0,10); (byDate[day] = byDate[day] || []).push(s); }
-      const d = new Date(); d.setDate(d.getDate()-1); const yISO = d.toISOString().slice(0,10);
-      let useDate = null;
+      for(const s of subs){ const t = Date.parse(s && s.timestamp); if(!isFinite(t)) continue; const day = npsLocalYMD(new Date(t)); (byDate[day] = byDate[day] || []).push(s); }
       if(byDate[yISO]) useDate = yISO;
       else { const days = Object.keys(byDate).sort(); for(let i=days.length-1;i>=0;i--){ if(byDate[days[i]].length>=30){ useDate=days[i]; break; } } if(!useDate && days.length) useDate = days[days.length-1]; }
-      const counts = {};
+      counts = {};
       (byDate[useDate] || []).forEach(s => { const sn = npsShortFromRaw(s.store); if(sn) counts[sn] = (counts[sn]||0)+1; });
+    } else {
+      // The snapshot only carries a single day's "today" column, so it can stand
+      // in only while it is still yesterday's file.
+      const snap = await npsFetchTSheetSnapshot().catch(e => { console.warn("conversion: tsheet-counts.json unavailable:", e); return null; });
+      if(snap && snap.day === yISO){
+        useDate = yISO; counts = {};
+        Object.keys(snap.stores).forEach(full => { const sn = npsShortFromRaw(full); if(sn) counts[sn] = (counts[sn]||0) + (Number((snap.stores[full]||{}).today) || 0); });
+      }
+    }
+    if(counts){
       NPS_CONV.date = useDate;
       Object.keys(NPS_CONV.byStore).forEach(sn => {
         const tc = counts[sn] || 0;
@@ -2389,7 +2576,9 @@ function npsMonthlyGoals(shortName){
   const C = Math.ceil;
   const monthly = daily * npsDaysInMonth();
   const xm = C(monthly * 0.07);
-  return { gp: C(t.gp||0), xm: xm, rgu: C(monthly*((t.fcr||0)/100)), wt: C(monthly*0.02), acc: C(xm*20), ts: C(monthly*0.20) };
+  // T-sheets are goaled on the fiscal 22nd-21st cycle (see npsTSheetCycle), the
+  // window T-Sheet Submissions counts on, so traffic x 20% uses that cycle's length.
+  return { gp: C(t.gp||0), xm: xm, rgu: C(monthly*((t.fcr||0)/100)), wt: C(monthly*0.02), acc: C(xm*20), ts: C(daily * npsTSheetCycle().days * 0.20) };
 }
 
 /* ---- One-On-One-Form ranking + opportunities (Store Rank sheet) ---- */
@@ -2538,7 +2727,9 @@ function npsStoreTile(label, curDisp, goalDisp, pct, tone, note){
 
 function npsStoreGoalsHtml(row, shortName, fw){
   const g = npsMonthlyGoals(shortName);
-  const tc = (NPS_TCHARTS.byStore || {})[row.name] || 0;
+  const tsKnown = !!NPS_TCHARTS.loaded;
+  const tc = tsKnown ? ((NPS_TCHARTS.byStore || {})[row.name] || 0) : 0;
+  const tcyc = npsTSheetCycle();
   const el = fw.elapsed;
   const daysLeftTxt = fw.daysLeft + " selling day" + (fw.daysLeft === 1 ? "" : "s") + " left";
   // Current values
@@ -2558,6 +2749,12 @@ function npsStoreGoalsHtml(row, shortName, fw){
     if(tone === "warn") return "Behind &bull; " + perDay(remaining);
     return "Behind &bull; " + perDay(remaining);
   };
+  const noteTS = (cur, goal, tone) => {
+    if(!tsKnown) return "T-sheet feed unavailable";
+    if(!goal || goal <= 0) return "&mdash;";
+    if(tone === "good") return Math.round(npsClampPct(cur,goal)) + "% &bull; on pace";
+    return "Behind &bull; " + (tcyc.daysLeft > 0 ? "~" + Math.max(1, Math.ceil(Math.max(0, goal - cur) / tcyc.daysLeft)) + "/day" : "keep going");
+  };
 
   let tiles = "";
   if(g){
@@ -2566,7 +2763,7 @@ function npsStoreGoalsHtml(row, shortName, fw){
     const tRGU = npsPaceTone(curRGU, g.rgu, el);
     const tWT  = npsPaceTone(curWT,  g.wt,  el);
     const tAcc = npsPaceTone(curAcc, g.acc, el);
-    const tTS  = npsPaceTone(curTS,  g.ts,  el);
+    const tTS  = tsKnown ? npsPaceTone(curTS, g.ts, tcyc.elapsed) : "neutral";
     tiles =
       '<tr>' +
         npsStoreTile("Gross Profit", npsMoneyK(curGP), "/" + npsMoneyK(g.gp), npsClampPct(curGP,g.gp), tGP, note(curGP,g.gp,tGP)) +
@@ -2575,14 +2772,14 @@ function npsStoreGoalsHtml(row, shortName, fw){
       '</tr><tr>' +
         npsStoreTile("Watch + Tablet", String(curWT), "/ " + g.wt, npsClampPct(curWT,g.wt), tWT, note(curWT,g.wt,tWT)) +
         npsStoreTile("Accessory $", npsMoneyFmt(curAcc), "/" + npsMoneyFmt(g.acc), npsClampPct(curAcc,g.acc), tAcc, note(curAcc,g.acc,tAcc)) +
-        npsStoreTile("T-Sheets", String(curTS), "/ " + g.ts, npsClampPct(curTS,g.ts), tTS, note(curTS,g.ts,tTS)) +
+        npsStoreTile("T-Sheets", tsKnown ? String(curTS) : "&mdash;", "/ " + g.ts, tsKnown ? npsClampPct(curTS,g.ts) : 0, tTS, noteTS(curTS,g.ts,tTS)) +
       '</tr>';
   } else {
     tiles = '<tr><td style="padding:8px 5px;"><div style="font-size:12px;color:#94a3b8;font-style:italic;">Monthly targets not posted yet &mdash; goals will appear once the planner updates.</div></td></tr>';
   }
   return '<tr><td style="padding:20px 20px 2px;">' +
       '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#128202;&nbsp; Store Goals &mdash; Month to Date</div>' +
-      '<div style="font-size:12px;color:#64748b;margin:5px 0 2px;line-height:1.5;">Fiscal month <b>' + fw.label + '</b> &bull; <b>' + daysLeftTxt + '</b>. Targets from the <a href="https://blufoxmobile.github.io/Monthly-Target-Planner/" style="color:#2563eb;font-weight:700;text-decoration:none;">Monthly Target Planner &#8599;</a> (7% MCR &bull; traffic-based).</div>' +
+      '<div style="font-size:12px;color:#64748b;margin:5px 0 2px;line-height:1.5;">Fiscal month <b>' + fw.label + '</b> &bull; <b>' + daysLeftTxt + '</b>. Targets from the <a href="https://blufoxmobile.github.io/Monthly-Target-Planner/" style="color:#2563eb;font-weight:700;text-decoration:none;">Monthly Target Planner &#8599;</a> (7% MCR &bull; traffic-based). T-Sheets count <b>' + tcyc.label + '</b>, the same window as T-Sheet Submissions.</div>' +
     '</td></tr>' +
     '<tr><td style="padding:6px 12px 6px;">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + tiles + '</table>' +
@@ -2625,7 +2822,10 @@ function npsTeamScorecardHtml(shortName, storeReps, repN){
   const repTS    = g ? C((g.ts||0)/n)   : 0;
   const PLUS_GOAL = 75, GIG_GOAL = 80;   // ratio targets (not split)
   const el = npsFiscalWindow().elapsed;
-  const tcOf = r => (NPS_TCHARTS.byRep || {})[String(r.name).trim().toLowerCase() + "||" + shortName.toLowerCase()] || 0;
+  const tsKnown = !!NPS_TCHARTS.loaded;
+  const tsEl = npsTSheetCycle().elapsed;
+  const tcMap = npsTcByRoster(shortName, storeReps.map(r => r.name));
+  const tcOf = r => tcMap[String(r.name).trim().toLowerCase()] || 0;
 
   const header =
     '<tr>' +
@@ -2663,7 +2863,7 @@ function npsTeamScorecardHtml(shortName, storeReps, repN){
       npsHeatCell(String(cWatch), "/" + repWatch, npsPaceTone(cWatch, repWatch, el), last) +
       npsHeatCell(cPlus + "%", "/" + PLUS_GOAL + "%", npsPaceTone(cPlus, PLUS_GOAL, 1), last) +
       npsHeatCell(cGig + "%", "/" + GIG_GOAL + "%", npsPaceTone(cGig, GIG_GOAL, 1), last) +
-      npsHeatCell(String(cTc), "/" + repTS, npsPaceTone(cTc, repTS, el), last) +
+      npsHeatCell(tsKnown ? String(cTc) : "&mdash;", "/" + repTS, tsKnown ? npsPaceTone(cTc, repTS, tsEl) : "neutral", last) +
       '</tr>';
   }).join("");
 
@@ -2715,7 +2915,7 @@ function npsConversionHeroHtml(shortName){
       npsConvHeroCell(String(c.traffic || 0), "Traffic", "#ffffff", true) +
       npsConvHeroCell(String(c.mobile || 0), "XM Sold", "#ffffff", false) +
       npsConvHeroCell(mcrTxt, "Close Rate", mcrCol, false) +
-      npsConvHeroCell(String(c.tcharts || 0), "T-Charts", "#ffffff", false) +
+      npsConvHeroCell(c.tcharts == null ? "&mdash;" : String(c.tcharts), "T-Charts", "#ffffff", false) +
       npsConvHeroCell(tpTxt, "T-Chart %", tpCol, false) +
       '</tr></table>' +
       '<div style="color:#f8c9a6;font-size:11px;text-align:center;margin-top:10px;line-height:1.5;">Goal: <b style="color:#ffffff;">7%+ close rate</b> and <b style="color:#ffffff;">T-Charts on 20%+</b> of traffic &bull; ' + foot + '</div>';
@@ -3079,7 +3279,8 @@ async function npsSendEmails(surveys, salesStores, dir){
     // Throttle: small gap between stores so we don't hammer the hook.
     if(si < storeList.length - 1) await npsSleep(350);
   }
-  return { sent: sent, errors: errors, storeCount: storeNames.size, sentStores: sentStores };
+  return { sent: sent, errors: errors, storeCount: storeNames.size, sentStores: sentStores,
+    tsheets: NPS_TCHARTS.loaded ? NPS_TCHARTS.source : "unavailable" };
 }
 // === END NPS SHARED MODULE ===
 
@@ -3193,7 +3394,7 @@ async function npsDailyRun(parsed){
   //    even though the briefing's value is mostly the Sales Report numbers, not
   //    the surveys. It now runs every morning and is deduped by DATE instead.
   let sent = 0, storeCount = 0, errors = [];
-  let held = false, stale = [];
+  let held = false, stale = [], tsheets = "";
   const hookReady = npsHookReady();
   const alreadySentToday = npsBriefingsSentToday(sentLog, today);
   if(hookReady && !alreadySentToday){
@@ -3202,7 +3403,7 @@ async function npsDailyRun(parsed){
     try { salesStores = await npsFetchSalesStores(); }
     catch(e){ console.warn('Sales report unavailable for email header:', e); }
     const res = await npsSendEmails(fresh, salesStores, dir);
-    sent = res.sent; storeCount = res.storeCount || 0; errors = res.errors || [];
+    sent = res.sent; storeCount = res.storeCount || 0; errors = res.errors || []; tsheets = res.tsheets || "";
 
     if(res.skipped){
       // Today's data isn't fully updated yet — hold the send and do NOT mark these
@@ -3253,7 +3454,7 @@ async function npsDailyRun(parsed){
     total: parsed.surveys.length, fresh: fresh.length, heldOld: heldOld,
     windowFrom: emailCutoff, newestDay: newestDay,
     sent: sent, storeCount: storeCount,
-    alreadySentToday: alreadySentToday, held: held, stale: stale,
+    alreadySentToday: alreadySentToday, held: held, stale: stale, tsheets: tsheets,
     unmatched: parsed.unmatched || [], hookReady: hookReady, errors: errors,
     lunch: lunch
   };
@@ -3577,6 +3778,8 @@ async function uploadFiles() {
             ? `Store briefings (${d.fresh} new survey${d.fresh === 1 ? '' : 's'} → ${d.sent} of ${d.storeCount} stores emailed)`
             : `Store briefings (${d.sent} of ${d.storeCount} stores emailed — no new surveys in this export${d.newestDay ? `, newest is ${d.newestDay}` : ''}, so today's is the report card and goals)`;
           if (d.heldOld) sl += ` — ${d.heldOld} older survey${d.heldOld === 1 ? '' : 's'} skipped (before ${d.windowFrom})`;
+          if (d.tsheets === 'unavailable') sl += ' — ⚠ t-sheet counts could not be read (feed and snapshot both failed), so the T-Sheet cells show a dash';
+          else if (/^tsheet-counts/.test(d.tsheets || '')) sl += ' — t-sheet counts came from the counts snapshot because the live feed failed';
           if (d.errors.length) sl += ` — ⚠ ${d.errors.length} store email${d.errors.length === 1 ? '' : 's'} failed (will retry on next upload): ${d.errors.join('; ')}`;
           parts.push(sl);
         }
