@@ -28,7 +28,7 @@
     "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115",
     "North Knoxville Xfinity Store": ""
   },
-  "updatedAt": "2026-09-14T20:14:59.298Z",
+  "updatedAt": "2026-09-14T20:45:44.127Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -165,7 +165,7 @@
     "Oak Ridge Xfinity Store": "kKirkland@blufoxmobile.com",
     "Round Lake Beach Xfinity Store": "brPerez@blufoxmobile.com",
     "Schererville Xfinity Store": "miJackson@blufoxmobile.com",
-    "South Knoxville Xfinity Store": "zSpradling@blufoxmobile.com",
+    "South Knoxville Xfinity Store": "rcampbell@blufoxmobile.com",
     "Uptown Xfinity Store": "HDodge@blufoxmobile.com",
     "Bourbonnais Xfinity Store": "jSoto@blufoxmobile.com",
     "South Bend Xfinity Store": "jLilly@blufoxmobile.com",
@@ -179,7 +179,7 @@
     "Valparaiso Xfinity Store": "kySanchez@blufoxmobile.com"
   },
   "storeAMs": {
-    "Bourbonnais Xfinity Store": "NTrombley@blufoxmobile.com",
+    "Bourbonnais Xfinity Store": "nmarquardt@blufoxmobile.com",
     "Cicero Xfinity Store": "sPenablanca@blufoxmobile.com",
     "Evergreen Park Xfinity Store": "aVALDEZ@blufoxmobile.com",
     "Glenview Xfinity Store": "LWeeks@blufoxmobile.com",
@@ -200,7 +200,8 @@
     "Evanston Xfinity Store": "sUllah@blufoxmobile.com",
     "Machesney Park Xfinity Store": "LBryant@blufoxmobile.com",
     "Round Lake Beach Xfinity Store": "juPadilla@blufoxmobile.com",
-    "Kildeer Xfinity Store": "alFlores@blufoxmobile.com"
+    "Kildeer Xfinity Store": "alFlores@blufoxmobile.com",
+    "Dekalb Xfinity Store": "ddean@blufoxmobile.com"
   },
   "storeDMs": {
     "Bourbonnais Xfinity Store": "juCarrillo@blufoxmobile.com",
@@ -264,26 +265,26 @@
     "Burbank Xfinity Store": "Zuri Salazar",
     "Calumet City Xfinity Store": "Eric Reyes",
     "Cicero Xfinity Store": "Francisco Salazar",
-    "Elkhart Xfinity Store": "DJ Regan",
+    "Elkhart Xfinity Store": "Dylan Regan",
     "Evergreen Park Xfinity Store": "Michael Rivera",
     "Evanston Xfinity Store": "Jamal Lomax",
     "Frankfort Xfinity Store": "Terron Taylor",
-    "Glenview Xfinity Store": "Aedo Yonana",
-    "Greeneville Xfinity Store": "Josh Trentham",
+    "Glenview Xfinity Store": "Aedo Yonan",
+    "Greeneville Xfinity Store": "Joshua Trentham",
     "Hammond Xfinity Store": "Alexis Bell",
-    "Johnson City Xfinity Store": "VG Huerto",
+    "Johnson City Xfinity Store": "Vincent Huerto",
     "Michigan City Xfinity Store": "Collin Crooks",
     "Oak Ridge Xfinity Store": "Kayla Kirkland",
     "Schererville Xfinity Store": "Michael Jackson",
     "Round Lake Beach Xfinity Store": "Bryan Perez",
     "Uptown Xfinity Store": "Hunter Dodge",
-    "Tinley Park Xfinity Store": "Brittany Henderson Rodriguez",
-    "South Knoxville Xfinity Store": "Zoe Spradling",
+    "Tinley Park Xfinity Store": "Brittany Rodriguez",
+    "South Knoxville Xfinity Store": "Richard Campbell",
     "Bourbonnais Xfinity Store": "Jamil Soto",
     "South Bend Xfinity Store": "Jason Lilly",
-    "South Skokie Xfinity Store": "Ozzie Garcia",
+    "South Skokie Xfinity Store": "Osvaldo Garcia",
     "Machesney Park Xfinity Store": "Tim Collins",
-    "Oak Lawn Xfinity Store": "Jorge Bortero",
+    "Oak Lawn Xfinity Store": "Jorge Botero",
     "North Knoxville Xfinity Store": "Zoe Spradling",
     "Dekalb Xfinity Store": "Joseph Wolek",
     "Kildeer Xfinity Store": "Kameron Thomas",
@@ -311,7 +312,8 @@
     "Evanston Xfinity Store": "Suyal Ullah",
     "Machesney Park Xfinity Store": "Leslie Bryant",
     "Round Lake Beach Xfinity Store": "Juan Padilla",
-    "Kildeer Xfinity Store": "Alexandro Flores"
+    "Kildeer Xfinity Store": "Alexandro Flores",
+    "Dekalb Xfinity Store": "Dashawn Dean"
   },
   "storeDMNames": {
     "Bourbonnais Xfinity Store": "Juan Carrillo",
@@ -343,28 +345,6 @@
     "Round Lake Beach Xfinity Store": "Tanzim Chowdhury"
   },
   "storeEmployees": {
-    "Oak Lawn Xfinity Store": [
-      {
-        "first": "Ahmad",
-        "last": "Allan",
-        "email": "aallan@blufoxmobile.com"
-      },
-      {
-        "first": "Chris",
-        "last": "Coleman",
-        "email": "ccoleman@blufoxmobile.com"
-      },
-      {
-        "first": "Kianti",
-        "last": "London",
-        "email": "klondon@blufoxmobile.com"
-      },
-      {
-        "first": "Briana",
-        "last": "Marquez",
-        "email": "brmarquez@blufoxmobile.com"
-      }
-    ],
     "Greeneville Xfinity Store": [
       {
         "first": "Dalton",
@@ -432,6 +412,33 @@
         "first": "Deaundre",
         "last": "Mitchell",
         "email": "demitchell@blufoxmobile.com"
+      }
+    ],
+    "North Knoxville Xfinity Store": [
+      {
+        "first": "Issiah",
+        "last": "Badgett",
+        "email": "ibadgett@blufoxmobile.com"
+      },
+      {
+        "first": "Gregory",
+        "last": "Martin",
+        "email": "gmartin@blufoxmobile.com"
+      },
+      {
+        "first": "Cleophus",
+        "last": "McKamey",
+        "email": "cmckamey@blufoxmobile.com"
+      },
+      {
+        "first": "Nicholas",
+        "last": "Miguel",
+        "email": "nmiguel@blufoxmobile.com"
+      },
+      {
+        "first": "Zachary",
+        "last": "Underwood",
+        "email": "zunderwood@blufoxmobile.com"
       }
     ],
     "Oak Ridge Xfinity Store": [
@@ -751,6 +758,11 @@
         "email": "wbacilio@blufoxmobile.com"
       },
       {
+        "first": "D'andre",
+        "last": "Jenkins",
+        "email": "dajenkins@blufoxmobile.com"
+      },
+      {
         "first": "Danyale",
         "last": "Myles",
         "email": "dmyles@blufoxmobile.com"
@@ -786,6 +798,11 @@
         "first": "Aiden",
         "last": "Bolhuis",
         "email": "abolhuis@blufoxmobile.com"
+      },
+      {
+        "first": "Noah",
+        "last": "Cleveland",
+        "email": "ncleveland@blufoxmobile.com"
       },
       {
         "first": "Richard",
@@ -941,6 +958,33 @@
         "first": "Hannah",
         "last": "Ingram",
         "email": "hingram@blufoxmobile.com"
+      }
+    ],
+    "Oak Lawn Xfinity Store": [
+      {
+        "first": "Ahmad",
+        "last": "Allan",
+        "email": "aallan@blufoxmobile.com"
+      },
+      {
+        "first": "Christopher",
+        "last": "Coleman",
+        "email": "ccoleman@blufoxmobile.com"
+      },
+      {
+        "first": "Jerold",
+        "last": "Cummingham",
+        "email": "jcunningham@blufoxmobile.com"
+      },
+      {
+        "first": "Ramon",
+        "last": "Gomez",
+        "email": "rgomez@blufoxmobile.com"
+      },
+      {
+        "first": "Briana",
+        "last": "Marquez",
+        "email": "brmarquez@blufoxmobile.com"
       }
     ],
     "Round Lake Beach Xfinity Store": [
