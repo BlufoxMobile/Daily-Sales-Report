@@ -1,0 +1,36 @@
+{
+  "submittedAt": "2026-09-14T12:24:25.093Z",
+  "store": "Oak Ridge Xfinity Store",
+  "name": "Kayla Kirkland",
+  "email": "kKirkland@blufoxmobile.com",
+  "dm": "Matthew Brooks",
+  "dmEmail": "mbrooks@blufoxmobile.com",
+  "asmEmail": "eMcFall@blufoxmobile.com",
+  "date": "2026-09-14",
+  "answers": {
+    "depositBags": "Yes",
+    "pciChecklist": "Yes",
+    "scheduleWeeks": "Yes",
+    "uniformsNeeded": "No",
+    "cashFloat": "Yes",
+    "returnsShipped": "Yes"
+  },
+  "notes": "Jeff mentioned getting the whole repaired in back of house behind the door. Also the bathroom ceiling tile needs to be replaced. the tiles we have here are not the right ones, every time it rains it leaks on to the floor and all over the toilet and we have to put a bucked under it ",
+  "linksOpened": {
+    "depositOrderForm": false,
+    "pciChecklist": false,
+    "uniformOrderForm": false,
+    "cashFloatTracker": false
+  },
+  "photoUrls": {
+    "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/week1.jpg",
+    "week2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/week2.jpg",
+    "week3": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/week3.jpg",
+    "week4": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/week4.jpg",
+    "upgrades": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/upgrades.jpg",
+    "tradeins": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/tradeins.jpg",
+    "brinks": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/brinks.jpg",
+    "facility1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/facility1.jpg",
+    "facility2": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-14-oak-ridge-xfinity-store/facility2.jpg"
+  }
+}
