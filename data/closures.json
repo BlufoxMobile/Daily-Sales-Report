@@ -8812,11 +8812,10 @@
     "pendingUntil": "2026-07-21"
   },
   "2408684579": {
-    "status": "Pending Install",
-    "ts": "2026-09-15T16:57:41.619Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-15T16:57:45.403Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Glenview",
-    "pendingUntil": "2026-09-22"
+    "store": "Glenview"
   },
   "2408766695": {
     "status": "Closed",
@@ -9604,8 +9603,8 @@
   },
   "2422500342": {
     "status": "Closed",
-    "ts": "2026-08-12T22:00:39.230Z",
-    "dm": "Imaad Dhorajiwala",
+    "ts": "2026-09-15T16:59:24.838Z",
+    "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
   "2422589002": {
