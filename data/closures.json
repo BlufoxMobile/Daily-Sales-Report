@@ -10937,11 +10937,10 @@
     "store": "Evanston"
   },
   "2438672649": {
-    "status": "Pending Install",
-    "ts": "2026-08-06T23:15:51.957Z",
-    "dm": "Juan Carrillo",
-    "store": "Burbank",
-    "pendingUntil": "2026-08-15"
+    "status": "Cancelled Order",
+    "ts": "2026-09-15T17:45:52.415Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank"
   },
   "2438678573": {
     "status": "Closed",
