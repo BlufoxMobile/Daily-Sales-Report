@@ -18661,5 +18661,12 @@
     "ts": "2026-09-10T20:24:57.703Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond"
+  },
+  "1002308561872055": {
+    "status": "Pending Install",
+    "ts": "2026-09-15T17:47:00.759Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-09-18"
   }
 }
