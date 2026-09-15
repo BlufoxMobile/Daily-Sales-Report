@@ -8812,10 +8812,11 @@
     "pendingUntil": "2026-07-21"
   },
   "2408684579": {
-    "status": "Closed",
-    "ts": "2026-08-19T22:00:36.595Z",
+    "status": "Pending Install",
+    "ts": "2026-09-15T16:57:41.619Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Glenview"
+    "store": "Glenview",
+    "pendingUntil": "2026-09-22"
   },
   "2408766695": {
     "status": "Closed",
