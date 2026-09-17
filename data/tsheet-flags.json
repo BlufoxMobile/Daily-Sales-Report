@@ -1,1 +1,1 @@
-{"generated_at":"2026-09-17T07:35:21.876Z","run_id":"2026-09-17T07:35:21Z#e728e8","day":"2026-09-17","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-09-17T15:32:08.430Z","run_id":"2026-09-17T15:32:08Z#6fed6a","day":"2026-09-17","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"Oak Ridge Xfinity Store":{"reps":{"Kayla Kirkland":{"flagged":2,"clusters":[["2026-09-17T15:03:07.525Z","2026-09-17T15:07:15.454Z"]]}}}}}
