@@ -1,5 +1,5 @@
 {
-  "submittedAt": "2026-09-21T13:51:46.461Z",
+  "submittedAt": "2026-09-21T17:21:51.986Z",
   "store": "South Knoxville Xfinity Store",
   "name": "Demarcus McKamey",
   "email": "dMcKamey@blufoxmobile.com",
@@ -20,7 +20,7 @@
     "depositOrderForm": false,
     "pciChecklist": false,
     "uniformOrderForm": false,
-    "cashFloatTracker": false
+    "cashFloatTracker": true
   },
   "photoUrls": {
     "week1": "https://raw.githubusercontent.com/blufoxmobile/Daily-Sales-Report/main/data/monday-ops-photos/2026-09-21-south-knoxville-xfinity-store/week1.jpg",
