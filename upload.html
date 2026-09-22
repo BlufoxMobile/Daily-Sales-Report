@@ -784,7 +784,7 @@ const NPS_CONFIG = {
   // must never take the others down. EMPTY until the Zap exists - npsLowNpsHookReady()
   // returns false while it is blank, so the run is skipped cleanly rather than
   // throwing on every upload.
-  LOWNPS_WEBHOOK_URL: "",
+  LOWNPS_WEBHOOK_URL: "https://hooks.zapier.com/hooks/catch/20441079/4dp4d0a/",
   LOWNPS_SENT_LOG_PATH: "data/lownps-sent-log.json",
   LOWNPS_SENT_LOG_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/lownps-sent-log.json",
   // A rep at or above this is on track. Jeff's bar: under 72 is an underperformer.
@@ -1396,12 +1396,15 @@ async function npsFetchTSheets(){
 // data/nps-detractor-streaks.json, and each upload only ever moves a store's
 // anchor date FORWARD — never backward, never off the end of the window.
 const NPS_DISTRICTS = [
-  { key: "north",     label: "Chicago North", dm: "idhorajiwala@blufoxmobile.com", dmName: "Imaad Dhorajiwala" },
-  { key: "south",     label: "Chicago South", dm: "jucarrillo@blufoxmobile.com",   dmName: "Juan Carrillo"     },
-  { key: "east",      label: "Chicago East",  dm: "jcabrales@blufoxmobile.com",    dmName: "Jacob Cabrales"    },
-  { key: "west",      label: "Chicago West",  dm: "tchowdhury@blufoxmobile.com",   dmName: "Tanzim Chowdhury"  },
-  { key: "big-south", label: "Big South",     dm: "mbrooks@blufoxmobile.com",      dmName: "Matthew Brooks"    }
+  { key: "north",     label: "North Side", legacy: "Chicago North", dm: "idhorajiwala@blufoxmobile.com", dmName: "Imaad Dhorajiwala" },
+  { key: "south",     label: "South Side", legacy: "Chicago South", dm: "jucarrillo@blufoxmobile.com",   dmName: "Juan Carrillo"     },
+  { key: "east",      label: "East Side",  legacy: "Chicago East",  dm: "jcabrales@blufoxmobile.com",    dmName: "Jacob Cabrales"    },
+  { key: "west",      label: "West Side",  legacy: "Chicago West",  dm: "tchowdhury@blufoxmobile.com",   dmName: "Tanzim Chowdhury"  },
+  { key: "big-south", label: "Big South",  legacy: "Big South",     dm: "mbrooks@blufoxmobile.com",      dmName: "Matthew Brooks"    }
 ];
+// Labels match the Admin Panel Directory. They are also the dedupe key in
+// data/lunch-sent-log.json, so every read of that log must accept the legacy
+// name too - see npsSendLunchRun.
 
 function npsDistrictForStore(fullKey, dir){
   const dm = String(((dir || {}).storeDMs || {})[fullKey] || "").trim().toLowerCase();
@@ -2334,6 +2337,9 @@ async function npsPostLunchWebhook(payload){
 // Returns { sent, errors:[], districts:[] }.
 async function npsSendLunchEmails(dir, alreadySent){
   const done = new Set((alreadySent || []).map(s => String(s).toLowerCase()));
+  // Same reason as npsSendLunchRun: an entry written under the old label still
+  // means that district has been emailed today.
+  NPS_DISTRICTS.forEach(d => { if(d.legacy && done.has(d.legacy.toLowerCase())) done.add(d.label.toLowerCase()); });
   const sent = []; const errors = [];
   const npsSleep = ms => new Promise(r => setTimeout(r, ms));
   for(let i = 0; i < NPS_DISTRICTS.length; i++){
@@ -3890,7 +3896,8 @@ async function npsSendLunchRun(dir){
   // Membership, not a count: a stale or renamed label in the log must never be
   // able to stand in for a district that has not actually been emailed.
   const done = new Set(already.map(s => String(s).toLowerCase()));
-  const pending = NPS_DISTRICTS.filter(d => !done.has(d.label.toLowerCase()));
+  const pending = NPS_DISTRICTS.filter(d =>
+    !done.has(d.label.toLowerCase()) && !(d.legacy && done.has(d.legacy.toLowerCase())));
   if(!pending.length){
     return { ran: false, reason: 'already-sent', sent: 0, errors: [] };
   }
@@ -3902,7 +3909,8 @@ async function npsSendLunchRun(dir){
   let logSaved = true;
   if(res.sent > 0){
     // Keep only labels that still name a real district, so the log cannot rot.
-    const valid = new Set(NPS_DISTRICTS.map(d => d.label.toLowerCase()));
+    const valid = new Set();
+    NPS_DISTRICTS.forEach(d => { valid.add(d.label.toLowerCase()); if(d.legacy) valid.add(d.legacy.toLowerCase()); });
     const allDistricts = already.concat(res.districts).filter(d => valid.has(String(d).toLowerCase()));
     logSaved = false;
     for(let attempt = 1; attempt <= 3 && !logSaved; attempt++){
