@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-21T21:30:41.396386+00:00",
+  "updatedAt": "2026-09-22T14:11:17.385114+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -25,6 +25,7 @@
       "DM or Director Submission"
     ],
     "Calumet City Xfinity Store": [
+      "Autumn Thomas",
       "Edgar Flowers",
       "Ejuan Miller",
       "Eric Reyes",
@@ -35,6 +36,7 @@
       "DM or Director Submission"
     ],
     "Cicero Xfinity Store": [
+      "Abdiel Ortega",
       "Francisco Salazar",
       "Gabriel Bucio",
       "Jaime Rodriguez",
@@ -160,6 +162,7 @@
     "Kildeer Xfinity Store": [
       "Alexander Wallace",
       "Alexandro Flores",
+      "Daniel Nuudel",
       "Eddy Buckley",
       "Jose Gomez",
       "Kameron Thomas",
@@ -256,6 +259,7 @@
       "DM or Director Submission"
     ],
     "South Knoxville Xfinity Store": [
+      "Ashanday Hayles",
       "Demarcus McKamey",
       "Jahsi Simon",
       "Masahiro Taylor",
