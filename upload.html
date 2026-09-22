@@ -779,6 +779,16 @@ const NPS_CONFIG = {
   LUNCH_WEBHOOK_URL: "https://hooks.zapier.com/hooks/catch/20441079/4tab95s/",
   LUNCH_SENT_LOG_PATH: "data/lunch-sent-log.json",
   LUNCH_SENT_LOG_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/lunch-sent-log.json",
+  // --- District low-NPS email ------------------------------------------------
+  // Third catch hook, same reasoning as LUNCH_WEBHOOK_URL: one email failing
+  // must never take the others down. EMPTY until the Zap exists - npsLowNpsHookReady()
+  // returns false while it is blank, so the run is skipped cleanly rather than
+  // throwing on every upload.
+  LOWNPS_WEBHOOK_URL: "",
+  LOWNPS_SENT_LOG_PATH: "data/lownps-sent-log.json",
+  LOWNPS_SENT_LOG_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/lownps-sent-log.json",
+  // A rep at or above this is on track. Jeff's bar: under 72 is an underperformer.
+  LOWNPS_THRESHOLD: 72,
   LUNCH_MIN_MINUTES: 30,
   // A shift shorter than this needs no meal break, so a day with no lunch punch
   // on a short shift is not a miss. Only the 1-punch case (no clock-out at all)
@@ -984,6 +994,9 @@ async function npsFetchSalesStores(){
   if(!resp.ok) throw new Error("Sales report HTTP " + resp.status);
   const wb = XLSX.read(await resp.arrayBuffer(), { type: "array" });
   try { NPS_REPS = npsParseReps(wb); } catch(e){ console.warn("Rep Rank parse failed:", e); }
+  // The NTID->name map is derived from this roster, so a re-parse must never
+  // leave a memo that was built against the old one.
+  NPS_EMPNPS_MEMO = null;
   const ws = wb.Sheets["Store Rank"];
   if(!ws) return [];
   const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
@@ -1100,7 +1113,31 @@ function npsParseReps(wb){
 }
 
 // ===== Aux data for the Morning Message (best-effort, never blocks emails) =====
-let NPS_TCHARTS = { byStore: {}, byRep: {}, total: 0, loaded: false };
+let NPS_TCHARTS = { byStore: {}, byRep: {}, total: 0, loaded: false, fresh: false, prevByStore: {}, prevTotal: 0, prevKnown: false };
+// Each rep's individual NPS, keyed by the Rep Rank spelling of their name.
+// Populated by uploadMtdNps from the Express Report's "SMS tNPS" column
+// (employees[ntid].officialTnps) and read by the Team Scorecard's NPS column.
+// `loaded` false means no Express data this run -> the column shows a dash
+// rather than pretending every rep scored zero.
+let NPS_EMPNPS = { byNtid: {}, loaded: false, scored: 0 };
+let NPS_EMPNPS_MEMO = null;
+// NTID -> Rep Rank name -> score. Built on first use, by which time NPS_REPS is
+// populated; npsRepName() returns "" unless the NTID resolves to exactly ONE
+// rep, so two people with similar names can never inherit each other's score.
+function npsEmpNpsMap(){
+  if(NPS_EMPNPS_MEMO) return NPS_EMPNPS_MEMO;
+  const out = {};
+  if(NPS_EMPNPS.loaded && NPS_REPS && NPS_REPS.length){
+    Object.keys(NPS_EMPNPS.byNtid).forEach(nt => {
+      const v = NPS_EMPNPS.byNtid[nt];
+      if(typeof v !== "number") return;
+      const nm = npsRepName(nt);
+      if(nm) out[String(nm).trim().toLowerCase()] = v;
+    });
+    NPS_EMPNPS_MEMO = out;
+  }
+  return out;
+}
 let NPS_CRM     = { open: {}, aged: {}, leads: {}, loaded: false };
 
 // Map any raw store string (full name, lead string, order string) → short name.
@@ -1263,8 +1300,18 @@ function npsTcByRoster(shortName, rosterNames){
 // in that case leaves NPS_TCHARTS.loaded false so the email shows a dash.
 async function npsFetchTSheets(){
   const cyc = npsTSheetCycle();
-  const byStore = {}, byRep = {}, repsByStore = {};
-  let total = 0, source = "";
+  // The cycle that just closed. On the 22nd the current cycle is hours old and
+  // legitimately holds zero t-sheets, which is NOT the same as "no data" - so we
+  // carry last cycle's final number alongside it and let the tile say so.
+  const prevCyc = npsTSheetCycle(new Date(new Date(cyc.startYMD + "T12:00:00").getTime() - 86400000));
+  // "Zero rows matched" only means "the cycle just opened" during the first two
+  // days of it. On day 19 the same zero means a STALE FEED, and calling that
+  // "cycle just started" would replace an honest error with a confident lie in
+  // front of 150 reps. Outside the grace window we fall through to the existing
+  // failure handling, which says the feed is unavailable and shows a dash.
+  const atCycleStart = cyc.daysLeft >= cyc.days - 2;
+  const byStore = {}, byRep = {}, repsByStore = {}, prevByStore = {};
+  let total = 0, prevTotal = 0, source = "";
   const add = (shortName, rep, n) => {
     byStore[shortName] = (byStore[shortName] || 0) + n;
     total += n;
@@ -1281,6 +1328,10 @@ async function npsFetchTSheets(){
       const ts = Date.parse(s && s.timestamp);
       if(!isFinite(ts)) continue;
       const ymd = npsLocalYMD(new Date(ts));
+      if(ymd >= prevCyc.startYMD && ymd <= prevCyc.endYMD){
+        const pn = npsShortFromRaw(s.store);
+        if(pn){ prevByStore[pn] = (prevByStore[pn] || 0) + 1; prevTotal++; }
+      }
       if(ymd < cyc.startYMD || ymd > cyc.endYMD) continue;
       const shortName = npsShortFromRaw(s.store);
       if(shortName) add(shortName, s.rep_name, 1);
@@ -1289,6 +1340,20 @@ async function npsFetchTSheets(){
   } catch(feedErr){
     NPS_TCHARTS = { byStore: {}, byRep: {}, repsByStore: {}, total: 0, loaded: false, source: "", cycle: cyc };
     const snap = await npsFetchTSheetSnapshot().catch(e => { throw new Error("T-Sheet feed failed (" + feedErr.message + ") and tsheet-counts.json is unavailable (" + e.message + ")"); });
+    // A snapshot built for the cycle that just closed is not useless on the 22nd:
+    // it is exactly last cycle's final number. Keep it as prev-cycle context and
+    // let the current cycle read as "just started" rather than failing outright.
+    if(atCycleStart && snap.cycle_start === prevCyc.startYMD){
+      Object.keys(snap.stores || {}).forEach(full => {
+        const pn = npsShortFromRaw(full);
+        const n = Number((snap.stores[full] || {}).mtd) || 0;
+        if(pn && n){ prevByStore[pn] = (prevByStore[pn] || 0) + n; prevTotal += n; }
+      });
+      NPS_TCHARTS = { byStore: {}, byRep: {}, repsByStore: {}, total: 0, loaded: true, fresh: true,
+                      prevByStore: prevByStore, prevTotal: prevTotal, prevKnown: prevTotal > 0,
+                      source: "tsheet-counts.json snapshot for the prior cycle", cycle: cyc, prevCycle: prevCyc };
+      return NPS_TCHARTS;
+    }
     if(snap.cycle_start !== cyc.startYMD) throw new Error("T-Sheet feed failed (" + feedErr.message + ") and tsheet-counts.json is for another cycle (" + snap.cycle_start + ")");
     const snapAge = Date.now() - Date.parse(snap.generated_at || "");
     if(!(snapAge < 36 * 3600 * 1000)) throw new Error("T-Sheet feed failed (" + feedErr.message + ") and tsheet-counts.json is too old to trust (" + snap.generated_at + ")");
@@ -1305,7 +1370,16 @@ async function npsFetchTSheets(){
     source = "tsheet-counts.json snapshot (" + (snap.generated_at || "unknown time") + ")";
     console.warn("T-Sheet feed failed; using " + source + ":", feedErr);
   }
-  NPS_TCHARTS = { byStore: byStore, byRep: byRep, repsByStore: repsByStore, total: total, loaded: true, source: source, cycle: cyc };
+  // THE 22nd BUG: a read that lands ZERO rows inside the window is not a
+  // measurement of zero. At 7 AM on the 22nd the fiscal cycle is hours old and
+  // nothing has been filed yet, but `loaded:true, total:0` made every tile and
+  // every rep's T-CH cell render a literal 0 against a full-cycle goal - which
+  // reads as "the sync is broken" and paints the whole team red. `empty` lets
+  // the renderers say "cycle just started" and show last cycle's final instead.
+  NPS_TCHARTS = { byStore: byStore, byRep: byRep, repsByStore: repsByStore, total: total,
+                  loaded: true, fresh: atCycleStart,
+                  prevByStore: prevByStore, prevTotal: prevTotal, prevKnown: prevTotal > 0,
+                  source: source, cycle: cyc, prevCycle: prevCyc };
   return NPS_TCHARTS;
 }
 
@@ -2727,8 +2801,20 @@ function npsStoreTile(label, curDisp, goalDisp, pct, tone, note){
 
 function npsStoreGoalsHtml(row, shortName, fw){
   const g = npsMonthlyGoals(shortName);
-  const tsKnown = !!NPS_TCHARTS.loaded;
-  const tc = tsKnown ? ((NPS_TCHARTS.byStore || {})[row.name] || 0) : 0;
+  // `empty` means the feed read fine but the cycle is brand new (see the 22nd
+  // bug in npsFetchTSheets). Treat it as "not known yet", never as zero.
+  // A count of 3 on day 1 is not "behind by 579" - it is day 1. Grade only once
+  // the cycle has had a chance to run; until then show the real number, keep it
+  // grey, and say what it is.
+  const tsLoaded = !!NPS_TCHARTS.loaded;
+  const tsFresh = tsLoaded && !!NPS_TCHARTS.fresh;
+  const tsKnown = tsLoaded && !tsFresh;
+  // byStore is keyed by npsShortFromRaw's canonical name; row.name is the raw
+  // Sales Report spelling. They coincide today, but one respelling upstream
+  // would silently zero this tile - so canonicalise before the lookup.
+  const tsKey = npsShortFromRaw(row.name) || row.name;
+  const tc = tsLoaded ? ((NPS_TCHARTS.byStore || {})[tsKey] || 0) : 0;
+  const tcPrev = (NPS_TCHARTS.prevByStore || {})[tsKey] || 0;
   const tcyc = npsTSheetCycle();
   const el = fw.elapsed;
   const daysLeftTxt = fw.daysLeft + " selling day" + (fw.daysLeft === 1 ? "" : "s") + " left";
@@ -2750,7 +2836,13 @@ function npsStoreGoalsHtml(row, shortName, fw){
     return "Behind &bull; " + perDay(remaining);
   };
   const noteTS = (cur, goal, tone) => {
-    if(!tsKnown) return "T-sheet feed unavailable";
+    if(!tsKnown){
+      if(tsFresh){
+        return tcPrev ? "Cycle just started &bull; last cycle finished " + tcPrev
+                      : "Cycle just started";
+      }
+      return "T-sheet feed unavailable";
+    }
     if(!goal || goal <= 0) return "&mdash;";
     if(tone === "good") return Math.round(npsClampPct(cur,goal)) + "% &bull; on pace";
     return "Behind &bull; " + (tcyc.daysLeft > 0 ? "~" + Math.max(1, Math.ceil(Math.max(0, goal - cur) / tcyc.daysLeft)) + "/day" : "keep going");
@@ -2772,7 +2864,10 @@ function npsStoreGoalsHtml(row, shortName, fw){
       '</tr><tr>' +
         npsStoreTile("Watch + Tablet", String(curWT), "/ " + g.wt, npsClampPct(curWT,g.wt), tWT, note(curWT,g.wt,tWT)) +
         npsStoreTile("Accessory $", npsMoneyFmt(curAcc), "/" + npsMoneyFmt(g.acc), npsClampPct(curAcc,g.acc), tAcc, note(curAcc,g.acc,tAcc)) +
-        npsStoreTile("T-Sheets", tsKnown ? String(curTS) : "&mdash;", "/ " + g.ts, tsKnown ? npsClampPct(curTS,g.ts) : 0, tTS, noteTS(curTS,g.ts,tTS)) +
+        npsStoreTile("T-Sheets",
+          tsLoaded ? String(curTS) : "&mdash;",
+          "/ " + g.ts,
+          tsKnown ? npsClampPct(curTS,g.ts) : 0, tTS, noteTS(curTS,g.ts,tTS)) +
       '</tr>';
   } else {
     tiles = '<tr><td style="padding:8px 5px;"><div style="font-size:12px;color:#94a3b8;font-style:italic;">Monthly targets not posted yet &mdash; goals will appear once the planner updates.</div></td></tr>';
@@ -2820,10 +2915,23 @@ function npsTeamScorecardHtml(shortName, storeReps, repN){
   const repTab   = g ? C((g.wt||0)/2/n) : 0;
   const repWatch = g ? C((g.wt||0)/2/n) : 0;
   const repTS    = g ? C((g.ts||0)/n)   : 0;
-  const PLUS_GOAL = 75, GIG_GOAL = 80;   // ratio targets (not split)
+  const PLUS_GOAL = 75, GIG_GOAL = 80, NPS_GOAL = 80;   // ratio targets (not split)
   const el = npsFiscalWindow().elapsed;
-  const tsKnown = !!NPS_TCHARTS.loaded;
+  // Three states, not two: a real read, a cycle that just opened (0 is true but
+  // must not be graded), and no data at all. Rendering "0" on the tile while the
+  // rep cells beside it showed a dash was two answers to the same question.
+  const tsLoaded = !!NPS_TCHARTS.loaded;
+  const tsKnown = tsLoaded && !NPS_TCHARTS.fresh;
   const tsEl = npsTSheetCycle().elapsed;
+  // Per-rep NPS from the Express Report. officialTnps is an already-rounded
+  // 0-100 integer that CAN be negative - never run it through npsPct100 (whose
+  // `n <= 1` test would mangle a negative score) or through the report card's
+  // pct() helper (which is for the Sales Report's 0-1 store fraction).
+  // A rep with no score gets a dash, not a 0: an unscored rep has not failed.
+  const npsOf = r => {
+    const v = npsEmpNpsMap()[String(r.name).trim().toLowerCase()];
+    return (typeof v === "number") ? v : null;
+  };
   const tcMap = npsTcByRoster(shortName, storeReps.map(r => r.name));
   const tcOf = r => tcMap[String(r.name).trim().toLowerCase()] || 0;
 
@@ -2836,6 +2944,7 @@ function npsTeamScorecardHtml(shortName, storeReps, repN){
     '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">WATCH</td>' +
     '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">PLUS</td>' +
     '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">GIG</td>' +
+    '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;">NPS</td>' +
     '<td style="background:#0f2350;color:#aebfe0;font-size:9px;font-weight:800;padding:7px 2px;text-align:center;border-radius:0 8px 0 0;">T-CH</td>' +
     '</tr>';
 
@@ -2847,6 +2956,7 @@ function npsTeamScorecardHtml(shortName, storeReps, repN){
     const cWatch = Number(r.watch) || 0;
     const cPlus = npsPct100(r.plusMix);
     const cGig  = npsPct100(r.gigPct);
+    const cNps = npsOf(r);
     const cTc = tcOf(r);
     const nameCellBB = last ? "" : "border-bottom:1px solid #eef2f7;";
     const title = r.title ? npsEsc(r.title) : "";
@@ -2863,14 +2973,16 @@ function npsTeamScorecardHtml(shortName, storeReps, repN){
       npsHeatCell(String(cWatch), "/" + repWatch, npsPaceTone(cWatch, repWatch, el), last) +
       npsHeatCell(cPlus + "%", "/" + PLUS_GOAL + "%", npsPaceTone(cPlus, PLUS_GOAL, 1), last) +
       npsHeatCell(cGig + "%", "/" + GIG_GOAL + "%", npsPaceTone(cGig, GIG_GOAL, 1), last) +
-      npsHeatCell(tsKnown ? String(cTc) : "&mdash;", "/" + repTS, tsKnown ? npsPaceTone(cTc, repTS, tsEl) : "neutral", last) +
+      npsHeatCell(cNps == null ? "&mdash;" : cNps + "%", "/" + NPS_GOAL + "%",
+                  cNps == null ? "neutral" : npsPaceTone(cNps, NPS_GOAL, 1), last) +
+      npsHeatCell(tsLoaded ? String(cTc) : "&mdash;", "/" + repTS, tsKnown ? npsPaceTone(cTc, repTS, tsEl) : "neutral", last) +
       '</tr>';
   }).join("");
 
   return '<tr><td style="padding:14px 20px 6px;">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e6ebf3;border-radius:16px;"><tr><td style="padding:16px 16px;">' +
     '<div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f2350;text-transform:uppercase;">&#127942;&nbsp; Team Scorecard &mdash; MTD to Goal</div>' +
-    '<div style="font-size:12px;color:#64748b;margin:5px 0 12px;line-height:1.5;">Each rep vs. their monthly goal (planner goal split by rep). <b style="color:#047857;">Green</b> on pace &bull; <b style="color:#b45309;">amber</b> close &bull; <b style="color:#b91c1c;">red</b> needs a push. <b>#</b> = rank of ' + repN + ' reps.</div>' +
+    '<div style="font-size:12px;color:#64748b;margin:5px 0 12px;line-height:1.5;">Each rep vs. their monthly goal (planner goal split by rep). <b style="color:#047857;">Green</b> on pace &bull; <b style="color:#b45309;">amber</b> close &bull; <b style="color:#b91c1c;">red</b> needs a push. <b>#</b> = rank of ' + repN + ' reps. <b>NPS</b> is that rep&rsquo;s own score from the Express Report, goal <b>' + NPS_GOAL + '%</b>; a dash means no surveys scored yet.</div>' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:0;">' +
     header + rowsHtml +
     '</table>' +
@@ -3439,6 +3551,14 @@ async function npsDailyRun(parsed){
   //    skipped) when the punch file is not today's, so nobody gets stale numbers.
   const lunch = await npsSendLunchRun(dir);
 
+  // 7) District NPS accountability email. One email to all five DMs naming
+  //    every rep under the threshold, district by district. Independent hook and
+  //    independent log, so it cannot take the briefings or the lunch email down.
+  let lowNps = { ran: false, reason: 'not-run', sent: 0, errors: [] };
+  try { lowNps = await npsSendLowNpsRun(dir); }
+  catch(e){ lowNps = { ran: true, reason: 'threw', sent: 0, errors: [String(e.message || e)] };
+            console.warn('low-NPS email failed:', e); }
+
   // The newest response day actually present in the file. On a morning when the
   // export has not caught up, "nothing new" and "something broke" look identical
   // in the banner — this lets the banner name the date so the difference is
@@ -3456,7 +3576,7 @@ async function npsDailyRun(parsed){
     sent: sent, storeCount: storeCount,
     alreadySentToday: alreadySentToday, held: held, stale: stale, tsheets: tsheets,
     unmatched: parsed.unmatched || [], hookReady: hookReady, errors: errors,
-    lunch: lunch
+    lunch: lunch, lowNps: lowNps
   };
 }
 
@@ -3487,6 +3607,241 @@ function npsLunchSessionSave(){
 // Guarded daily run for the district lunch emails: arms only when the hook is
 // configured and today's punch data is actually up, and dedupes on a sent log so
 // re-uploading the survey file twice in a morning does not double-send.
+// ===== DISTRICT LOW-NPS EMAIL =============================================
+// One email per upload to all five DMs, broken down district by district,
+// naming every rep whose own Express Report score is under LOWNPS_THRESHOLD.
+// Deliberately ONE email rather than five: Jeff wants every DM to see every
+// district, so a market that is carrying the region is visible next to one
+// that is not.
+//
+// Scores come from the SAME map the Team Scorecard's NPS column reads
+// (npsEmpNpsMap), so a rep's number in this email can never disagree with the
+// number in their store's morning message. A rep with no score is NOT an
+// underperformer - they are unmeasured - so they are counted separately and
+// named in a footnote rather than silently dropped or silently flagged.
+function npsLowNpsHookReady(){
+  return /^https:\/\/hooks\.zapier\.com\//.test(NPS_CONFIG.LOWNPS_WEBHOOK_URL || "");
+}
+
+async function npsPostLowNpsWebhook(payload){
+  const resp = await fetch(NPS_CONFIG.LOWNPS_WEBHOOK_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=UTF-8" },
+    body: JSON.stringify(payload)
+  });
+  if(!resp.ok) throw new Error("Low-NPS webhook HTTP " + resp.status);
+}
+
+// Every rep on Rep Rank, bucketed by district, with their own NPS attached.
+function npsLowNpsData(dir){
+  const THRESH = Number(NPS_CONFIG.LOWNPS_THRESHOLD) || 72;
+  const map = npsEmpNpsMap();
+  const districts = NPS_DISTRICTS.map(d => ({
+    key: d.key, label: d.label, dm: d.dm, dmName: d.dmName,
+    under: [], scored: 0, unscored: 0, sum: 0
+  }));
+  const byKey = {};
+  districts.forEach(d => { byKey[d.key] = d; });
+  let totalUnder = 0, totalScored = 0, totalUnscored = 0;
+  // Scores that exist in the Express Report but whose NTID did not resolve to
+  // exactly one rep on Rep Rank. These are NOT reps without surveys, and saying
+  // so in the footnote would be false - they are a matching gap on our side.
+  const resolvedNames = Object.keys(map).length;
+  const unmatchedScores = Math.max(0, Object.keys((NPS_EMPNPS.byNtid) || {}).length - resolvedNames);
+
+  (NPS_REPS || []).forEach(r => {
+    const shortName = String(r.store || "").trim();
+    if(!shortName) return;
+    const dist = npsDistrictForStore(shortName + " Xfinity Store", dir);
+    if(!dist || !byKey[dist.key]) return;
+    const d = byKey[dist.key];
+    const v = map[String(r.name).trim().toLowerCase()];
+    if(typeof v !== "number"){ d.unscored++; totalUnscored++; return; }
+    d.scored++; d.sum += v; totalScored++;
+    if(v < THRESH){
+      d.under.push({ name: r.name, store: shortName, score: v, title: r.title || "", rank: r.rank });
+      totalUnder++;
+    }
+  });
+
+  districts.forEach(d => {
+    // Worst first - the list is a work queue, not a roster.
+    d.under.sort((a, b) => a.score - b.score || String(a.store).localeCompare(String(b.store)));
+    d.avg = d.scored ? Math.round(d.sum / d.scored) : null;
+  });
+  // Districts with the most reps under the bar lead the email.
+  districts.sort((a, b) => b.under.length - a.under.length || String(a.label).localeCompare(String(b.label)));
+  return { districts: districts, totalUnder: totalUnder, totalScored: totalScored,
+           totalUnscored: totalUnscored, unmatchedScores: unmatchedScores, threshold: THRESH };
+}
+
+function npsLowNpsPayload(data, dir){
+  const THRESH = data.threshold;
+  const fw = npsFiscalWindow();
+  const tone = v => v < 30 ? { bg: "#fef2f2", bd: "#fecaca", col: "#b91c1c" }
+                  : v < 50 ? { bg: "#fff7ed", bd: "#fed7aa", col: "#c2410c" }
+                           : { bg: "#fffbeb", bd: "#fde68a", col: "#b45309" };
+
+  const repRow = (r, last) => {
+    const t = tone(r.score);
+    return '<tr>' +
+      '<td style="padding:7px 10px;background:#ffffff;' + (last ? "" : "border-bottom:1px solid #eef2f7;") + '">' +
+        '<div style="font-size:12.5px;font-weight:800;color:#0f172a;">' + npsEsc(r.name) +
+        (r.title ? '<span style="font-size:10px;color:#94a3b8;font-weight:700;"> &bull; ' + npsEsc(r.title) + '</span>' : '') + '</div>' +
+        '<div style="font-size:10.5px;color:#64748b;margin-top:1px;">' + npsEsc(r.store) + '</div>' +
+      '</td>' +
+      '<td style="padding:7px 10px;text-align:right;background:' + t.bg + ';' + (last ? "" : "border-bottom:1px solid #ffffff;") + '">' +
+        '<div style="font-size:15px;font-weight:800;color:' + t.col + ';line-height:1;">' + r.score + '%</div>' +
+        '<div style="font-size:9px;color:#94a3b8;font-weight:700;margin-top:2px;">/ ' + THRESH + '%</div>' +
+      '</td></tr>';
+  };
+
+  const districtBlock = (d) => {
+    const clear = d.under.length === 0;
+    const badge = clear
+      ? '<span style="display:inline-block;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;">&#10003; ALL ABOVE ' + THRESH + '%</span>'
+      : '<span style="display:inline-block;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;">' + d.under.length + ' UNDER ' + THRESH + '%</span>';
+    const body = clear
+      ? '<tr><td style="padding:10px 14px 14px;"><div style="font-size:12px;color:#047857;font-weight:700;">Every scored rep in this market is at or above ' + THRESH + '%. Nothing to work.</div></td></tr>'
+      : '<tr><td style="padding:2px 12px 12px;">' +
+          '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e6ebf3;border-radius:10px;border-collapse:separate;border-spacing:0;overflow:hidden;">' +
+          d.under.map((r, i) => repRow(r, i === d.under.length - 1)).join("") +
+          '</table></td></tr>';
+    return '<tr><td style="padding:8px 20px 0;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + (clear ? '#f8fafc' : '#fef7f7') + ';border:1px solid ' + (clear ? '#e2e8f0' : '#fecaca') + ';border-radius:14px;">' +
+      '<tr><td style="padding:12px 14px 6px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+      '<td style="vertical-align:middle;">' +
+        '<div style="font-size:14.5px;font-weight:800;color:#0f172a;">' + npsEsc(d.label) + '</div>' +
+        '<div style="font-size:11px;color:#64748b;margin-top:2px;">' + npsEsc(d.dmName) +
+        (d.avg != null ? ' &bull; market average <b>' + d.avg + '%</b>' : '') +
+        ' &bull; ' + d.scored + ' scored' + (d.unscored ? ', ' + d.unscored + ' not yet scored' : '') + '</div>' +
+      '</td><td style="vertical-align:middle;text-align:right;">' + badge + '</td>' +
+      '</tr></table></td></tr>' + body +
+      '</table></td></tr>';
+  };
+
+  const headline = data.totalUnder === 0
+    ? "Every scored rep is at or above " + THRESH + "%"
+    : data.totalUnder + " rep" + (data.totalUnder === 1 ? "" : "s") + " under " + THRESH + "%";
+
+  const bodyHtml =
+    '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#eef2f8;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef2f8;padding:18px 0;"><tr><td align="center">' +
+    '<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:96%;background:#ffffff;border-radius:18px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;">' +
+    '<tr><td style="background:#0f2350;padding:20px 20px 18px;">' +
+      '<div style="font-size:11px;font-weight:800;letter-spacing:1.6px;color:#8fa6d4;text-transform:uppercase;">Blufox Mobile &bull; NPS Accountability</div>' +
+      '<div style="font-size:22px;font-weight:800;color:#ffffff;margin-top:5px;line-height:1.25;">' + headline + '</div>' +
+      '<div style="font-size:12px;color:#aebfe0;margin-top:6px;">Month to date &bull; ' + data.totalScored + ' reps scored region-wide' + (data.totalUnscored ? ' &bull; ' + data.totalUnscored + ' without a score' : '') + '</div>' +
+    '</td></tr>' +
+    '<tr><td style="padding:16px 20px 2px;">' +
+      '<div style="font-size:12px;color:#475569;line-height:1.6;">Every rep below is under the <b>' + THRESH + '%</b> NPS bar for the month, taken from their own score on the Express Report &mdash; the same number that appears in their store&rsquo;s morning message. Worst first, district by district.</div>' +
+    '</td></tr>' +
+    data.districts.map(districtBlock).join("") +
+    '<tr><td style="padding:14px 20px 4px;">' +
+      '<div style="font-size:10.5px;color:#94a3b8;line-height:1.6;">' +
+      (data.totalUnscored ? '<b>' + data.totalUnscored + ' rep' + (data.totalUnscored === 1 ? ' has' : 's have') + ' no score above</b> &mdash; either no surveys have come back for them yet, or their record could not be matched to the roster. Neither is a low score.<br>' : '') +
+      (data.unmatchedScores ? '<b>' + data.unmatchedScores + ' scored record' + (data.unmatchedScores === 1 ? '' : 's') + '</b> in the Express Report could not be matched to a rep on Rep Rank and ' + (data.unmatchedScores === 1 ? 'is' : 'are') + ' not represented above.<br>' : '') +
+      'Scores are month to date and move as surveys land. Goal is 80%; ' + THRESH + '% is the accountability line.' +
+      '</div>' +
+    '</td></tr>' +
+    '<tr><td style="padding:12px 20px 20px;"><div style="font-size:10.5px;color:#b6c2d4;">Sent automatically from the Daily Sales Report upload.</div></td></tr>' +
+    '</table></td></tr></table></body></html>';
+
+  const to = NPS_DISTRICTS.map(d => d.dm).filter(Boolean);
+  const cc = [NPS_CONFIG.MY_EMAIL].filter(Boolean)
+    .filter(e => !to.some(t => String(t).toLowerCase() === String(e).toLowerCase()));
+
+  return {
+    email_type: "district_low_nps",
+    to: to.join(","), cc: cc.join(","),
+    subject: "NPS Accountability — " + headline,
+    body_html: bodyHtml,
+    threshold: THRESH,
+    reps_under: data.totalUnder,
+    reps_scored: data.totalScored,
+    reps_unscored: data.totalUnscored,
+    districts: data.districts.map(d => ({ district: d.label, dm: d.dmName, under: d.under.length, avg: d.avg })),
+    month: fw.label,
+    date: npsLocalYMD(new Date())
+  };
+}
+
+const NPS_LOWNPS_SESSION = { date: null, sent: false };
+const NPS_LOWNPS_SESSION_KEY = 'nps-lownps-sent-v1';
+function npsLowNpsSessionLoad(today){
+  if(NPS_LOWNPS_SESSION.date === today) return;
+  NPS_LOWNPS_SESSION.date = today; NPS_LOWNPS_SESSION.sent = false;
+  try {
+    const v = JSON.parse(localStorage.getItem(NPS_LOWNPS_SESSION_KEY) || 'null');
+    if(v && v.date === today) NPS_LOWNPS_SESSION.sent = !!v.sent;
+  } catch(e){ /* ignore */ }
+}
+function npsLowNpsSessionSave(){
+  try { localStorage.setItem(NPS_LOWNPS_SESSION_KEY, JSON.stringify(NPS_LOWNPS_SESSION)); } catch(e){ /* ignore */ }
+}
+
+async function npsSendLowNpsRun(dir){
+  const today = npsLocalYMD(new Date());
+  if(!npsLowNpsHookReady()) return { ran: false, reason: 'no-hook', sent: 0, errors: [] };
+  // No Express upload this run means no scores. Sending now would report every
+  // rep as unscored and read as a data outage - hold instead.
+  if(!NPS_EMPNPS.loaded) return { ran: false, reason: 'no-express', sent: 0, errors: [] };
+  const orphans = npsOrphanStores(dir);
+  if(orphans.length) return { ran: false, reason: 'orphan-stores', orphans: orphans, sent: 0, errors: [] };
+
+  // NPS_REPS is populated by npsFetchSalesStores, which only runs inside the
+  // store-briefing branch. On a second upload the same morning that branch is
+  // skipped and the roster is empty - without this the email would report a
+  // name-matching failure that never happened.
+  if(!NPS_REPS || !NPS_REPS.length){
+    try { await npsFetchSalesStores(); } catch(e){ console.warn('low-NPS: roster fetch failed:', e); }
+  }
+  if(!NPS_REPS || !NPS_REPS.length) return { ran: false, reason: 'no-roster', sent: 0, errors: [] };
+
+  const data = npsLowNpsData(dir);
+  // A run that resolved NOTHING with a roster present IS a name-matching failure.
+  if(!data.totalScored) return { ran: false, reason: 'no-scores-matched', sent: 0, errors: [] };
+
+  let log = { lastSentDate: null, sent: false, history: [] };
+  try {
+    const url = (await npsPinnedUrl("Daily-Sales-Report", NPS_CONFIG.LOWNPS_SENT_LOG_PATH)) || NPS_CONFIG.LOWNPS_SENT_LOG_URL;
+    const r = await fetch(url + (url.indexOf("?") === -1 ? "?t=" : "&t=") + Date.now(), { cache: 'no-store' });
+    if(r.ok) log = await r.json();
+  } catch(e){ /* first run */ }
+  npsLowNpsSessionLoad(today);
+  if((log && log.lastSentDate === today && log.sent) || NPS_LOWNPS_SESSION.sent){
+    return { ran: false, reason: 'already-sent', sent: 0, errors: [], under: data.totalUnder };
+  }
+
+  setStatus('Sending district NPS accountability email...', 'info');
+  const payload = npsLowNpsPayload(data, dir);
+  let lastErr = null;
+  for(let attempt = 1; attempt <= 3; attempt++){
+    try { await npsPostLowNpsWebhook(payload); lastErr = null; break; }
+    catch(e){ lastErr = e; if(attempt < 3) await new Promise(r => setTimeout(r, 600 * attempt)); }
+  }
+  if(lastErr){
+    return { ran: true, reason: 'send-failed', sent: 0, errors: [String(lastErr.message || lastErr)], under: data.totalUnder };
+  }
+
+  NPS_LOWNPS_SESSION.sent = true;
+  npsLowNpsSessionSave();
+  let logSaved = false;
+  for(let attempt = 1; attempt <= 3 && !logSaved; attempt++){
+    try {
+      await pushToGitHub(REPOS.sales, NPS_CONFIG.LOWNPS_SENT_LOG_PATH, npsToB64(JSON.stringify({
+        lastSentDate: today, lastSentAt: new Date().toISOString(), sent: true,
+        under: data.totalUnder, scored: data.totalScored,
+        history: ((log && log.history) || []).slice(-60).concat([{ date: today, under: data.totalUnder, scored: data.totalScored }])
+      }, null, 2)), "Update low-NPS sent log");
+      logSaved = true;
+    } catch(e){ if(attempt === 3) console.warn('low-NPS sent log not saved:', e); }
+  }
+  return { ran: true, reason: 'sent', sent: 1, errors: [], under: data.totalUnder,
+           scored: data.totalScored, threshold: data.threshold, logSaved: logSaved };
+}
+
 async function npsSendLunchRun(dir){
   const today = npsLocalYMD(new Date());
   if(!npsLunchHookReady()){
@@ -3624,6 +3979,20 @@ async function uploadMtdNps(expressFile, respFile){
   Object.keys(byEmp).forEach(nt=>{ const L=byEmp[nt]; const e=mtdMatchNtid(nt, express.reps); if(e&&e.tnps!=null) scored++;
     employees[nt]={ name:e?e.name:null, officialTnps:e?e.tnps:null, records:e?e.records:null, issueResolved:e?e.issueResolved:null, waitPct:e?e.waitPct:null,
       respTotal:L.length, respTnps:mtdTnps(L), good:L.filter(s=>s.score>=9).length, ok:L.filter(s=>s.score===8).length, bad:L.filter(s=>s.score<=7).length }; });
+  // Hand the per-rep Express scores to the morning email (Team Scorecard NPS
+  // column + the district low-NPS email). Keyed by the RAW NTID - npsRepName()
+  // lowercases internally, but `employees` preserves the sheet's casing, so
+  // never rebuild a lowercased key and index back into it.
+  // `loaded` must reflect whether an EXPRESS file was actually in this upload.
+  // Setting it true unconditionally made the low-NPS run's no-express guard dead
+  // code, so an Express-less upload reported a name-matching failure instead.
+  NPS_EMPNPS = { byNtid: {}, loaded: !!expressFile, scored: scored };
+  NPS_EMPNPS_MEMO = null;
+  Object.keys(employees).forEach(nt => {
+    const v = employees[nt] && employees[nt].officialTnps;
+    if(typeof v === "number") NPS_EMPNPS.byNtid[nt] = v;
+  });
+
   const byStore={}; surveys.forEach(s=>{ if(s.storeKey)(byStore[s.storeKey]=byStore[s.storeKey]||[]).push(s); });
   const stores={}; Object.keys(byStore).forEach(k=>{ const L=byStore[k]; stores[k]={ tnps:mtdTnps(L), total:L.length, good:L.filter(s=>s.score>=9).length, ok:L.filter(s=>s.score===8).length, bad:L.filter(s=>s.score<=7).length }; });
   const payload={ updatedAt:new Date().toISOString(), window, period:express.period||"",
@@ -3802,6 +4171,27 @@ async function uploadFiles() {
           parts.push('Lunch Punch emails already sent today — skipped to avoid a duplicate.');
         } else if (L.reason === 'punch-unavailable') {
           parts.push('⚠ Lunch Punch emails skipped — punch data could not be read.');
+        }
+
+        const N = (d && d.lowNps) || {};
+        if (N.reason === 'sent') {
+          let nl = `NPS accountability email sent to all 5 DMs — ${N.under} rep${N.under === 1 ? '' : 's'} under ${N.threshold || 72}% of ${N.scored} scored`;
+          if (N.logSaved === false) nl += ' — ⚠ the sent-log could not be saved. Do NOT re-upload today or the DMs will get it twice.';
+          parts.push(nl);
+        } else if (N.reason === 'no-hook') {
+          parts.push('NPS accountability email OFF — paste the catch hook URL into NPS_CONFIG.LOWNPS_WEBHOOK_URL');
+        } else if (N.reason === 'no-roster') {
+          parts.push('NPS accountability email held — the Rep Rank roster could not be read this run. It sends on your next upload.');
+        } else if (N.reason === 'no-express') {
+          parts.push('NPS accountability email held — no Express Report in this upload, so there are no rep scores to report.');
+        } else if (N.reason === 'no-scores-matched') {
+          parts.push('⚠ NPS accountability email BLOCKED — not one rep score matched the Rep Rank roster. That is a name-matching failure, not a clean month.');
+        } else if (N.reason === 'orphan-stores') {
+          parts.push(`⚠ NPS accountability email BLOCKED — no district owns: ${(N.orphans || []).join('; ')}.`);
+        } else if (N.reason === 'already-sent') {
+          parts.push('NPS accountability email already sent today — skipped to avoid a duplicate.');
+        } else if (N.reason === 'send-failed' || N.reason === 'threw') {
+          parts.push(`⚠ NPS accountability email failed — ${(N.errors || []).join('; ')}. It retries on your next upload.`);
         }
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('NPS: ' + e.message); }
