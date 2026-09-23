@@ -12312,6 +12312,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2450481198": {
+    "status": "Can Not Close",
+    "ts": "2026-09-23T19:06:37.347Z",
+    "dm": "Matthew Brooks",
+    "store": "Johnson City"
+  },
   "2450514144": {
     "status": "Closed",
     "ts": "2026-08-14T21:47:40.358Z",
@@ -12472,8 +12478,8 @@
     "store": "Oak Ridge"
   },
   "2453204572": {
-    "status": "Closed",
-    "ts": "2026-09-23T19:05:26.595Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-23T19:05:52.227Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
