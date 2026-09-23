@@ -13135,11 +13135,10 @@
     "store": "Elkhart"
   },
   "2475220594": {
-    "status": "Pending Install",
-    "ts": "2026-09-09T15:18:01.294Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-23T18:44:18.203Z",
     "dm": "Matthew Brooks",
-    "store": "Oak Ridge",
-    "pendingUntil": "2026-09-16"
+    "store": "Oak Ridge"
   },
   "2475674663": {
     "status": "Pending Install",
@@ -13376,8 +13375,8 @@
     "store": "Elkhart"
   },
   "2497866182": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-23T18:43:05.027Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-23T18:43:15.555Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
