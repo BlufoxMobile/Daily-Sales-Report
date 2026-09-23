@@ -10469,8 +10469,8 @@
   },
   "2436077940": {
     "status": "Closed",
-    "ts": "2026-08-13T19:29:46.384Z",
-    "dm": "Jacob Cabrales",
+    "ts": "2026-09-23T20:24:24.802Z",
+    "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
   "2436098085": {
@@ -19006,12 +19006,6 @@
   "1002310353462053": {
     "status": "Closed",
     "ts": "2026-09-23T19:56:41.675Z",
-    "dm": "Jacob Cabrales",
-    "store": "Elkhart"
-  },
-  "1002311175382057": {
-    "status": "Closed",
-    "ts": "2026-09-23T20:23:26.238Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   }
