@@ -19212,9 +19212,9 @@
     "store": "Michigan City",
     "pendingUntil": "2026-10-04"
   },
-  "1002306798422058": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:11:48.528Z",
+  "1002305962422050": {
+    "status": "Can Not Close",
+    "ts": "2026-09-23T22:11:59.428Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   }
