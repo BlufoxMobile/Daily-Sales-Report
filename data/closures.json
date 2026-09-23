@@ -13035,6 +13035,12 @@
     "store": "Frankfort",
     "pendingUntil": "2026-09-04"
   },
+  "2469110927": {
+    "status": "Closed",
+    "ts": "2026-09-23T20:14:17.287Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2469790306": {
     "status": "Cancelled Order",
     "ts": "2026-09-23T14:51:10.115Z",
