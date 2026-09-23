@@ -12286,11 +12286,10 @@
     "store": "Evanston"
   },
   "2450082138": {
-    "status": "Pending Install",
-    "ts": "2026-08-14T20:59:33.441Z",
+    "status": "Closed",
+    "ts": "2026-09-23T22:52:12.489Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-08-19"
+    "store": "Uptown"
   },
   "2450115983": {
     "status": "Closed",
