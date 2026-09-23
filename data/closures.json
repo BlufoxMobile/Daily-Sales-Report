@@ -13156,24 +13156,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2474832778": {
-    "status": "Closed",
-    "ts": "2026-09-23T20:32:09.320Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2474985753": {
-    "status": "Closed",
-    "ts": "2026-09-23T20:32:10.452Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2475003766": {
-    "status": "Closed",
-    "ts": "2026-09-23T20:32:11.383Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
   "2475220594": {
     "status": "Cancelled Order",
     "ts": "2026-09-23T18:44:18.203Z",
@@ -19039,11 +19021,10 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "1002309577112056": {
-    "status": "Pending Install",
-    "ts": "2026-09-23T20:32:38.180Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero",
-    "pendingUntil": "2026-09-30"
+  "1002311175382057": {
+    "status": "Closed",
+    "ts": "2026-09-23T20:33:58.978Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
