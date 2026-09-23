@@ -12462,12 +12462,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2452015579": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:16:23.506Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
-  },
   "2452189350": {
     "status": "Pending Install",
     "ts": "2026-08-27T20:29:20.488Z",
@@ -13102,12 +13096,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2471381258": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:17:26.730Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
-  },
   "2471571560": {
     "status": "Can Not Close",
     "ts": "2026-09-02T15:07:00.282Z",
@@ -13185,6 +13173,24 @@
     "ts": "2026-09-02T14:17:54.220Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2474832778": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:10:14.039Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "2474985753": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:10:15.046Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "2475003766": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:10:16.517Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
   },
   "2475220594": {
     "status": "Cancelled Order",
@@ -13683,6 +13689,12 @@
     "ts": "2026-09-23T18:59:43.331Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2505328597": {
+    "status": "Can Not Close",
+    "ts": "2026-09-23T22:15:33.871Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2506636319": {
     "status": "Closed",
@@ -19224,10 +19236,36 @@
     "store": "Michigan City",
     "pendingUntil": "2026-10-04"
   },
-  "1002305962422050": {
-    "status": "Can Not Close",
-    "ts": "2026-09-23T22:11:59.428Z",
+  "1002309828742057": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:10:26.646Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Cicero"
+  },
+  "1002310383822052": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:10:28.106Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "1002310587342055": {
+    "status": "Pending Install",
+    "ts": "2026-09-23T22:10:31.872Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero",
+    "pendingUntil": "2026-09-30"
+  },
+  "1002310977392058": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-23T22:10:46.778Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "1002309886982058": {
+    "status": "Pending Install",
+    "ts": "2026-09-23T22:18:34.125Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie",
+    "pendingUntil": "2026-09-24"
   }
 }
