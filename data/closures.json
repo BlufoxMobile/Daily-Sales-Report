@@ -12475,6 +12475,12 @@
     "store": "Tinley Park",
     "pendingUntil": "2026-09-03"
   },
+  "2452194808": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-23T22:42:02.135Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2452361046": {
     "status": "Closed",
     "ts": "2026-08-28T14:47:05.948Z",
@@ -13343,12 +13349,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2484996295": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:39:51.665Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2485182694": {
     "status": "Closed",
     "ts": "2026-09-08T16:29:40.172Z",
@@ -13522,12 +13522,6 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
-  "2497976666": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:39:55.001Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2497992090": {
     "status": "Closed",
     "ts": "2026-09-23T20:37:59.821Z",
@@ -13564,18 +13558,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2498680520": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:40:00.144Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
-  "2498825293": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:39:57.249Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2499927845": {
     "status": "Closed",
     "ts": "2026-09-23T18:24:03.642Z",
@@ -13593,12 +13575,6 @@
     "ts": "2026-09-23T19:05:48.451Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
-  },
-  "2500538973": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:40:08.681Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
   },
   "2501591157": {
     "status": "Closed",
@@ -19344,10 +19320,18 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "1002306798422058": {
-    "status": "Can Not Close",
-    "ts": "2026-09-23T22:39:49.761Z",
+  "1002311158382058": {
+    "status": "Pending Install",
+    "ts": "2026-09-23T22:37:20.021Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "South Skokie",
+    "pendingUntil": "2026-09-26"
+  },
+  "1002309886982058": {
+    "status": "Pending Install",
+    "ts": "2026-09-23T22:37:36.277Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie",
+    "pendingUntil": "2026-09-24"
   }
 }
