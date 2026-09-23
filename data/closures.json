@@ -7388,8 +7388,8 @@
     "store": "Tinley Park"
   },
   "2381860456": {
-    "status": "Closed",
-    "ts": "2026-07-14T22:01:44.089Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-23T20:44:14.496Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -13155,24 +13155,6 @@
     "ts": "2026-09-02T14:17:54.220Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2474832778": {
-    "status": "Closed",
-    "ts": "2026-09-23T20:43:45.410Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2474985753": {
-    "status": "Closed",
-    "ts": "2026-09-23T20:43:46.297Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2475003766": {
-    "status": "Closed",
-    "ts": "2026-09-23T20:43:47.236Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
   },
   "2475220594": {
     "status": "Cancelled Order",
