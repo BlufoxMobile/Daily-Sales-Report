@@ -13750,6 +13750,13 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2504831954": {
+    "status": "Pending Install",
+    "ts": "2026-09-23T23:00:56.024Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-09-30"
+  },
   "2504852193": {
     "status": "Closed",
     "ts": "2026-09-23T22:34:33.067Z",
