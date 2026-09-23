@@ -13319,12 +13319,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2484996295": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:14:50.408Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2485182694": {
     "status": "Closed",
     "ts": "2026-09-08T16:29:40.172Z",
@@ -13473,6 +13467,12 @@
     "ts": "2026-09-16T16:20:38.048Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2496482746": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:15:20.032Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2497866182": {
     "status": "Can Not Close",
@@ -19220,13 +19220,7 @@
   },
   "1002305962422050": {
     "status": "Can Not Close",
-    "ts": "2026-09-23T22:11:50.520Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
-  "1002306798422058": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:11:48.528Z",
+    "ts": "2026-09-23T22:11:59.428Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   }
