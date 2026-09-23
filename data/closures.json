@@ -13381,6 +13381,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
+  "2498103875": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-23T15:26:38.323Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2498124912": {
     "status": "Can Not Close",
     "ts": "2026-09-23T15:10:56.571Z",
