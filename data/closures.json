@@ -11331,11 +11331,10 @@
     "store": "Oak Ridge"
   },
   "2441633717": {
-    "status": "Pending Install",
-    "ts": "2026-08-25T00:01:24.322Z",
+    "status": "Closed",
+    "ts": "2026-09-23T20:08:01.318Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-28"
+    "store": "Evanston"
   },
   "2441755541": {
     "status": "Closed",
@@ -12325,11 +12324,10 @@
     "store": "Evanston"
   },
   "2450642615": {
-    "status": "Pending Install",
-    "ts": "2026-08-25T00:22:36.915Z",
+    "status": "Closed",
+    "ts": "2026-09-23T20:08:03.351Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-28"
+    "store": "Evanston"
   },
   "2450694113": {
     "status": "Closed",
@@ -17701,11 +17699,10 @@
     "pendingUntil": "2026-08-26"
   },
   "1002299867852059": {
-    "status": "Pending Install",
-    "ts": "2026-08-24T19:41:32.644Z",
+    "status": "Closed",
+    "ts": "2026-09-23T20:08:02.373Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-08-28"
+    "store": "Evanston"
   },
   "1002300640602058": {
     "status": "Closed",
