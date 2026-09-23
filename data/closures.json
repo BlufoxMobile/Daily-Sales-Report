@@ -13396,12 +13396,6 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
-  "2494345787": {
-    "status": "Closed",
-    "ts": "2026-09-23T21:28:36.138Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
-  },
   "2494656534": {
     "status": "Closed",
     "ts": "2026-09-23T15:04:10.282Z",
@@ -13528,12 +13522,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2504365714": {
-    "status": "Closed",
-    "ts": "2026-09-23T21:28:43.866Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
-  },
   "2504375001": {
     "status": "Closed",
     "ts": "2026-09-23T21:11:34.492Z",
@@ -13569,6 +13557,12 @@
     "ts": "2026-09-23T18:20:50.803Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
+  },
+  "2504959442": {
+    "status": "Closed",
+    "ts": "2026-09-23T21:30:26.368Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
   },
   "2505022168": {
     "status": "Cancelled Order",
