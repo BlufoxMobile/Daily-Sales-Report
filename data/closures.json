@@ -13174,24 +13174,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2474832778": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:10:14.039Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2474985753": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:10:15.046Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2475003766": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:10:16.517Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
   "2475220594": {
     "status": "Cancelled Order",
     "ts": "2026-09-23T18:44:18.203Z",
@@ -19230,47 +19212,10 @@
     "store": "Michigan City",
     "pendingUntil": "2026-10-04"
   },
-  "1002309828742057": {
+  "1002306798422058": {
     "status": "Closed",
-    "ts": "2026-09-23T22:10:26.646Z",
+    "ts": "2026-09-23T22:11:48.528Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "1002310383822052": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:10:28.106Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "1002310587342055": {
-    "status": "Pending Install",
-    "ts": "2026-09-23T22:10:31.872Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero",
-    "pendingUntil": "2026-09-30"
-  },
-  "1002310977392058": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:10:49.514Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "1002311238352055": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:10:55.330Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "1002311159812053": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:11:09.490Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "1002311188902057": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:11:34.053Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
+    "store": "Uptown"
   }
 }
