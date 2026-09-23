@@ -19298,13 +19298,19 @@
   },
   "1002304735602056": {
     "status": "Closed",
-    "ts": "2026-09-23T22:37:17.146Z",
+    "ts": "2026-09-23T22:37:25.066Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
   "1002302353662055": {
     "status": "Closed",
-    "ts": "2026-09-23T22:37:19.026Z",
+    "ts": "2026-09-23T22:37:29.375Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
+  "1002309023912059": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:37:23.530Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   }
