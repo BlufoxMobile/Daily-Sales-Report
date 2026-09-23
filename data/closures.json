@@ -13396,6 +13396,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2490120853": {
+    "status": "Closed",
+    "ts": "2026-09-23T21:58:59.930Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2491260859": {
     "status": "Closed",
     "ts": "2026-09-23T21:54:27.072Z",
@@ -13486,6 +13492,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
+  "2498098615": {
+    "status": "Can Not Close",
+    "ts": "2026-09-23T21:50:32.208Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2498103875": {
     "status": "Cancelled Order",
     "ts": "2026-09-23T15:26:38.323Z",
@@ -13515,6 +13527,12 @@
     "ts": "2026-09-23T18:51:06.451Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2499850198": {
+    "status": "Closed",
+    "ts": "2026-09-23T21:56:27.000Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   },
   "2499927845": {
     "status": "Closed",
@@ -13624,6 +13642,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2504670097": {
+    "status": "Closed",
+    "ts": "2026-09-23T21:56:34.129Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2504757646": {
     "status": "Can Not Close",
     "ts": "2026-09-23T21:46:21.078Z",
@@ -13659,6 +13683,12 @@
     "ts": "2026-09-23T18:59:43.331Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2505132780": {
+    "status": "Closed",
+    "ts": "2026-09-23T21:44:46.404Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
   },
   "2506636319": {
     "status": "Closed",
@@ -19177,12 +19207,6 @@
   "1002309442562055": {
     "status": "Closed",
     "ts": "2026-09-23T21:57:00.405Z",
-    "dm": "Juan Carrillo",
-    "store": "Evergreen Park"
-  },
-  "1002309450572053": {
-    "status": "Closed",
-    "ts": "2026-09-23T21:57:43.964Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   }
