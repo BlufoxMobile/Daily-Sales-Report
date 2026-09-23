@@ -19250,8 +19250,14 @@
     "pendingUntil": "2026-09-30"
   },
   "1002310977392058": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-23T22:10:46.778Z",
+    "status": "Closed",
+    "ts": "2026-09-23T22:10:49.514Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "1002311238352055": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:10:55.330Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   }
