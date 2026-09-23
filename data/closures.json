@@ -12911,6 +12911,12 @@
     "store": "Tinley Park",
     "pendingUntil": "2026-09-03"
   },
+  "2466726383": {
+    "status": "Closed",
+    "ts": "2026-09-23T21:35:12.944Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2466850191": {
     "status": "Closed",
     "ts": "2026-08-28T20:08:03.741Z",
@@ -13522,12 +13528,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2504365714": {
-    "status": "Closed",
-    "ts": "2026-09-23T21:11:38.913Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
-  },
   "2504375001": {
     "status": "Closed",
     "ts": "2026-09-23T21:11:34.492Z",
@@ -13545,12 +13545,6 @@
     "ts": "2026-09-23T19:23:10.005Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2504427537": {
-    "status": "Closed",
-    "ts": "2026-09-23T21:33:36.591Z",
-    "dm": "Jacob Cabrales",
-    "store": "Schererville"
   },
   "2504537505": {
     "status": "Can Not Close",
