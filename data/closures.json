@@ -12487,6 +12487,12 @@
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
   },
+  "2452483257": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-23T22:42:05.406Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2452990767": {
     "status": "Closed",
     "ts": "2026-08-17T16:05:08.430Z",
@@ -19333,5 +19339,11 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie",
     "pendingUntil": "2026-09-24"
+  },
+  "1002305269782057": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:42:53.310Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   }
 }
