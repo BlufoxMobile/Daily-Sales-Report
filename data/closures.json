@@ -13343,12 +13343,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2484996295": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:14:50.408Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
   "2485182694": {
     "status": "Closed",
     "ts": "2026-09-08T16:29:40.172Z",
@@ -13498,6 +13492,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2496482746": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:15:20.032Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
+  },
   "2497866182": {
     "status": "Can Not Close",
     "ts": "2026-09-23T18:43:15.555Z",
@@ -13515,12 +13515,6 @@
     "ts": "2026-09-21T21:28:27.901Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
-  },
-  "2497976666": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:21:29.720Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
   },
   "2497992090": {
     "status": "Closed",
@@ -13557,12 +13551,6 @@
     "ts": "2026-09-23T18:51:06.451Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
-  },
-  "2498825293": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:23:42.625Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
   },
   "2499927845": {
     "status": "Closed",
@@ -13659,6 +13647,12 @@
     "ts": "2026-09-23T21:33:36.591Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
+  },
+  "2504464252": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:24:52.851Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston"
   },
   "2504537505": {
     "status": "Can Not Close",
@@ -19256,13 +19250,7 @@
   },
   "1002305962422050": {
     "status": "Can Not Close",
-    "ts": "2026-09-23T22:11:50.520Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
-  },
-  "1002306798422058": {
-    "status": "Can Not Close",
-    "ts": "2026-09-23T22:17:23.920Z",
+    "ts": "2026-09-23T22:11:59.428Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   }
