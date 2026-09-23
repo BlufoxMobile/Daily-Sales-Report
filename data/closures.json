@@ -13187,12 +13187,6 @@
     "store": "Elkhart",
     "pendingUntil": "2026-09-07"
   },
-  "2475727902": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-23T22:01:14.530Z",
-    "dm": "Juan Carrillo",
-    "store": "Oak Lawn"
-  },
   "2476654808": {
     "status": "Closed",
     "ts": "2026-09-04T19:54:26.226Z",
@@ -13455,6 +13449,12 @@
     "ts": "2026-09-16T16:24:11.688Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2494733527": {
+    "status": "Closed",
+    "ts": "2026-09-23T22:01:42.976Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2494886666": {
     "status": "Closed",
@@ -19183,6 +19183,12 @@
   "1002309442562055": {
     "status": "Closed",
     "ts": "2026-09-23T21:57:00.405Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "1002309450572053": {
+    "status": "Closed",
+    "ts": "2026-09-23T21:57:43.964Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   }
