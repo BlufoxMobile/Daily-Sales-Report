@@ -13345,6 +13345,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2494318090": {
+    "status": "Closed",
+    "ts": "2026-09-23T15:04:13.522Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "2494656534": {
     "status": "Closed",
     "ts": "2026-09-23T15:04:10.282Z",
@@ -18769,5 +18775,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-09-26"
+  },
+  "1002309394202056": {
+    "status": "Pending Install",
+    "ts": "2026-09-23T15:04:40.441Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond",
+    "pendingUntil": "2026-09-30"
   }
 }
