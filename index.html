@@ -866,8 +866,14 @@ function parseZeroSheet(wb) {
   }
   return out;
 }
+// T-sheet days are STORE days (America/Chicago), as in the counts file, the
+// dashboard and the digest. The feed's timestamps are UTC ISO strings, so
+// slicing them (and toISOString() here) cut each day at 7 PM Central: evening
+// t-sheets (~2.7% of all rows, measured 2026-09-24) landed on the next day.
+const CHICAGO_DAY = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' });
+function chicagoDay(v) { const d = new Date(v); return isNaN(d.getTime()) ? '' : CHICAGO_DAY.format(d); }
 function yesterdayISO() {
-  const d = new Date(); d.setDate(d.getDate() - 1);
+  const d = new Date(chicagoDay(Date.now()) + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - 1);
   return d.toISOString().slice(0, 10);
 }
 async function loadTSheetCounts() {
@@ -892,7 +898,7 @@ async function loadTSheetCounts() {
   const byDate = {};
   for (const s of subs) {
     const ts = s.timestamp; if (!ts) continue;
-    const day = String(ts).slice(0, 10);
+    const day = chicagoDay(ts); if (!day) continue;
     (byDate[day] = byDate[day] || []).push(s);
   }
   const yISO = yesterdayISO();
