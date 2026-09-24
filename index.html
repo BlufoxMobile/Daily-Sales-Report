@@ -2138,8 +2138,34 @@ function promoMissing(img) {
 }
 
 // ============ SLIDESHOW CONTROL (with pause) ============
+// Perf (2026-09-24): SITE PAUSE. cookcountycooks.com hides the Break Room TV
+// (this report, framed) with display:none while a tool is open over it. That
+// stops painting but not the 15 s slide timer or the 100 ms countdown timer
+// (~25 ms/s of main-thread work behind the tool). The framing page may post
+//   { source: 'ccc-site', action: 'pause' }   and later
+//   { source: 'ccc-site', action: 'resume' }
+// Paused, both timers stop; resume restarts the slideshow on the slide that
+// was showing. Only the parent frame is listened to, so the report on its own
+// (not framed) is unaffected, and a report that is never told keeps running.
+let sitePaused = false;
+let siteHeldShow = false;   // the slideshow was running (or asked to start) while paused
+window.addEventListener('message', e => {
+  if (window.parent === window || e.source !== window.parent) return;
+  const d = e.data;
+  if (!d || typeof d !== 'object' || d.source !== 'ccc-site') return;
+  if (d.action === 'pause' && !sitePaused) {
+    sitePaused = true;
+    siteHeldShow = !!(state.slideTimer || state.countdownTimer);
+    clearInterval(state.slideTimer); state.slideTimer = null;
+    clearInterval(state.countdownTimer); state.countdownTimer = null;
+  } else if (d.action === 'resume' && sitePaused) {
+    sitePaused = false;
+    if (siteHeldShow) startSlideshow();
+  }
+});
 function startSlideshow() {
   if (state.slideTimer) { clearInterval(state.slideTimer); state.slideTimer = null; }
+  if (sitePaused) { siteHeldShow = true; return; }   // Perf (2026-09-24): see SITE PAUSE
   if (!state.paused) {
     state.slideTimer = setInterval(() => {
       state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
@@ -2151,6 +2177,7 @@ function startSlideshow() {
 }
 function startCountdown() {
   if (state.countdownTimer) clearInterval(state.countdownTimer);
+  if (sitePaused) { state.countdownTimer = null; return; }   // Perf (2026-09-24): see SITE PAUSE
   state.countdownStart = Date.now();
   state.countdownTimer = setInterval(() => {
     const bar = document.getElementById('countdownBar');
