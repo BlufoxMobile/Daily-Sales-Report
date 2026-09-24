@@ -59,11 +59,18 @@
   }
   function gL(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
   function sL(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
+  // Perf (2026-09-24): a hung request used to leave "Loading names…" forever and
+  // never reach the fallback host. Give up after 10 s so the caller's fallback runs.
   function jget(u) {
-    return fetch(u, { cache: 'no-store' }).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    });
+    var c = (typeof AbortController === 'function') ? new AbortController() : null;
+    var t = c ? setTimeout(function () { c.abort(); }, 10000) : 0;
+    return fetch(u, c ? { cache: 'no-store', signal: c.signal } : { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (v) { clearTimeout(t); return v; },
+            function (e) { clearTimeout(t); throw e; });
   }
   function hostCallbacks() {
     ['onRepStoreChange', 'checkSubmitReady', 'updatePreview', 'persistRepData'].forEach(function (fn) {
