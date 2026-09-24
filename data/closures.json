@@ -13431,6 +13431,13 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2487888447": {
+    "status": "Pending Install",
+    "ts": "2026-09-24T19:57:58.505Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-09-25"
+  },
   "2488039546": {
     "status": "Closed",
     "ts": "2026-09-23T18:54:47.211Z",
