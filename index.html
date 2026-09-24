@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Cook County Cooks - Daily Sales Report</title>
-<!-- Perf (2026-09-02): `defer` so the 316 KB SheetJS download no longer blocks
-     parsing (and the workbook fetch below now starts in parallel with it). A
-     hung cdnjs used to leave this page blank; now the spinner paints first.
-     loadData() waits for DOMContentLoaded before XLSX.read if the workbook
-     arrives first. -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Perf (2026-09-24): SheetJS is no longer loaded up front (316 KB download,
+     ~150-190 ms of main-thread script evaluation on every open). The report
+     now reads the prebuilt data/sales-report.json and loads SheetJS on demand
+     (loadSheetJS) only when that file is missing or stale, or for "load a
+     local Excel file". See PREBUILT WORKBOOK ROWS in the script below.
+     (2026-09-02 had made this script `defer` so a hung cdnjs could not leave
+     the page blank; loading on demand keeps that property.) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Perf (2026-09-02): media="print" + onload swap makes the Google Fonts CSS
@@ -845,9 +846,9 @@ function findDistrictForStore(storeName) {
 
 // ============ YESTERDAY'S CONVERSION LOADERS (unchanged) ============
 function parseZeroSheet(wb) {
-  const sheet = wb.Sheets[CONFIG.ZERO_SHEET];
-  if (!sheet) return {};
-  const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
+  // Perf (2026-09-24): sheetRows() = prebuilt JSON rows or sheet_to_json (identical).
+  const aoa = sheetRows(wb, CONFIG.ZERO_SHEET, { header: 1, defval: null, raw: true });
+  if (!aoa) return {};
   let headerIdx = -1;
   for (let i = 0; i < Math.min(aoa.length, 10); i++) {
     if (aoa[i] && aoa[i][0] && String(aoa[i][0]).trim().toLowerCase() === 'store name') { headerIdx = i; break; }
@@ -1038,9 +1039,9 @@ const escHtml = v => String(v == null ? '' : v)
 
 // ============ DM / REGION RANK PARSER (unchanged) ============
 function parseRankSheet(wb, sheetName) {
-  const sheet = wb.Sheets[sheetName];
-  if (!sheet) return [];
-  const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
+  // Perf (2026-09-24): sheetRows() = prebuilt JSON rows or sheet_to_json (identical).
+  const aoa = sheetRows(wb, sheetName, { header: 1, defval: null, raw: true });
+  if (!aoa) return [];
   const rows = [];
   let headerIdx = -1;
   for (let i = 0; i < Math.min(aoa.length, 6); i++) {
@@ -1087,6 +1088,69 @@ function postBoardState(phase, extra) {
   } catch (e) { /* a frame that cannot be messaged is still a working report */ }
 }
 
+// ============ PREBUILT WORKBOOK ROWS ============
+// Perf (2026-09-24): XLSX.read of the whole 1.15 MB workbook was ONE ~1.4 s
+// main-thread task on every open - about 5 s of frozen iPad, where this report
+// shares cookcountycooks.com's thread (Break Room TV and the tool viewer).
+// update.yml already writes data/sales-report.json from every uploaded
+// workbook, with the same SheetJS 0.18.5 and the same
+// sheet_to_json({header:1, defval:null}) call this page makes, stamped with the
+// workbook's SHA-256 (scripts/build-sales-json.js). The page still downloads
+// the workbook exactly as before, and uses the JSON rows ONLY when that stamp
+// matches the bytes it just downloaded - so every number is identical to
+// parsing the workbook. Missing, malformed or stale JSON (e.g. the minute or
+// two after an upload, before update.yml has rebuilt it) falls back to parsing
+// the workbook, now reading only the five sheets this page uses (output
+// verified identical on three workbook versions; `dense` is deliberately NOT
+// used - in 0.18.5 it drops the defval padding of empty rows).
+const SALES_JSON_URL = CONFIG.EXCEL_URL.replace(/Sales%20Report\.xlsx$/, 'sales-report.json');
+const DSR_SHEETS = ['Store Rank', 'Rep Rank', 'District Rank', 'Region Rank', 'Zero'];
+// Same host, same ?t= and cache mode as the workbook fetch. Never rejects.
+function fetchSalesJson() {
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const killer = setTimeout(() => { if (ctrl) ctrl.abort(); }, 30000);
+  return fetch(SALES_JSON_URL + '?t=' + Date.now(), ctrl ? { signal: ctrl.signal } : undefined)
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null)
+    .then(j => { clearTimeout(killer); return j; });
+}
+// -> the JSON's sheets when it was built from exactly `buf`, else null.
+async function verifiedSalesRows(jsonReq, buf, names) {
+  try {
+    // ~4x smaller than the workbook, so it normally lands first; never hold
+    // the report more than 3 s past the workbook waiting for it.
+    const j = await Promise.race([jsonReq, new Promise(r => setTimeout(r, 3000, null))]);
+    if (!j || !j.source || !j.sheets || typeof j.source.sha256 !== 'string' || j.source.bytes !== buf.byteLength) return null;
+    // Built by the same SheetJS this page would load, or not used at all.
+    if (j.sheetjs !== '0.18.5') return null;
+    for (const n of names) if (!Array.isArray(j.sheets[n])) return null;
+    if (!(window.crypto && window.crypto.subtle)) return null;
+    const d = new Uint8Array(await window.crypto.subtle.digest('SHA-256', buf));
+    let hex = '';
+    for (let i = 0; i < d.length; i++) hex += (d[i] < 16 ? '0' : '') + d[i].toString(16);
+    return hex === j.source.sha256.toLowerCase() ? j.sheets : null;
+  } catch (e) { return null; }
+}
+// Every caller passes {header:1, defval:null[, raw:true]} - the exact call the
+// JSON was built with (raw defaults to true in sheet_to_json).
+function sheetRows(wb, name, opts) {
+  if (wb.__rows) return wb.__rows[name] || null;
+  const ws = wb.Sheets[name];
+  return ws ? XLSX.utils.sheet_to_json(ws, opts) : null;
+}
+let sheetJsReq = null;
+function loadSheetJS() {
+  if (typeof XLSX !== 'undefined') return Promise.resolve();
+  if (!sheetJsReq) sheetJsReq = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = () => resolve();
+    s.onerror = () => { sheetJsReq = null; s.remove(); reject(new Error('Could not load the spreadsheet reader (cdnjs)')); };
+    document.head.appendChild(s);
+  });
+  return sheetJsReq;
+}
+
 // ============ DATA LOADING (unchanged) ============
 async function loadData() {
   const loading = document.getElementById('loading');
@@ -1099,6 +1163,9 @@ async function loadData() {
     // same refresh window). It never blocks the deck: loadStreaks() swallows
     // its own errors and just leaves state.streaks null.
     const prevStreakSig = streakSignature(state.streaks);
+    // Perf (2026-09-24): the prebuilt rows ride along with the first load; a
+    // background re-check only asks for them once the workbook has changed.
+    const salesJson = state.stores.length ? null : fetchSalesJson();
     const [resp] = await Promise.all([
       fetch(CONFIG.EXCEL_URL + cacheBust),
       loadStreaks(),
@@ -1119,16 +1186,22 @@ async function loadData() {
       return;
     }
     const isUpdate = !!state.dataSig && state.stores.length > 0;
-    state.dataSig = sig;
-    // Perf (2026-09-02): SheetJS is now a deferred script; on a fast link the
-    // workbook can land before it has run. Deferred scripts execute while
-    // readyState is already 'interactive', and DOMContentLoaded fires after
-    // they finish, so wait for DOMContentLoaded (or load, if the CDN script
-    // failed and DOMContentLoaded already went by) unless the page is complete.
-    if (typeof XLSX === 'undefined' && document.readyState !== 'complete') {
-      await new Promise(r => { document.addEventListener('DOMContentLoaded', r, { once: true }); window.addEventListener('load', r, { once: true }); });
+    // Perf (2026-09-24): prebuilt rows when they were built from exactly these
+    // bytes (see PREBUILT WORKBOOK ROWS); otherwise load SheetJS on demand and
+    // read only the five sheets this page uses. Replaces the 2026-09-02 wait
+    // for the deferred SheetJS script and the full XLSX.read(buf).
+    const rows = await verifiedSalesRows(salesJson || fetchSalesJson(), buf, DSR_SHEETS);
+    let wb;
+    if (rows) {
+      wb = { __rows: rows };
+    } else {
+      await loadSheetJS();
+      wb = XLSX.read(buf, { type: 'array', sheets: DSR_SHEETS, cellFormula: false, cellHTML: false, cellText: false });
     }
-    const wb = XLSX.read(buf, { type: 'array' });
+    console.info('[sales-report] ' + (rows ? 'rows from sales-report.json (sha256 matches the workbook)' : 'parsed the workbook (sales-report.json missing or stale)'));
+    // Perf (2026-09-24): remember the signature only once the workbook has
+    // been read, so a failed read is retried by the next check.
+    state.dataSig = sig;
     parseWorkbook(wb);
     // Perf (2026-09-02): loadYesterday() waits on the T-Sheet Apps Script feed
     // (normally 12.7-16.7 s, sometimes never). It used to be awaited HERE, so
@@ -1173,6 +1246,7 @@ async function loadLocalFile(e) {
   const file = e.target.files[0];
   if (!file) return;
   const buf = await file.arrayBuffer();
+  await loadSheetJS();   // Perf (2026-09-24): SheetJS now loads on demand
   const wb = XLSX.read(buf, { type: 'array' });
   parseWorkbook(wb);
   await loadYesterday(wb);
@@ -1186,9 +1260,9 @@ async function loadLocalFile(e) {
 
 // ============ WORKBOOK PARSING (unchanged) ============
 function parseWorkbook(wb) {
-  const ws = wb.Sheets['Store Rank'];
-  if (!ws) return;
-  const data = XLSX.utils.sheet_to_json(ws, { header:1, defval:null });
+  // Perf (2026-09-24): sheetRows() = prebuilt JSON rows or sheet_to_json (identical).
+  const data = sheetRows(wb, 'Store Rank', { header:1, defval:null });
+  if (!data) return;
   let headerRow = -1;
   for (let i = 0; i < Math.min(15, data.length); i++) {
     const row = data[i];
@@ -1250,9 +1324,8 @@ function parseWorkbook(wb) {
   applyPendingDistrict();
 
   // Rep Rank
-  const repWs = wb.Sheets['Rep Rank'];
-  if (repWs) {
-    const repData = XLSX.utils.sheet_to_json(repWs, { header:1, defval:null });
+  const repData = sheetRows(wb, 'Rep Rank', { header:1, defval:null });   // Perf (2026-09-24)
+  if (repData) {
     let repHeader = -1;
     for (let i = 0; i < 15; i++) {
       if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') &&
