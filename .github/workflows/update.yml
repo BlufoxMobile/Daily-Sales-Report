@@ -127,7 +127,9 @@ jobs:
       # PROTOTYPE (2026-09-02): pre-parse the workbook to data/sales-report.json
       # with the same SheetJS build the dashboards use, so they can fetch ~140 KB
       # of JSON instead of the 902 KB xlsx and skip the ~1 s XLSX.read on every
-      # open. No dashboard reads the file yet - see scripts/build-sales-json.js.
+      # open. Perf (2026-09-24): now READ by index.html, Yesterday-s-Conversion,
+      # T-Sheet-Submissions and NPS-Index (only when its sha256 matches the
+      # workbook) - keep xlsx@0.18.5 and see the CONTRACT in the script.
       - uses: actions/setup-node@v4
         with:
           node-version: '20'

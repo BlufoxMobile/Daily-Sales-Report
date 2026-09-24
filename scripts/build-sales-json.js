@@ -1,6 +1,19 @@
 #!/usr/bin/env node
 /**
- * PROTOTYPE (2026-09-02, not yet wired into index.html - see the note at the bottom).
+ * PROTOTYPE (2026-09-02). Perf (2026-09-24): NOW WIRED IN - read by this repo's
+ * index.html and by Yesterday-s-Conversion, T-Sheet-Submissions and
+ * NPS-Index---Medallia (look for "PREBUILT WORKBOOK ROWS" in each).
+ *
+ * CONTRACT those four pages rely on (change it and they silently stop using
+ * this file - they are never wrong, just slower - so change it only together
+ * with them):
+ *   - source.sha256 / source.bytes: of the exact workbook bytes. A page uses
+ *     the rows ONLY when they match the workbook it has just downloaded.
+ *   - sheetjs: must stay "0.18.5" (the pages check it; it is the build they
+ *     load from cdnjs).
+ *   - sheets[name] = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null })
+ *     of a default XLSX.read, for every sheet in SHEETS below. Do not change
+ *     the options or drop a sheet.
  *
  * Builds data/sales-report.json from data/Sales Report.xlsx at commit time so the
  * dashboards can fetch a small JSON instead of the 902 KB workbook and parsing it
@@ -66,6 +79,9 @@ console.log('wrote ' + OUT + ': ' + Object.keys(sheets).map(n => n + '=' + sheet
   ' (' + json.length + ' bytes) from ' + buf.length + '-byte workbook in ' + (Date.now() - t0) + ' ms');
 
 /*
+ * Perf (2026-09-24): done - kept for the record. The pages use the JSON only
+ * after a SHA-256 match against the workbook they downloaded (so it can never
+ * show different numbers), and parse the workbook themselves otherwise.
  * TO WIRE INTO index.html (deliberately not done in the same change - the JSON has
  * to exist on main first, and the page change needs its own review):
  *   1. In loadData(), fetch CONFIG.EXCEL_URL.replace(/Sales%20Report\.xlsx$/, 'sales-report.json')
