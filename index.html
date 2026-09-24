@@ -1117,9 +1117,11 @@ function fetchSalesJson() {
 // -> the JSON's sheets when it was built from exactly `buf`, else null.
 async function verifiedSalesRows(jsonReq, buf, names) {
   try {
-    // ~4x smaller than the workbook, so it normally lands first; never hold
-    // the report more than 3 s past the workbook waiting for it.
-    const j = await Promise.race([jsonReq, new Promise(r => setTimeout(r, 3000, null))]);
+    // Perf (2026-09-24): wait for the JSON request to settle (fetchSalesJson
+    // bounds it at 30 s). A 3 s race used to pick the workbook parse whenever
+    // the JSON was merely late - a slow link or a busy iPad. Only a missing,
+    // malformed or stale JSON falls back now.
+    const j = await jsonReq;
     if (!j || !j.source || !j.sheets || typeof j.source.sha256 !== 'string' || j.source.bytes !== buf.byteLength) return null;
     // Built by the same SheetJS this page would load, or not used at all.
     if (j.sheetjs !== '0.18.5') return null;
@@ -1149,6 +1151,41 @@ function loadSheetJS() {
     document.head.appendChild(s);
   });
   return sheetJsReq;
+}
+// Perf (2026-09-24): FALLBACK PARSE OFF THE MAIN THREAD. When the JSON cannot
+// be used (missing, malformed or stale: the minutes after each upload), the
+// workbook parse was still one 0.8-1.0 s main-thread task (~2 s on an older
+// iPad), which froze cookcountycooks.com too. The same SheetJS 0.18.5 from the
+// same cdnjs URL now reads it in a Web Worker with the same options and hands
+// back only the plain sheet_to_json rows (structured clone keeps them as-is).
+// Resolves null if a worker cannot be used (no Worker, a blob: worker blocked,
+// any error in it, or it never starts): the caller then does the main-thread
+// read below, exactly as before.
+function rowsInWorker(buf, names, readOpts, rowOpts) {
+  return new Promise(resolve => {
+    let w = null, url = null, done = false, upT = 0;
+    const finish = v => {
+      if (done) return;
+      done = true;
+      clearTimeout(upT);
+      try { if (w) w.terminate(); } catch (e) {}
+      try { if (url) URL.revokeObjectURL(url); } catch (e) {}
+      resolve(v);
+    };
+    try {
+      const src = 'postMessage({up:1});importScripts(' + JSON.stringify('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js') + ');' +
+        'onmessage=function(e){var q=e.data,out={};try{var wb=XLSX.read(q.buf,q.read);' +
+        'q.names.forEach(function(n){var ws=wb.Sheets[n];out[n]=ws?XLSX.utils.sheet_to_json(ws,q.opts):null;});' +
+        'postMessage({rows:out});}catch(err){postMessage({error:String(err&&err.message||err)});}};';
+      url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+      w = new Worker(url);
+      w.onmessage = e => { const d = e.data || {}; if (d.up) clearTimeout(upT); else finish(d.rows || null); };
+      w.onerror = w.onmessageerror = () => finish(null);
+      upT = setTimeout(() => finish(null), 10000);   // not started in 10 s = no usable worker
+      const copy = buf.slice(0);                      // `buf` stays here for the fallback
+      w.postMessage({ buf: copy, names: names, read: readOpts, opts: rowOpts }, [copy]);
+    } catch (e) { finish(null); }
+  });
 }
 
 // ============ DATA LOADING (unchanged) ============
@@ -1201,13 +1238,17 @@ async function loadData() {
     // for the deferred SheetJS script and the full XLSX.read(buf).
     const rows = await verifiedSalesRows(salesJson || fetchSalesJson(), buf, DSR_SHEETS);
     let wb;
-    if (rows) {
-      wb = { __rows: rows };
+    // Perf (2026-09-24): no usable JSON -> parse in a worker (rowsInWorker);
+    // the main-thread read only when a worker cannot be used.
+    const readOpts = { type: 'array', sheets: DSR_SHEETS, cellFormula: false, cellHTML: false, cellText: false };
+    const wrows = rows ? null : await rowsInWorker(buf, DSR_SHEETS, readOpts, { header: 1, defval: null, raw: true });
+    if (rows || wrows) {
+      wb = { __rows: rows || wrows };
     } else {
       await loadSheetJS();
-      wb = XLSX.read(buf, { type: 'array', sheets: DSR_SHEETS, cellFormula: false, cellHTML: false, cellText: false });
+      wb = XLSX.read(buf, readOpts);
     }
-    console.info('[sales-report] ' + (rows ? 'rows from sales-report.json (sha256 matches the workbook)' : 'parsed the workbook (sales-report.json missing or stale)'));
+    console.info('[sales-report] ' + (rows ? 'rows from sales-report.json (sha256 matches the workbook)' : wrows ? 'parsed the workbook in a worker (sales-report.json missing or stale)' : 'parsed the workbook (sales-report.json missing or stale)'));
     // Perf (2026-09-24): remember the signature only once the workbook has
     // been read, so a failed read is retried by the next check.
     state.dataSig = sig;
