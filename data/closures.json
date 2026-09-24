@@ -19453,8 +19453,14 @@
     "pendingUntil": "2026-09-26"
   },
   "1002311162722059": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-24T19:59:51.785Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank"
+  },
+  "1002310582392055": {
     "status": "Closed",
-    "ts": "2026-09-24T19:59:49.298Z",
+    "ts": "2026-09-24T20:00:38.298Z",
     "dm": "Tanzim Chowdhury",
     "store": "Burbank"
   }
