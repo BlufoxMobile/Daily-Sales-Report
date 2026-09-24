@@ -1166,12 +1166,21 @@ async function loadData() {
     // Perf (2026-09-24): the prebuilt rows ride along with the first load; a
     // background re-check only asks for them once the workbook has changed.
     const salesJson = state.stores.length ? null : fetchSalesJson();
+    // Perf (2026-09-24): a hung raw request used to leave "Loading Sales
+    // Report..." up forever. On the first load it now reaches the Retry screen
+    // after 30 s; a background re-check keeps the old no-timeout behaviour so
+    // a slow refresh can never throw the error card over a working deck.
+    const wbCtrl = (!state.stores.length && typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const wbKiller = wbCtrl ? setTimeout(() => wbCtrl.abort(), 30000) : 0;
     const [resp] = await Promise.all([
-      fetch(CONFIG.EXCEL_URL + cacheBust),
+      fetch(CONFIG.EXCEL_URL + cacheBust, wbCtrl ? { signal: wbCtrl.signal } : undefined)
+        .catch(e => { throw (e && e.name === 'AbortError') ? new Error('The sales report did not download within 30 seconds') : e; }),
       loadStreaks(),
     ]);
     if (!resp.ok) throw new Error('Could not fetch sales report (HTTP ' + resp.status + ')');
-    const buf = await resp.arrayBuffer();
+    const buf = await resp.arrayBuffer()
+      .catch(e => { throw (e && e.name === 'AbortError') ? new Error('The sales report did not download within 30 seconds') : e; });
+    clearTimeout(wbKiller);
     // Skip the full reload when the file on GitHub hasn't changed — keeps
     // the slideshow running smoothly during background checks.
     const sig = bufferSignature(buf);
