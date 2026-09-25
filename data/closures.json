@@ -19463,5 +19463,12 @@
     "ts": "2026-09-24T20:00:38.298Z",
     "dm": "Tanzim Chowdhury",
     "store": "Burbank"
+  },
+  "1002310063922057": {
+    "status": "Pending Install",
+    "ts": "2026-09-25T15:52:14.854Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-10-02"
   }
 }
