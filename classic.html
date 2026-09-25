@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cook County Cooks - Daily Sales Report</title>
+<!-- Perf (2026-09-24): SheetJS is no longer loaded up front (316 KB download,
+     ~150-190 ms of main-thread script evaluation on every open). The report
+     now reads the prebuilt data/sales-report.json and loads SheetJS on demand
+     (loadSheetJS) only when that file is missing or stale, or for "load a
+     local Excel file". See PREBUILT WORKBOOK ROWS in the script below.
+     (2026-09-02 had made this script `defer` so a hung cdnjs could not leave
+     the page blank; loading on demand keeps that property.) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Perf (2026-09-02): media="print" + onload swap makes the Google Fonts CSS
+     non-render-blocking, so a slow/hung fonts.googleapis.com can no longer
+     hold up first paint (Nunito swaps in when it arrives; fallback is the
+     system sans in the body font stack). -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+/* ============================================================
+   COOK COUNTY COOKS — DAILY SALES REPORT (Pastel Redesign)
+   Light, warm, friendly. A fresh pastel color every day.
+   Fixed 1920x1080 design canvas, scaled to fit ANY screen.
+   ============================================================ */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  /* Day theme variables — set by applyDayColor() */
+  --day-ink:   #E8590C;   /* readable accent (text, numbers)   */
+  --day-mid:   #FF922B;   /* medium accent (bars, gradients)   */
+  --day-soft:  #FFE8CC;   /* pastel fill (pills, badges)       */
+  --day-tint:  #FFF4E6;   /* very light wash (backgrounds)     */
+  --day-line:  #FFD8A8;   /* pastel border                     */
+  /* Fixed neutrals */
+  --paper:  #FDFCFA;
+  --card:   #FFFFFF;
+  --text:   #46413B;      /* warm charcoal */
+  --muted:  #97907F;      /* warm gray     */
+  --track:  #F2EEE7;
+  /* Status colors (pastel chips) */
+  --good-ink:#2B8A3E; --good-bg:#D3F9D8;
+  --warn-ink:#E8590C; --warn-bg:#FFE8CC;
+  --low-ink: #C92A2A; --low-bg: #FFE3E3;
+}
+
+html, body { height:100%; overflow:hidden; }
+body {
+  font-family:'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--paper);
+  color: var(--text);
+}
+
+/* ---------- STAGE: 1920x1080 canvas scaled to fit any screen ---------- */
+#stage {
+  position:fixed; inset:0; overflow:hidden;
+  background: linear-gradient(160deg, var(--day-tint) 0%, var(--paper) 45%, var(--day-tint) 100%);
+  transition: background 1s ease;
+}
+#stage-scaler {
+  width:1920px; height:1080px;
+  position:absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%) scale(1);
+  transform-origin: center center;
+}
+
+/* ---------- Floating pastel blobs (gentle background life) ---------- */
+.blob { position:absolute; border-radius:50%; filter:blur(70px); opacity:.55; pointer-events:none; }
+.blob1 { width:560px; height:560px; background:var(--day-soft); top:-160px; left:-120px; animation: drift1 26s ease-in-out infinite alternate; }
+.blob2 { width:480px; height:480px; background:var(--day-soft); bottom:-180px; right:-100px; animation: drift2 31s ease-in-out infinite alternate; }
+.blob3 { width:340px; height:340px; background:var(--day-tint); top:38%; left:42%; animation: drift3 23s ease-in-out infinite alternate; opacity:.8; }
+@keyframes drift1 { from{ transform:translate(0,0) scale(1);} to{ transform:translate(90px,60px) scale(1.12);} }
+@keyframes drift2 { from{ transform:translate(0,0) scale(1.08);} to{ transform:translate(-80px,-70px) scale(.95);} }
+@keyframes drift3 { from{ transform:translate(0,0);} to{ transform:translate(-60px,80px);} }
+
+/* ---------- HEADER ---------- */
+.header {
+  position:absolute; top:0; left:0; right:0; height:112px; z-index:5;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 40px;
+  background: rgba(255,255,255,.82);
+  border-bottom: 3px solid var(--day-line);
+  backdrop-filter: blur(6px);
+}
+.header-left { display:flex; align-items:center; gap:18px; min-width:430px; }
+.logo-circle {
+  width:68px; height:68px; border-radius:50%;
+  border:4px solid var(--day-soft); overflow:hidden; flex-shrink:0;
+  box-shadow:0 4px 14px rgba(70,65,59,.12);
+}
+.brand-title { font-size:30px; font-weight:900; letter-spacing:.5px; line-height:1.05; }
+.brand-title .highlight { color:var(--day-ink); }
+.brand-sub { font-size:15px; font-weight:700; color:var(--muted); letter-spacing:2px; margin-top:3px; }
+.header-center { text-align:center; flex:1; padding:0 20px; min-width:0; }
+.header-center-title { font-size:40px; font-weight:900; letter-spacing:1px; color:var(--text); line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header-center-title.long { font-size:27px; letter-spacing:0; }
+.header-center-title .accent { color:var(--day-ink); }
+.header-center-sub { font-size:18px; font-weight:700; color:var(--muted); margin-top:4px; }
+.header-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; min-width:430px; }
+.pill-row { display:flex; gap:10px; align-items:center; }
+.pill {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--day-soft); color:var(--day-ink);
+  border-radius:999px; padding:8px 18px;
+  font-size:17px; font-weight:900; letter-spacing:1px;
+}
+.pill.live { background:var(--good-bg); color:var(--good-ink); }
+.live-dot { width:11px; height:11px; border-radius:50%; background:var(--good-ink); animation:pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.75);} }
+.pill.paused { background:var(--low-bg); color:var(--low-ink); }
+.datetime { font-size:19px; font-weight:800; color:var(--muted); }
+
+/* ---------- SLIDE AREA ---------- */
+.slide-container {
+  position:absolute; top:112px; bottom:104px; left:0; right:0;
+  padding:26px 40px; z-index:2; overflow:hidden;
+}
+.slide-inner { width:100%; height:100%; }
+
+/* Slide entrance animations — variant rotates so it feels fresh */
+.anim-fade  { animation: fadeUp .65s cubic-bezier(.2,.7,.3,1) both; }
+.anim-slide { animation: slideL .6s cubic-bezier(.2,.7,.3,1) both; }
+.anim-zoom  { animation: zoomIn .6s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes fadeUp { from{ opacity:0; transform:translateY(34px);} to{ opacity:1; transform:none;} }
+@keyframes slideL { from{ opacity:0; transform:translateX(60px);} to{ opacity:1; transform:none;} }
+@keyframes zoomIn { from{ opacity:0; transform:scale(.94);} to{ opacity:1; transform:none;} }
+/* Staggered children: set style="--i:n" */
+.stagger { animation: fadeUp .55s cubic-bezier(.2,.7,.3,1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+
+/* ---------- STORE OVERVIEW GRID ---------- */
+.store-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:20px; height:100%; }
+.store-card {
+  background:var(--card); border-radius:24px; padding:18px 24px 16px;
+  box-shadow:0 8px 26px rgba(70,60,45,.09);
+  border:1px solid #F3EFE8;
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.store-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:9px;
+  background:linear-gradient(90deg, var(--day-mid), var(--day-soft));
+}
+.store-card.empty { background:transparent; border:2px dashed var(--day-line); box-shadow:none; }
+.store-card.empty::before { display:none; }
+.card-top { display:flex; align-items:center; gap:14px; margin-top:6px; }
+.rank-badge {
+  width:58px; height:58px; border-radius:18px; flex-shrink:0;
+  background:var(--day-soft); color:var(--day-ink);
+  display:flex; align-items:center; justify-content:center;
+  font-size:23px; font-weight:900;
+}
+.rank-badge.medal { font-size:34px; background:#FFF6DB; }
+.card-store-name { font-size:30px; font-weight:900; line-height:1.05; }
+.card-store-sub { font-size:14px; font-weight:700; color:var(--muted); margin-top:2px; }
+.card-gp-row { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
+.card-gp { font-size:54px; font-weight:900; color:var(--text); line-height:1; letter-spacing:-1px; }
+.card-gp-label { font-size:15px; font-weight:800; color:var(--muted); letter-spacing:1px; }
+.delta-chip { font-size:17px; font-weight:900; border-radius:999px; padding:3px 12px; }
+.delta-chip.up { background:var(--good-bg); color:var(--good-ink); }
+.delta-chip.down { background:var(--low-bg); color:var(--low-ink); }
+/* Goal progress bar */
+.goal-wrap { margin-top:10px; }
+.goal-bar { height:15px; background:var(--track); border-radius:999px; overflow:hidden; }
+.goal-fill {
+  height:100%; border-radius:999px; width:0;
+  background:linear-gradient(90deg, var(--day-mid), var(--day-ink));
+  animation: grow 1s .25s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes grow { to { width: var(--w, 0%); } }
+.goal-label { display:flex; justify-content:space-between; font-size:14px; font-weight:800; color:var(--muted); margin-top:5px; }
+.goal-label b { color:var(--text); }
+/* Metric chips */
+.chips { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:auto; padding-top:12px; }
+.chip { border-radius:14px; padding:8px 4px 7px; text-align:center; background:var(--day-tint); }
+.chip .cl { font-size:12px; font-weight:800; color:var(--muted); letter-spacing:.4px; }
+.chip .cv { font-size:21px; font-weight:900; color:var(--day-ink); margin-top:1px; }
+.chip.good { background:var(--good-bg); } .chip.good .cv { color:var(--good-ink); }
+.chip.warn { background:var(--warn-bg); } .chip.warn .cv { color:var(--warn-ink); }
+.chip.low  { background:var(--low-bg);  } .chip.low  .cv { color:var(--low-ink); }
+
+/* ---------- STORE DETAIL ---------- */
+.detail-grid { display:grid; grid-template-columns: 1fr 1.6fr; gap:20px; height:100%; }
+.detail-left { display:flex; flex-direction:column; gap:14px; min-height:0; }
+.hero-card {
+  background:var(--card); border-radius:24px; padding:22px 26px;
+  box-shadow:0 8px 26px rgba(70,60,45,.09); border:1px solid #F3EFE8;
+  position:relative; overflow:hidden;
+}
+.hero-card::before { content:''; position:absolute; top:0; left:0; right:0; height:9px; background:linear-gradient(90deg, var(--day-mid), var(--day-soft)); }
+.hero-row { display:flex; justify-content:space-between; align-items:flex-start; margin-top:4px; }
+.hero-name { font-size:42px; font-weight:900; line-height:1; margin-top:6px; }
+.hero-sub { font-size:16px; font-weight:700; color:var(--muted); margin-top:8px; }
+.hero-gp { font-size:64px; font-weight:900; color:var(--day-ink); line-height:1; letter-spacing:-1px; text-align:right; }
+.hero-gp-label { font-size:15px; font-weight:800; color:var(--muted); letter-spacing:1px; text-align:right; margin-top:6px; }
+.device-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.device-tile { background:var(--card); border-radius:18px; padding:14px 8px; text-align:center; border:1px solid #F3EFE8; box-shadow:0 5px 16px rgba(70,60,45,.07); }
+.device-tile.star { background:var(--day-soft); border-color:var(--day-line); }
+.device-tile .dl { font-size:14px; font-weight:800; color:var(--muted); letter-spacing:1px; }
+.device-tile.star .dl { color:var(--day-ink); }
+.device-tile .dv { font-size:38px; font-weight:900; margin-top:2px; }
+.device-tile.star .dv { color:var(--day-ink); }
+.detail-chips { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; flex:1; min-height:0; }
+.detail-chips .chip { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; }
+.detail-chips .chip .cl { font-size:14px; }
+.detail-chips .chip .cv { font-size:28px; }
+
+/* ---------- TABLES (team, yesterday, detractor, rankings) ---------- */
+.panel {
+  background:var(--card); border-radius:24px; padding:20px 26px;
+  box-shadow:0 8px 26px rgba(70,60,45,.09); border:1px solid #F3EFE8;
+  height:100%; display:flex; flex-direction:column; min-height:0; overflow:hidden;
+}
+.panel-title { font-size:26px; font-weight:900; color:var(--day-ink); letter-spacing:1.5px; margin-bottom:4px; }
+.panel-sub { font-size:15px; font-weight:700; color:var(--muted); margin-bottom:12px; }
+.thead { display:grid; gap:12px; padding:10px 16px; font-size:14px; font-weight:900; color:var(--muted); text-transform:uppercase; letter-spacing:1px; border-bottom:2px solid var(--day-soft); }
+.trow {
+  display:grid; gap:12px; align-items:center; padding:11px 16px;
+  border-radius:14px; margin-top:7px; font-size:21px; font-weight:700;
+  background:var(--day-tint);
+}
+.trow:nth-child(odd) { background:#FBF9F5; }
+.trow.mine { background:var(--day-soft); outline:2px solid var(--day-line); }
+.trow .rk { color:var(--day-ink); font-weight:900; }
+.trow .nm { font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.trow .money { font-weight:900; }
+.trow.total { background:var(--day-soft); font-weight:900; outline:2px solid var(--day-line); }
+.tscroll { flex:1; min-height:0; overflow:hidden; }
+
+/* Traffic mini-bars (Yesterday slide) */
+.mini-track { display:block; height:12px; background:var(--track); border-radius:999px; overflow:hidden; width:100%; flex:1; }
+.mini-fill { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg, var(--day-mid), var(--day-ink)); width:0; animation:grow .9s .2s forwards; }
+
+/* Days Since Last Detractor (read from across the room: big numerals, tall rows) */
+.trow.streak { padding:15px 18px; margin-top:9px; }
+.trow.streak-dense { padding:5px 16px; margin-top:6px; }
+.trow.streak-dense .streak-days { font-size:30px; letter-spacing:-1px; }
+.trow.streak-dense .streak-note { font-size:17px; }
+.streak-days { font-size:52px; font-weight:900; line-height:1; color:var(--day-ink); letter-spacing:-2px; white-space:nowrap; }
+.streak-days .unit { font-size:15px; font-weight:800; color:var(--muted); letter-spacing:1px; margin-left:7px; }
+.trow.streak-goal { background:var(--good-bg); outline:2px solid var(--good-ink); }
+.trow.streak-goal .streak-days, .trow.streak-goal .rk { color:var(--good-ink); }
+.trow.streak-goal .mini-fill { background:linear-gradient(90deg, #51CF66, var(--good-ink)); }
+.trow.streak-pending { background:#EDFBEF; outline:2px dashed var(--good-ink); }
+.trow.streak-pending .streak-days, .trow.streak-pending .rk { color:var(--good-ink); }
+.trow.streak-pending .mini-fill { background:linear-gradient(90deg, #8CE99A, var(--good-ink)); }
+.trow.streak-limited { background:var(--day-tint); }
+.trow.streak-limited .streak-days { color:var(--text); }
+.trow.streak-reset .streak-days { color:var(--low-ink); }
+.trow.streak-reset .mini-fill { background:linear-gradient(90deg, #FF8787, var(--low-ink)); }
+.trow.streak-nodata { background:var(--track); }
+.trow.streak-nodata .nm, .trow.streak-nodata .rk { color:var(--muted); }
+.streak-note { font-size:20px; font-weight:800; color:var(--muted); font-style:italic; }
+.streak-sub { font-size:15px; font-weight:800; color:var(--muted); }
+.streak-stat { font-size:15px; font-weight:900; color:var(--muted); white-space:nowrap; }
+.trow.streak-goal .streak-stat, .trow.streak-pending .streak-stat { color:var(--good-ink); }
+.trow.streak-reset .streak-stat { color:var(--low-ink); }
+.streak-flag { display:block; font-size:13px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-top:3px; white-space:nowrap; }
+.streak-badge { display:inline-block; border-radius:999px; padding:4px 13px; font-size:16px; font-weight:900; white-space:nowrap; background:var(--good-bg); color:var(--good-ink); }
+.streak-badge.record { background:var(--warn-bg); color:var(--warn-ink); }
+.streak-foot { display:flex; gap:14px; margin-top:12px; flex-shrink:0; }
+.streak-foot .sf { flex:1; background:var(--day-tint); border:1px solid var(--day-line); border-radius:16px; padding:9px 18px; }
+.streak-foot .sfl { font-size:14px; font-weight:900; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.streak-foot .sfv { font-size:29px; font-weight:900; color:var(--day-ink); line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* Two-column ranking layout */
+.rank-cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; height:100%; min-height:0; }
+
+/* ---------- PROMO SLIDES ---------- */
+.promo-wrap { height:100%; display:flex; align-items:center; justify-content:center; }
+.promo-frame {
+  background:var(--card); border-radius:28px; padding:26px;
+  box-shadow:0 14px 40px rgba(70,60,45,.14); border:1px solid #F3EFE8;
+  animation: sway 6s ease-in-out infinite alternate;
+  max-width:92%; max-height:94%;
+  display:flex; align-items:center; justify-content:center;
+}
+@keyframes sway { from{ transform:rotate(-.5deg) translateY(0);} to{ transform:rotate(.5deg) translateY(-10px);} }
+/* Sized so the image can never outgrow its frame: 680 + 52px of padding is
+   732px, comfortably inside the frame's 763px cap even while it sways. */
+.promo-frame img {
+  max-width:1560px; max-height:680px; width:auto; height:auto;
+  object-fit:contain; border-radius:16px; display:block;
+}
+.promo-missing { padding:80px 100px; text-align:center; color:var(--muted); font-size:28px; font-weight:800; }
+
+/* ---------- FOOTER / CONTROLS ---------- */
+.controls {
+  position:absolute; bottom:0; left:0; right:0; height:104px; z-index:6;
+  background:rgba(255,255,255,.86); backdrop-filter:blur(6px);
+  border-top:3px solid var(--day-line);
+  display:flex; align-items:center; gap:18px; padding:0 32px;
+  transition:opacity .6s ease;
+}
+.controls.idle { opacity:.45; }
+.countdown-track { position:absolute; top:-3px; left:0; right:0; height:6px; background:transparent; }
+.countdown-fill { height:100%; background:linear-gradient(90deg, var(--day-mid), var(--day-ink)); border-radius:0 999px 999px 0; transition:width .1s linear; }
+.district-tabs { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; min-width:0; overflow:hidden; }
+.district-tab {
+  padding:9px 16px; border-radius:999px; font-size:16px; font-weight:800;
+  background:var(--track); color:var(--muted); cursor:pointer; white-space:nowrap;
+  transition:all .2s;
+}
+.district-tab:hover { background:var(--day-soft); color:var(--day-ink); }
+.district-tab.active { background:var(--day-ink); color:#fff; }
+.district-count { margin-left:6px; opacity:.75; font-size:14px; }
+.store-picker {
+  font-family:inherit; font-size:16px; font-weight:800; color:var(--text);
+  background:var(--card); border:2px solid var(--day-line); border-radius:999px;
+  padding:8px 14px; cursor:pointer; max-width:230px;
+}
+.store-picker.has-selection { border-color:var(--day-ink); color:var(--day-ink); }
+.spacer { flex:1; }
+.ctl-btn {
+  width:54px; height:54px; border-radius:50%; border:2px solid var(--day-line);
+  background:var(--card); color:var(--day-ink); font-size:22px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s, background .2s; flex-shrink:0;
+}
+.ctl-btn:hover { transform:scale(1.1); background:var(--day-soft); }
+.ctl-btn.play-pause { width:62px; height:62px; font-size:26px; background:var(--day-soft); }
+.dot-nav { display:flex; gap:6px; align-items:center; max-width:560px; flex-wrap:wrap; justify-content:center; }
+.dot-nav span { width:11px; height:11px; border-radius:999px; background:#E2DCD2; cursor:pointer; transition:all .25s; }
+.dot-nav span.active { width:30px; background:var(--day-ink); }
+.slide-counter { font-size:19px; font-weight:900; color:var(--muted); white-space:nowrap; }
+.slide-select {
+  font-family:inherit; font-size:15px; font-weight:800; color:var(--muted);
+  background:var(--card); border:2px solid var(--track); border-radius:999px;
+  padding:7px 12px; cursor:pointer; max-width:250px;
+}
+
+/* ---------- "NEW DATA" TOAST ---------- */
+.toast {
+  position:absolute; top:132px; left:50%; z-index:20;
+  transform:translateX(-50%) translateY(-24px);
+  background:var(--card); border:3px solid var(--day-line); color:var(--day-ink);
+  font-size:24px; font-weight:900; padding:16px 36px; border-radius:999px;
+  box-shadow:0 14px 38px rgba(70,60,45,.18);
+  opacity:0; transition:opacity .5s ease, transform .5s cubic-bezier(.2,.7,.3,1);
+  pointer-events:none; white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ---------- LOADING ---------- */
+/* Dark on purpose (2026-09-03). This screen is up for the whole workbook
+   fetch + parse - 5-15 s on store wifi, indefinitely when the fetch hangs -
+   and cookcountycooks.com shows this page inside a TV on a dark break-room
+   plate. The old near-white --day-tint/--paper wash was a lit white rectangle
+   on that wall for that whole window. The ground is the report's own warm
+   charcoal (--text, its darkest neutral) so a framing page that ignores the
+   ready handshake below still never shows white; the day accent keeps the
+   spinner and heading on the daily palette. The slides are untouched. */
+#loading {
+  position:fixed; inset:0; z-index:50;
+  background:linear-gradient(160deg, #46413B 0%, #2B2825 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+  font-family:'Nunito', sans-serif;
+}
+.spinner {
+  width:64px; height:64px; border-radius:50%;
+  border:7px solid rgba(255,255,255,.14); border-top-color:var(--day-mid);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+#loading h2 { font-size:26px; font-weight:900; color:var(--day-soft); }
+#errorMsg { display:none; color:var(--low-bg); font-size:17px; font-weight:700; max-width:520px; text-align:center; }
+#retryBtn {
+  display:none; font-family:inherit; font-size:17px; font-weight:900; color:#fff;
+  background:var(--day-ink); border:none; border-radius:999px; padding:12px 34px; cursor:pointer;
+}
+
+/* ---------- YESTERDAY'S CONVERSION — big-number scoreboard ---------- */
+/* ============================================================
+   YESTERDAY / WALK-INS → SALES  (big-number scoreboard)
+   All classes prefixed .conv- so nothing collides with the
+   existing dashboard styles. Sizing is driven by custom
+   properties set inline on .conv-panel by renderYesterday().
+   ============================================================ */
+
+/* Panel shell — slightly tighter top padding buys height for numerals. */
+.conv-panel { padding:16px 26px 18px; }
+.conv-panel .panel-sub { margin-bottom:12px; }
+
+/* Column-label strip (one small uppercase header row). */
+.conv-head {
+  display:grid;
+  grid-template-columns: var(--ccols);
+  gap: var(--cgap-x, 20px);
+  align-items:end;
+  padding:0 var(--cpad, 26px) 9px;
+  margin-bottom:7px;
+  border-bottom:2px solid var(--day-soft);
+  flex-shrink:0;
+}
+.conv-lbl {
+  font-size: var(--clbl, 16px);
+  font-weight:900;
+  color: var(--muted);
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.conv-lbl.conv-lbl-name { text-align:left; }
+.conv-lbl.conv-lbl-hero { color: var(--day-ink); }
+
+/* Body: bands share the remaining height evenly. */
+.conv-body {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap: var(--cgap-y, 10px);
+}
+
+/* One store band. */
+.conv-row {
+  display:grid;
+  grid-template-columns: var(--ccols);
+  gap: var(--cgap-x, 20px);
+  align-items:center;
+  flex:1 1 0;
+  min-height:0;
+  max-height: var(--cmaxh, 210px);
+  padding:0 var(--cpad, 26px);
+  border-radius:20px;
+  background:#FBF9F5;
+}
+.conv-row:nth-child(even) { background: var(--day-tint); }
+.conv-row.conv-total {
+  background: var(--day-soft);
+  outline:2px solid var(--day-line);
+  outline-offset:-2px;
+}
+
+/* Store name. */
+.conv-name {
+  font-size: var(--cname, 44px);   /* matched to --cnum by renderYesterday */
+  font-weight:900;
+  line-height:1;
+  letter-spacing:-.5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.conv-total .conv-name { color: var(--day-ink); letter-spacing:0; }
+
+/* Metric numerals. */
+.conv-val {
+  font-size: var(--cnum, 84px);
+  font-weight:900;
+  line-height:.82;
+  letter-spacing:-.035em;
+  text-align:center;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space:nowrap;
+}
+.conv-val.conv-soft { color: var(--muted); }
+
+/* Hero metric: conversion %. */
+.conv-hero {
+  font-size: var(--chero, 105px);
+  line-height:.82;
+  color: var(--day-ink);
+}
+.conv-hero .conv-pct {
+  font-size:.46em;
+  font-weight:900;
+  letter-spacing:0;
+  margin-left:.04em;
+  vertical-align:.22em;
+}
+.conv-dash { font-size:.5em; letter-spacing:0; }
+.conv-good { color: var(--good-ink); }
+.conv-warn { color: var(--warn-ink); }
+.conv-low  { color: var(--low-ink); }
+.conv-none { color: var(--muted); }
+
+.conv-empty {
+  margin:auto;
+  font-size:24px;
+  font-weight:800;
+  color: var(--muted);
+}
+
+/* ---------- DAYS SINCE THE LAST BAD SURVEY — tiered ranker ---------- */
+/* ============================================================
+   DAYS SINCE THE LAST BAD SURVEY — contest ranker
+   Every class here is prefixed `bsv-` so nothing can collide
+   with the existing dashboard styles. Reuses .panel /
+   .panel-title / .panel-sub / .stagger / .tscroll /
+   .streak-foot untouched.
+   ============================================================ */
+
+/* Tighter panel chrome so the ranker rows get the vertical budget. */
+.bsv-panel { padding:14px 22px 16px; }
+
+/* Sub-line + tier legend share one row. */
+.bsv-head { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:9px; }
+.bsv-head .panel-sub { margin-bottom:0; }
+.bsv-legend { display:flex; gap:7px; flex-shrink:0; }
+.bsv-lg {
+  display:inline-flex; align-items:center; gap:6px;
+  border-radius:999px; padding:3px 11px;
+  font-size:14px; font-weight:900; letter-spacing:.5px; white-space:nowrap;
+}
+.bsv-lg i { width:11px; height:11px; border-radius:50%; display:inline-block; font-style:normal; }
+.bsv-lg-red   { background:var(--low-bg);  color:var(--low-ink);  }
+.bsv-lg-red i   { background:var(--low-ink); }
+.bsv-lg-amber { background:#FFF8CE; color:#6E4A00; }
+.bsv-lg-amber i { background:#D8A400; }
+.bsv-lg-green { background:var(--good-bg); color:var(--good-ink); }
+.bsv-lg-green i { background:var(--good-ink); }
+.bsv-lg-gold  { background:linear-gradient(100deg,#FFE9A0,#FFC93A); color:#523300; box-shadow:inset 0 0 0 2px #D28A00; }
+.bsv-lg-gold i  { background:linear-gradient(150deg,#FFD54D,#C07E00); }
+
+/* ---------- the ranker list ---------- */
+.bsv-list { display:flex; flex-direction:column; justify-content:center; }
+
+.bsv-row {
+  display:grid; align-items:center; column-gap:38px;
+  position:relative; overflow:hidden;
+  border-radius:20px;
+  background:var(--card);
+  box-shadow:inset 0 0 0 2px var(--track);
+}
+/* left accent bar — the color read from across the room */
+.bsv-row::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:12px;
+  background:var(--track);
+}
+
+/* rank badge */
+.bsv-rank {
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; line-height:1;
+  color:var(--muted);
+}
+
+/* store name */
+.bsv-name {
+  font-weight:900; line-height:1; letter-spacing:-.5px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  color:var(--text);
+  display:flex; align-items:center; gap:.35em; min-width:0;
+}
+.bsv-name .bsv-nametext { overflow:hidden; text-overflow:ellipsis; }
+
+/* the number */
+.bsv-numwrap { display:flex; align-items:baseline; justify-content:flex-end; gap:.5em; min-width:0; }
+.bsv-num {
+  font-weight:900; line-height:.72; letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums lining-nums;
+  font-feature-settings:'tnum' 1;
+  color:var(--text); white-space:nowrap;
+}
+.bsv-unit {
+  font-weight:900; letter-spacing:1.5px; color:var(--muted);
+  text-transform:uppercase; white-space:nowrap; opacity:.85;
+}
+
+/* tiny gray date, far right */
+.bsv-date {
+  text-align:right; font-weight:800; color:var(--muted);
+  line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.bsv-date b { font-weight:900; color:var(--muted); }
+.bsv-date .bsv-datelabel {
+  display:block; font-weight:900; letter-spacing:1.2px;
+  text-transform:uppercase; opacity:.72;
+}
+
+/* small "Not ranked yet" / "Awaiting survey data" copy */
+.bsv-flag {
+  font-weight:900; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--muted); white-space:nowrap;
+}
+.bsv-note { font-weight:800; font-style:italic; color:var(--muted); white-space:nowrap; }
+
+/* ---------- TIER: 0–5 DAYS · RED ---------- */
+.bsv-t-red { background:var(--low-bg); box-shadow:inset 0 0 0 2px #F3A9A9; }
+.bsv-t-red::before { background:var(--low-ink); }
+.bsv-t-red .bsv-name, .bsv-t-red .bsv-num, .bsv-t-red .bsv-rank { color:var(--low-ink); }
+.bsv-t-red .bsv-unit { color:#B24141; }
+
+/* ---------- TIER: 6–10 DAYS · AMBER ---------- */
+.bsv-t-amber { background:#FFFAD4; box-shadow:inset 0 0 0 2px #E9CE55; }
+.bsv-t-amber::before { background:#D8A400; }
+.bsv-t-amber .bsv-name, .bsv-t-amber .bsv-num, .bsv-t-amber .bsv-rank { color:#6E4A00; }
+.bsv-t-amber .bsv-unit { color:#8A6100; }
+
+/* ---------- TIER: 11–19 DAYS · GREEN ---------- */
+.bsv-t-green { background:var(--good-bg); box-shadow:inset 0 0 0 2px #7BD98C; }
+.bsv-t-green::before { background:var(--good-ink); }
+.bsv-t-green .bsv-name, .bsv-t-green .bsv-num, .bsv-t-green .bsv-rank { color:var(--good-ink); }
+.bsv-t-green .bsv-unit { color:#3E9A50; }
+
+/* ---------- TIER: 20+ DAYS · GOLD (the big deal) ---------- */
+.bsv-t-gold {
+  background:linear-gradient(102deg,#FFF1BE 0%,#FFDF77 30%,#FFC93A 58%,#FFE79B 100%);
+  box-shadow:inset 0 0 0 3px #D28A00, 0 6px 26px rgba(206,140,0,.40);
+}
+.bsv-t-gold::before { background:linear-gradient(180deg,#FFCE3D,#B87700); width:15px; }
+.bsv-t-gold .bsv-name, .bsv-t-gold .bsv-num { color:#523300; }
+.bsv-t-gold .bsv-rank { color:#8A5C00; }
+.bsv-t-gold .bsv-unit { color:#8A5C00; opacity:1; }
+.bsv-t-gold .bsv-date { color:#8A6516; }
+/* slow shine sweep — one pass, then a long rest, so a TV can loop it all day */
+.bsv-t-gold::after {
+  content:''; position:absolute; inset:-40% -20%;
+  background:linear-gradient(104deg, rgba(255,255,255,0) 38%, rgba(255,255,255,.72) 50%, rgba(255,255,255,0) 62%);
+  transform:translateX(-130%);
+  animation: bsvShine 9s cubic-bezier(.45,0,.25,1) infinite;
+  pointer-events:none;
+}
+@keyframes bsvShine {
+  0%   { transform:translateX(-130%); }
+  26%  { transform:translateX(130%); }
+  100% { transform:translateX(130%); }
+}
+.bsv-crown {
+  display:inline-block; line-height:1;
+  filter:drop-shadow(0 2px 3px rgba(150,105,0,.4));
+  animation: bsvCrown 4.5s ease-in-out infinite;
+}
+@keyframes bsvCrown {
+  0%,100% { transform:translateY(0) rotate(-4deg); }
+  50%     { transform:translateY(-8%) rotate(4deg); }
+}
+
+/* ---------- NEUTRAL: window-limited (real count, never ranked) ---------- */
+.bsv-t-neutral { background:var(--day-tint); box-shadow:inset 0 0 0 2px var(--day-line); }
+.bsv-t-neutral::before { background:var(--day-line); }
+.bsv-t-neutral .bsv-name, .bsv-t-neutral .bsv-num { color:var(--text); }
+
+/* ---------- NO DATA ---------- */
+.bsv-t-none { background:var(--track); box-shadow:inset 0 0 0 2px #E7E1D6; }
+.bsv-t-none::before { background:#DCD5C8; }
+.bsv-t-none .bsv-name { color:var(--muted); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="stage-scaler">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div id="app"></div>
+  </div>
+</div>
+<div id="loading">
+  <div class="spinner"></div>
+  <h2>Loading Sales Report...</h2>
+  <div id="errorMsg"></div>
+  <button id="retryBtn" onclick="loadData()">Retry</button>
+</div>
+<!-- Shared store-name normalizer (hosted by this repo). Must load BEFORE the
+     inline script so T-Sheet store labels can be resolved to canonical names. -->
+<script src="store-aliases.js"></script>
+<script>
+// ================= CONFIG (unchanged from previous version) =================
+const CONFIG = {
+  RSD_NAME: 'Jeffrey Bilbrey',
+  EXCEL_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/Sales%20Report.xlsx',
+  PROMO_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/promo-card.jpg',
+  STREAKS_URL: 'https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/nps-detractor-streaks.json',
+  SLIDE_INTERVAL: 15000,     // 15 seconds per slide
+  // Auto-refresh window: look for a newly uploaded Sales Report every
+  // `everyMin` minutes between startMin and endMin (minutes since midnight).
+  // Default: 9:00 AM – 11:30 AM, every 30 minutes.
+  REFRESH_WINDOW: { startMin: 9 * 60, endMin: 11 * 60 + 30, everyMin: 30 },
+  STORE_CARDS_PER_PAGE: 6,
+  REPS_PER_PAGE: 14,
+  PROMO_EVERY_N: 4,
+  ZERO_SHEET: 'Zero',
+  TSHEET_API_URL: 'https://script.google.com/macros/s/AKfycbyQaa1yvggLJuw5dcme74vwAW3hSB3BvzCK40IhLThy-F8KZDFOF6gcyl8psNMd3yD-Cg/exec',
+  DISTRICT_RANK_SHEET: 'District Rank',
+  REGION_RANK_SHEET: 'Region Rank',
+  OUR_REGIONS: ['Greater Chicago', 'Big South'],
+};
+
+// ============ DAY-OF-WEEK PASTEL PALETTE ============
+// A fresh, warm pastel theme every day. ink = readable accent for text,
+// mid = medium accent for bars/gradients, soft = pastel fill, tint = light
+// wash, line = pastel border. emoji shows in the day pill.
+const DAY_COLORS = {
+  0: { name:'SUNDAY',    emoji:'🌸', ink:'#D6336C', mid:'#F06595', soft:'#FFDEEB', tint:'#FFF0F6', line:'#FCC2D7' },
+  1: { name:'MONDAY',    emoji:'🍓', ink:'#E03131', mid:'#FF6B6B', soft:'#FFE3E3', tint:'#FFF5F5', line:'#FFC9C9' },
+  2: { name:'TUESDAY',   emoji:'🍑', ink:'#E8590C', mid:'#FF922B', soft:'#FFE8CC', tint:'#FFF4E6', line:'#FFD8A8' },
+  3: { name:'WEDNESDAY', emoji:'🌞', ink:'#E67700', mid:'#FAB005', soft:'#FFF3BF', tint:'#FFF9DB', line:'#FFEC99' },
+  4: { name:'THURSDAY',  emoji:'🍀', ink:'#2B8A3E', mid:'#51CF66', soft:'#D3F9D8', tint:'#EBFBEE', line:'#B2F2BB' },
+  5: { name:'FRIDAY',    emoji:'💧', ink:'#1971C2', mid:'#4DABF7', soft:'#D0EBFF', tint:'#E7F5FF', line:'#A5D8FF' },
+  6: { name:'SATURDAY',  emoji:'🪻', ink:'#6741D9', mid:'#9775FA', soft:'#E5DBFF', tint:'#F3F0FF', line:'#D0BFFF' },
+};
+
+// ================= DISTRICTS =================
+// Districts align with the Big South Chicago market layout.
+// dmMatch = DM surname substring(s) from the Store Rank sheet.
+// storeMatch = stores pulled INTO this district regardless of DM.
+// storeExclude = stores kept OUT of this district even if the DM matches.
+const DISTRICTS = [
+  { key: 'all',       label: 'All Stores',    tab: 'All',        dmMatch: null },
+  { key: 'north',     label: 'Chicago North', tab: 'North',      dmMatch: ['dhorajiwala'], storeMatch: ['cicero'] },
+  { key: 'south',     label: 'Chicago South', tab: 'South',      dmMatch: ['carrillo'] },
+  { key: 'east',      label: 'Chicago East',  tab: 'East',       dmMatch: ['cabrales'], storeExclude: ['cicero'] },
+  { key: 'west',      label: 'Chicago West',  tab: 'West',       dmMatch: ['chowdhury'] },
+  { key: 'big-south', label: 'Big South',     tab: 'Big South',  dmMatch: ['brooks'] },
+];
+
+let state = {
+  stores: [],
+  currentDistrict: 'all',
+  currentStore: 'all',
+  yesterday: { rows: {}, tsheets: {}, date: null, loaded: false, error: null },
+  streaks: null,
+  dmRanks: [],
+  regionRanks: [],
+  reps: [],
+  promos: null,
+  currentSlide: 0,
+  totalSlides: 0,
+  paused: false,
+  dataSig: null,
+  slideTimer: null,
+  refreshTimer: null,
+  countdownTimer: null,
+  countdownStart: null,
+  lastRefresh: null,
+  slides: [],
+};
+
+// ============ PERSISTED FILTERS (same storage key as before) ============
+const FILTER_STORAGE_KEY = 'c3-slides-filter-v1';
+function savePersistedFilters() {
+  try {
+    localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({
+      district: state.currentDistrict, store: state.currentStore,
+    }));
+  } catch (e) {}
+}
+// Set when the saved district key was missing/unknown but a real store was
+// saved: the district has to be re-derived from that store. findDistrictForStore
+// reads state.stores, which is still empty when filters load, so the derivation
+// is deferred to applyPendingDistrict() (called once the workbook is parsed).
+let pendingDistrictFromStore = false;
+function loadPersistedFilters() {
+  try {
+    const raw = localStorage.getItem(FILTER_STORAGE_KEY);
+    if (!raw) return;
+    const v = JSON.parse(raw);
+    const validDistrict = !!(v.district && DISTRICTS.some(d => d.key === v.district));
+    if (validDistrict) state.currentDistrict = v.district;
+    if (v.store) state.currentStore = v.store;
+    // District keys get renamed between releases; recover from the saved store
+    // rather than silently dropping the user back to the "All Stores" tab.
+    pendingDistrictFromStore = !validDistrict && !!v.store && v.store !== 'all';
+  } catch (e) {}
+}
+function applyPendingDistrict() {
+  if (!pendingDistrictFromStore) return;
+  pendingDistrictFromStore = false;
+  const dist = findDistrictForStore(state.currentStore);
+  if (dist) state.currentDistrict = dist.key;
+  savePersistedFilters();
+}
+
+// ============ DAY THEME ============
+function applyDayColor() {
+  const day = DAY_COLORS[new Date().getDay()];
+  const root = document.documentElement;
+  root.style.setProperty('--day-ink',  day.ink);
+  root.style.setProperty('--day-mid',  day.mid);
+  root.style.setProperty('--day-soft', day.soft);
+  root.style.setProperty('--day-tint', day.tint);
+  root.style.setProperty('--day-line', day.line);
+}
+function scheduleDayColorAtMidnight() {
+  const now = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+  setTimeout(() => { applyDayColor(); render(); scheduleDayColorAtMidnight(); }, tomorrow - now);
+}
+function getDayInfo() { return DAY_COLORS[new Date().getDay()]; }
+
+// ============ DISTRICT HELPERS ============
+function getActiveDistrict() {
+  return DISTRICTS.find(d => d.key === state.currentDistrict) || DISTRICTS[0];
+}
+function storeMatchesDistrict(store, dist) {
+  if (!dist) return true;
+  const name = String(store.name || '').toLowerCase();
+  // Explicit exclusions win over a DM match (e.g. Cicero reports to the East DM
+  // but belongs to Chicago North on the market org chart). They are checked
+  // before the dmMatch guard so a district declared with dmMatch:null still
+  // honours its storeExclude list instead of swallowing the whole market.
+  if (dist.storeExclude && dist.storeExclude.some(m => name.includes(m))) return false;
+  if (dist.storeMatch && dist.storeMatch.some(m => name.includes(m))) return true;
+  // No dmMatch = catch-all district ('all'): everything not excluded above.
+  if (!dist.dmMatch) return true;
+  const dm = String(store.dm || '').toLowerCase();
+  return dist.dmMatch.some(m => dm.includes(m));
+}
+function filteredStores() {
+  const dist = getActiveDistrict();
+  if (!dist) return state.stores;
+  return state.stores.filter(s => storeMatchesDistrict(s, dist));
+}
+function districtCount(distKey) {
+  const dist = DISTRICTS.find(d => d.key === distKey);
+  if (!dist) return 0;
+  return state.stores.filter(s => storeMatchesDistrict(s, dist)).length;
+}
+function setDistrict(key) {
+  if (state.currentDistrict === key) return;
+  state.currentDistrict = key;
+  state.currentStore = 'all';
+  savePersistedFilters();
+  buildSlides();
+  state.currentSlide = 0;
+  render();
+  startSlideshow();
+}
+function setStore(name) {
+  if (state.currentStore === name) return;
+  state.currentStore = name;
+  if (name && name !== 'all') {
+    const dist = findDistrictForStore(name);
+    if (dist) state.currentDistrict = dist.key;
+  }
+  savePersistedFilters();
+  buildSlides();
+  state.currentSlide = 0;
+  render();
+  startSlideshow();
+}
+function findDistrictForStore(storeName) {
+  const store = state.stores.find(s => s.name.toLowerCase() === String(storeName).toLowerCase());
+  if (!store) return null;
+  for (const d of DISTRICTS) {
+    if (d.key === 'all') continue;
+    if (storeMatchesDistrict(store, d)) return d;
+  }
+  return null;
+}
+
+// ============ YESTERDAY'S CONVERSION LOADERS (unchanged) ============
+function parseZeroSheet(wb) {
+  // Perf (2026-09-24): sheetRows() = prebuilt JSON rows or sheet_to_json (identical).
+  const aoa = sheetRows(wb, CONFIG.ZERO_SHEET, { header: 1, defval: null, raw: true });
+  if (!aoa) return {};
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(aoa.length, 10); i++) {
+    if (aoa[i] && aoa[i][0] && String(aoa[i][0]).trim().toLowerCase() === 'store name') { headerIdx = i; break; }
+  }
+  if (headerIdx === -1) return {};
+  const out = {};
+  for (let i = headerIdx + 1; i < aoa.length; i++) {
+    const r = aoa[i];
+    if (!r || !r[0]) continue;
+    const name = String(r[0]).trim();
+    const mobile  = Number(r[2]) || 0;
+    const mcrRaw  = r[7];
+    const traffic = Number(r[8]) || 0;
+    const mcr = (typeof mcrRaw === 'number') ? (mcrRaw <= 1 ? mcrRaw * 100 : mcrRaw) : null;
+    out[name] = { store: name, traffic, mobile, mcr };
+  }
+  return out;
+}
+// T-sheet days are STORE days (America/Chicago), as in the counts file, the
+// dashboard and the digest. The feed's timestamps are UTC ISO strings, so
+// slicing them (and toISOString() here) cut each day at 7 PM Central: evening
+// t-sheets (~2.7% of all rows, measured 2026-09-24) landed on the next day.
+const CHICAGO_DAY = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' });
+function chicagoDay(v) { const d = new Date(v); return isNaN(d.getTime()) ? '' : CHICAGO_DAY.format(d); }
+function yesterdayISO() {
+  const d = new Date(chicagoDay(Date.now()) + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+async function loadTSheetCounts() {
+  const url = CONFIG.TSHEET_API_URL + '?t=' + Date.now();
+  // Perf (2026-09-02): this Apps Script feed was fetched with NO timeout, so
+  // when it hung (store wifi) the promise never settled. Measured 2026-09-02:
+  // a normal answer takes 12.7-16.7 s and is ~2.3 MB; one call in three came
+  // back 404 after 56 s. The 45 s cap is therefore a safety net above the
+  // normal latency, NOT a speed-up - the deck no longer waits for this call
+  // at all (see loadData). On abort the slide shows no T-Chart counts, exactly
+  // as a failed call already did.
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const killer = setTimeout(() => { if (ctrl) ctrl.abort(); }, 45000);
+  let resp;
+  try { resp = await fetch(url, { method: 'GET', signal: ctrl ? ctrl.signal : undefined }); }
+  catch (e) { clearTimeout(killer); return { counts: {}, date: null, ok: false }; }
+  if (!resp.ok) { clearTimeout(killer); return { counts: {}, date: null, ok: false }; }
+  const data = await resp.json().catch(() => null);
+  clearTimeout(killer);
+  const subs = (data && data.submissions) || [];
+  if (!subs.length) return { counts: {}, date: null, ok: false };
+  const byDate = {};
+  for (const s of subs) {
+    const ts = s.timestamp; if (!ts) continue;
+    const day = chicagoDay(ts); if (!day) continue;
+    (byDate[day] = byDate[day] || []).push(s);
+  }
+  const yISO = yesterdayISO();
+  let useDate = byDate[yISO] ? yISO : null;
+  if (!useDate) {
+    const dates = Object.keys(byDate).sort();
+    for (let i = dates.length - 1; i >= 0; i--) {
+      if (byDate[dates[i]].length >= 30) { useDate = dates[i]; break; }
+    }
+    if (!useDate && dates.length) useDate = dates[dates.length - 1];
+  }
+  const raw = {};
+  for (const s of byDate[useDate] || []) {
+    if (!s.store) continue;
+    raw[s.store] = (raw[s.store] || 0) + 1;
+  }
+  // Bucket the RAW T-Sheet labels by canonical short store name instead of
+  // guessing one expected spelling per store. This keeps "South Skokie Xfinity
+  // Store", "Skokie Xfinity Store" and a bare "Machesney Park" all counted.
+  const canonStore = (window.BLUFOX_STORES && window.BLUFOX_STORES.normalizeStore)
+    ? window.BLUFOX_STORES.normalizeStore
+    : function (name) {  // fallback only if store-aliases.js failed to load
+        const base = String(name == null ? '' : name)
+          .replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim()
+          .replace(/\s+xfinity\s+store\s*$/i, '');
+        if (/^skokie$/i.test(base)) return 'South Skokie';
+        if (/^knoxville$/i.test(base)) return 'South Knoxville';
+        return base;
+      };
+  const byCanon = {};
+  for (const label of Object.keys(raw)) {
+    const canon = canonStore(label);
+    byCanon[canon] = (byCanon[canon] || 0) + raw[label];
+  }
+  const counts = {};
+  for (const s of state.stores) {
+    counts[s.name] = byCanon[canonStore(s.name)] || 0;
+  }
+  return { counts, date: useDate, ok: true };
+}
+async function loadYesterday(wb) {
+  try {
+    const rows = parseZeroSheet(wb);
+    let tsheets = { counts: {}, date: null, ok: false };
+    try { tsheets = await loadTSheetCounts(); } catch (e) {}
+    state.yesterday = { rows, tsheets: tsheets.counts || {}, date: tsheets.date, loaded: true, error: null };
+  } catch (err) {
+    state.yesterday = { rows: {}, tsheets: {}, date: null, loaded: false, error: String(err) };
+  }
+}
+
+// ============ NPS DETRACTOR STREAKS (days since last detractor) ============
+// Separate JSON feed, produced outside the workbook. Fetched alongside the
+// workbook and refreshed on the same window. If it is missing, broken, or
+// stale the slides are dropped from the rotation entirely — a wrong counter
+// on a store TV is worse than no counter at all.
+const STREAK_MAX_AGE_DAYS = 3;
+const STREAK_GOAL_FALLBACK = 30;
+
+async function loadStreaks() {
+  try {
+    const resp = await fetch(CONFIG.STREAKS_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const json = await resp.json();
+    if (!json || !Array.isArray(json.stores)) throw new Error('malformed payload (no stores array)');
+    state.streaks = json;
+  } catch (err) {
+    console.warn('[detractor streaks] unavailable — detractor slides will be skipped:', err && err.message ? err.message : err);
+    state.streaks = null;
+  }
+}
+
+// Cheap "did the feed move?" key so a workbook-unchanged refresh still notices
+// a new streaks file.
+function streakSignature(s) {
+  if (!s) return '';
+  return String(s.updatedAt || '') + '|' + String(s.asOf || '') + '|' + (Array.isArray(s.stores) ? s.stores.length : 0);
+}
+
+// Only warn once per distinct payload so a district-tab click doesn't spam.
+let streakWarnKey = null;
+function streakWarn(key, msg) {
+  if (streakWarnKey === key) return;
+  streakWarnKey = key;
+  console.warn('[detractor streaks] ' + msg);
+}
+
+// Gatekeeper for the whole slide family.
+function streaksUsable() {
+  const s = state.streaks;
+  if (!s || !Array.isArray(s.stores) || !s.stores.length) {
+    streakWarn('missing', 'no usable data — detractor slides omitted from the rotation');
+    return false;
+  }
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s.asOf || ''));
+  if (!m) {
+    streakWarn(streakSignature(s), 'missing/unreadable asOf date — detractor slides omitted');
+    return false;
+  }
+  const asOf = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const ageDays = (Date.now() - asOf.getTime()) / 86400000;
+  if (ageDays > STREAK_MAX_AGE_DAYS) {
+    streakWarn(streakSignature(s), 'stale (asOf ' + s.asOf + ', ' + Math.floor(ageDays) + ' days old) — detractor slides omitted');
+    return false;
+  }
+  streakWarnKey = null;
+  return true;
+}
+
+// Districts are matched on districtKey from the feed — NOT on DM names — so a
+// district never silently disappears because a DM moved.
+function streakStoresForDistrict(key) {
+  const s = state.streaks;
+  if (!s || !Array.isArray(s.stores)) return [];
+  const rows = s.stores.filter(r => String(r.districtKey || '') === key);
+  // Three tiers: ranked competitors, then window-limited stores (a real day
+  // count, but bounded by their own survey history, so not comparable), then
+  // stores with no survey data at all.
+  const tier = r => (r.status === 'no-data' || r.days == null) ? 2 : (r.windowLimited ? 1 : 0);
+  return rows.sort((a, b) => {
+    if (tier(a) !== tier(b)) return tier(a) - tier(b);
+    if (tier(a) === 2) return String(a.store).localeCompare(String(b.store));
+    if (b.days !== a.days) return b.days - a.days;
+    return String(a.store).localeCompare(String(b.store));
+  });
+}
+
+function fmtStreakDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  if (!m) return null;
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+    .toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+const escHtml = v => String(v == null ? '' : v)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// ============ DM / REGION RANK PARSER (unchanged) ============
+function parseRankSheet(wb, sheetName) {
+  // Perf (2026-09-24): sheetRows() = prebuilt JSON rows or sheet_to_json (identical).
+  const aoa = sheetRows(wb, sheetName, { header: 1, defval: null, raw: true });
+  if (!aoa) return [];
+  const rows = [];
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(aoa.length, 6); i++) {
+    if (aoa[i] && String(aoa[i][0] || '').trim() === 'Rank') { headerIdx = i; break; }
+  }
+  if (headerIdx < 0) return [];
+  for (let i = headerIdx + 1; i < aoa.length; i++) {
+    const r = aoa[i];
+    if (!r || r[0] == null) continue;
+    const name = String(r[1] || '').trim();
+    if (!name) continue;
+    rows.push({
+      rank: Number(r[0]) || 0, name,
+      avgGpTrend: Number(r[2]) || 0,
+      mobilePerInternet: Number(r[3]) || 0,
+      gpPerRgu: Number(r[4]) || 0,
+      fiscalCr: Number(r[5]) || 0,
+      mobileCr: Number(r[7]) || 0,
+      gigAttach: Number(r[15]) || 0,
+      plusAttach: Number(r[24]) || 0,
+      accPerDev: Number(r[31]) || 0,
+      nps: Number(r[32]) || 0,
+    });
+  }
+  return rows;
+}
+
+// ============ READY HANDSHAKE FOR A FRAMING PAGE ============
+// Handshake (2026-09-03): cookcountycooks.com frames this report as the Break
+// Room TV and keeps a dark branded card over the frame until the report has
+// actually drawn. From outside, the only thing a cross-origin frame ever says
+// is its `load` event - and `load` is the wrong signal in both directions:
+// it fires BEFORE the workbook fetch + parse (5-15 s on store wifi, measured
+// framed: white at 8:12 PM, data at 8:22 PM), and it is held back by the
+// 365 KB promo-card probe and the Google Fonts sheet, so on a slow link it
+// fires AFTER the slides are already up. So the report tells the frame
+// itself: `loading` when the spinner goes up, `ready` the moment #loading is
+// hidden and the first slide is drawn, `error` when the Retry screen shows.
+// Standalone (window.parent === window) this is a no-op; it never throws.
+function postBoardState(phase, extra) {
+  try {
+    if (window.parent === window) return;
+    window.parent.postMessage(Object.assign({ source: 'ccc-board', board: 'daily-sales', state: phase }, extra || {}), '*');
+  } catch (e) { /* a frame that cannot be messaged is still a working report */ }
+}
+
+// ============ PREBUILT WORKBOOK ROWS ============
+// Perf (2026-09-24): XLSX.read of the whole 1.15 MB workbook was ONE ~1.4 s
+// main-thread task on every open - about 5 s of frozen iPad, where this report
+// shares cookcountycooks.com's thread (Break Room TV and the tool viewer).
+// update.yml already writes data/sales-report.json from every uploaded
+// workbook, with the same SheetJS 0.18.5 and the same
+// sheet_to_json({header:1, defval:null}) call this page makes, stamped with the
+// workbook's SHA-256 (scripts/build-sales-json.js). The page still downloads
+// the workbook exactly as before, and uses the JSON rows ONLY when that stamp
+// matches the bytes it just downloaded - so every number is identical to
+// parsing the workbook. Missing, malformed or stale JSON (e.g. the minute or
+// two after an upload, before update.yml has rebuilt it) falls back to parsing
+// the workbook, now reading only the five sheets this page uses (output
+// verified identical on three workbook versions; `dense` is deliberately NOT
+// used - in 0.18.5 it drops the defval padding of empty rows).
+const SALES_JSON_URL = CONFIG.EXCEL_URL.replace(/Sales%20Report\.xlsx$/, 'sales-report.json');
+const DSR_SHEETS = ['Store Rank', 'Rep Rank', 'District Rank', 'Region Rank', 'Zero'];
+// Same host, same ?t= and cache mode as the workbook fetch. Never rejects.
+function fetchSalesJson() {
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const killer = setTimeout(() => { if (ctrl) ctrl.abort(); }, 30000);
+  return fetch(SALES_JSON_URL + '?t=' + Date.now(), ctrl ? { signal: ctrl.signal } : undefined)
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null)
+    .then(j => { clearTimeout(killer); return j; });
+}
+// -> the JSON's sheets when it was built from exactly `buf`, else null.
+async function verifiedSalesRows(jsonReq, buf, names) {
+  try {
+    // Perf (2026-09-24): wait for the JSON request to settle (fetchSalesJson
+    // bounds it at 30 s). A 3 s race used to pick the workbook parse whenever
+    // the JSON was merely late - a slow link or a busy iPad. Only a missing,
+    // malformed or stale JSON falls back now.
+    const j = await jsonReq;
+    if (!j || !j.source || !j.sheets || typeof j.source.sha256 !== 'string' || j.source.bytes !== buf.byteLength) return null;
+    // Built by the same SheetJS this page would load, or not used at all.
+    if (j.sheetjs !== '0.18.5') return null;
+    for (const n of names) if (!Array.isArray(j.sheets[n])) return null;
+    if (!(window.crypto && window.crypto.subtle)) return null;
+    const d = new Uint8Array(await window.crypto.subtle.digest('SHA-256', buf));
+    let hex = '';
+    for (let i = 0; i < d.length; i++) hex += (d[i] < 16 ? '0' : '') + d[i].toString(16);
+    return hex === j.source.sha256.toLowerCase() ? j.sheets : null;
+  } catch (e) { return null; }
+}
+// Every caller passes {header:1, defval:null[, raw:true]} - the exact call the
+// JSON was built with (raw defaults to true in sheet_to_json).
+function sheetRows(wb, name, opts) {
+  if (wb.__rows) return wb.__rows[name] || null;
+  const ws = wb.Sheets[name];
+  return ws ? XLSX.utils.sheet_to_json(ws, opts) : null;
+}
+let sheetJsReq = null;
+function loadSheetJS() {
+  if (typeof XLSX !== 'undefined') return Promise.resolve();
+  if (!sheetJsReq) sheetJsReq = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = () => resolve();
+    s.onerror = () => { sheetJsReq = null; s.remove(); reject(new Error('Could not load the spreadsheet reader (cdnjs)')); };
+    document.head.appendChild(s);
+  });
+  return sheetJsReq;
+}
+// Perf (2026-09-24): FALLBACK PARSE OFF THE MAIN THREAD. When the JSON cannot
+// be used (missing, malformed or stale: the minutes after each upload), the
+// workbook parse was still one 0.8-1.0 s main-thread task (~2 s on an older
+// iPad), which froze cookcountycooks.com too. The same SheetJS 0.18.5 from the
+// same cdnjs URL now reads it in a Web Worker with the same options and hands
+// back only the plain sheet_to_json rows (structured clone keeps them as-is).
+// Resolves null if a worker cannot be used (no Worker, a blob: worker blocked,
+// any error in it, or it never starts): the caller then does the main-thread
+// read below, exactly as before.
+function rowsInWorker(buf, names, readOpts, rowOpts) {
+  return new Promise(resolve => {
+    let w = null, url = null, done = false, upT = 0;
+    const finish = v => {
+      if (done) return;
+      done = true;
+      clearTimeout(upT);
+      try { if (w) w.terminate(); } catch (e) {}
+      try { if (url) URL.revokeObjectURL(url); } catch (e) {}
+      resolve(v);
+    };
+    try {
+      const src = 'postMessage({up:1});importScripts(' + JSON.stringify('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js') + ');' +
+        'onmessage=function(e){var q=e.data,out={};try{var wb=XLSX.read(q.buf,q.read);' +
+        'q.names.forEach(function(n){var ws=wb.Sheets[n];out[n]=ws?XLSX.utils.sheet_to_json(ws,q.opts):null;});' +
+        'postMessage({rows:out});}catch(err){postMessage({error:String(err&&err.message||err)});}};';
+      url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+      w = new Worker(url);
+      w.onmessage = e => { const d = e.data || {}; if (d.up) clearTimeout(upT); else finish(d.rows || null); };
+      w.onerror = w.onmessageerror = () => finish(null);
+      upT = setTimeout(() => finish(null), 10000);   // not started in 10 s = no usable worker
+      const copy = buf.slice(0);                      // `buf` stays here for the fallback
+      w.postMessage({ buf: copy, names: names, read: readOpts, opts: rowOpts }, [copy]);
+    } catch (e) { finish(null); }
+  });
+}
+
+// ============ DATA LOADING (unchanged) ============
+async function loadData() {
+  const loading = document.getElementById('loading');
+  const errorMsg = document.getElementById('errorMsg');
+  const retryBtn = document.getElementById('retryBtn');
+  if (loading && !state.stores.length) { loading.style.display = 'flex'; errorMsg.style.display = 'none'; retryBtn.style.display = 'none'; postBoardState('loading'); }
+  try {
+    const cacheBust = '?t=' + Date.now();
+    // The detractor-streak feed rides along with the workbook fetch (and the
+    // same refresh window). It never blocks the deck: loadStreaks() swallows
+    // its own errors and just leaves state.streaks null.
+    const prevStreakSig = streakSignature(state.streaks);
+    // Perf (2026-09-24): the prebuilt rows ride along with the first load; a
+    // background re-check only asks for them once the workbook has changed.
+    const salesJson = state.stores.length ? null : fetchSalesJson();
+    // Perf (2026-09-24): a hung raw request used to leave "Loading Sales
+    // Report..." up forever. On the first load it now reaches the Retry screen
+    // after 30 s; a background re-check keeps the old no-timeout behaviour so
+    // a slow refresh can never throw the error card over a working deck.
+    const wbCtrl = (!state.stores.length && typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const wbKiller = wbCtrl ? setTimeout(() => wbCtrl.abort(), 30000) : 0;
+    const [resp] = await Promise.all([
+      fetch(CONFIG.EXCEL_URL + cacheBust, wbCtrl ? { signal: wbCtrl.signal } : undefined)
+        .catch(e => { throw (e && e.name === 'AbortError') ? new Error('The sales report did not download within 30 seconds') : e; }),
+      loadStreaks(),
+    ]);
+    if (!resp.ok) throw new Error('Could not fetch sales report (HTTP ' + resp.status + ')');
+    const buf = await resp.arrayBuffer()
+      .catch(e => { throw (e && e.name === 'AbortError') ? new Error('The sales report did not download within 30 seconds') : e; });
+    clearTimeout(wbKiller);
+    // Skip the full reload when the file on GitHub hasn't changed — keeps
+    // the slideshow running smoothly during background checks.
+    const sig = bufferSignature(buf);
+    if (state.dataSig && sig === state.dataSig && state.stores.length) {
+      // Workbook is unchanged, but the streaks feed may have moved on.
+      if (streakSignature(state.streaks) !== prevStreakSig) {
+        const keep = state.currentSlide;
+        buildSlides();
+        state.currentSlide = Math.min(keep, Math.max(0, state.totalSlides - 1));
+        render();
+      }
+      return;
+    }
+    const isUpdate = !!state.dataSig && state.stores.length > 0;
+    // Perf (2026-09-24): prebuilt rows when they were built from exactly these
+    // bytes (see PREBUILT WORKBOOK ROWS); otherwise load SheetJS on demand and
+    // read only the five sheets this page uses. Replaces the 2026-09-02 wait
+    // for the deferred SheetJS script and the full XLSX.read(buf).
+    const rows = await verifiedSalesRows(salesJson || fetchSalesJson(), buf, DSR_SHEETS);
+    let wb;
+    // Perf (2026-09-24): no usable JSON -> parse in a worker (rowsInWorker);
+    // the main-thread read only when a worker cannot be used.
+    const readOpts = { type: 'array', sheets: DSR_SHEETS, cellFormula: false, cellHTML: false, cellText: false };
+    const wrows = rows ? null : await rowsInWorker(buf, DSR_SHEETS, readOpts, { header: 1, defval: null, raw: true });
+    if (rows || wrows) {
+      wb = { __rows: rows || wrows };
+    } else {
+      await loadSheetJS();
+      wb = XLSX.read(buf, readOpts);
+    }
+    console.info('[sales-report] ' + (rows ? 'rows from sales-report.json (sha256 matches the workbook)' : wrows ? 'parsed the workbook in a worker (sales-report.json missing or stale)' : 'parsed the workbook (sales-report.json missing or stale)'));
+    // Perf (2026-09-24): remember the signature only once the workbook has
+    // been read, so a failed read is retried by the next check.
+    state.dataSig = sig;
+    parseWorkbook(wb);
+    // Perf (2026-09-02): loadYesterday() waits on the T-Sheet Apps Script feed
+    // (normally 12.7-16.7 s, sometimes never). It used to be awaited HERE, so
+    // every open sat on "Loading Sales Report..." until the feed answered -
+    // forever when it hung. The deck now renders as soon as the workbook is
+    // parsed; the Yesterday slides show their existing "Loading yesterday's
+    // data..." placeholder and re-render when the counts land. Measured
+    // time-to-first-slide with the feed at 13 s: LTE 16.0 s -> 2.6 s,
+    // fast-3G 27.1 s -> 11.5 s; feed hung: never -> 2.8 s.
+    loadYesterday(wb).then(() => {
+      const cur = state.slides[state.currentSlide];
+      if (cur && cur.type === 'yesterday') render();
+    });
+    state.promos = CONFIG.PROMO_URL;
+    state.lastRefresh = new Date();
+    const keepSlide = state.currentSlide;
+    buildSlides();
+    state.currentSlide = Math.min(keepSlide, Math.max(0, state.totalSlides - 1));
+    if (loading) loading.style.display = 'none';
+    render();
+    postBoardState('ready');   // first slide is drawn - the frame can lift its card
+    startSlideshow();
+    if (isUpdate) showToast('📊 Fresh sales report just loaded — numbers updated!');
+  } catch(err) {
+    console.error(err);
+    if (loading) { loading.style.display='flex'; errorMsg.textContent = err.message; errorMsg.style.display = 'block'; retryBtn.style.display = 'block'; }
+    postBoardState('error', { reason: String(err && err.message || err).slice(0, 120) });
+    if (!state.stores.length) showLocalFallback();
+  }
+}
+function showLocalFallback() {
+  const loading = document.getElementById('loading');
+  if (!loading) return;
+  if (document.getElementById('localUpload')) return;
+  const div = document.createElement('div');
+  div.id = 'localUpload';
+  div.style.cssText = 'margin-top:16px;text-align:center;';
+  div.innerHTML = '<p style="color:var(--muted);font-size:14px;font-weight:700;margin-bottom:8px">Or load a local Excel file:</p><input type="file" accept=".xlsx,.xls" style="color:var(--muted);font-size:14px;" onchange="loadLocalFile(event)">';
+  loading.appendChild(div);
+}
+async function loadLocalFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const buf = await file.arrayBuffer();
+  await loadSheetJS();   // Perf (2026-09-24): SheetJS now loads on demand
+  const wb = XLSX.read(buf, { type: 'array' });
+  parseWorkbook(wb);
+  await loadYesterday(wb);
+  state.lastRefresh = new Date();
+  buildSlides();
+  document.getElementById('loading').style.display = 'none';
+  render();
+  postBoardState('ready');
+  startSlideshow();
+}
+
+// ============ WORKBOOK PARSING (unchanged) ============
+function parseWorkbook(wb) {
+  // Perf (2026-09-24): sheetRows() = prebuilt JSON rows or sheet_to_json (identical).
+  const data = sheetRows(wb, 'Store Rank', { header:1, defval:null });
+  if (!data) return;
+  let headerRow = -1;
+  for (let i = 0; i < Math.min(15, data.length); i++) {
+    const row = data[i];
+    if (row && row.some(c => c && String(c).trim() === 'Rank') && row.some(c => c && String(c).includes('Store'))) { headerRow = i; break; }
+  }
+  if (headerRow < 0) return;
+  const headers = data[headerRow].map(h => h ? String(h).trim() : '');
+  const col = (name) => headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+  const iRank=col('Rank'), iRegion=col('Region'), iStore=col('Store'), iEsop=col('ESOP'),
+    iRSD=col('RSD'), iDM=col('DM'), iSM=col('SM'), iGP=col('GP $'),
+    iLastGP=headers.findIndex(h=>h.includes('Last Month GP $')),
+    iTarget=col('Net Target GP'), iVarTarget=col('Var Target GP'),
+    iGPDay=col('GP $ per Day'), iDailyBal=col('Daily Bal'),
+    iMobileMTD=col('Mobile MTD'), iNewMob=headers.findIndex(h=>h.includes('New Mobile')),
+    iMobTrend=col('Mobile Trend'), iHSI=col('HSI'), iNewRGU=col('NEW RGU'),
+    iScore=col('Total Score'), iVideo=col('Video attach');
+  const iGPTrend = headers.findIndex(h => h === 'GP $ Trend');
+  const iMobileCR = headers.findIndex(h => h.toLowerCase().includes('mobile close rate'));
+  const iFiscalCR = headers.findIndex(h => h.toLowerCase().includes('fiscal close rate'));
+  const iNonTrad = headers.findIndex(h => h.toLowerCase().includes('non traditional'));
+  const iGig = headers.findIndex(h => h && h.toUpperCase().includes('GIG') && h.includes('%') && h.toLowerCase().includes('pts'));
+  let iPremium = headers.findIndex(h => h.toLowerCase().includes('mobile plus mix'));
+  if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('plus mix'));
+  if (iPremium < 0) iPremium = headers.findIndex(h => h.toLowerCase().includes('premium mix'));
+  const iNewToUpg = headers.findIndex(h => h.toUpperCase().includes('NEW TO UPGR'));
+  const iAccDev = headers.findIndex(h => h.toLowerCase().includes('accessory') && h.toLowerCase().includes('device') && h.toLowerCase().includes('net'));
+  const iNPS = headers.findIndex(h => h.toLowerCase().includes('fiscal nps') && !h.toLowerCase().includes('last'));
+  const iTabletMTD = headers.findIndex(h => h.toLowerCase().includes('tablet') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
+  const iWatchesMTD = headers.findIndex(h => h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
+
+  state.stores = [];
+  for (let i = headerRow + 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row || !row[iRank]) break;
+    const rsd = row[iRSD];
+    if (!rsd || !String(rsd).includes('Bilbrey')) continue;
+    state.stores.push({
+      rank: row[iRank], region: row[iRegion] || '', name: row[iStore] || '',
+      esop: row[iEsop] || '', dm: row[iDM] || '', sm: row[iSM] || '',
+      gp: Number(row[iGP]) || 0,
+      gpTrend: Number(row[iGPTrend]) || 0,
+      lastGP: iLastGP >= 0 ? Number(row[iLastGP]) || 0 : 0,
+      target: Number(row[iTarget]) || 0, varTarget: Number(row[iVarTarget]) || 0,
+      gpPerDay: Number(row[iGPDay]) || 0, dailyBal: Number(row[iDailyBal]) || 0,
+      mobileCR: Number(row[iMobileCR]) || 0, fiscalCR: Number(row[iFiscalCR]) || 0,
+      nonTrad: Number(row[iNonTrad]) || 0, nps: Number(row[iNPS]) || 0,
+      premium: Number(row[iPremium]) || 0, mobileMTD: Number(row[iMobileMTD]) || 0,
+      newMobile: iNewMob >= 0 ? Number(row[iNewMob]) || 0 : 0,
+      mobileTrend: Number(row[iMobTrend]) || 0, hsi: Number(row[iHSI]) || 0,
+      gigPct: Number(row[iGig]) || 0, newToUpg: Number(row[iNewToUpg]) || 0,
+      accPerDev: Number(row[iAccDev]) || 0, newRGU: Number(row[iNewRGU]) || 0,
+      totalScore: Number(row[iScore]) || 0, videoAttach: Number(row[iVideo]) || 0,
+      tabletMTD: iTabletMTD >= 0 ? Number(row[iTabletMTD]) || 0 : 0,
+      watchesMTD: iWatchesMTD >= 0 ? Number(row[iWatchesMTD]) || 0 : 0,
+    });
+  }
+  state.stores.sort((a, b) => a.rank - b.rank);
+  // state.stores is now populated, so a deferred district lookup can resolve.
+  applyPendingDistrict();
+
+  // Rep Rank
+  const repData = sheetRows(wb, 'Rep Rank', { header:1, defval:null });   // Perf (2026-09-24)
+  if (repData) {
+    let repHeader = -1;
+    for (let i = 0; i < 15; i++) {
+      if (repData[i] && repData[i].some(c => c && String(c).trim() === 'Rank') &&
+          repData[i].some(c => c && String(c).includes('Employee'))) { repHeader = i; break; }
+    }
+    if (repHeader >= 0) {
+      const rh = repData[repHeader].map(h => h ? String(h).trim() : '');
+      const rc = (name) => rh.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+      const riRank=rc('rank'), riName=rc('employee'), riTitle=rc('title'),
+        riLoc=rc('location'), riDM=rc('dm'),
+        riGP=rh.findIndex(h=>h.startsWith('GP $')||h.startsWith('GP\n')),
+        riMobile=rc('mobile mtd'),
+        riPremium=(function(){
+          let ix=rh.findIndex(h=>h && h.toLowerCase().includes('mobile plus mix'));
+          if(ix<0) ix=rh.findIndex(h=>h && h.toLowerCase().includes('plus mix'));
+          if(ix<0) ix=rh.findIndex(h=>h && h.includes('Premium Mix'));
+          return ix;
+        })(),
+        riNPS=rh.findIndex(h=>h.includes('Fiscal NPS')&&!h.includes('Last')),
+        riGPHR=rh.findIndex(h=>h.includes('GP/ HR')||h.includes('GP/HR'));
+      const riTablet=rh.findIndex(h=>h&&h.toLowerCase().includes('tablet'));
+      const riWatches=rh.findIndex(h=>h.toLowerCase().includes('watch') && (h.toLowerCase().includes('mtd') || h.toLowerCase().includes('month')));
+      const riWatch=rh.findIndex(h=>h&&h.toLowerCase().includes('watch'));
+      const riNewToUpg=rh.findIndex(h=>h&&(h.toLowerCase().includes('new')&&h.toLowerCase().includes('upg')));
+      const riGig = rh.findIndex(h => h.toLowerCase().includes('gig') && h.includes('%'));
+      const riAccMobile = rh.findIndex(h => h.toLowerCase().includes('access') && (h.toLowerCase().includes('mobile') || h.toLowerCase().includes('per mob')));
+      const riBlendedWage = rh.findIndex(h => h.toLowerCase().includes('blended') || (h.toLowerCase().includes('wage') && h.toLowerCase().includes('est')));
+
+      const jeffStoreNames = state.stores.map(s => s.name.toLowerCase());
+      state.reps = [];
+      for (let i = repHeader + 1; i < repData.length; i++) {
+        const row = repData[i];
+        if (!row || !row[riRank]) break;
+        const loc = String(row[riLoc] || '').toLowerCase();
+        if (!jeffStoreNames.includes(loc)) continue;
+        state.reps.push({
+          rank: row[riRank], name: row[riName] || '', title: row[riTitle] || '',
+          store: row[riLoc] || '', dm: row[riDM] || '',
+          gp: Number(riGP >= 0 ? row[riGP] : 0) || 0,
+          mobile: Number(row[riMobile]) || 0,
+          premium: riPremium >= 0 ? Number(row[riPremium]) || 0 : 0,
+          nps: riNPS >= 0 ? Number(row[riNPS]) || 0 : 0,
+          gphr: riGPHR >= 0 ? Number(row[riGPHR]) || 0 : 0,
+          newToUpg: riNewToUpg>=0 ? parseFloat(row[riNewToUpg])||0 : 0,
+          gigPct: riGig >= 0 ? Number(row[riGig]) || 0 : 0,
+          tabletMTD: riTablet >= 0 ? Number(row[riTablet]) || 0 : 0,
+          watchesMTD: (riWatches >= 0 ? Number(row[riWatches]) : (riWatch >= 0 ? Number(row[riWatch]) : 0)) || 0,
+          accPerMobile: riAccMobile >= 0 ? Number(row[riAccMobile]) || 0 : 0,
+          blendedWage: riBlendedWage >= 0 ? Number(row[riBlendedWage]) || 0 : 0,
+        });
+      }
+      state.reps.sort((a, b) => a.rank - b.rank);
+    }
+  }
+
+  state.dmRanks      = parseRankSheet(wb, CONFIG.DISTRICT_RANK_SHEET);
+  state.regionRanks  = parseRankSheet(wb, CONFIG.REGION_RANK_SHEET);
+}
+
+// ============ SLIDE BUILDING (unchanged logic) ============
+const DETRACTOR_ROWS_PER_PAGE = 12;
+function buildSlides() {
+  state.slides = [];
+  const visibleStores = filteredStores();
+
+  let primaryStore = null;
+  if (state.currentStore && state.currentStore !== 'all') {
+    primaryStore = visibleStores.find(s => s.name.toLowerCase() === state.currentStore.toLowerCase());
+    if (primaryStore) {
+      state.slides.push({ type: 'store-detail', store: primaryStore,
+        label: 'YOUR STORE — #' + primaryStore.rank + ' ' + primaryStore.name });
+    }
+  }
+
+  const storePages = Math.max(1, Math.ceil(visibleStores.length / CONFIG.STORE_CARDS_PER_PAGE));
+  for (let i = 0; i < storePages; i++) {
+    const label = storePages > 1 ? 'Overview (Pg ' + (i+1) + ')' : 'Store Overview';
+    state.slides.push({ type: 'stores', title: 'STORE OVERVIEW', page: i, label });
+  }
+
+  const districtsToShow = state.currentDistrict === 'all'
+    ? DISTRICTS.filter(d => d.key !== 'all')
+    : DISTRICTS.filter(d => d.key === state.currentDistrict);
+  for (const dist of districtsToShow) {
+    const distStores = state.stores.filter(s => storeMatchesDistrict(s, dist));
+    if (!distStores.length) continue;
+    state.slides.push({ type: 'yesterday', title: "YESTERDAY'S CONVERSION",
+      district: dist, stores: distStores, label: "Yesterday — " + dist.label });
+  }
+
+  // Days Since Last NPS Detractor — one slide per district, matched on the
+  // feed's districtKey. Dropped wholesale when the feed is missing or stale.
+  if (streaksUsable()) {
+    for (const dist of districtsToShow) {
+      const sorted = streakStoresForDistrict(dist.key);
+      if (!sorted.length) continue;
+      const meta = (state.streaks.districts || []).find(d => String(d.key) === dist.key) || null;
+      const totalPages = Math.max(1, Math.ceil(sorted.length / DETRACTOR_ROWS_PER_PAGE));
+      for (let pg = 0; pg < totalPages; pg++) {
+        const slice = sorted.slice(pg * DETRACTOR_ROWS_PER_PAGE, (pg + 1) * DETRACTOR_ROWS_PER_PAGE);
+        state.slides.push({
+          type: 'detractor', title: 'DAYS SINCE THE LAST BAD SURVEY',
+          district: dist, rows: slice, allRows: sorted, meta: meta,
+          page: pg, totalPages: totalPages,
+          label: totalPages > 1 ? `Bad Survey — ${dist.label} (Pg ${pg + 1}/${totalPages})` : `Bad Survey — ${dist.label}`,
+        });
+      }
+    }
+  }
+
+  if (state.dmRanks && state.dmRanks.length) {
+    state.slides.push({ type: 'dm-rank', title: 'DISTRICT MANAGER RANKINGS', label: 'DM Rankings' });
+  }
+  if (state.regionRanks && state.regionRanks.length) {
+    state.slides.push({ type: 'region-rank', title: 'REGION RANKINGS', label: 'Region Rankings' });
+  }
+
+  for (const store of visibleStores) {
+    if (primaryStore && store.name === primaryStore.name) continue;
+    state.slides.push({ type: 'store-detail', store: store, label: '#' + store.rank + ' ' + store.name });
+  }
+
+  const promoSlide   = { type: 'promos',        title: 'DAILY PROMOTIONS',        label: 'Promotions' };
+  const pushPromoPair = arr => { if (PROMO_AVAILABLE.promos) arr.push(promoSlide); };
+  const N = CONFIG.PROMO_EVERY_N || 4;
+  const interleaved = [];
+  for (let si = 0; si < state.slides.length; si++) {
+    interleaved.push(state.slides[si]);
+    if ((si + 1) % N === 0) pushPromoPair(interleaved);
+  }
+  const last = interleaved[interleaved.length - 1];
+  if (interleaved.length === 0 || (last && last.type !== 'promos')) {
+    pushPromoPair(interleaved);
+  }
+  state.slides = interleaved;
+  state.totalSlides = state.slides.length;
+  state.currentSlide = 0;
+}
+// Skip promo slides whose image hasn't been uploaded (probe every 30 min).
+const PROMO_AVAILABLE = { promos: true };
+function probePromos() {
+  [['promos', CONFIG.PROMO_URL]].forEach(pair => {
+    const key = pair[0], url = pair[1];
+    const im = new Image();
+    im.onload = function () { if (!PROMO_AVAILABLE[key]) { PROMO_AVAILABLE[key] = true; buildSlides(); } };
+    im.onerror = function () { if (PROMO_AVAILABLE[key]) { PROMO_AVAILABLE[key] = false; buildSlides(); } };
+    im.src = url + '?probe=' + Math.floor(Date.now() / 600000);
+  });
+}
+probePromos();
+setInterval(probePromos, 1800000);
+
+// Cheap fingerprint of the downloaded workbook so we can tell whether the
+// file on GitHub actually changed since the last check.
+function bufferSignature(buf) {
+  const v = new Uint8Array(buf);
+  let h = 0;
+  const step = Math.max(1, Math.floor(v.length / 4096));
+  for (let i = 0; i < v.length; i += step) h = (h * 31 + v[i]) >>> 0;
+  return v.length + ':' + h;
+}
+
+// ============ FORMAT HELPERS ============
+const fmtMoney = n => (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString();
+const pctStr = v => (v * 100).toFixed(1) + '%';
+const medalFor = r => r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : null;
+const stCR   = v => v >= 0.08 ? 'good' : v >= 0.05 ? 'warn' : 'low';
+const stGig  = v => v >= 0.5  ? 'good' : v >= 0.35 ? 'warn' : 'low';
+const stPlus = v => v >= 0.85 ? 'good' : v >= 0.7  ? 'warn' : 'low';
+const stNPS  = v => v >= 0.8  ? 'good' : v >= 0.6  ? 'warn' : 'low';
+const chip = (label, val, cls) => `<div class="chip ${cls || ''}"><div class="cl">${label}</div><div class="cv">${val}</div></div>`;
+// Rank-sheet values can be fractions (percentages) or dollar figures.
+const smartPct = v => Math.abs(v) <= 1.5 ? pctStr(v) : Math.round(v).toLocaleString();
+const smartAcc = v => Math.abs(v) <= 1.5 ? pctStr(v) : fmtMoney(v);
+
+const SLIDE_SUBTITLES = {
+  'stores': "How each store is tracking toward this month's profit goal",
+  'store-detail': 'A closer look at the store and its team',
+  'yesterday': 'Yesterday\'s traffic — how many became customers, and how much of the door we charted',
+  'detractor': 'A bad survey is any survey scored 8 or below — the goal is 30 clean days in a row',
+  'dm-rank': 'How all district managers stack up across the company',
+  'region-rank': 'How the regions stack up — ours are highlighted',
+  'promos': "Today's deals to lead with",
+};
+
+// Animated count-up for any element with class "count"
+function runCountUps() {
+  document.querySelectorAll('.count').forEach(el => {
+    const val = parseFloat(el.dataset.val) || 0;
+    const prefix = el.dataset.prefix || '', suffix = el.dataset.suffix || '';
+    const dec = parseInt(el.dataset.dec || '0', 10);
+    const dur = 900, t0 = performance.now();
+    const fmt = n => {
+      const sign = n < 0 ? '-' : '';
+      const abs = Math.abs(n);
+      return sign + prefix + (dec > 0 ? abs.toFixed(dec) : Math.round(abs).toLocaleString()) + suffix;
+    };
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(val * e);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+// ============ MAIN RENDER ============
+const LOGO_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABQAFADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABAUCAwYAAQf/xAA3EAACAgEDAgQDBgILAAAAAAABAgMEEQAFIRIxE0FhcQYiURQyQoGRoSNSJDM0U2JyhLGywdH/xAAZAQADAQEBAAAAAAAAAAAAAAABAgMEAAX/xAAnEQACAgEDAgYDAQAAAAAAAAABAgARAxIhMRPwFEJRgbHRI2Ghwf/aAAwDAQACEQMRAD8A+eHXmuOidsijn3OtDMvVHJKqsM5yCfroToZs2yzbpIiokjmQkRxx4DPj7zEnhVHHJ8+ANbLY/gcB5TdiasI2wC3RK78dwcFVXy4GT541nds3W5t9qCztsVdWSv4bQKxJKkl+zd+T5aNrfEu8X7omO4/Zh1lVQpnp7Z44H5HVBhdpJs6r32Y+k+BI5LM4WSqVwDEZKoJbOeG6SPPzAH7awG57d9mCzRI6I5AMT8lCwJGD+JTg4Pfjka+h7tU3XZtts7mm9tbVynimSMLlCQvyspPSMHyHHOOdZC7ucthmdXESS/ceNOlmCIQAueUQDgeZycnnU0UsaEozhRZmckjkhkMcsbRuO6sMEflqOjN16m3WdeWYME9yAB/1phY2StXqzM9wmeCIPLGFHBPbSPlVKB85VMTOCR5RHrtMd2rQQpWkqpiN1ILCQOCw8vfGM+XOl2ijBhYiupU0Zx1OCUwTxzLy0bhx+RzqB1dSqvcsrBG6KzZwXOM48h9T9AO+miw+7AEvo0b9KB8K4OPlPzI2fVT+2mUsVJJVkt+F4rAAlhwT9fTXbXRXcZYKdZXnNbIyy9JPOcN5KoPIB55J47ac7v8ADW7LWJiiEvynPhuSDkeYHPHtrdhZVS2qzwJ52cM2QBbocmLWp12haIKVRxghGKgj2BxoKxHG9+AEqyRIRIyn7qjlhjy+UH9dXQVJYZJIw8oi8LpQOQeg+Y4+h7emiNm2ae1Rkli8CIU/69bExUHhg3P4chu/bgd9PmYaL01cTAv5K1aq/wBmagsLJuqWbPCtP4j+mWydM90gjjs2788quJW/oyo+eo8fMfQaFm2yJbFGOGSXptnIDgZVM4z1Dg8AnsO3bnXsm4VVeRDt9UxJwg8IZx6sMH88nXktjtgwM9lclKVIgNq3NbdWmI+VelQqhQB6Aap0w3SCCNIZYYvBLllaMMSOOnkZyRySO/4dL9UAAFCTJJNmcdXU3gjuRSWo2khRgzIuMtjy59dVHV1KBZ58SsVhjUySsO4Ud8ep4A9SNGCN3sypQO4QXLHVNOQEliQmVu7HIPlkd/bTqp8a+JQWDdPGZM4JgdonHsw74+mllAN4TXbCJHlf4aAcRRjsB6f79z31StijZlkWToXrODngOMZB9D662DCdA1nnyMwNmGs6F45Imso26Nqv02a9jdYRwl2sC0wH8sqA5DD+bkHWVV22zxLsFy0kfVJAhEYjeZe3STk8+ZP4cfUjAElWsLpEFxUgKkswf7h+h9NEQS1Y45a6OjqM9SM2EmUfX6MOcMOeNROJuL/vxLrlQbgc/r5nkV1jQkm5jOWixEMdC9IKqPov3ifr550up12s2OQ5UfMxVC37aYGBDQMVNZ5q/UzmQqEbnpwAPPAHJ7cnGqapgpzPHOXye5BKOmPTsf10EXcahQjO+x0GzPd26Xq15OvqZXkjBAI6xnqJx5EM5B9vTSzR+89cdmOrLnxIIx1k9y7fOx9uccccaA1M1e0qLA3np1othoVWpzTX+v7KkBs2eg4Z0DdMcYPl1MCfyGs6dafZLlWTb5a1irPbikhjjmhrnEuY3LKQPNWzgkcjSmGHLte02PEjgsWpK9kOlMCY4Bji6ndsjkdWFx76M2vYNrksCBKkRlpu9eSWUllsP4OWJU8fK7LjHppVDcu3alyOwtbb4kZoxIiYaIEjMS84xkLk9/LzOuuS7nYvWIJr8SxCtizIsIVV6iGJ4/ESoJPfjUWzrZBPEquBqsDmQotRk3FyaIWlsdaSXw5VxJPICB/E93I48gMaPkqbdubLLZ2vwJLULrDGi+EIBHH1NIQO/U7ADPlpes26D4lmsPYg6vAX7RMYQY5I8DllPcnAPPmM6kJdwL2qs+4yywNH9r8VEHiMWIIAPfBYA47ZA1xzJ6xhgf0h8Xw5TtV7USyyrYjkmhhlaU5eQdCqp8sdXXxor7PtEbtSh2asTNuopdcxZ+ygsRjBAHHGeedJ55d7svGJdwU2iySzIUULAFPUpOBwckkjzzqF6QyJVmfcpJY3vmYmCHEjSHHWyY9hjXdZWIFwdBlBNS2zVSnt0T7gHyxlk+zMfkirZ6VUA8hmfHSc5AGsiPXWg+Ktwa7Y8ZesR2XMidYIPhp8kY557Bj7trP6sJGenRe1Hp3GKX+5DSj3VSw/cDQh1OvM9adJo8dSHsRkHyII+hGRozo+uVrT1tto01J/hid38uo85J/U6sWBrlB4ltrKrWibU5OPkUcH2440A24xmiYEtWI4Mf2boyR/hEn8vvz76qpS01hCmpCZQPnksTkIfZRyfbWPouB793dTYMyE+3dVcbSSJutSwtaWOJHnAlLNgrCo4OpLu9WCOS2hV0aRIEQN8wjUHnH6nS1rldeBNVT0go9X7vjVbXoD3s2D/pYv/dDw17Hjv6h8SBuOe/uMIK0le1IKVutNBbTrRJznxfQ+vPfVpirwWq/h9MNhgySxRy9awxkHqcH8BHfSF5oFnDqizpjDLJEI/wDie/rqM113haCKOKvC33kiGOr/ACE5LfmcaquFgwYmSbMpUqBKJJZJnMk0jyO3dnJJP66iNdrhrRM8/9k=";
+
+function render() {
+  const app = document.getElementById('app');
+  if (!state.slides.length) return;
+  const slide = state.slides[state.currentSlide] || state.slides[0];
+
+  let slideContent = '';
+  let slideTitle = slide.title || '';
+  if (slide.type === 'stores') {
+    slideTitle = 'STORE OVERVIEW';
+    const visibleStores = filteredStores();
+    const start = slide.page * CONFIG.STORE_CARDS_PER_PAGE;
+    slideContent = renderStoreGrid(visibleStores.slice(start, start + CONFIG.STORE_CARDS_PER_PAGE));
+  } else if (slide.type === 'store-detail') {
+    slideTitle = slide.store.name.toUpperCase();
+    slideContent = renderStoreDetail(slide.store);
+  } else if (slide.type === 'promos') {
+    slideTitle = 'DAILY PROMOTIONS';
+    slideContent = renderPromoImage(CONFIG.PROMO_URL);
+  } else if (slide.type === 'yesterday') {
+    slideTitle = 'YESTERDAY — ' + slide.district.label.toUpperCase();
+    slideContent = renderYesterday(slide.district, slide.stores);
+  } else if (slide.type === 'detractor') {
+    slideTitle = 'DAYS SINCE THE LAST BAD SURVEY — ' + slide.district.label.toUpperCase();
+    slideContent = renderDetractor(slide.district, slide.rows, slide);
+  } else if (slide.type === 'dm-rank') {
+    slideTitle = 'DISTRICT MANAGER RANKINGS';
+    slideContent = renderRankTable(state.dmRanks, 'dm');
+  } else if (slide.type === 'region-rank') {
+    slideTitle = 'REGION RANKINGS';
+    slideContent = renderRankTable(state.regionRanks, 'region');
+  }
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',hour12:true});
+  const dayInfo = getDayInfo();
+  const subtitle = SLIDE_SUBTITLES[slide.type] || '';
+
+  // Entrance animation rotates by slide + day so the show feels fresh.
+  const animClass = ['anim-fade','anim-slide','anim-zoom'][(state.currentSlide + now.getDay()) % 3];
+
+  const activeDist = state.currentDistrict;
+  const districtTabsHtml = DISTRICTS.map(d => {
+    const cnt = districtCount(d.key);
+    return `<div class="district-tab${d.key === activeDist ? ' active' : ''}" title="${d.label}" onclick="setDistrict('${d.key}')">${d.tab || d.label}<span class="district-count">${cnt}</span></div>`;
+  }).join('');
+
+  const sortedStores = state.stores.slice().sort((a,b) => a.name.localeCompare(b.name));
+  const activeStore = state.currentStore || 'all';
+  const storeOptions = ['<option value="all">All Stores in District</option>']
+    .concat(sortedStores.map(s => `<option value="${s.name}"${s.name === activeStore ? ' selected' : ''}>${s.name}</option>`)).join('');
+
+  const dotsHtml = state.totalSlides <= 40
+    ? `<div class="dot-nav">${state.slides.map((_, i) => `<span class="${i === state.currentSlide ? 'active' : ''}" onclick="goSlide(${i})"></span>`).join('')}</div>`
+    : '';
+
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-left">
+        <div class="logo-circle"><img src="${LOGO_SRC}" alt="C3" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+        <div>
+          <div class="brand-title">COOK COUNTY <span class="highlight">COOKS</span></div>
+          <div class="brand-sub">DAILY SALES REPORT · ${state.stores.length} STORES${state.lastRefresh ? ' · UPDATED ' + state.lastRefresh.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true}) : ''}</div>
+        </div>
+      </div>
+      <div class="header-center">
+        <div class="header-center-title${slideTitle.length > 28 ? ' long' : ''}">${slideTitle}</div>
+        <div class="header-center-sub">${subtitle}</div>
+      </div>
+      <div class="header-right">
+        <div class="pill-row">
+          ${state.paused ? '<div class="pill paused">⏸ PAUSED</div>' : '<div class="pill live"><div class="live-dot"></div>LIVE</div>'}
+          <div class="pill" title="A fresh color every day">${dayInfo.emoji} ${dayInfo.name}</div>
+        </div>
+        <div class="datetime">${dateStr} · ${timeStr}</div>
+      </div>
+    </div>
+    <div class="slide-container"><div class="slide-inner ${animClass}">${slideContent}</div></div>
+    <div class="controls" id="controls">
+      <div class="countdown-track"><div class="countdown-fill" id="countdownBar" style="width:${state.paused ? 100 : 100}%"></div></div>
+      <div class="district-tabs">${districtTabsHtml}</div>
+      <select class="store-picker${activeStore !== 'all' ? ' has-selection' : ''}" onchange="setStore(this.value)" title="My Store">${storeOptions}</select>
+      <div class="spacer"></div>
+      <button class="ctl-btn" onclick="prevSlide()" title="Previous slide">◀</button>
+      <button class="ctl-btn play-pause" onclick="togglePause()" title="${state.paused ? 'Resume slideshow' : 'Pause on this slide'}">${state.paused ? '▶' : '⏸'}</button>
+      <button class="ctl-btn" onclick="nextSlide()" title="Next slide">▶</button>
+      ${dotsHtml}
+      <div class="slide-counter">${state.currentSlide + 1} / ${state.totalSlides}</div>
+      <select class="slide-select" onchange="goSlide(parseInt(this.value))">
+        ${state.slides.map((s, i) => `<option value="${i}"${i === state.currentSlide ? ' selected' : ''}>${s.label || s.title || 'Slide ' + (i+1)}</option>`).join('')}
+      </select>
+    </div>`;
+  runCountUps();
+}
+
+// ============ SLIDE RENDERERS ============
+function renderStoreGrid(stores) {
+  let html = '<div class="store-grid">';
+  stores.forEach((s, idx) => {
+    const up = s.varTarget >= 0;
+    const medal = medalFor(s.rank);
+    const goalPct = s.target > 0 ? Math.max(0, Math.min(100, s.gpTrend / s.target * 100)) : 0;
+    html += `
+      <div class="store-card stagger" style="--i:${idx}">
+        <div class="card-top">
+          <div class="rank-badge${medal ? ' medal' : ''}" title="National rank #${s.rank}">${medal || '#' + s.rank}</div>
+          <div>
+            <div class="card-store-name">${s.name}</div>
+            <div class="card-store-sub">${medal ? '#' + s.rank + ' in the company · ' : ''}SM: ${s.sm || '—'}</div>
+          </div>
+        </div>
+        <div class="card-gp-row">
+          <div class="card-gp count" data-val="${Math.round(s.gpTrend)}" data-prefix="$">$0</div>
+          <div class="delta-chip ${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${fmtMoney(Math.abs(s.varTarget))} vs goal</div>
+        </div>
+        <div class="goal-wrap">
+          <div class="goal-bar"><div class="goal-fill" style="--w:${goalPct.toFixed(1)}%"></div></div>
+          <div class="goal-label"><span>Monthly goal: ${fmtMoney(s.target)}</span><b>${s.target > 0 ? Math.round(s.gpTrend / s.target * 100) : 0}% of goal</b></div>
+        </div>
+        <div class="chips">
+          ${chip('MOBILE CR', pctStr(s.mobileCR), stCR(s.mobileCR))}
+          ${chip('FISCAL CR', pctStr(s.fiscalCR), stCR(s.fiscalCR))}
+          ${chip('NON-TRAD', pctStr(s.nonTrad), '')}
+          ${chip('GIG %', pctStr(s.gigPct), stGig(s.gigPct))}
+          ${chip('PLUS MIX', pctStr(s.premium), stPlus(s.premium))}
+          ${chip('NEW→UPG', pctStr(s.newToUpg), '')}
+          ${chip('ACCESS', fmtMoney(s.accPerDev), '')}
+          ${chip('NPS', pctStr(s.nps), stNPS(s.nps))}
+        </div>
+      </div>`;
+  });
+  for (let i = stores.length; i < CONFIG.STORE_CARDS_PER_PAGE; i++) {
+    html += '<div class="store-card empty"></div>';
+  }
+  return html + '</div>';
+}
+
+function renderStoreDetail(s) {
+  const up = s.varTarget >= 0;
+  const medal = medalFor(s.rank);
+  const goalPct = s.target > 0 ? Math.max(0, Math.min(100, s.gpTrend / s.target * 100)) : 0;
+  const storeReps = state.reps.filter(r => r.store.toLowerCase() === s.name.toLowerCase());
+  storeReps.sort((a, b) => (a.rank || 9999) - (b.rank || 9999));
+
+  const cols = '64px 1.5fr 120px 100px 95px 70px 70px 88px 120px';
+  const repRows = storeReps.map((r, i) => {
+    const rm = medalFor(r.rank);
+    return `
+      <div class="trow stagger" style="grid-template-columns:${cols};--i:${i};font-size:${storeReps.length > 11 ? 17 : 20}px;padding:${storeReps.length > 11 ? '7px 16px' : '10px 16px'}">
+        <span class="rk">${rm || '#' + r.rank}</span>
+        <span class="nm">${r.name}</span>
+        <span class="money">${fmtMoney(r.gp)}</span>
+        <span style="color:${r.premium >= 0.85 ? 'var(--good-ink)' : r.premium >= 0.7 ? 'var(--warn-ink)' : 'var(--low-ink)'};font-weight:900">${pctStr(r.premium)}</span>
+        <span>${pctStr(r.gigPct)}</span>
+        <span>${r.mobile}</span>
+        <span>${r.tabletMTD || 0}</span>
+        <span>${r.watchesMTD || 0}</span>
+        <span class="rk">${r.blendedWage > 0 ? '$' + Number(r.blendedWage).toFixed(2) : '—'}</span>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="detail-grid">
+      <div class="detail-left">
+        <div class="hero-card stagger" style="--i:0">
+          <div class="hero-row">
+            <div>
+              <div class="pill" style="font-size:16px;">${medal ? medal + ' ' : ''}RANK #${s.rank} IN THE COMPANY</div>
+              <div class="hero-name">${s.name}</div>
+              <div class="hero-sub">${s.region} · SM: ${s.sm || '—'} · DM: ${s.dm || '—'}</div>
+            </div>
+            <div>
+              <div class="hero-gp count" data-val="${Math.round(s.gpTrend)}" data-prefix="$">$0</div>
+              <div class="hero-gp-label">GP TREND THIS MONTH</div>
+            </div>
+          </div>
+          <div class="goal-wrap">
+            <div class="goal-bar"><div class="goal-fill" style="--w:${goalPct.toFixed(1)}%"></div></div>
+            <div class="goal-label">
+              <span>Monthly goal: ${fmtMoney(s.target)}</span>
+              <b style="color:${up ? 'var(--good-ink)' : 'var(--low-ink)'}">${up ? '▲' : '▼'} ${fmtMoney(Math.abs(s.varTarget))} vs goal</b>
+            </div>
+          </div>
+        </div>
+        <div class="device-row stagger" style="--i:1">
+          <div class="device-tile star"><div class="dl">TOTAL RGU</div><div class="dv">${s.newRGU}</div></div>
+          <div class="device-tile"><div class="dl">MOBILE</div><div class="dv">${s.mobileMTD}</div></div>
+          <div class="device-tile"><div class="dl">TABLETS</div><div class="dv">${s.tabletMTD}</div></div>
+          <div class="device-tile"><div class="dl">WATCHES</div><div class="dv">${s.watchesMTD}</div></div>
+        </div>
+        <div class="detail-chips stagger" style="--i:2">
+          ${chip('MOBILE CR', pctStr(s.mobileCR), stCR(s.mobileCR))}
+          ${chip('FISCAL CR', pctStr(s.fiscalCR), stCR(s.fiscalCR))}
+          ${chip('NON-TRAD', pctStr(s.nonTrad), '')}
+          ${chip('GIG %', pctStr(s.gigPct), stGig(s.gigPct))}
+          ${chip('PLUS MIX', pctStr(s.premium), stPlus(s.premium))}
+          ${chip('NEW→UPG', pctStr(s.newToUpg), '')}
+          ${chip('ACCESS', fmtMoney(s.accPerDev), '')}
+          ${chip('NPS', pctStr(s.nps), stNPS(s.nps))}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">⭐ TEAM MEMBERS</div>
+        <div class="panel-sub">Ranked by national standing — GP, Plus mix, GIG, devices sold &amp; estimated wage</div>
+        <div class="thead" style="grid-template-columns:${cols}">
+          <span>NAT'L</span><span>Rep Name</span><span>GP $</span><span>Plus %</span><span>GIG %</span><span>XM</span><span>Tab</span><span>Watch</span><span>Est. Wage</span>
+        </div>
+        <div class="tscroll">${repRows || '<div class="panel-sub" style="margin-top:20px">No team data available.</div>'}</div>
+      </div>
+    </div>`;
+}
+
+function renderYesterday(district, distStores) {
+  const y = state.yesterday;
+  if (!y || (!y.loaded && !y.error)) {
+    return '<div class="panel"><div class="panel-sub" style="font-size:24px;margin:auto;">Loading yesterday\'s data…</div></div>';
+  }
+
+  // ---- data (same sources, same maths) ------------------------------------
+  const rows = distStores.map(s => {
+    const z = y.rows[s.name] || {};
+    const traffic = z.traffic || 0;
+    const mobile  = z.mobile  || 0;
+    const mcr     = (z.mcr != null) ? z.mcr : null;
+    const tcharts = (y.tsheets && y.tsheets[s.name]) || 0;
+    // T-Charts are shown as a share of traffic — how much of the door we
+    // actually put on a chart — not as a raw count.
+    const tpct = traffic > 0 ? (tcharts / traffic * 100) : null;
+    return { name: s.name, traffic, mobile, mcr, tcharts, tpct };
+  });
+  const tot = rows.reduce((a, r) => ({
+    traffic: a.traffic + r.traffic,
+    mobile:  a.mobile  + r.mobile,
+    tcharts: a.tcharts + r.tcharts
+  }), { traffic: 0, mobile: 0, tcharts: 0 });
+  const totMcr = tot.traffic > 0 ? (tot.mobile / tot.traffic * 100) : null;
+  const totTpct = tot.traffic > 0 ? (tot.tcharts / tot.traffic * 100) : null;
+
+  const fmtN = v => Number(v || 0).toLocaleString('en-US');
+  const fmtR = v => (v == null) ? '—' : v.toFixed(1);
+  const all = rows.concat([{ name: 'DISTRICT TOTAL', traffic: tot.traffic, mobile: tot.mobile, mcr: totMcr, tcharts: tot.tcharts, tpct: totTpct }]);
+
+  // ---- size ladder ---------------------------------------------------------
+  // Every band (one per store + the district total) splits the ~670px panel
+  // body, so the numerals grow for a 4-store district and step down cleanly
+  // all the way to 12 rows without ever overflowing.
+  const bands = Math.max(1, rows.length) + 1;
+  const AVAIL = 668;                                   // usable body height
+  const gapY  = bands <= 6 ? 12 : (bands <= 9 ? 9 : 7);
+  const bandH = Math.max(26, (AVAIL - gapY * (bands - 1)) / bands);
+
+  // Rough advance widths for Nunito 900 (em units) — used to reserve exactly
+  // as much room as the numbers need, leaving the rest to the store name.
+  const strW = (s, size) => {
+    let w = 0;
+    for (let i = 0; i < s.length; i++) { const c = s.charAt(i); w += (c === '.' || c === ',') ? 0.30 : 0.60; }
+    return w * size;
+  };
+  const lblW = (s, size) => s.length * (0.64 * size + 1.7) + 6;
+  const maxW = (arr, size) => arr.reduce((m, s) => Math.max(m, strW(s, size)), 0);
+
+  const MINNAME = 300;                                 // never squeeze the name away
+  // The store name is set at the SAME size as the metric numerals, so a row
+  // reads as one line of type rather than a small label beside big figures.
+  // The fitting loop below therefore has to reserve room for the longest
+  // actual name at that size — capped at 44% of the row so one absurdly long
+  // store can ellipsise instead of shrinking the whole slide.
+  const nameStrs = all.map(r => String(r.name || ''));
+  let hero, num, nameSz, lblSz, padX, gapX, wT, wM, wC, wK, usable;
+  hero = Math.round(Math.max(30, Math.min(130, bandH * 1.05)));
+  for (;;) {
+    num    = Math.max(18, Math.round(hero * 0.80) - 1);
+    nameSz = num;
+    lblSz  = Math.round(Math.max(13, Math.min(18, hero * 0.16)));
+    padX   = Math.round(Math.max(14, Math.min(32, hero * 0.24)));
+    gapX   = Math.round(Math.max(10, Math.min(28, hero * 0.18)));
+    const pad = 14;
+    usable = 1788 - 2 * padX;                          // panel inner width
+    const fl  = usable * 0.115;                        // keeps the number block
+    const flC = usable * 0.150;                        // anchored at any row count
+    wT = Math.round(Math.max(maxW(all.map(r => fmtN(r.traffic)), num), lblW('TRAFFIC', lblSz) , fl)) + pad;
+    wM = Math.round(Math.max(maxW(all.map(r => fmtN(r.mobile)),  num), lblW('MOBILE SALES', lblSz), fl)) + pad;
+    wK = Math.round(Math.max(maxW(all.map(r => fmtR(r.tpct)), num) + 0.42 * num, lblW('T-CHART %', lblSz) , fl)) + pad;
+    wC = Math.round(Math.max(maxW(all.map(r => fmtR(r.mcr)), hero) + 0.42 * hero, lblW('CONVERSION', lblSz), flC)) + pad;
+    const needName = Math.min(usable * 0.44, Math.max(MINNAME, maxW(nameStrs, nameSz) + 10));
+    if (hero <= 30 || (wT + wM + wC + wK + 4 * gapX + needName) <= usable) break;
+    hero -= 3;
+  }
+  const cols = 'minmax(0,1fr) ' + wT + 'px ' + wM + 'px ' + wC + 'px ' + wK + 'px';
+  const vars = '--ccols:' + cols + ';--cgap-x:' + gapX + 'px;--cgap-y:' + gapY + 'px;--cpad:' + padX +
+               'px;--cnum:' + num + 'px;--chero:' + hero + 'px;--cname:' + nameSz + 'px;--clbl:' + lblSz +
+               'px;--cmaxh:' + Math.round(hero * 1.6) + 'px;';
+
+  // ---- rows ----------------------------------------------------------------
+  const rateClass = v => (v == null) ? 'conv-none' : (v >= 10 ? 'conv-good' : (v >= 6 ? 'conv-warn' : 'conv-low'));
+  const rateHtml  = v => (v == null) ? '<span class="conv-dash">—</span>' : fmtR(v) + '<span class="conv-pct">%</span>';
+
+  const band = (r, i, isTotal) => `
+      <div class="conv-row stagger${isTotal ? ' conv-total' : ''}" style="--i:${i}">
+        <div class="conv-name">${escHtml(r.name)}</div>
+        <div class="conv-val${r.traffic ? '' : ' conv-soft'}">${fmtN(r.traffic)}</div>
+        <div class="conv-val${r.mobile  ? '' : ' conv-soft'}">${fmtN(r.mobile)}</div>
+        <div class="conv-val conv-hero ${rateClass(r.mcr)}">${rateHtml(r.mcr)}</div>
+        <div class="conv-val${r.tpct ? '' : ' conv-soft'}">${r.tpct == null ? '<span class="conv-dash">—</span>' : fmtR(r.tpct) + '<span class="conv-pct">%</span>'}</div>
+      </div>`;
+
+  const rowsHtml = rows.map((r, i) => band(r, i, false)).join('');
+  const totalHtml = band(all[all.length - 1], rows.length, true);
+
+  const sub = tot.traffic > 0
+    ? `${fmtN(tot.traffic)} people came through the door yesterday — ${fmtN(tot.mobile)} of them walked out as mobile customers.`
+    : 'No traffic recorded yesterday.';
+
+  return `
+    <div class="panel conv-panel" style="${vars}">
+      <div class="panel-title">🚶 TRAFFIC → SALES${y.date ? ' · ' + y.date : ''}</div>
+      <div class="panel-sub">${sub}</div>
+      <div class="conv-head">
+        <div class="conv-lbl conv-lbl-name">Store</div>
+        <div class="conv-lbl">Traffic</div>
+        <div class="conv-lbl">Mobile Sales</div>
+        <div class="conv-lbl conv-lbl-hero">Conversion</div>
+        <div class="conv-lbl">T-Chart %</div>
+      </div>
+      <div class="tscroll conv-body">
+        ${rows.length ? rowsHtml + totalHtml : '<div class="conv-empty">No stores in this district.</div>'}
+      </div>
+    </div>`;
+}
+
+function renderDetractor(district, rows, slide) {
+  const feed = state.streaks || {};
+  const meta = slide.meta || {};
+  const goal = Number(feed.goalDays) || STREAK_GOAL_FALLBACK;
+  const all = slide.allRows || rows;
+  // The producer leaves window-limited stores out of the district maths (their
+  // number is bounded by their own survey history, not by an observed clean
+  // run) — the local fallbacks below mirror that.
+  const live = all.filter(r => r.status !== 'no-data' && r.days != null && !r.windowLimited);
+  const avgDays = meta.avgDays != null ? Number(meta.avgDays)
+    : (live.length ? live.reduce((a, r) => a + Number(r.days || 0), 0) / live.length : 0);
+  const bestDays = meta.bestDays != null ? Number(meta.bestDays)
+    : (live.length ? Math.max.apply(null, live.map(r => Number(r.days || 0))) : 0);
+  const bestStore = meta.bestStore || (live.length ? live[0].store : '—');
+  const goalMetCount = meta.goalMetCount != null ? Number(meta.goalMetCount)
+    : live.filter(r => r.goalMet || r.capped || Number(r.days) >= goal).length;
+  // With no ranked competitors in the district (all window-limited / no-data)
+  // the footer shows em dashes rather than a fake 0.0.
+  const hasRanked = live.length > 0;
+  const avgTxt = (meta.avgDays != null || hasRanked) ? avgDays.toFixed(1) + ' days' : '—';
+  const bestTxt = (meta.bestStore || hasRanked) ? `${escHtml(bestStore)} · ${bestDays} days` : '—';
+  const asOf = fmtStreakDate(feed.asOf);
+  const pageInfo = slide.totalPages > 1 ? ` · Page ${slide.page + 1} of ${slide.totalPages}` : '';
+
+  // Podium: ranks are shared on ties, so a medal is only awarded when the whole
+  // tied group still fits inside the top three ranked rows. A three-way tie for
+  // 3rd shows "#3" three times rather than handing one arbitrary store a bronze.
+  const rankGroups = {};
+  all.filter(r => r.rankDistrict != null && !r.windowLimited).forEach((r, idx) => {
+    const k = String(r.rankDistrict);
+    if (!rankGroups[k]) rankGroups[k] = { start: idx, count: 0 };
+    rankGroups[k].count++;
+  });
+  const rankBadge = rank => {
+    const g = rankGroups[String(rank)];
+    if (rank <= 3 && g && g.start + g.count <= 3) return medalFor(rank) || ('#' + rank);
+    return '#' + rank;
+  };
+
+  // ---- size ladder -------------------------------------------------------
+  // The list box is ~636px tall once the title, sub+legend line and the
+  // footer stat strip are taken out of the 812px slide area. Everything on a
+  // row is derived from the height one row is allowed to occupy, so 1 row and
+  // 12 rows both fill the panel without ever overflowing .tscroll.
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const n = Math.max(1, rows.length);
+  const AVAIL = 628;
+  const gap = n <= 5 ? 12 : n <= 8 ? 9 : 6;
+  // capped so a 1-3 store district gets a proper hero row instead of one
+  // absurd 600px slab; the list centres what is left of the box.
+  const rowH = Math.min(172, Math.floor((AVAIL - gap * (n - 1)) / n));
+  // metaSize drives the small furniture (date, captions) and stays small.
+  const metaSize = Math.round(clamp(rowH * 0.54, 22, 64));
+  const badgeW = Math.round(clamp(rowH * 0.70, 44, 108));
+  const rankSize = Math.round(clamp(badgeW * 0.42, 17, 42));
+  const dateW = Math.round(clamp(metaSize * 3.0, 124, 200));
+  const dateSize = Math.round(clamp(metaSize * 0.36, 13, 22));
+  const dateLabelSize = Math.round(clamp(dateSize * 0.72, 10, 15));
+  const noteSize = Math.round(clamp(metaSize * 0.46, 14, 26));
+  const flagSize = Math.round(clamp(metaSize * 0.30, 11, 18));
+  const padX = Math.round(clamp(rowH * 0.22, 16, 30));
+
+  // Store name is set at the SAME size as the day count — "a large print
+  // store name and a large print number beside it". Both shrink together
+  // until this district's longest name fits its column, so a district of
+  // long names reads a notch smaller rather than ellipsising.
+  const emW = str => {
+    let w = 0;
+    for (let i = 0; i < str.length; i++) w += /[ .,'-]/.test(str.charAt(i)) ? 0.28 : 0.60;
+    return w;
+  };
+  const longestEm = rows.reduce((m, r) => Math.max(m, emW(String(r.store || r.storeFull || ''))), 0);
+  // A gold row carries a crown after the name; reserve for it if any row can.
+  const goldPossible = rows.some(r => r.days != null && !r.windowLimited &&
+    (Number(r.days) >= 20 || r.goalMet === true || Number(r.days) >= goal));
+  const crownEm = goldPossible ? 0.55 + 0.35 : 0;
+  let numSize = Math.max(40, Math.round(clamp(rowH * 1.18, 40, 150)) - 1);
+  let numW = Math.round(clamp(numSize * 2.25, 165, 430));
+  while (numSize > 40) {
+    numW = Math.round(clamp(numSize * 2.25, 165, 430));
+    const nameAvail = 1788 - (2 * padX + 6) - badgeW - numW - dateW - 3 * 38;
+    if ((longestEm + crownEm) * numSize + 8 <= nameAvail) break;
+    numSize -= 2;
+  }
+  const nameSize = numSize;
+  const unitSize = Math.round(clamp(numSize * 0.155, 11, 21));
+  const crownSize = Math.round(clamp(nameSize * 0.55, 20, 64));
+  const cols = `${badgeW}px minmax(0,1fr) ${numW}px ${dateW}px`;
+  const rowStyle = `grid-template-columns:${cols};height:${rowH}px;padding:0 ${padX}px 0 ${padX + 6}px;`;
+
+  // ---- tiers -------------------------------------------------------------
+  // 0-5 red · 6-10 amber · 11-19 green · 20+ gold. A store that has hit the
+  // company goal is never shown as anything less than gold.
+  const tierFor = (days, atGoal) => {
+    if (atGoal || days >= 20) return 'gold';
+    if (days >= 11) return 'green';
+    if (days >= 6) return 'amber';
+    return 'red';
+  };
+
+  const rowsHtml = rows.map((r, i) => {
+    const name = escHtml(r.store || r.storeFull || '');
+    // No survey data at all: muted, unranked, no tier color.
+    if (r.status === 'no-data' || r.days == null) {
+      return `
+      <div class="bsv-row bsv-t-none stagger" style="${rowStyle};--i:${i};">
+        <span class="bsv-rank" style="font-size:${rankSize}px;">—</span>
+        <span class="bsv-name" style="font-size:${nameSize}px;"><span class="bsv-nametext">${name}</span></span>
+        <span class="bsv-note" style="grid-column:3 / -1;text-align:right;font-size:${noteSize}px;">Awaiting survey data</span>
+      </div>`;
+    }
+    const days = Number(r.days) || 0;
+    // windowLimited = has surveys but no bad survey on record yet, so the count
+    // is bounded by history. Never ranked, never a medal, never a tier color.
+    const limited = !!r.windowLimited;
+    const goalMet = !limited && (r.goalMet === true ||
+      (r.goalPending !== true && (r.capped === true || r.atGoal === true || days >= goal)));
+    const goalPending = !limited && !goalMet && r.goalPending === true;
+    const atGoal = goalMet || goalPending || r.atGoal === true || days >= goal;
+    const tier = limited ? 'neutral' : tierFor(days, atGoal);
+    const gold = tier === 'gold';
+    const rank = r.rankDistrict != null ? r.rankDistrict : (slide.page * DETRACTOR_ROWS_PER_PAGE + i + 1);
+    const lastDate = fmtStreakDate(r.lastDetractorDate);
+    const since = fmtStreakDate(r.trackingSince);
+    // Far-right date: the last bad survey when there is one. A window-limited
+    // store has never had one on record, so it shows when tracking started.
+    // The column header rides on the first row only — repeating "Last bad
+    // survey" down every row was noise against a big-name/big-number layout.
+    const dateLabel = (limited && since) ? 'Clean since' : (i === 0 ? 'Last bad survey' : '');
+    const dateTxt = lastDate ? escHtml(lastDate)
+      : (limited && since) ? escHtml(since)
+      : 'None yet';
+    return `
+      <div class="bsv-row bsv-t-${tier} stagger" style="${rowStyle};--i:${i};">
+        <span class="bsv-rank" style="font-size:${rankSize}px;">${limited ? '—' : rankBadge(rank)}</span>
+        <span class="bsv-name" style="font-size:${nameSize}px;">
+          <span class="bsv-nametext">${name}</span>
+          ${gold ? `<span class="bsv-crown" style="font-size:${crownSize}px;">👑</span>` : ''}
+          ${limited ? `<span class="bsv-flag" style="font-size:${flagSize}px;">Not ranked yet</span>` : ''}
+        </span>
+        <span class="bsv-numwrap">
+          <span class="bsv-num" style="font-size:${numSize}px;">${days}</span>
+          <span class="bsv-unit" style="font-size:${unitSize}px;">DAY${days === 1 ? '' : 'S'}</span>
+        </span>
+        <span class="bsv-date" style="font-size:${dateSize}px;">
+          ${dateLabel ? `<span class="bsv-datelabel" style="font-size:${dateLabelSize}px;">${dateLabel}</span>` : ''}${dateTxt}
+        </span>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="panel bsv-panel">
+      <div class="panel-title">🏆 CLEAN DAYS LEADERBOARD${asOf ? ' · AS OF ' + asOf.toUpperCase() : ''}</div>
+      <div class="bsv-head">
+        <div class="panel-sub">A bad survey is any survey scored 8 or below — every store is chasing ${goal} clean days in a row${pageInfo}</div>
+        <div class="bsv-legend">
+          <span class="bsv-lg bsv-lg-red"><i></i>0–5</span>
+          <span class="bsv-lg bsv-lg-amber"><i></i>6–10</span>
+          <span class="bsv-lg bsv-lg-green"><i></i>11–19</span>
+          <span class="bsv-lg bsv-lg-gold"><i></i>20+ 👑</span>
+        </div>
+      </div>
+      <div class="tscroll bsv-list" style="gap:${gap}px;">${rowsHtml}</div>
+      <div class="streak-foot">
+        <div class="sf"><div class="sfl">District Average</div><div class="sfv">${avgTxt}</div></div>
+        <div class="sf"><div class="sfl">Longest Streak</div><div class="sfv">${bestTxt}</div></div>
+        <div class="sf"><div class="sfl">At ${goal}+ Days</div><div class="sfv">${goalMetCount} of ${all.length} stores</div></div>
+      </div>
+    </div>`;
+}
+
+function renderRankTable(rows, kind) {
+  const sorted = rows.slice().sort((a, b) => a.rank - b.rank);
+  const ourDMs = new Set(state.stores.map(s => String(s.dm || '').toLowerCase().trim()).filter(Boolean));
+  const isMine = (name) => {
+    const n = String(name).toLowerCase().trim();
+    if (kind === 'region') return CONFIG.OUR_REGIONS.some(r => n.includes(r.toLowerCase()));
+    if (ourDMs.has(n)) return true;
+    for (const dm of ourDMs) { if (dm.includes(n) || n.includes(dm)) return true; }
+    return false;
+  };
+  const cols = '64px 1.6fr 150px 120px 130px 130px 110px 110px 120px 110px';
+  const compact = sorted.length > 14;
+  const fontSize = compact ? 16 : (kind === 'region' ? 24 : 19);
+  const pad = compact ? '5px 14px' : (kind === 'region' ? '13px 16px' : '9px 16px');
+  const rowsHtml = sorted.map((r, i) => `
+    <div class="trow${isMine(r.name) ? ' mine' : ''} stagger" style="grid-template-columns:${cols};--i:${Math.min(i, 12)};font-size:${fontSize}px;padding:${pad};">
+      <span class="rk">${medalFor(r.rank) || '#' + r.rank}</span>
+      <span class="nm">${r.name}${isMine(r.name) ? ' ⭐' : ''}</span>
+      <span class="money">${fmtMoney(r.avgGpTrend)}</span>
+      <span>${Math.abs(r.mobilePerInternet) <= 1.5 && r.mobilePerInternet !== 0 ? Number(r.mobilePerInternet).toFixed(2) : Math.round(r.mobilePerInternet)}</span>
+      <span class="money">${fmtMoney(r.gpPerRgu)}</span>
+      <span>${smartPct(r.fiscalCr)}</span>
+      <span>${smartPct(r.mobileCr)}</span>
+      <span>${smartPct(r.gigAttach)}</span>
+      <span>${smartPct(r.plusAttach)}</span>
+      <span>${smartPct(r.nps)}</span>
+    </div>`).join('');
+  return `
+    <div class="panel">
+      <div class="panel-title">🏆 NATIONAL STANDINGS</div>
+      <div class="panel-sub">${kind === 'region' ? 'Our regions are highlighted with a star' : 'Our district managers are highlighted with a star'}</div>
+      <div class="thead" style="grid-template-columns:${cols}">
+        <span>Rank</span><span>${kind === 'region' ? 'Region' : 'District Manager'}</span><span>GP Trend</span><span>Mob/Int</span><span>GP/RGU</span><span>Fiscal CR</span><span>Mobile CR</span><span>GIG %</span><span>Plus %</span><span>NPS</span>
+      </div>
+      <div class="tscroll">${rowsHtml}</div>
+    </div>`;
+}
+
+function renderPromoImage(url) {
+  return `
+    <div class="promo-wrap">
+      <div class="promo-frame">
+        <img src="${url}?t=${Math.floor(Date.now() / 600000)}" alt="Promotion" onerror="promoMissing(this)">
+      </div>
+    </div>`;
+}
+function promoMissing(img) {
+  img.parentElement.innerHTML = '<div class="promo-missing">🎁<br>Promo card hasn\'t been uploaded yet.<br><span style="font-size:18px;">Add the image to the data folder in the repo.</span></div>';
+}
+
+// ============ SLIDESHOW CONTROL (with pause) ============
+// Perf (2026-09-24): SITE PAUSE. cookcountycooks.com hides the Break Room TV
+// (this report, framed) with display:none while a tool is open over it. That
+// stops painting but not the 15 s slide timer or the 100 ms countdown timer
+// (~25 ms/s of main-thread work behind the tool). The framing page may post
+//   { source: 'ccc-site', action: 'pause' }   and later
+//   { source: 'ccc-site', action: 'resume' }
+// Paused, both timers stop; resume restarts the slideshow on the slide that
+// was showing. Only the parent frame is listened to, so the report on its own
+// (not framed) is unaffected, and a report that is never told keeps running.
+let sitePaused = false;
+let siteHeldShow = false;   // the slideshow was running (or asked to start) while paused
+window.addEventListener('message', e => {
+  if (window.parent === window || e.source !== window.parent) return;
+  const d = e.data;
+  if (!d || typeof d !== 'object' || d.source !== 'ccc-site') return;
+  if (d.action === 'pause' && !sitePaused) {
+    sitePaused = true;
+    siteHeldShow = !!(state.slideTimer || state.countdownTimer);
+    clearInterval(state.slideTimer); state.slideTimer = null;
+    clearInterval(state.countdownTimer); state.countdownTimer = null;
+  } else if (d.action === 'resume' && sitePaused) {
+    sitePaused = false;
+    if (siteHeldShow) startSlideshow();
+  }
+});
+function startSlideshow() {
+  if (state.slideTimer) { clearInterval(state.slideTimer); state.slideTimer = null; }
+  if (sitePaused) { siteHeldShow = true; return; }   // Perf (2026-09-24): see SITE PAUSE
+  if (!state.paused) {
+    state.slideTimer = setInterval(() => {
+      state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
+      render();
+      startCountdown();
+    }, CONFIG.SLIDE_INTERVAL);
+  }
+  startCountdown();
+}
+function startCountdown() {
+  if (state.countdownTimer) clearInterval(state.countdownTimer);
+  if (sitePaused) { state.countdownTimer = null; return; }   // Perf (2026-09-24): see SITE PAUSE
+  state.countdownStart = Date.now();
+  state.countdownTimer = setInterval(() => {
+    const bar = document.getElementById('countdownBar');
+    if (!bar) return;
+    if (state.paused) { bar.style.width = '100%'; return; }
+    const elapsed = Date.now() - state.countdownStart;
+    bar.style.width = Math.max(0, 100 - (elapsed / CONFIG.SLIDE_INTERVAL * 100)) + '%';
+  }, 100);
+}
+function goSlide(i) {
+  if (!state.totalSlides) return;
+  state.currentSlide = ((i % state.totalSlides) + state.totalSlides) % state.totalSlides;
+  render();
+  startSlideshow();
+}
+function nextSlide() { goSlide(state.currentSlide + 1); }
+function prevSlide() { goSlide(state.currentSlide - 1); }
+function togglePause() {
+  state.paused = !state.paused;
+  render();
+  startSlideshow();
+}
+
+// ============ FIT ANY SCREEN ============
+function fitStage() {
+  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  document.getElementById('stage-scaler').style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+
+// ============ IDLE FADE FOR CONTROLS ============
+let idleTimer = null;
+function wakeControls() {
+  const c = document.getElementById('controls');
+  if (c) c.classList.remove('idle');
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => {
+    const c2 = document.getElementById('controls');
+    if (c2) c2.classList.add('idle');
+  }, 12000);
+}
+['mousemove','mousedown','touchstart','keydown'].forEach(ev =>
+  document.addEventListener(ev, wakeControls, { passive: true }));
+
+// ============ KEYBOARD ============
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); togglePause(); }
+  else if (e.key === 'ArrowRight') nextSlide();
+  else if (e.key === 'ArrowLeft') prevSlide();
+  else if (e.key === 'r' || e.key === 'R') { state.dataSig = null; loadData(); }
+});
+// Perf (2026-09-24): KEYS FOR THE SITE. Framed in cookcountycooks.com's tool
+// viewer, a key pressed in this report never reaches the site, so Escape could
+// not close the viewer and Ctrl-K / Cmd-K could not open its Find. When framed,
+// those two keys go to the parent as { source: 'ccc-tool', action: 'escape' |
+// 'find' } - only when this page did not use the key itself. Not framed: no-op.
+if (window.parent !== window) window.addEventListener('keydown', e => {
+  if (e.defaultPrevented || e.isComposing) return;
+  const k = e.key, mod = e.metaKey || e.ctrlKey;
+  const action = (k === 'Escape' && !mod && !e.altKey && !e.shiftKey) ? 'escape'
+    : (mod && !e.altKey && !e.shiftKey && (k === 'k' || k === 'K')) ? 'find' : null;
+  if (!action) return;
+  if (action === 'find') e.preventDefault();   // not the browser's own Ctrl-K
+  try { window.parent.postMessage({ source: 'ccc-tool', action: action }, '*'); } catch (err) {}
+});
+
+// ============ AUTO-REFRESH SCHEDULER ============
+// Watches for the day's new Sales Report upload: every 30 minutes from
+// 9:00 AM to 11:30 AM (9:00, 9:30, 10:00, 10:30, 11:00, 11:30). If the TV
+// was asleep or offline during the window, it catches up as soon as it
+// wakes any time after 9 AM and still has yesterday's data. Press "R" to
+// force a refresh at any time.
+let lastAutoAttempt = 0;
+function inRefreshWindow(d) {
+  const m = d.getHours() * 60 + d.getMinutes();
+  return m >= CONFIG.REFRESH_WINDOW.startMin && m <= CONFIG.REFRESH_WINDOW.endMin;
+}
+function autoRefreshTick() {
+  if (Date.now() - lastAutoAttempt < 5 * 60 * 1000) return; // throttle retries
+  const now = new Date();
+  const windowOpen = new Date(now.getFullYear(), now.getMonth(), now.getDate(),
+    Math.floor(CONFIG.REFRESH_WINDOW.startMin / 60), CONFIG.REFRESH_WINDOW.startMin % 60, 0);
+  const stale = state.lastRefresh && now >= windowOpen && state.lastRefresh < windowOpen;
+  const onCheckpoint = inRefreshWindow(now) && now.getMinutes() % CONFIG.REFRESH_WINDOW.everyMin === 0;
+  if (onCheckpoint || stale) { lastAutoAttempt = Date.now(); loadData(); }
+}
+setInterval(autoRefreshTick, 30000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) autoRefreshTick(); });
+
+// "New data" toast — floats in below the header, then fades away.
+function showToast(msg) {
+  const scaler = document.getElementById('stage-scaler');
+  if (!scaler) return;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  scaler.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 700); }, 7000);
+}
+
+// ============ INIT ============
+window.addEventListener('resize', fitStage);
+applyDayColor();
+loadPersistedFilters();
+fitStage();
+wakeControls();
+loadData();
+scheduleDayColorAtMidnight();
+</script>
+</body>
+</html>
