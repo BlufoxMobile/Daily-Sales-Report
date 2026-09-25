@@ -416,7 +416,9 @@ body {
 .promo-missing span { display:block; font-size:22px; margin-top:12px; }
 
 /* ---------- KINETIC ENTRANCES ---------- */
-.slide .ki { opacity:0; }
+/* Everything is VISIBLE by default. The entrance keyframes (fill-mode both)
+   hide each element only while its own animation is pending, so a browser
+   that never runs CSS animations still shows a complete, static slide. */
 .slide.go .ki { animation: kiUp .8s var(--ease) both; animation-delay: calc(var(--d0, 0ms) + var(--i, 0) * 55ms); }
 .slide.go .ki-l { animation-name: kiL; }
 .slide.go .ki-r { animation-name: kiR; }
@@ -434,12 +436,10 @@ body {
 @keyframes kiZoom { 0% { opacity:0; transform: scale(1.5); } 60% { opacity:1; } 100% { opacity:1; transform:none; } }
 .sd-name { transform-origin: left center; }
 /* bars sweep in after their row lands */
-.slide .goal-track > i, .slide .gbar i, .slide .ybar i { transform: scaleX(0); }
 .slide.go .goal-track > i, .slide.go .gbar i, .slide.go .ybar i { animation: barGrow 1.3s var(--ease) both; animation-delay: calc(var(--d0, 0ms) + 350ms + var(--i, 0) * 55ms); }
 .slide.static .goal-track > i, .slide.static .gbar i, .slide.static .ybar i { transform: scaleX(var(--p,0)); animation:none; }
 @keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(var(--p,0)); } }
 /* clean-days track segments light up one after another */
-.slide .c-track i.on { opacity:.15; }
 .slide.go .c-track i.on { animation: segOn .25s ease-out both; animation-delay: calc(var(--d0, 0ms) + 420ms + var(--i, 0) * 55ms + var(--s, 0) * 22ms); }
 .slide.static .c-track i.on { opacity:1; animation:none; }
 @keyframes segOn { from { opacity:.15; transform: skewX(-14deg) scaleY(.4); } to { opacity:1; transform: skewX(-14deg); } }
