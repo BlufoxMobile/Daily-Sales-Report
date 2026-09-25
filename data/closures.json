@@ -13564,6 +13564,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2498136109": {
+    "status": "Can Not Close",
+    "ts": "2026-09-25T15:52:19.038Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2498358199": {
     "status": "Can Not Close",
     "ts": "2026-09-23T18:43:13.019Z",
@@ -13605,6 +13611,12 @@
     "ts": "2026-09-23T18:24:03.642Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
+  },
+  "2500087457": {
+    "status": "Can Not Close",
+    "ts": "2026-09-25T16:27:48.766Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2500293249": {
     "status": "Closed",
