@@ -8799,8 +8799,8 @@
     "store": "Oak Ridge"
   },
   "2407627121": {
-    "status": "Closed",
-    "ts": "2026-09-15T16:56:14.508Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-26T19:12:24.956Z",
     "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
@@ -9683,9 +9683,9 @@
     "store": "Evergreen Park"
   },
   "2423840900": {
-    "status": "Closed",
-    "ts": "2026-08-12T22:00:35.895Z",
-    "dm": "Imaad Dhorajiwala",
+    "status": "Can Not Close",
+    "ts": "2026-09-26T19:12:26.347Z",
+    "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
   "2423886800": {
