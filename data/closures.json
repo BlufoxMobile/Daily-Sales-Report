@@ -13989,6 +13989,13 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2507425675": {
+    "status": "Pending Install",
+    "ts": "2026-09-28T14:47:52.045Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-02"
+  },
   "2507431464": {
     "status": "Closed",
     "ts": "2026-09-25T19:34:24.329Z",
