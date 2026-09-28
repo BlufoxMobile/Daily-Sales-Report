@@ -14037,6 +14037,13 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2507421428": {
+    "status": "Pending Install",
+    "ts": "2026-09-28T21:41:14.041Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-10-02"
+  },
   "2507425675": {
     "status": "Pending Install",
     "ts": "2026-09-28T14:47:52.045Z",
