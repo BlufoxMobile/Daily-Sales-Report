@@ -22,6 +22,17 @@
  *      Mobile-Quote-Sheet-6th-Gen      storeName / repName / repEmail
  *      Upgrade-Quote-Sheet             storeName / repName / repEmail
  *      Internet-Rate-Plan-Calculator   rep-store / rep-name / rep-email
+ *
+ *  v5 (2026-09-27) REMEMBERED THROUGH THE COOKCOUNTYCOOKS.COM VIEWER
+ *  On an iPad, Safari (and Chrome, which is Safari underneath) keeps a framed
+ *  page's localStorage only for the session, so inside cookcountycooks.com the
+ *  sheet forgot the rep on every reopen. When framed by cookcountycooks.com,
+ *  this script now asks the site for the last rep ({source:'ccc-tool',
+ *  action:'rep-get'}) and tells it whenever the rep changes store, name, email
+ *  or phone ({action:'rep-set'}). The site keeps it in its own first-party
+ *  storage. Messages go only to the cookcountycooks.com origin. Opened directly
+ *  (not framed), nothing changes. The store travels as its short name
+ *  ("Kildeer"), so the Internet calculator can share the same record.
  * ========================================================================== */
 (function () {
   'use strict';
@@ -49,6 +60,36 @@
     { store: 'rep-store', rep: 'rep-name', email: 'rep-email' }
   ];
   var FIELD_SELECTORS = ['.rep-info-field', '.intake-field', '.rep-field'];
+
+  /* ---- v5: the viewer remembers the rep (see header) ------------------- */
+  var HOST_ORIGINS = ['https://cookcountycooks.com', 'https://www.cookcountycooks.com'];
+  var hostOrigin = (function () {
+    var o = '';
+    try { if (window.parent === window) return ''; } catch (e) { return ''; }
+    try { if (location.ancestorOrigins && location.ancestorOrigins.length) o = location.ancestorOrigins[0]; } catch (e) {}
+    if (!o) { try { o = new URL(document.referrer).origin; } catch (e) {} }
+    return HOST_ORIGINS.indexOf(o) !== -1 ? o : '';
+  })();
+  var hostRep;                 // undefined: not answered yet · null: the site has none
+  var onHostRep = null;        // set by init() once the controls exist
+  if (hostOrigin) {
+    window.addEventListener('message', function (e) {
+      if (e.source !== window.parent || e.origin !== hostOrigin) return;
+      var d = e.data;
+      if (!d || typeof d !== 'object' || d.source !== 'ccc-host' || d.type !== 'rep') return;
+      hostRep = (d.rep && typeof d.rep === 'object') ? d.rep : null;
+      if (onHostRep) { try { onHostRep(hostRep); } catch (x) {} }
+    });
+    try { window.parent.postMessage({ source: 'ccc-tool', action: 'rep-get' }, hostOrigin); } catch (e) {}
+  }
+  var tellTimer = 0;
+  function tellHost(rec) {
+    if (!hostOrigin) return;
+    clearTimeout(tellTimer);
+    tellTimer = setTimeout(function () {
+      try { window.parent.postMessage({ source: 'ccc-tool', action: 'rep-set', rep: rec() }, hostOrigin); } catch (e) {}
+    }, 400);
+  }
 
   /* ---------------------------------------------------------------- utils */
   function $(id) { return document.getElementById(id); }
@@ -152,12 +193,13 @@
       manualEmail.placeholder = 'name' + DOMAIN;
       manualEmail.style.display = 'none';
       emailEl.parentNode.insertBefore(manualEmail, emailEl.nextSibling);
-      manualEmail.addEventListener('input', function () {
+      manualEmail.addEventListener('input', function (ev) {
         var v = manualEmail.value.trim();
         emailEl.innerHTML = '<option value="' + esc(v) + '" selected>' + esc(v || '—') + '</option>';
         sL(LS_EMAIL, v);
         fire(emailEl);
         hostCallbacks();
+        if (ev.isTrusted) { hostEmail = v; report(); }
       });
     }
 
@@ -303,19 +345,100 @@
     var lastRep = gL(LS_REP) || (repEl.value || '').trim() || '';
     var manualMode = false;
 
+    /* v5: what the viewer remembered wins over this frame's own storage,
+       which an iPad empties between sessions. Once the rep touches the store
+       or name on this page, a late answer from the site is ignored. */
+    var touched = false;
+    var phoneEl = $('repPhone') || $('rep-phone');
+    var phoneOwner = '';   // whose phone is in the phone box (cleared when someone else picks their name)
+    var hostEmail = '';
+    function currentEmail() {
+      if (manualEmail && manualEmail.style.display !== 'none') return manualEmail.value.trim();
+      if (!emailEl) return '';
+      var v = (emailEl.value || '').trim();
+      return v === DOMAIN ? '' : v;
+    }
+    function report() {
+      tellHost(function () {
+        var rv = currentRep ? String(currentRep.value || '').trim() : '';
+        return {
+          store: String(storeSel.value || '').replace(/ Xfinity Store$/i, '').trim(),   // shared as the short name
+          rep: rv === TYPE_IT ? '' : rv,
+          email: currentEmail(),
+          phone: phoneEl ? String(phoneEl.value || '').trim() : '',
+          manual: manualMode
+        };
+      });
+    }
+    function takeHost(r) {
+      if (!r) return false;
+      var st = typeof r.store === 'string' ? r.store.replace(/ Xfinity Store$/i, '').trim() : '';
+      if (st && !shortStores) st += SUFFIX;
+      var nm = typeof r.rep === 'string' ? r.rep : '';
+      if (!st && !nm) return false;
+      if (st) { lastStore = st; sL(LS_STORE, st); }
+      lastRep = nm;
+      if (nm) sL(LS_REP, nm);
+      hostEmail = typeof r.email === 'string' ? r.email : '';
+      if (hostEmail && !r.manual) sL(LS_EMAIL, hostEmail);
+      manualMode = r.manual === true && !!nm;
+      if (phoneEl && !phoneEl.value && typeof r.phone === 'string' && r.phone) {
+        phoneEl.value = r.phone;
+        phoneOwner = nm;
+        fire(phoneEl);
+      }
+      return true;
+    }
+    function restoreManualEmail() {
+      if (!manualMode || !hostEmail) return;
+      if (manualEmail && emailIsSelect) {
+        manualEmail.value = hostEmail;
+        emailEl.innerHTML = '<option value="' + esc(hostEmail) + '" selected>' + esc(hostEmail) + '</option>';
+        fire(emailEl);
+      } else if (emailEl) {
+        emailEl.value = hostEmail;
+        fire(emailEl);
+      }
+    }
+    if (phoneEl) {
+      phoneEl.addEventListener('input', function (ev) {
+        if (!ev.isTrusted) return;
+        var rv = currentRep ? String(currentRep.value || '').trim() : '';
+        phoneOwner = rv === TYPE_IT ? '' : rv;
+        report();
+      });
+    }
+    if (emailEl && !emailIsSelect) {
+      emailEl.addEventListener('input', function (ev) {
+        if (!ev.isTrusted || !manualMode) return;
+        hostEmail = currentEmail();
+        report();
+      });
+    }
+
     function onRepPicked(el) {
+      touched = true;
       var v = (el.value || '').trim();
       if (v === TYPE_IT) {
         manualMode = true;
+        hostEmail = '';
         renderRepManual('');
+        report();
         return;
       }
       if (v) sL(LS_REP, v);
+      /* a different rep took the iPad: the last rep's phone is not theirs */
+      if (phoneEl && phoneOwner && v && v !== phoneOwner && phoneEl.value) {
+        phoneEl.value = '';
+        phoneOwner = '';
+        fire(phoneEl);
+      }
       var opt = el.options && el.options[el.selectedIndex];
       var em = opt ? (opt.getAttribute('data-email') || '') : '';
       if (em) sL(LS_EMAIL, em);
       setEmail(em, true);
       hostCallbacks();
+      report();
     }
 
     function renderRepPlaceholder(text) {
@@ -363,16 +486,18 @@
       }
     }
 
-    function renderRepManual(prefill) {
+    function renderRepManual(prefill, noFocus) {
       var el = setRepControl(
         '<input type="text"' + repAttrs() + ' autocomplete="name" placeholder="Type your full name">' +
         '<div style="margin-top:6px"><a href="#" id="bfxBackToList" style="font-size:11px;color:#6713d2;text-decoration:underline">↩ back to the store list</a></div>'
       );
       if (prefill) el.value = prefill;
-      el.addEventListener('input', function () {
+      el.addEventListener('input', function (ev) {
         var v = (el.value || '').trim();
         if (v) sL(LS_REP, v);
+        if (ev.isTrusted) touched = true;
         hostCallbacks();
+        report();
       });
       setEmail('', false);
       var back = $('bfxBackToList');
@@ -383,15 +508,22 @@
           lastRep = '';
           if (manualEmail) manualEmail.value = '';
           if (emailEl && !emailIsSelect) emailEl.value = '';
+          hostEmail = '';
           refreshRep();
+          report();
         });
       }
-      try { el.focus(); } catch (e) {}
+      if (!noFocus) { try { el.focus(); } catch (e) {} }
     }
 
     function refreshRep() {
       var sv = storeSel.value;
-      if (manualMode) { renderRepManual((currentRep && currentRep.value) || ''); return; }
+      if (manualMode) {
+        var typed = (currentRep && currentRep.tagName === 'INPUT') ? (currentRep.value || '') : '';
+        renderRepManual(typed || lastRep || '', true);
+        restoreManualEmail();
+        return;
+      }
       if (!sv) { renderRepPlaceholder('— Select your store first —'); return; }
       if (!loaded) { renderRepPlaceholder('— Loading names… —'); return; }
       var people = peopleByStore[toFull(sv)] || peopleByStore[sv] || [];
@@ -411,7 +543,8 @@
       }
     }
 
-    storeSel.addEventListener('change', function () {
+    storeSel.addEventListener('change', function (ev) {
+      if (ev.isTrusted) touched = true;
       if (storeSel.value) sL(LS_STORE, storeSel.value);
       manualMode = false;
       lastRep = '';
@@ -419,6 +552,7 @@
       if (emailEl && !emailIsSelect) emailEl.value = '';
       refreshRep();
       hostCallbacks();
+      if (ev.isTrusted) report();
     });
 
     /* first paint from whatever the page shipped with */
@@ -429,8 +563,20 @@
       if (!shortStores && !/xfinity store\s*$/i.test(v)) return;  // drops "DM Submission" etc.
       seeded.push(toFull(v));
     });
+    takeHost(hostRep);
     fillStores(seeded);
     refreshRep();
+    restoreManualEmail();
+    onHostRep = function (r) {
+      if (touched || !takeHost(r)) return;
+      if (lastStore) {
+        storeSel.value = lastStore;
+        if (storeSel.value !== lastStore) storeSel.value = '';
+      }
+      refreshRep();
+      restoreManualEmail();
+      hostCallbacks();
+    };
 
     /* then the live directory */
     /* 5-minute cache bucket: fresh enough that an Admin Panel edit reaches reps
