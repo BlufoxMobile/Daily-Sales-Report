@@ -13910,8 +13910,8 @@
     "store": "Hammond"
   },
   "2504684413": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:27:01.760Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-28T20:27:04.072Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -14006,6 +14006,12 @@
     "ts": "2026-09-25T19:33:18.272Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2505361571": {
+    "status": "Closed",
+    "ts": "2026-09-28T20:27:12.608Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
   },
   "2506025270": {
     "status": "Closed",
@@ -19858,6 +19864,12 @@
   "1002310977392058": {
     "status": "Closed",
     "ts": "2026-09-28T20:12:04.752Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "1002311159812053": {
+    "status": "Closed",
+    "ts": "2026-09-28T20:27:06.302Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   }
