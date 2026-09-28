@@ -2641,47 +2641,37 @@ async function npsFetchConversion(){
       }
       NPS_CONV.byStore = conv;
     }
-    // Same shared feed request as npsFetchTSheets (retried); snapshot fallback.
-    // Days are bucketed in LOCAL time: the feed's timestamps are UTC, so slicing
-    // the ISO string put every t-sheet filed after 7 PM Central on the wrong day.
-    let subs = null;
-    try { subs = await npsTSheetFeed(); }
-    catch(e){ console.warn("conversion: t-sheet feed unavailable, trying tsheet-counts.json:", e); }
+    // Yesterday's t-charts. These used to come ONLY from the 2.8 MB live feed,
+    // with a fallback that could never fire in the morning (the counts snapshot
+    // is already on TODAY by then) - so on 9/28 the feed hiccupped and every
+    // store's T-Charts showed a dash. npsTSheetDays() now tries the live feed,
+    // then the Apps Script's own per-day summary (the exact numbers on the
+    // T-Sheet Submissions daily grid), then the nightly counts file in git.
+    // Days are LOCAL (Central) dates, same as the dashboard.
     const yd = new Date(); yd.setDate(yd.getDate() - 1);
     const yISO = npsLocalYMD(yd);
-    let counts = null, useDate = null;
-    if(subs){
-      const byDate = {};
-      for(const s of subs){ const t = Date.parse(s && s.timestamp); if(!isFinite(t)) continue; const day = npsLocalYMD(new Date(t)); (byDate[day] = byDate[day] || []).push(s); }
-      if(byDate[yISO]) useDate = yISO;
-      else { const days = Object.keys(byDate).sort(); for(let i=days.length-1;i>=0;i--){ if(byDate[days[i]].length>=30){ useDate=days[i]; break; } } if(!useDate && days.length) useDate = days[days.length-1]; }
-      counts = {};
-      (byDate[useDate] || []).forEach(s => { const sn = npsShortFromRaw(s.store); if(sn) counts[sn] = (counts[sn]||0)+1; });
-      // Every day's per-store count, so the T-Chart % arrow can compare against
-      // the day the previous report covered.
-      const tcByDate = {};
-      Object.keys(byDate).forEach(day => {
-        const m = tcByDate[day] = {};
-        byDate[day].forEach(s => { const sn = npsShortFromRaw(s.store); if(sn) m[sn] = (m[sn]||0)+1; });
+    const tsd = await npsTSheetDays().catch(e => { console.warn("conversion: no t-sheet day counts:", e); return null; });
+    NPS_CONV.tcByDate = {};
+    NPS_CONV.tsSource = "";
+    NPS_CONV.date = null;
+    if(tsd){
+      Object.keys(tsd.days).forEach(day => {
+        const m = NPS_CONV.tcByDate[day] = {};
+        Object.keys(tsd.days[day]).forEach(sn => { m[sn] = npsSumVals(tsd.days[day][sn]); });
       });
-      NPS_CONV.tcByDate = tcByDate;
-    } else {
-      // The snapshot only carries a single day's "today" column, so it can stand
-      // in only while it is still yesterday's file.
-      const snap = await npsFetchTSheetSnapshot().catch(e => { console.warn("conversion: tsheet-counts.json unavailable:", e); return null; });
-      if(snap && snap.day === yISO){
-        useDate = yISO; counts = {};
-        Object.keys(snap.stores).forEach(full => { const sn = npsShortFromRaw(full); if(sn) counts[sn] = (counts[sn]||0) + (Number((snap.stores[full]||{}).today) || 0); });
+      // A complete source with no row for yesterday means nobody filed one;
+      // an incomplete one (the counts history) only knows the days it found.
+      if(tsd.complete || tsd.days[yISO]){
+        const counts = NPS_CONV.tcByDate[yISO] || {};
+        NPS_CONV.date = yISO;
+        NPS_CONV.tsSource = tsd.source;
+        Object.keys(NPS_CONV.byStore).forEach(sn => {
+          const tc = counts[sn] || 0;
+          const traffic = NPS_CONV.byStore[sn].traffic || 0;
+          NPS_CONV.byStore[sn].tcharts = tc;
+          NPS_CONV.byStore[sn].tpct = traffic > 0 ? (tc/traffic*100) : null;
+        });
       }
-    }
-    if(counts){
-      NPS_CONV.date = useDate;
-      Object.keys(NPS_CONV.byStore).forEach(sn => {
-        const tc = counts[sn] || 0;
-        const traffic = NPS_CONV.byStore[sn].traffic || 0;
-        NPS_CONV.byStore[sn].tcharts = tc;
-        NPS_CONV.byStore[sn].tpct = traffic > 0 ? (tc/traffic*100) : null;
-      });
     }
     NPS_CONV.loaded = true;
   } catch(e){ console.warn("conversion unavailable:", e); }
@@ -2977,6 +2967,9 @@ let NPS_PREV = { loaded: false, reason: "not-run", date: null, stores: {}, reps:
 // The newest commit of `path` made before local midnight today.
 async function npsPrevCommitUrl(repo, path){
   const until = new Date(); until.setHours(0, 0, 0, 0);
+  return npsCommitBefore(repo, path, until);
+}
+async function npsCommitBefore(repo, path, until){
   const api = "https://api.github.com/repos/BlufoxMobile/" + repo + "/commits?path=" + encodeURIComponent(path) +
               "&until=" + encodeURIComponent(until.toISOString()) + "&per_page=1&_=" + Date.now();
   const r = await fetch(api, { cache: "no-store", headers: { "Accept": "application/vnd.github+json" } });
@@ -2989,6 +2982,91 @@ async function npsPrevCommitUrl(repo, path){
     url: "https://raw.githubusercontent.com/BlufoxMobile/" + repo + "/" + c.sha + "/" + path.split("/").map(encodeURIComponent).join("/"),
     date: iso ? npsLocalYMD(new Date(iso)) : null
   };
+}
+
+// ===== T-sheets per DAY (store -> typed rep -> count) =========================
+// Feeds Yesterday's Conversion and the T-Sheet arrows. Three sources, best first:
+//   1. the live feed (already fetched once per run by npsTSheetFeed),
+//   2. the Apps Script's ?scope=summary - 100 KB of per-day counts, the very
+//      numbers the T-Sheet Submissions dashboard's daily grid shows,
+//   3. the nightly data/tsheet-counts.json in git history (yesterday and the day
+//      before only; marked incomplete so nothing sums a month out of it).
+let NPS_TSDAYS = null;   // { at, promise }
+let NPS_TSD = null;      // the resolved result, for the synchronous renderers
+function npsSumVals(o){ let n = 0; Object.keys(o || {}).forEach(k => { n += Number(o[k]) || 0; }); return n; }
+function npsTSheetDays(){
+  if(NPS_TSDAYS && (Date.now() - NPS_TSDAYS.at) < NPS_TSHEET_MEMO_MS) return NPS_TSDAYS.promise;
+  const memo = { at: Date.now(), promise: null };
+  memo.promise = npsBuildTSheetDays()
+    .then(r => { NPS_TSD = r; return r; })
+    .catch(e => { if(NPS_TSDAYS === memo) NPS_TSDAYS = null; throw e; });
+  NPS_TSDAYS = memo;
+  return memo.promise;
+}
+async function npsFetchTSheetSummary(){
+  const ctl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  const timer = ctl ? setTimeout(() => ctl.abort(), 75000) : null;
+  try {
+    const r = await fetch(NPS_CONFIG.TSHEET_URL + "?scope=summary&t=" + Date.now(), { cache: "no-store", signal: ctl ? ctl.signal : undefined });
+    if(!r.ok) throw new Error("T-Sheet summary HTTP " + r.status);
+    const txt = await r.text();
+    let j = null;
+    try { j = JSON.parse(txt); } catch(e){ throw new Error("T-Sheet summary returned non-JSON"); }
+    if(!j || !j.success || !j.days || typeof j.days !== "object" || !Object.keys(j.days).length) throw new Error("T-Sheet summary malformed or empty");
+    return j;
+  } finally { if(timer) clearTimeout(timer); }
+}
+async function npsBuildTSheetDays(){
+  const days = {};
+  const add = (ymd, store, rep, n) => {
+    const sn = npsShortFromRaw(store);
+    if(!sn || !n) return;
+    const d = days[ymd] || (days[ymd] = {});
+    const st = d[sn] || (d[sn] = {});
+    const r = String(rep == null ? "" : rep).trim();
+    st[r] = (st[r] || 0) + n;
+  };
+  try {
+    const subs = await npsTSheetFeed();
+    subs.forEach(x => { const t = Date.parse(x && x.timestamp); if(isFinite(t)) add(npsLocalYMD(new Date(t)), x.store, x.rep_name, 1); });
+    return { days: days, source: "live feed", complete: true };
+  } catch(e){ console.warn("t-sheet days: live feed failed, trying the summary:", e); }
+  try {
+    const j = await npsFetchTSheetSummary();
+    Object.keys(j.days).forEach(day => {
+      const st = j.days[day] || {};
+      Object.keys(st).forEach(store => {
+        const reps = st[store];
+        if(reps && typeof reps === "object") Object.keys(reps).forEach(rep => add(day, store, rep, Number(reps[rep]) || 0));
+        else add(day, store, "", Number(reps) || 0);
+      });
+    });
+    return { days: days, source: "T-Sheet Submissions summary", complete: true, from: j.from || null };
+  } catch(e){ console.warn("t-sheet days: summary failed, trying the nightly counts history:", e); }
+  const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
+  for(let back = 1; back <= 2; back++){
+    const want = new Date(midnight); want.setDate(want.getDate() - back);
+    const until = new Date(want); until.setDate(until.getDate() + 1);
+    const wantYMD = npsLocalYMD(want);
+    try {
+      const c = await npsCommitBefore("Daily-Sales-Report", NPS_TSHEET_COUNTS_PATH, until);
+      const r = await fetch(c.url, { cache: "no-store" });
+      if(!r.ok) continue;
+      const j = await r.json();
+      if(!j || j.day !== wantYMD || !j.stores) continue;
+      days[wantYMD] = days[wantYMD] || {};
+      Object.keys(j.stores).forEach(store => {
+        const st = j.stores[store] || {};
+        const reps = st.reps || {};
+        let repSum = 0;
+        Object.keys(reps).forEach(rep => { const n = Number(reps[rep] && reps[rep].today) || 0; if(n){ add(wantYMD, store, rep, n); repSum += n; } });
+        const rest = (Number(st.today) || 0) - repSum;
+        if(rest > 0) add(wantYMD, store, "", rest);
+      });
+    } catch(e){ console.warn("t-sheet counts history for " + wantYMD + " unavailable:", e); }
+  }
+  if(!Object.keys(days).length) throw new Error("no t-sheet day counts from the feed, the summary or the counts history");
+  return { days: days, source: "nightly counts history", complete: false };
 }
 
 // "Fri, Sep 25" for a YYYY-MM-DD.
@@ -3063,16 +3141,17 @@ function npsDGoal(cur, prev, goal){ return (npsFin(cur) && npsFin(prev) && goal 
 // filed before the previous report's day. Live-feed runs only - the snapshot
 // fallback has no per-day detail, and a guess would be worse than no arrow.
 function npsTsBaseline(shortName, rosterNames){
-  const rows = NPS_TCHARTS.cycleRows;
-  const cyc = NPS_TCHARTS.cycle;
-  if(!NPS_TCHARTS.loaded || NPS_TCHARTS.fresh || !rows || !cyc || !NPS_PREV.loaded || !NPS_PREV.date) return null;
+  const cyc = npsTSheetCycle();
+  if(!NPS_TSD || !NPS_TSD.complete || !NPS_TCHARTS.loaded || NPS_TCHARTS.fresh || !NPS_PREV.loaded || !NPS_PREV.date) return null;
   if(NPS_PREV.date <= cyc.startYMD) return null;
-  const sk = String(shortName).trim().toLowerCase();
+  if(NPS_TSD.from && NPS_TSD.from > cyc.startYMD) return null;
+  const sn = npsShortFromRaw(shortName) || shortName;
   let store = 0; const typed = {};
-  rows.forEach(x => {
-    if(x.sk !== sk || x.ymd >= NPS_PREV.date) return;
-    store++;
-    if(x.rep) typed[x.rep] = (typed[x.rep] || 0) + 1;
+  Object.keys(NPS_TSD.days).forEach(day => {
+    if(day < cyc.startYMD || day >= NPS_PREV.date) return;
+    const reps = NPS_TSD.days[day][sn];
+    if(!reps) return;
+    Object.keys(reps).forEach(rep => { const n = reps[rep]; store += n; if(rep) typed[rep] = (typed[rep] || 0) + n; });
   });
   return { store: store, reps: rosterNames ? npsTcByRoster(shortName, rosterNames, typed) : {} };
 }
@@ -3679,7 +3758,8 @@ async function npsSendEmails(surveys, salesStores, dir){
     if(si < storeList.length - 1) await npsSleep(350);
   }
   return { sent: sent, errors: errors, storeCount: storeNames.size, sentStores: sentStores,
-    tsheets: NPS_TCHARTS.loaded ? NPS_TCHARTS.source : "unavailable" };
+    tsheets: NPS_TCHARTS.loaded ? NPS_TCHARTS.source : "unavailable",
+    convTs: NPS_CONV.tsSource || "" };
 }
 // === END NPS SHARED MODULE ===
 
@@ -3793,7 +3873,7 @@ async function npsDailyRun(parsed){
   //    even though the briefing's value is mostly the Sales Report numbers, not
   //    the surveys. It now runs every morning and is deduped by DATE instead.
   let sent = 0, storeCount = 0, errors = [];
-  let held = false, stale = [], tsheets = "";
+  let held = false, stale = [], tsheets = "", convTs = null;
   const hookReady = npsHookReady();
   const alreadySentToday = npsBriefingsSentToday(sentLog, today);
   if(hookReady && !alreadySentToday){
@@ -3802,7 +3882,7 @@ async function npsDailyRun(parsed){
     try { salesStores = await npsFetchSalesStores(); }
     catch(e){ console.warn('Sales report unavailable for email header:', e); }
     const res = await npsSendEmails(fresh, salesStores, dir);
-    sent = res.sent; storeCount = res.storeCount || 0; errors = res.errors || []; tsheets = res.tsheets || "";
+    sent = res.sent; storeCount = res.storeCount || 0; errors = res.errors || []; tsheets = res.tsheets || ""; convTs = (res.convTs == null) ? null : res.convTs;
 
     if(res.skipped){
       // Today's data isn't fully updated yet — hold the send and do NOT mark these
@@ -3861,7 +3941,7 @@ async function npsDailyRun(parsed){
     total: parsed.surveys.length, fresh: fresh.length, heldOld: heldOld,
     windowFrom: emailCutoff, newestDay: newestDay,
     sent: sent, storeCount: storeCount,
-    alreadySentToday: alreadySentToday, held: held, stale: stale, tsheets: tsheets,
+    alreadySentToday: alreadySentToday, held: held, stale: stale, tsheets: tsheets, convTs: convTs,
     unmatched: parsed.unmatched || [], hookReady: hookReady, errors: errors,
     lunch: lunch, lowNps: lowNps
   };
@@ -4438,6 +4518,8 @@ async function uploadFiles() {
           if (d.heldOld) sl += ` — ${d.heldOld} older survey${d.heldOld === 1 ? '' : 's'} skipped (before ${d.windowFrom})`;
           if (d.tsheets === 'unavailable') sl += ' — ⚠ t-sheet counts could not be read (feed and snapshot both failed), so the T-Sheet cells show a dash';
           else if (/^tsheet-counts/.test(d.tsheets || '')) sl += ' — t-sheet counts came from the counts snapshot because the live feed failed';
+          if (d.convTs && d.convTs !== 'live feed') sl += " — yesterday's T-Charts came from the " + d.convTs;
+          else if (d.convTs === '') sl += " — ⚠ yesterday's T-Charts could not be read, so they show a dash";
           if (d.errors.length) sl += ` — ⚠ ${d.errors.length} store email${d.errors.length === 1 ? '' : 's'} failed (will retry on next upload): ${d.errors.join('; ')}`;
           parts.push(sl);
         }
