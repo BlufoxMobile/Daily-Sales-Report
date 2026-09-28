@@ -12724,7 +12724,7 @@
   },
   "2456992384": {
     "status": "Closed",
-    "ts": "2026-09-23T20:27:00.098Z",
+    "ts": "2026-09-28T19:56:20.439Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -13261,6 +13261,12 @@
     "ts": "2026-09-23T18:44:18.203Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2475524488": {
+    "status": "Can Not Close",
+    "ts": "2026-09-28T19:58:15.454Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
   },
   "2475674663": {
     "status": "Pending Install",
