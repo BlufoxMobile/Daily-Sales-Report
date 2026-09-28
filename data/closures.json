@@ -14089,6 +14089,13 @@
     "store": "Calumet City",
     "pendingUntil": "2026-10-03"
   },
+  "2512105825": {
+    "status": "Pending Install",
+    "ts": "2026-09-28T20:39:55.230Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero",
+    "pendingUntil": "2026-10-08"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
@@ -19889,6 +19896,12 @@
   "1002311629062057": {
     "status": "Closed",
     "ts": "2026-09-28T20:37:23.872Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "1002311585332056": {
+    "status": "Closed",
+    "ts": "2026-09-28T20:37:26.536Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   }
