@@ -14020,6 +14020,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2510436857": {
+    "status": "Pending Install",
+    "ts": "2026-09-28T14:47:59.589Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-03"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
