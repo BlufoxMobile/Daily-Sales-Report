@@ -13708,10 +13708,11 @@
     "store": "Uptown"
   },
   "2500704159": {
-    "status": "Closed",
-    "ts": "2026-09-24T14:26:44.353Z",
+    "status": "Pending Install",
+    "ts": "2026-09-28T14:47:39.733Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Calumet City"
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-03"
   },
   "2501084956": {
     "status": "Closed",
