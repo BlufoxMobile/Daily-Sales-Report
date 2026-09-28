@@ -14062,6 +14062,13 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
+  "2508758662": {
+    "status": "Pending Install",
+    "ts": "2026-09-28T20:30:09.806Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero",
+    "pendingUntil": "2026-10-19"
+  },
   "2510031331": {
     "status": "Closed",
     "ts": "2026-09-26T20:23:31.413Z",
