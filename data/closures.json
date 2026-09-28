@@ -13431,12 +13431,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2484519049": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:05:10.725Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
   "2484996295": {
     "status": "Closed",
     "ts": "2026-09-23T22:51:46.785Z",
@@ -13465,7 +13459,7 @@
   },
   "2485563165": {
     "status": "Closed",
-    "ts": "2026-09-28T20:04:16.761Z",
+    "ts": "2026-09-28T20:08:44.704Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -19830,11 +19824,5 @@
     "ts": "2026-09-26T21:55:35.772Z",
     "dm": "Tanzim Chowdhury",
     "store": "Glenview"
-  },
-  "1002309002412055": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:06:45.061Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
   }
 }
