@@ -19904,5 +19904,12 @@
     "ts": "2026-09-28T20:37:26.536Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
+  },
+  "1002309375462059": {
+    "status": "Pending Install",
+    "ts": "2026-09-28T21:41:01.636Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-10-07"
   }
 }
