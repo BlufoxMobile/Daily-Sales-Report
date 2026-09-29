@@ -10651,11 +10651,10 @@
     "store": "Hammond"
   },
   "2437324664": {
-    "status": "Pending Install",
-    "ts": "2026-08-12T22:10:56.251Z",
+    "status": "Closed",
+    "ts": "2026-09-29T21:43:22.270Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-08-14"
+    "store": "Kildeer"
   },
   "2437379940": {
     "status": "Closed",
@@ -14159,12 +14158,6 @@
     "ts": "2026-09-29T20:28:37.668Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
-  },
-  "2507400904": {
-    "status": "Closed",
-    "ts": "2026-09-29T21:40:53.340Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
   },
   "2507421428": {
     "status": "Pending Install",
