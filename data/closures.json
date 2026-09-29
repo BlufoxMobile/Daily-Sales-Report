@@ -12711,11 +12711,10 @@
     "store": "Evanston"
   },
   "2456312902": {
-    "status": "Pending Install",
-    "ts": "2026-08-28T20:29:44.109Z",
+    "status": "Closed",
+    "ts": "2026-09-29T20:18:25.862Z",
     "dm": "Juan Carrillo",
-    "store": "Frankfort",
-    "pendingUntil": "2026-09-04"
+    "store": "Frankfort"
   },
   "2456313133": {
     "status": "Closed",
