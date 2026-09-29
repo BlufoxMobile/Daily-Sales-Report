@@ -10651,10 +10651,11 @@
     "store": "Hammond"
   },
   "2437324664": {
-    "status": "Closed",
-    "ts": "2026-09-29T21:43:22.270Z",
+    "status": "Pending Install",
+    "ts": "2026-08-12T22:10:56.251Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-08-14"
   },
   "2437379940": {
     "status": "Closed",
@@ -12491,7 +12492,7 @@
   },
   "2452015579": {
     "status": "Closed",
-    "ts": "2026-09-29T21:43:31.185Z",
+    "ts": "2026-09-23T22:16:23.506Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -20392,5 +20393,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-10-06"
+  },
+  "1002312472372056": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:43:50.773Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-08"
   }
 }
