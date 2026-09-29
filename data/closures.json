@@ -12303,7 +12303,7 @@
   },
   "2450082138": {
     "status": "Closed",
-    "ts": "2026-09-29T22:41:32.796Z",
+    "ts": "2026-09-23T22:52:12.489Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
@@ -13554,6 +13554,12 @@
     "ts": "2026-09-23T21:53:45.140Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2487207623": {
+    "status": "Closed",
+    "ts": "2026-09-29T22:43:27.734Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2487562518": {
     "status": "Closed",
@@ -20107,10 +20113,11 @@
     "store": "Elkhart"
   },
   "1002303013302058": {
-    "status": "Closed",
-    "ts": "2026-09-29T22:42:22.951Z",
+    "status": "Pending Install",
+    "ts": "2026-09-23T21:31:28.079Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-09-26"
   },
   "1002305946552055": {
     "status": "Pending Install",
