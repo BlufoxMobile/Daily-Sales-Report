@@ -12711,10 +12711,11 @@
     "store": "Evanston"
   },
   "2456312902": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:18:25.862Z",
+    "status": "Pending Install",
+    "ts": "2026-08-28T20:29:44.109Z",
     "dm": "Juan Carrillo",
-    "store": "Frankfort"
+    "store": "Frankfort",
+    "pendingUntil": "2026-09-04"
   },
   "2456313133": {
     "status": "Closed",
@@ -14288,6 +14289,12 @@
     "ts": "2026-09-29T20:13:56.346Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2514376357": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:20:43.405Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2514380088": {
     "status": "Pending Install",
