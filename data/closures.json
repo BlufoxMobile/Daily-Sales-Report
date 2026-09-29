@@ -13382,12 +13382,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
-  "2481128460": {
-    "status": "Closed",
-    "ts": "2026-09-29T22:16:10.628Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
-  },
   "2481865150": {
     "status": "Closed",
     "ts": "2026-09-25T15:46:23.615Z",
@@ -13664,6 +13658,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2495293267": {
+    "status": "Closed",
+    "ts": "2026-09-29T22:16:42.631Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2495378667": {
     "status": "Closed",
     "ts": "2026-09-16T16:20:38.048Z",
@@ -13748,6 +13748,13 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2498446413": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T22:08:54.474Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
+  },
   "2498558020": {
     "status": "Closed",
     "ts": "2026-09-29T19:47:13.082Z",
@@ -13765,6 +13772,13 @@
     "ts": "2026-09-23T22:51:24.224Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
+  },
+  "2499200571": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T22:09:00.530Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
   },
   "2499612163": {
     "status": "Closed",
