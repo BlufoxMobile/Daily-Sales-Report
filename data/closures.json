@@ -14383,6 +14383,13 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2512019708": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T22:06:05.773Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-01"
+  },
   "2512067279": {
     "status": "Closed",
     "ts": "2026-09-29T19:52:40.806Z",
