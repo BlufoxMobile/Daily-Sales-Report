@@ -13282,6 +13282,12 @@
     "store": "Elkhart",
     "pendingUntil": "2026-09-07"
   },
+  "2475956351": {
+    "status": "Closed",
+    "ts": "2026-09-29T19:39:58.746Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2476654808": {
     "status": "Closed",
     "ts": "2026-09-04T19:54:26.226Z",
@@ -14088,12 +14094,6 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
-  "2508721212": {
-    "status": "Closed",
-    "ts": "2026-09-29T19:32:37.061Z",
-    "dm": "Matthew Brooks",
-    "store": "South Knoxville"
-  },
   "2508758662": {
     "status": "Pending Install",
     "ts": "2026-09-28T20:30:09.806Z",
@@ -14146,12 +14146,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-10-06"
-  },
-  "2514772842": {
-    "status": "Can Not Close",
-    "ts": "2026-09-29T19:38:49.166Z",
-    "dm": "Matthew Brooks",
-    "store": "North Knoxville"
   },
   "2514898272": {
     "status": "Closed",
