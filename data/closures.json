@@ -13766,12 +13766,6 @@
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
-  "2499898351": {
-    "status": "Closed",
-    "ts": "2026-09-29T22:01:37.079Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
-  },
   "2499927845": {
     "status": "Closed",
     "ts": "2026-09-23T18:24:03.642Z",
@@ -14325,12 +14319,6 @@
     "ts": "2026-09-29T20:00:54.910Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
-  },
-  "2510788584": {
-    "status": "Closed",
-    "ts": "2026-09-29T21:56:14.901Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
   },
   "2510807658": {
     "status": "Closed",
@@ -20492,22 +20480,22 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "1002312529882057": {
+  "1002311629042059": {
     "status": "Closed",
-    "ts": "2026-09-29T21:56:16.644Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "ts": "2026-09-29T22:00:22.200Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
-  "1002311628022052": {
+  "1002311894842050": {
     "status": "Closed",
-    "ts": "2026-09-29T21:58:42.546Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "ts": "2026-09-29T22:00:36.088Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
-  "1002310736882050": {
+  "1001376476792115": {
     "status": "Closed",
-    "ts": "2026-09-29T21:59:42.731Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "ts": "2026-09-29T22:02:12.242Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
