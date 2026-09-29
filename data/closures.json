@@ -14076,6 +14076,12 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
+  "2507868771": {
+    "status": "Closed",
+    "ts": "2026-09-29T13:04:49.088Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2508758662": {
     "status": "Pending Install",
     "ts": "2026-09-28T20:30:09.806Z",
@@ -14102,6 +14108,12 @@
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City",
     "pendingUntil": "2026-10-03"
+  },
+  "2512067279": {
+    "status": "Closed",
+    "ts": "2026-09-29T13:00:47.041Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
   },
   "2512105825": {
     "status": "Pending Install",
