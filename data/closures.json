@@ -13275,7 +13275,7 @@
   },
   "2474472116": {
     "status": "Closed",
-    "ts": "2026-09-29T21:58:59.349Z",
+    "ts": "2026-09-23T22:19:34.691Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -13342,7 +13342,7 @@
   },
   "2478178283": {
     "status": "Closed",
-    "ts": "2026-09-29T22:04:44.531Z",
+    "ts": "2026-09-23T22:21:45.884Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -14489,6 +14489,13 @@
     "ts": "2026-09-29T21:27:17.283Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "2514547139": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T22:05:56.337Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-01"
   },
   "2514548799": {
     "status": "Closed",
