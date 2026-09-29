@@ -13292,12 +13292,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
-  "2475633307": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:21:38.731Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2475674663": {
     "status": "Pending Install",
     "ts": "2026-09-04T19:52:35.991Z",
@@ -13569,12 +13563,6 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
-  "2489878091": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:21:41.237Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2491260859": {
     "status": "Closed",
     "ts": "2026-09-23T21:54:27.072Z",
@@ -13608,12 +13596,6 @@
   "2492446689": {
     "status": "Closed",
     "ts": "2026-09-29T20:32:42.652Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
-  "2493970861": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:25:36.762Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -13666,8 +13648,8 @@
     "store": "Elkhart"
   },
   "2495750211": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:35:17.822Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-29T20:36:45.076Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -14152,12 +14134,6 @@
     "ts": "2026-09-25T19:35:11.585Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
-  },
-  "2507548824": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:21:39.790Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   },
   "2507600083": {
     "status": "Closed",
