@@ -9841,7 +9841,7 @@
   },
   "2426058056": {
     "status": "Closed",
-    "ts": "2026-09-23T20:07:49.791Z",
+    "ts": "2026-09-29T21:29:19.859Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -11337,7 +11337,7 @@
   },
   "2441633717": {
     "status": "Closed",
-    "ts": "2026-09-23T20:08:01.318Z",
+    "ts": "2026-09-29T21:29:29.363Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -12323,7 +12323,7 @@
   },
   "2450351081": {
     "status": "Closed",
-    "ts": "2026-09-23T20:08:07.662Z",
+    "ts": "2026-09-29T21:29:37.995Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -12347,7 +12347,7 @@
   },
   "2450642615": {
     "status": "Closed",
-    "ts": "2026-09-23T20:08:03.351Z",
+    "ts": "2026-09-29T21:29:34.923Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -13589,7 +13589,7 @@
   },
   "2491572558": {
     "status": "Closed",
-    "ts": "2026-09-23T20:19:39.591Z",
+    "ts": "2026-09-29T21:29:54.699Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -14108,6 +14108,13 @@
     "ts": "2026-09-24T19:59:18.505Z",
     "dm": "Tanzim Chowdhury",
     "store": "Burbank"
+  },
+  "2506087904": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:38:32.034Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "2506106072": {
     "status": "Closed",
@@ -18658,7 +18665,7 @@
   },
   "1002299867852059": {
     "status": "Closed",
-    "ts": "2026-09-23T20:08:02.373Z",
+    "ts": "2026-09-29T21:29:31.203Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -20045,16 +20052,18 @@
     "store": "Evanston"
   },
   "1002304735602056": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:37:25.066Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:29:52.738Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "1002302353662055": {
-    "status": "Closed",
-    "ts": "2026-09-23T22:37:29.375Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:29:46.602Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "1002309023912059": {
     "status": "Closed",
