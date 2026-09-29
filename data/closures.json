@@ -20083,10 +20083,11 @@
     "store": "Cicero"
   },
   "1002311159812053": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:10:12.947Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T20:10:25.962Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
+    "store": "Cicero",
+    "pendingUntil": "2026-10-06"
   },
   "1002311352702051": {
     "status": "Closed",
@@ -20101,10 +20102,11 @@
     "store": "Cicero"
   },
   "1002311585332056": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:37:26.536Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T20:10:34.138Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
+    "store": "Cicero",
+    "pendingUntil": "2026-10-06"
   },
   "1002309375462059": {
     "status": "Pending Install",
