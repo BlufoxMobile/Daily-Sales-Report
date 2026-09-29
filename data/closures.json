@@ -12736,8 +12736,8 @@
     "store": "Evanston"
   },
   "2456992384": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-29T20:02:12.220Z",
+    "status": "Closed",
+    "ts": "2026-09-28T19:56:20.439Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -13191,6 +13191,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2472010139": {
+    "status": "Can Not Close",
+    "ts": "2026-09-29T19:56:37.189Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2472507591": {
     "status": "Cancelled Order",
     "ts": "2026-09-02T14:08:26.447Z",
@@ -13280,6 +13286,12 @@
     "ts": "2026-09-28T19:58:15.454Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
+  },
+  "2475633307": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:00:05.460Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2475674663": {
     "status": "Pending Install",
@@ -13452,7 +13464,7 @@
   },
   "2484519049": {
     "status": "Closed",
-    "ts": "2026-09-29T20:02:13.651Z",
+    "ts": "2026-09-28T20:08:56.999Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -13830,8 +13842,8 @@
     "store": "Evergreen Park"
   },
   "2502419200": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-29T20:02:24.002Z",
+    "status": "Closed",
+    "ts": "2026-09-28T20:12:00.529Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -14106,6 +14118,12 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
+  "2507548824": {
+    "status": "Can Not Close",
+    "ts": "2026-09-29T20:03:23.627Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2507600083": {
     "status": "Closed",
     "ts": "2026-09-25T18:40:02.666Z",
@@ -14209,12 +14227,6 @@
     "ts": "2026-09-29T19:58:31.792Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
-  },
-  "2510855322": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:39:57.647Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
   },
   "2511006484": {
     "status": "Pending Install",
@@ -20048,7 +20060,7 @@
   },
   "1002309002412055": {
     "status": "Closed",
-    "ts": "2026-09-29T20:02:16.468Z",
+    "ts": "2026-09-28T20:09:01.625Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
