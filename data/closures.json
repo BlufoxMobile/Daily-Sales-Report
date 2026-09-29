@@ -13720,6 +13720,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
+  "2499615928": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:13:06.524Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2499841360": {
     "status": "Closed",
     "ts": "2026-09-24T14:26:42.528Z",
@@ -14260,6 +14266,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-10-08"
   },
+  "2512114246": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:05:36.862Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2512151329": {
     "status": "Closed",
     "ts": "2026-09-29T19:49:29.358Z",
@@ -14278,6 +14290,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-10-06"
+  },
+  "2512345788": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:05:38.272Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2514380088": {
     "status": "Pending Install",
