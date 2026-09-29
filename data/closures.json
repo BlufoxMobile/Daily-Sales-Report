@@ -13720,12 +13720,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
-  "2499615928": {
-    "status": "Closed",
-    "ts": "2026-09-29T19:48:56.390Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort"
-  },
   "2499841360": {
     "status": "Closed",
     "ts": "2026-09-24T14:26:42.528Z",
@@ -14020,12 +14014,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
-  "2504967045": {
-    "status": "Closed",
-    "ts": "2026-09-29T19:52:36.736Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort"
-  },
   "2505022168": {
     "status": "Cancelled Order",
     "ts": "2026-09-23T18:42:09.379Z",
@@ -14067,12 +14055,6 @@
     "ts": "2026-09-28T17:29:21.768Z",
     "dm": "Tanzim Chowdhury",
     "store": "Burbank"
-  },
-  "2506248797": {
-    "status": "Closed",
-    "ts": "2026-09-29T19:54:05.196Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort"
   },
   "2506324700": {
     "status": "Closed",
@@ -14149,12 +14131,6 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
-  "2509488511": {
-    "status": "Closed",
-    "ts": "2026-09-29T19:57:07.171Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort"
-  },
   "2510031331": {
     "status": "Closed",
     "ts": "2026-09-26T20:23:31.413Z",
@@ -14224,6 +14200,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-10-06"
+  },
+  "2514376357": {
+    "status": "Closed",
+    "ts": "2026-09-29T19:57:25.334Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2514772842": {
     "status": "Can Not Close",
