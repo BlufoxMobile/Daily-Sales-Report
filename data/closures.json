@@ -14045,8 +14045,8 @@
     "store": "Evergreen Park"
   },
   "2505361571": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:27:12.608Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-29T20:10:17.691Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -20084,13 +20084,13 @@
   },
   "1002311159812053": {
     "status": "Closed",
-    "ts": "2026-09-28T20:27:06.302Z",
+    "ts": "2026-09-29T20:10:12.947Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
   "1002311352702051": {
     "status": "Closed",
-    "ts": "2026-09-28T20:37:22.616Z",
+    "ts": "2026-09-29T20:10:14.450Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
