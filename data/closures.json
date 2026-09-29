@@ -14135,6 +14135,12 @@
     "store": "Greeneville",
     "pendingUntil": "2026-10-06"
   },
+  "2514898272": {
+    "status": "Closed",
+    "ts": "2026-09-29T15:24:26.477Z",
+    "dm": "Jacob Cabrales",
+    "store": "South Bend"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
