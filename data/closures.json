@@ -12736,8 +12736,8 @@
     "store": "Evanston"
   },
   "2456992384": {
-    "status": "Closed",
-    "ts": "2026-09-28T19:56:20.439Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-29T20:02:12.220Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -13452,7 +13452,7 @@
   },
   "2484519049": {
     "status": "Closed",
-    "ts": "2026-09-28T20:08:56.999Z",
+    "ts": "2026-09-29T20:02:13.651Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -13830,8 +13830,8 @@
     "store": "Evergreen Park"
   },
   "2502419200": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:12:00.529Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-29T20:02:24.002Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -14215,6 +14215,12 @@
     "ts": "2026-09-29T19:58:31.792Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2510855322": {
+    "status": "Closed",
+    "ts": "2026-09-28T20:39:57.647Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
   },
   "2511006484": {
     "status": "Pending Install",
@@ -20059,8 +20065,8 @@
     "store": "Glenview"
   },
   "1002309002412055": {
-    "status": "Closed",
-    "ts": "2026-09-28T20:09:01.625Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-29T20:02:27.051Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -20072,7 +20078,7 @@
   },
   "1002310977392058": {
     "status": "Closed",
-    "ts": "2026-09-28T20:12:04.752Z",
+    "ts": "2026-09-29T20:10:09.668Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
