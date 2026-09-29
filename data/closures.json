@@ -13871,10 +13871,11 @@
     "store": "Evergreen Park"
   },
   "2502419200": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-29T20:02:24.002Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:50:48.944Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
+    "store": "Cicero",
+    "pendingUntil": "2026-10-06"
   },
   "2503335931": {
     "status": "Pending Install",
