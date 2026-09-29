@@ -14484,6 +14484,13 @@
     "store": "Cicero",
     "pendingUntil": "2026-10-17"
   },
+  "2514415071": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T22:20:54.652Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-06"
+  },
   "2514500856": {
     "status": "Closed",
     "ts": "2026-09-29T20:26:34.820Z",
@@ -14565,6 +14572,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero",
     "pendingUntil": "2026-10-17"
+  },
+  "2514973454": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T22:22:25.491Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-06"
   },
   "2515033975": {
     "status": "Closed",
