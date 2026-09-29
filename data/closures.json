@@ -12749,11 +12749,10 @@
     "pendingUntil": "2026-09-04"
   },
   "2457067346": {
-    "status": "Pending Install",
-    "ts": "2026-08-28T20:30:56.132Z",
+    "status": "Cancelled Order",
+    "ts": "2026-09-29T20:16:16.113Z",
     "dm": "Juan Carrillo",
-    "store": "Frankfort",
-    "pendingUntil": "2026-09-04"
+    "store": "Frankfort"
   },
   "2457125237": {
     "status": "Closed",
@@ -14284,6 +14283,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-10-06"
+  },
+  "2512345788": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:13:56.346Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2514380088": {
     "status": "Pending Install",
