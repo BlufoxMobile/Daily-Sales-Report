@@ -14347,6 +14347,13 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2511361153": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:48:37.940Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
+  },
   "2511744023": {
     "status": "Closed",
     "ts": "2026-09-29T20:05:32.462Z",
@@ -14482,6 +14489,13 @@
     "ts": "2026-09-29T19:38:49.166Z",
     "dm": "Matthew Brooks",
     "store": "North Knoxville"
+  },
+  "2514880889": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:48:40.292Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "2514898272": {
     "status": "Closed",
