@@ -14296,12 +14296,6 @@
     "store": "Evanston",
     "pendingUntil": "2026-10-06"
   },
-  "2510643325": {
-    "status": "Closed",
-    "ts": "2026-09-29T21:53:45.966Z",
-    "dm": "Jacob Cabrales",
-    "store": "Elkhart"
-  },
   "2510648340": {
     "status": "Closed",
     "ts": "2026-09-29T19:58:27.547Z",
@@ -14319,6 +14313,12 @@
     "ts": "2026-09-29T20:00:54.910Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2510788584": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:56:14.901Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   },
   "2510807658": {
     "status": "Closed",
@@ -14515,12 +14515,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-10-06"
-  },
-  "2514890173": {
-    "status": "Closed",
-    "ts": "2026-09-29T21:56:47.727Z",
-    "dm": "Jacob Cabrales",
-    "store": "Elkhart"
   },
   "2514898272": {
     "status": "Closed",
@@ -20473,5 +20467,17 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-10-06"
+  },
+  "1002312529882057": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:56:16.644Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
+  "1002311628022052": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:58:42.546Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
   }
 }
