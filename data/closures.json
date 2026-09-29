@@ -14263,6 +14263,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
+  "2510990006": {
+    "status": "Pending Install",
+    "ts": "2026-09-28T14:48:26.469Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-03"
+  },
   "2511006484": {
     "status": "Pending Install",
     "ts": "2026-09-28T14:48:20.309Z",
