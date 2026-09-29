@@ -14279,6 +14279,13 @@
     "store": "Greeneville",
     "pendingUntil": "2026-10-06"
   },
+  "2514380088": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T20:10:59.905Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero",
+    "pendingUntil": "2026-10-17"
+  },
   "2514772842": {
     "status": "Can Not Close",
     "ts": "2026-09-29T19:38:49.166Z",
@@ -14290,6 +14297,13 @@
     "ts": "2026-09-29T15:24:26.477Z",
     "dm": "Jacob Cabrales",
     "store": "South Bend"
+  },
+  "2514930174": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T20:11:04.361Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero",
+    "pendingUntil": "2026-10-17"
   },
   "2515033975": {
     "status": "Closed",
