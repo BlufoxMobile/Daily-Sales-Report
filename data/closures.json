@@ -12448,6 +12448,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2451770664": {
+    "status": "Can Not Close",
+    "ts": "2026-09-29T19:55:29.462Z",
+    "dm": "Matthew Brooks",
+    "store": "Greeneville"
+  },
   "2451796762": {
     "status": "Closed",
     "ts": "2026-09-09T15:42:03.471Z",
@@ -13708,12 +13714,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
-  "2499615928": {
-    "status": "Closed",
-    "ts": "2026-09-29T19:48:56.390Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort"
-  },
   "2499841360": {
     "status": "Closed",
     "ts": "2026-09-24T14:26:42.528Z",
@@ -14007,12 +14007,6 @@
     "ts": "2026-09-23T22:34:43.260Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
-  },
-  "2504967045": {
-    "status": "Closed",
-    "ts": "2026-09-29T19:52:36.736Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort"
   },
   "2505022168": {
     "status": "Cancelled Order",
