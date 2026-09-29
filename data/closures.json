@@ -13282,6 +13282,12 @@
     "store": "Elkhart",
     "pendingUntil": "2026-09-07"
   },
+  "2475956351": {
+    "status": "Closed",
+    "ts": "2026-09-29T19:39:58.746Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2476654808": {
     "status": "Closed",
     "ts": "2026-09-04T19:54:26.226Z",
@@ -13683,6 +13689,12 @@
     "ts": "2026-09-23T18:51:06.451Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2498558020": {
+    "status": "Closed",
+    "ts": "2026-09-29T19:47:13.082Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2498680520": {
     "status": "Closed",
@@ -20034,5 +20046,11 @@
     "dm": "Jacob Cabrales",
     "store": "South Bend",
     "pendingUntil": "2026-10-02"
+  },
+  "1002308989832053": {
+    "status": "Closed",
+    "ts": "2026-09-29T19:41:16.032Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   }
 }
