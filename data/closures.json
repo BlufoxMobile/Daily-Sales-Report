@@ -14409,6 +14409,13 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2512604701": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:48:36.044Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
+  },
   "2513185994": {
     "status": "Closed",
     "ts": "2026-09-29T21:32:44.125Z",
