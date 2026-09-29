@@ -14307,6 +14307,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2512082486": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:27:23.763Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2512105825": {
     "status": "Pending Install",
     "ts": "2026-09-28T20:39:55.230Z",
@@ -14369,6 +14375,18 @@
     "ts": "2026-09-29T20:26:34.820Z",
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
+  },
+  "2514510942": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:27:17.283Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "2514548799": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:27:18.620Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2514554535": {
     "status": "Closed",
@@ -20022,11 +20040,10 @@
     "pendingUntil": "2026-09-26"
   },
   "1002309886982058": {
-    "status": "Pending Install",
-    "ts": "2026-09-23T22:37:36.277Z",
+    "status": "Closed",
+    "ts": "2026-09-29T21:27:29.224Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie",
-    "pendingUntil": "2026-09-24"
+    "store": "South Skokie"
   },
   "1002305269782057": {
     "status": "Closed",
