@@ -13024,12 +13024,6 @@
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
-  "2467160694": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:21:35.743Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2467383014": {
     "status": "Can Not Close",
     "ts": "2026-09-02T15:15:00.004Z",
@@ -13195,12 +13189,6 @@
     "ts": "2026-09-02T15:07:00.282Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
-  },
-  "2472010139": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:21:37.145Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   },
   "2472507591": {
     "status": "Cancelled Order",
@@ -13592,12 +13580,6 @@
     "ts": "2026-09-23T14:57:18.930Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond"
-  },
-  "2492446689": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:21:19.429Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   },
   "2494318090": {
     "status": "Closed",
@@ -14307,6 +14289,18 @@
     "ts": "2026-09-29T20:13:56.346Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2514373291": {
+    "status": "Can Not Close",
+    "ts": "2026-09-29T20:21:44.860Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
+  },
+  "2514376357": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:20:43.405Z",
+    "dm": "Matthew Brooks",
+    "store": "Oak Ridge"
   },
   "2514380088": {
     "status": "Pending Install",
