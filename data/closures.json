@@ -9841,7 +9841,7 @@
   },
   "2426058056": {
     "status": "Closed",
-    "ts": "2026-09-29T21:29:19.859Z",
+    "ts": "2026-09-23T20:07:49.791Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -11337,7 +11337,7 @@
   },
   "2441633717": {
     "status": "Closed",
-    "ts": "2026-09-29T21:29:29.363Z",
+    "ts": "2026-09-23T20:08:01.318Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -12323,7 +12323,7 @@
   },
   "2450351081": {
     "status": "Closed",
-    "ts": "2026-09-29T21:29:37.995Z",
+    "ts": "2026-09-23T20:08:07.662Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -12347,7 +12347,7 @@
   },
   "2450642615": {
     "status": "Closed",
-    "ts": "2026-09-29T21:29:34.923Z",
+    "ts": "2026-09-23T20:08:03.351Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -14374,6 +14374,12 @@
     "ts": "2026-09-29T20:13:56.346Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2513185994": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:32:44.125Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   },
   "2514373291": {
     "status": "Can Not Close",
@@ -18652,7 +18658,7 @@
   },
   "1002299867852059": {
     "status": "Closed",
-    "ts": "2026-09-29T21:29:31.203Z",
+    "ts": "2026-09-23T20:08:02.373Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
@@ -20039,18 +20045,16 @@
     "store": "Evanston"
   },
   "1002304735602056": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:29:52.738Z",
+    "status": "Closed",
+    "ts": "2026-09-23T22:37:25.066Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "1002302353662055": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:29:46.602Z",
+    "status": "Closed",
+    "ts": "2026-09-23T22:37:29.375Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "1002309023912059": {
     "status": "Closed",
