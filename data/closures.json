@@ -14184,6 +14184,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2509050085": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:27:03.190Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2509488511": {
     "status": "Closed",
     "ts": "2026-09-29T19:57:07.171Z",
@@ -20296,6 +20302,12 @@
   "1002311398602059": {
     "status": "Closed",
     "ts": "2026-09-29T21:26:56.736Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
+  "1002311347302058": {
+    "status": "Closed",
+    "ts": "2026-09-29T21:26:58.247Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   }
