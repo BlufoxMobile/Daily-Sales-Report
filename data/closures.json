@@ -13191,12 +13191,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
-  "2472010139": {
-    "status": "Can Not Close",
-    "ts": "2026-09-29T19:56:37.189Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2472507591": {
     "status": "Cancelled Order",
     "ts": "2026-09-02T14:08:26.447Z",
@@ -13286,12 +13280,6 @@
     "ts": "2026-09-28T19:58:15.454Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
-  },
-  "2475633307": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:00:05.460Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   },
   "2475674663": {
     "status": "Pending Install",
@@ -14118,12 +14106,6 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
-  "2507548824": {
-    "status": "Can Not Close",
-    "ts": "2026-09-29T20:03:23.627Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2507600083": {
     "status": "Closed",
     "ts": "2026-09-25T18:40:02.666Z",
@@ -14222,6 +14204,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2510721326": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:00:54.910Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2510807658": {
     "status": "Closed",
     "ts": "2026-09-29T19:58:31.792Z",
@@ -14234,6 +14222,18 @@
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City",
     "pendingUntil": "2026-10-03"
+  },
+  "2511011214": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:00:56.423Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
+  "2511744023": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:05:32.462Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2512067279": {
     "status": "Closed",
