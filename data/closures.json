@@ -13581,6 +13581,12 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2492446689": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:21:19.429Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2494318090": {
     "status": "Closed",
     "ts": "2026-09-23T15:04:13.522Z",
@@ -14289,12 +14295,6 @@
     "ts": "2026-09-29T20:13:56.346Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
-  },
-  "2514376357": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:20:43.405Z",
-    "dm": "Matthew Brooks",
-    "store": "Oak Ridge"
   },
   "2514380088": {
     "status": "Pending Install",
