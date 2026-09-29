@@ -14533,6 +14533,13 @@
     "dm": "Matthew Brooks",
     "store": "North Knoxville"
   },
+  "2514816229": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T22:20:52.180Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-06"
+  },
   "2514880889": {
     "status": "Pending Install",
     "ts": "2026-09-29T21:48:45.579Z",
