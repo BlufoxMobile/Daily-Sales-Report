@@ -14103,6 +14103,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
+  "2505928783": {
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:38:36.091Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
+  },
   "2506025270": {
     "status": "Closed",
     "ts": "2026-09-24T19:59:18.505Z",
