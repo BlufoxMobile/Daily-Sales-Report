@@ -13024,6 +13024,12 @@
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
+  "2467160694": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:32:39.497Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2467383014": {
     "status": "Can Not Close",
     "ts": "2026-09-02T15:15:00.004Z",
@@ -13190,6 +13196,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2472010139": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:32:40.799Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2472507591": {
     "status": "Cancelled Order",
     "ts": "2026-09-02T14:08:26.447Z",
@@ -13279,6 +13291,12 @@
     "ts": "2026-09-28T19:58:15.454Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
+  },
+  "2475633307": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:21:38.731Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2475674663": {
     "status": "Pending Install",
@@ -13551,6 +13569,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2489878091": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:21:41.237Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2491260859": {
     "status": "Closed",
     "ts": "2026-09-23T21:54:27.072Z",
@@ -13580,6 +13604,12 @@
     "ts": "2026-09-23T14:57:18.930Z",
     "dm": "Jacob Cabrales",
     "store": "Hammond"
+  },
+  "2493970861": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:25:36.762Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2494318090": {
     "status": "Closed",
@@ -14110,6 +14140,12 @@
     "ts": "2026-09-25T19:35:11.585Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2507548824": {
+    "status": "Closed",
+    "ts": "2026-09-29T20:21:39.790Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2507600083": {
     "status": "Closed",
