@@ -14623,6 +14623,12 @@
     "store": "Calumet City",
     "pendingUntil": "2026-10-03"
   },
+  "2510595364": {
+    "status": "Closed",
+    "ts": "2026-09-30T22:00:10.729Z",
+    "dm": "Jacob Cabrales",
+    "store": "Michigan City"
+  },
   "2510635617": {
     "status": "Pending Install",
     "ts": "2026-09-29T21:48:29.148Z",
