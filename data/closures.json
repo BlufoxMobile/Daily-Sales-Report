@@ -19809,11 +19809,10 @@
     "pendingUntil": "2026-09-04"
   },
   "1002304705302059": {
-    "status": "Pending Install",
-    "ts": "2026-08-28T21:16:37.549Z",
+    "status": "Closed",
+    "ts": "2026-09-30T19:19:09.224Z",
     "dm": "Juan Carrillo",
-    "store": "Bourbonnais",
-    "pendingUntil": "2026-09-04"
+    "store": "Bourbonnais"
   },
   "1002304802072050": {
     "status": "Pending Install",
@@ -20776,5 +20775,11 @@
     "ts": "2026-09-30T17:14:04.996Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
+  },
+  "1002304724172053": {
+    "status": "Closed",
+    "ts": "2026-09-30T19:19:13.825Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   }
 }
