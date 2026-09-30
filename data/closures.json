@@ -14194,6 +14194,12 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2504822532": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-30T21:15:37.822Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2504831954": {
     "status": "Pending Install",
     "ts": "2026-09-23T23:00:56.024Z",
