@@ -12825,12 +12825,6 @@
     "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
-  "2458978314": {
-    "status": "Closed",
-    "ts": "2026-09-30T19:25:24.852Z",
-    "dm": "Tanzim Chowdhury",
-    "store": "Round Lake Beach"
-  },
   "2459052836": {
     "status": "Closed",
     "ts": "2026-08-28T21:23:11.062Z",
@@ -13397,6 +13391,12 @@
     "ts": "2026-09-28T20:00:18.649Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
+  },
+  "2481042342": {
+    "status": "Closed",
+    "ts": "2026-09-30T19:25:42.769Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   },
   "2481128460": {
     "status": "Closed",
@@ -20787,5 +20787,12 @@
     "ts": "2026-09-30T19:19:13.825Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "1002305207682054": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T19:19:18.023Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-10-07"
   }
 }
