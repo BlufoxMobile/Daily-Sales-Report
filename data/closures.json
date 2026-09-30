@@ -14866,6 +14866,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
+  "2515307852": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T20:06:58.969Z",
+    "dm": "Juan Carrillo",
+    "store": "Oak Lawn",
+    "pendingUntil": "2026-10-07"
+  },
   "2515341273": {
     "status": "Closed",
     "ts": "2026-09-29T21:14:15.878Z",
