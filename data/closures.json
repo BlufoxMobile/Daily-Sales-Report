@@ -13446,23 +13446,11 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
-  "2480578152": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:57:03.887Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
   "2480584430": {
     "status": "Closed",
     "ts": "2026-09-30T19:54:13.970Z",
     "dm": "Tanzim Chowdhury",
     "store": "Round Lake Beach"
-  },
-  "2480584994": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:57:05.248Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
   },
   "2480595616": {
     "status": "Closed",
@@ -13488,12 +13476,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
-  "2480957542": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:57:02.761Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
   "2481042342": {
     "status": "Closed",
     "ts": "2026-09-30T19:40:36.818Z",
@@ -13505,6 +13487,12 @@
     "ts": "2026-09-29T22:40:21.575Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "2481634753": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:57:06.847Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2481865150": {
     "status": "Closed",
@@ -13590,23 +13578,11 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2484369025": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:54:12.888Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
   "2484519049": {
     "status": "Closed",
     "ts": "2026-09-29T20:02:13.651Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
-  },
-  "2484599416": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:53:34.742Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
   },
   "2484996295": {
     "status": "Closed",
@@ -13626,12 +13602,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-09-11"
-  },
-  "2485469193": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:53:25.502Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
   },
   "2485521664": {
     "status": "Pending Install",
