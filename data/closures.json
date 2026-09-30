@@ -12765,11 +12765,10 @@
     "store": "Bourbonnais"
   },
   "2457507919": {
-    "status": "Pending Install",
-    "ts": "2026-08-28T20:00:49.901Z",
+    "status": "Closed",
+    "ts": "2026-09-30T16:03:39.072Z",
     "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-09-04"
+    "store": "Tinley Park"
   },
   "2457550405": {
     "status": "Closed",
@@ -13584,6 +13583,12 @@
     "ts": "2026-09-23T18:54:47.211Z",
     "dm": "Matthew Brooks",
     "store": "Greeneville"
+  },
+  "2488269628": {
+    "status": "Closed",
+    "ts": "2026-09-30T16:12:45.472Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
   },
   "2488436082": {
     "status": "Closed",
