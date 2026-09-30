@@ -12544,6 +12544,18 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2452839974": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:52:33.621Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
+  "2452897458": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:52:32.286Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2452990767": {
     "status": "Closed",
     "ts": "2026-08-17T16:05:08.430Z",
@@ -12609,6 +12621,12 @@
     "ts": "2026-08-28T20:50:50.958Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2454494762": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:52:34.702Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2455408587": {
     "status": "Pending Install",
