@@ -11739,8 +11739,8 @@
     "pendingUntil": "2026-08-22"
   },
   "2445873822": {
-    "status": "Closed",
-    "ts": "2026-08-13T21:15:29.280Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:47:05.275Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
