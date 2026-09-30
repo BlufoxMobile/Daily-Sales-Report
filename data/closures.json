@@ -14096,6 +14096,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
+  "2499200571": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:06:15.411Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
+  },
   "2499410094": {
     "status": "Closed",
     "ts": "2026-09-30T16:42:24.114Z",
