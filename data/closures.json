@@ -13577,6 +13577,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2485973758": {
+    "status": "Closed",
+    "ts": "2026-09-30T19:40:39.256Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
   "2486787411": {
     "status": "Closed",
     "ts": "2026-09-10T20:24:28.353Z",
@@ -20805,5 +20811,12 @@
     "ts": "2026-09-30T19:19:13.825Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "1002305207682054": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T19:40:41.985Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-10-07"
   }
 }
