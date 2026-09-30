@@ -13434,6 +13434,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2476350712": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-30T22:46:23.960Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Glenview"
+  },
   "2476470919": {
     "status": "Closed",
     "ts": "2026-09-30T19:34:49.820Z",
@@ -13523,6 +13529,12 @@
     "ts": "2026-09-28T20:00:18.649Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
+  },
+  "2480833297": {
+    "status": "Closed",
+    "ts": "2026-09-30T22:46:25.375Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Glenview"
   },
   "2481042342": {
     "status": "Closed",
@@ -14732,10 +14744,11 @@
     "pendingUntil": "2026-10-03"
   },
   "2511006484": {
-    "status": "Closed",
-    "ts": "2026-09-30T22:40:56.715Z",
+    "status": "Pending Install",
+    "ts": "2026-09-28T14:48:20.309Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Calumet City"
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-03"
   },
   "2511011214": {
     "status": "Closed",
@@ -14988,10 +15001,10 @@
   },
   "2514973454": {
     "status": "Pending Install",
-    "ts": "2026-09-30T22:46:21.818Z",
+    "ts": "2026-09-29T22:22:25.491Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City",
-    "pendingUntil": "2026-10-07"
+    "pendingUntil": "2026-10-06"
   },
   "2515024638": {
     "status": "Pending Install",
