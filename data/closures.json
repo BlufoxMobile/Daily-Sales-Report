@@ -21390,5 +21390,12 @@
     "ts": "2026-09-30T23:14:53.212Z",
     "dm": "Tanzim Chowdhury",
     "store": "Burbank"
+  },
+  "1002311901982055": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:34:47.649Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-10-02"
   }
 }
