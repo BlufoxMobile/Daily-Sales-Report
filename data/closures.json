@@ -11739,8 +11739,8 @@
     "pendingUntil": "2026-08-22"
   },
   "2445873822": {
-    "status": "Can Not Close",
-    "ts": "2026-09-30T21:47:14.652Z",
+    "status": "Closed",
+    "ts": "2026-08-13T21:15:29.280Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
@@ -12544,18 +12544,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
-  "2452839974": {
-    "status": "Can Not Close",
-    "ts": "2026-09-30T21:47:20.803Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
-  "2452897458": {
-    "status": "Can Not Close",
-    "ts": "2026-09-30T21:47:17.485Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
   "2452990767": {
     "status": "Closed",
     "ts": "2026-08-17T16:05:08.430Z",
@@ -12621,12 +12609,6 @@
     "ts": "2026-08-28T20:50:50.958Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
-  },
-  "2454494762": {
-    "status": "Can Not Close",
-    "ts": "2026-09-30T21:47:23.548Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
   },
   "2455408587": {
     "status": "Pending Install",
@@ -12702,6 +12684,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2456050944": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:47:28.475Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2456103511": {
     "status": "Cancelled Order",
     "ts": "2026-09-09T15:31:17.894Z",
@@ -12769,6 +12757,12 @@
     "ts": "2026-08-28T14:51:41.416Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
+  },
+  "2456351412": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:47:25.795Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2456741395": {
     "status": "Closed",
@@ -13554,23 +13548,11 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2484369025": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:42:59.985Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
-  },
   "2484519049": {
     "status": "Closed",
     "ts": "2026-09-29T20:02:13.651Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
-  },
-  "2484599416": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:42:57.073Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
   },
   "2484996295": {
     "status": "Closed",
@@ -13590,12 +13572,6 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-09-11"
-  },
-  "2485469193": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:46:59.171Z",
-    "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
   },
   "2485521664": {
     "status": "Pending Install",
