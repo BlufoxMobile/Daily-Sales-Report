@@ -14663,10 +14663,11 @@
     "store": "Tinley Park"
   },
   "2510436857": {
-    "status": "Closed",
-    "ts": "2026-09-30T22:40:53.771Z",
+    "status": "Pending Install",
+    "ts": "2026-09-28T14:48:10.877Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Calumet City"
+    "store": "Calumet City",
+    "pendingUntil": "2026-10-03"
   },
   "2510595364": {
     "status": "Closed",
@@ -14755,6 +14756,13 @@
     "ts": "2026-09-29T20:05:32.462Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2512019708": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T22:42:33.065Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
   },
   "2512067279": {
     "status": "Closed",
