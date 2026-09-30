@@ -13001,6 +13001,12 @@
     "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
+  "2464279530": {
+    "status": "Closed",
+    "ts": "2026-09-30T22:15:58.451Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Glenview"
+  },
   "2464513992": {
     "status": "Closed",
     "ts": "2026-09-02T15:19:04.438Z",
@@ -13190,6 +13196,12 @@
     "ts": "2026-08-28T14:41:03.292Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2468132263": {
+    "status": "Cancelled Order",
+    "ts": "2026-09-30T22:18:53.380Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Glenview"
   },
   "2468185119": {
     "status": "Closed",
