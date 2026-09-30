@@ -13434,12 +13434,6 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
-  "2476350712": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-30T22:35:14.155Z",
-    "dm": "Tanzim Chowdhury",
-    "store": "Glenview"
-  },
   "2476470919": {
     "status": "Closed",
     "ts": "2026-09-30T19:34:49.820Z",
@@ -14113,11 +14107,10 @@
     "store": "Uptown"
   },
   "2500704159": {
-    "status": "Pending Install",
-    "ts": "2026-09-28T14:47:39.733Z",
+    "status": "Closed",
+    "ts": "2026-09-30T22:36:36.459Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Calumet City",
-    "pendingUntil": "2026-10-03"
+    "store": "Calumet City"
   },
   "2501084956": {
     "status": "Closed",
