@@ -228,7 +228,7 @@
         sL(LS_EMAIL, v);
         fire(emailEl);
         hostCallbacks();
-        if (ev.isTrusted) { hostEmail = v; report(); }
+        if (ev.isTrusted) { hostEmail = v; emailOwner = repTyped(); report(); }
       });
     }
 
@@ -381,6 +381,11 @@
     var phoneEl = $('repPhone') || $('rep-phone');
     var phoneOwner = '';   // whose phone is in the phone box (cleared when someone else picks their name)
     var hostEmail = '';
+    var emailOwner = '';   // whose remembered email was put back in manual mode (cleared when someone else types their name)
+    function repTyped() {
+      var rv = currentRep ? String(currentRep.value || '').trim() : '';
+      return rv === TYPE_IT ? '' : rv;
+    }
     function currentEmail() {
       if (manualEmail && manualEmail.style.display !== 'none') return manualEmail.value.trim();
       if (!emailEl) return '';
@@ -420,6 +425,7 @@
     }
     function restoreManualEmail() {
       if (!manualMode || !hostEmail) return;
+      if (!emailOwner) emailOwner = lastRep || '';
       if (manualEmail && emailIsSelect) {
         manualEmail.value = hostEmail;
         emailEl.innerHTML = '<option value="' + esc(hostEmail) + '" selected>' + esc(hostEmail) + '</option>';
@@ -441,6 +447,7 @@
       emailEl.addEventListener('input', function (ev) {
         if (!ev.isTrusted || !manualMode) return;
         hostEmail = currentEmail();
+        emailOwner = repTyped();
         report();
       });
     }
@@ -524,6 +531,10 @@
       el.addEventListener('input', function (ev) {
         var v = (el.value || '').trim();
         if (v) sL(LS_REP, v);
+        /* 2026-09-30: someone else is typing their name (the directory was unreachable, so the box was
+           prefilled with the last rep): the last rep's remembered email and phone are not theirs.
+           Retyping the same name (a prefix of it) keeps them. */
+        if (ev.isTrusted) forgetOthers(v);
         if (ev.isTrusted) touched = true;
         hostCallbacks();
         report();
@@ -543,6 +554,27 @@
         });
       }
       if (!noFocus) { try { el.focus(); } catch (e) {} }
+    }
+
+    function notSamePerson(owner, v) {
+      var o = String(owner || '').trim().toLowerCase(), t = String(v || '').trim().toLowerCase();
+      return !!o && o.indexOf(t) !== 0;
+    }
+    function forgetOthers(v) {
+      if (emailOwner && notSamePerson(emailOwner, v)) {
+        var cur = currentEmail();
+        if (cur && hostEmail && cur.toLowerCase() === hostEmail.toLowerCase()) {
+          if (manualEmail) manualEmail.value = '';
+          setEmail('', false);
+          hostEmail = '';
+        }
+        emailOwner = '';
+      }
+      if (phoneEl && phoneOwner && notSamePerson(phoneOwner, v) && phoneEl.value) {
+        phoneEl.value = '';
+        fire(phoneEl);
+        phoneOwner = '';
+      }
     }
 
     function refreshRep() {
