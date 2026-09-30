@@ -14834,6 +14834,12 @@
     "store": "Evanston",
     "pendingUntil": "2026-10-06"
   },
+  "2515108092": {
+    "status": "Closed",
+    "ts": "2026-09-30T20:02:30.145Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2515163953": {
     "status": "Pending Install",
     "ts": "2026-09-29T20:10:53.930Z",
