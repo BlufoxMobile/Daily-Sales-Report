@@ -14732,11 +14732,10 @@
     "pendingUntil": "2026-10-03"
   },
   "2511006484": {
-    "status": "Pending Install",
-    "ts": "2026-09-28T14:48:20.309Z",
+    "status": "Closed",
+    "ts": "2026-09-30T22:40:56.715Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Calumet City",
-    "pendingUntil": "2026-10-03"
+    "store": "Calumet City"
   },
   "2511011214": {
     "status": "Closed",
