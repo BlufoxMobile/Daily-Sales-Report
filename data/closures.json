@@ -13698,6 +13698,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2495581553": {
+    "status": "Closed",
+    "ts": "2026-09-30T16:28:08.185Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2495750211": {
     "status": "Can Not Close",
     "ts": "2026-09-29T20:36:45.076Z",
@@ -20636,6 +20642,12 @@
   "1002309010212059": {
     "status": "Closed",
     "ts": "2026-09-30T16:22:04.482Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
+  "1002309817752059": {
+    "status": "Closed",
+    "ts": "2026-09-30T16:29:19.362Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   }
