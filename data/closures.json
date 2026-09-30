@@ -13810,10 +13810,11 @@
     "store": "Bourbonnais"
   },
   "2490455367": {
-    "status": "Closed",
-    "ts": "2026-09-30T23:05:39.061Z",
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:05:52.092Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
   },
   "2490560368": {
     "status": "Pending Install",
