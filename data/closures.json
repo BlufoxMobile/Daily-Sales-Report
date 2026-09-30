@@ -20901,5 +20901,19 @@
     "ts": "2026-09-30T19:57:05.842Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "1002310354592056": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T19:58:06.784Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-10-07"
+  },
+  "1002311881142050": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T19:58:13.497Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-10-07"
   }
 }
