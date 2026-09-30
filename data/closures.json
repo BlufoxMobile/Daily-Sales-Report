@@ -11739,8 +11739,8 @@
     "pendingUntil": "2026-08-22"
   },
   "2445873822": {
-    "status": "Closed",
-    "ts": "2026-08-13T21:15:29.280Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:51:00.318Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
@@ -12543,6 +12543,12 @@
     "ts": "2026-09-23T22:42:05.406Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "2452897458": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:51:01.613Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2452990767": {
     "status": "Closed",
