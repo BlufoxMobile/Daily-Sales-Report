@@ -13782,6 +13782,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
+  "2490066378": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:05:24.724Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
+  },
   "2490273142": {
     "status": "Closed",
     "ts": "2026-09-30T19:41:47.793Z",
