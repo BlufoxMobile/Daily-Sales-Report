@@ -14879,6 +14879,13 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond"
   },
+  "2515404814": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T20:07:11.344Z",
+    "dm": "Juan Carrillo",
+    "store": "Oak Lawn",
+    "pendingUntil": "2026-10-07"
+  },
   "2515583227": {
     "status": "Closed",
     "ts": "2026-09-29T21:14:16.879Z",
