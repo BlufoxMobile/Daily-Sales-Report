@@ -23,6 +23,11 @@
  *      Upgrade-Quote-Sheet             storeName / repName / repEmail
  *      Internet-Rate-Plan-Calculator   rep-store / rep-name / rep-email
  *
+ *  v5.1 (2026-09-29) The store directory is asked of Pages and raw HEDGED
+ *  (raw starts if Pages fails or is silent for 3 s) instead of one after the
+ *  other with 10 s each, so a stalled request no longer holds the name list
+ *  on "Loading names…" for up to 20 s.
+ *
  *  v5 (2026-09-27) REMEMBERED THROUGH THE COOKCOUNTYCOOKS.COM VIEWER
  *  On an iPad, Safari (and Chrome, which is Safari underneath) keeps a framed
  *  page's localStorage only for the session, so inside cookcountycooks.com the
@@ -112,6 +117,30 @@
       })
       .then(function (v) { clearTimeout(t); return v; },
             function (e) { clearTimeout(t); throw e; });
+  }
+  /* Ask the URLs in order; start the next one when the current one fails or
+     has not answered within staggerMs. First success wins; rejects only when
+     every URL has failed. */
+  var DIR_HEDGE_MS = 3000;
+  function hedged(urls, staggerMs) {
+    return new Promise(function (resolve, reject) {
+      var started = 0, failed = 0, settled = false, timer = 0;
+      function next() {
+        if (settled || started >= urls.length) return;
+        var u = urls[started++];
+        clearTimeout(timer);
+        if (started < urls.length) timer = setTimeout(next, staggerMs);
+        jget(u).then(function (v) {
+          if (settled) return;
+          settled = true; clearTimeout(timer); resolve(v);
+        }, function (e) {
+          if (settled) return;
+          if (++failed >= urls.length) { settled = true; clearTimeout(timer); reject(e); }
+          else next();
+        });
+      }
+      next();
+    });
   }
   function hostCallbacks() {
     ['onRepStoreChange', 'checkSubmitReady', 'updatePreview', 'persistRepData'].forEach(function (fn) {
@@ -587,9 +616,13 @@
     var bust = '?d=' + now.toISOString().slice(0, 16).replace(/[-T:]/g, '');
     /* Pages first: it is same-origin with the quote sheets and updates the
        instant a commit builds, whereas the raw.githubusercontent CDN can serve
-       a stale copy for several minutes after an Admin Panel save. */
-    jget(DIR_PAGES + bust)
-      .catch(function () { return jget(DIR_RAW + bust); })
+       a stale copy for several minutes after an Admin Panel save.
+       v5.1 (2026-09-29): HEDGED, not one-after-the-other. A Pages request that
+       stalled held "Loading names…" for its full 10 s before raw was even
+       asked (20 s when both were slow) — the "names don't fill in" Jeff saw on
+       the store iPads. Raw now starts as soon as Pages fails, or after
+       DIR_HEDGE_MS with no answer, and whichever answers first is used. */
+    hedged([DIR_PAGES + bust, DIR_RAW + bust], DIR_HEDGE_MS)
       .then(function (d) {
         buildMaps(d);
         storeList = (d && Array.isArray(d.stores) && d.stores.length)
