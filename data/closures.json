@@ -13958,6 +13958,13 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
+  "2495293267": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:06:40.340Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
+  },
   "2495378667": {
     "status": "Closed",
     "ts": "2026-09-16T16:20:38.048Z",
