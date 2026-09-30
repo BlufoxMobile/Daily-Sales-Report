@@ -11739,8 +11739,8 @@
     "pendingUntil": "2026-08-22"
   },
   "2445873822": {
-    "status": "Closed",
-    "ts": "2026-08-13T21:15:29.280Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:47:59.875Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
@@ -12543,6 +12543,12 @@
     "ts": "2026-09-23T22:42:05.406Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "2452897458": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:48:01.339Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2452990767": {
     "status": "Closed",
@@ -13560,6 +13566,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
+  "2484599416": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:47:51.795Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2484996295": {
     "status": "Closed",
     "ts": "2026-09-23T22:51:46.785Z",
@@ -13578,6 +13590,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-09-11"
+  },
+  "2485469193": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:47:53.572Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2485521664": {
     "status": "Pending Install",
