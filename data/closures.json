@@ -13809,6 +13809,13 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
+  "2490321488": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:05:57.958Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
+  },
   "2490455367": {
     "status": "Pending Install",
     "ts": "2026-09-30T23:05:52.092Z",
