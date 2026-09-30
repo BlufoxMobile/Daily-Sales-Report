@@ -8312,8 +8312,8 @@
     "store": "Bourbonnais"
   },
   "2399611601": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-30T23:32:51.818Z",
+    "status": "Closed",
+    "ts": "2026-08-24T18:58:41.111Z",
     "dm": "Tanzim Chowdhury",
     "store": "Burbank"
   },
@@ -15107,12 +15107,6 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero",
     "pendingUntil": "2026-10-17"
-  },
-  "2514935732": {
-    "status": "Can Not Close",
-    "ts": "2026-09-30T23:31:28.227Z",
-    "dm": "Tanzim Chowdhury",
-    "store": "Burbank"
   },
   "2514973454": {
     "status": "Pending Install",
