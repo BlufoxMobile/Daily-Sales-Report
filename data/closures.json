@@ -13952,6 +13952,13 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2495100748": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:06:43.892Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
+  },
   "2495195799": {
     "status": "Closed",
     "ts": "2026-09-30T21:27:06.003Z",
@@ -14998,6 +15005,13 @@
     "ts": "2026-09-29T21:27:17.283Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "2514547139": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:07:02.692Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
   },
   "2514548799": {
     "status": "Closed",
