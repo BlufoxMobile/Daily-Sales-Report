@@ -13536,6 +13536,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2484369025": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:42:59.985Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2484519049": {
     "status": "Closed",
     "ts": "2026-09-29T20:02:13.651Z",
@@ -13566,6 +13572,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-09-11"
+  },
+  "2485469193": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:46:59.171Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2485521664": {
     "status": "Pending Install",
