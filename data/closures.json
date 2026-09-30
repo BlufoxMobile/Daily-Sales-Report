@@ -13824,6 +13824,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
+  "2499410094": {
+    "status": "Closed",
+    "ts": "2026-09-30T16:42:24.114Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
   "2499547765": {
     "status": "Closed",
     "ts": "2026-09-30T16:42:22.139Z",
@@ -20684,6 +20690,12 @@
   "1002310298072058": {
     "status": "Closed",
     "ts": "2026-09-30T16:31:18.154Z",
+    "dm": "Juan Carrillo",
+    "store": "Tinley Park"
+  },
+  "1002310561042051": {
+    "status": "Closed",
+    "ts": "2026-09-30T16:44:23.273Z",
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   }
