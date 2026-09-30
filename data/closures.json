@@ -14073,10 +14073,11 @@
     "store": "Valparaiso"
   },
   "2498446413": {
-    "status": "Closed",
-    "ts": "2026-09-29T22:17:23.433Z",
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:06:21.628Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
   },
   "2498558020": {
     "status": "Closed",
