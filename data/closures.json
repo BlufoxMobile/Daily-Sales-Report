@@ -13902,6 +13902,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2499615928": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T19:58:04.418Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2499841360": {
     "status": "Closed",
     "ts": "2026-09-24T14:26:42.528Z",
@@ -20875,5 +20881,25 @@
     "dm": "Juan Carrillo",
     "store": "Bourbonnais",
     "pendingUntil": "2026-10-07"
+  },
+  "1002309646312059": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T19:57:01.921Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-10-07"
+  },
+  "1002309623072056": {
+    "status": "Pending Install",
+    "ts": "2026-09-30T19:57:04.121Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort",
+    "pendingUntil": "2026-10-07"
+  },
+  "1002309577952055": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T19:57:05.842Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   }
 }
