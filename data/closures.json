@@ -13446,6 +13446,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2480578152": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:49:56.229Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2480584430": {
     "status": "Closed",
     "ts": "2026-09-30T19:54:13.970Z",
@@ -13454,7 +13460,7 @@
   },
   "2480584994": {
     "status": "Can Not Close",
-    "ts": "2026-09-30T21:49:52.333Z",
+    "ts": "2026-09-30T21:50:00.341Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
