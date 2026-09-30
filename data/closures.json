@@ -13506,6 +13506,12 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2481634753": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T21:51:16.509Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2481865150": {
     "status": "Closed",
     "ts": "2026-09-25T15:46:23.615Z",
@@ -13614,6 +13620,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville",
     "pendingUntil": "2026-09-11"
+  },
+  "2485469193": {
+    "status": "Closed",
+    "ts": "2026-09-30T21:51:21.293Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2485521664": {
     "status": "Pending Install",
