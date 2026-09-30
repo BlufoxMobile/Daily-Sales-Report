@@ -13392,6 +13392,18 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2480584430": {
+    "status": "Closed",
+    "ts": "2026-09-30T19:54:13.970Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Round Lake Beach"
+  },
+  "2480595616": {
+    "status": "Closed",
+    "ts": "2026-09-30T19:54:13.011Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Round Lake Beach"
+  },
   "2480724452": {
     "status": "Closed",
     "ts": "2026-09-08T15:59:42.773Z",
@@ -14471,12 +14483,6 @@
     "ts": "2026-09-29T19:41:20.428Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
-  },
-  "2510295800": {
-    "status": "Closed",
-    "ts": "2026-09-30T19:49:31.888Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
   },
   "2510436270": {
     "status": "Closed",
@@ -20840,13 +20846,6 @@
   "1002311373362059": {
     "status": "Pending Install",
     "ts": "2026-09-30T19:48:12.721Z",
-    "dm": "Juan Carrillo",
-    "store": "Bourbonnais",
-    "pendingUntil": "2026-10-07"
-  },
-  "1002311363162055": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T19:48:15.648Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais",
     "pendingUntil": "2026-10-07"
