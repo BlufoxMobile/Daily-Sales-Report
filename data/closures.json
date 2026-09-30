@@ -15108,6 +15108,12 @@
     "store": "Cicero",
     "pendingUntil": "2026-10-17"
   },
+  "2514935732": {
+    "status": "Can Not Close",
+    "ts": "2026-09-30T23:31:28.227Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank"
+  },
   "2514973454": {
     "status": "Pending Install",
     "ts": "2026-09-29T22:22:25.491Z",
