@@ -11267,6 +11267,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2440973485": {
+    "status": "Can Not Close",
+    "ts": "2026-09-28T14:42:39.894Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Glenview"
+  },
   "2440995946": {
     "status": "Closed",
     "ts": "2026-08-08T22:31:21.343Z",
@@ -11515,8 +11521,8 @@
     "store": "Tinley Park"
   },
   "2443516326": {
-    "status": "Closed",
-    "ts": "2026-09-26T22:58:31.993Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-28T14:42:41.374Z",
     "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
@@ -11923,8 +11929,8 @@
     "store": "Greeneville"
   },
   "2446599015": {
-    "status": "Closed",
-    "ts": "2026-09-26T23:03:16.504Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-28T14:42:42.423Z",
     "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
@@ -12647,6 +12653,12 @@
     "ts": "2026-09-02T15:28:37.611Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
+  },
+  "2455733934": {
+    "status": "Can Not Close",
+    "ts": "2026-09-28T14:42:45.002Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Glenview"
   },
   "2455741050": {
     "status": "Closed",
@@ -20672,8 +20684,8 @@
     "pendingUntil": "2026-10-07"
   },
   "1002302398052056": {
-    "status": "Closed",
-    "ts": "2026-09-26T21:55:15.358Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-28T14:42:46.677Z",
     "dm": "Tanzim Chowdhury",
     "store": "Glenview"
   },
