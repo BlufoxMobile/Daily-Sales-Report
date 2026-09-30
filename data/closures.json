@@ -21055,5 +21055,23 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-10-07"
+  },
+  "1002311629042059": {
+    "status": "Closed",
+    "ts": "2026-09-30T20:55:00.925Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
+  "1002311894842050": {
+    "status": "Closed",
+    "ts": "2026-09-30T20:55:02.188Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
+  "1001376476792115": {
+    "status": "Closed",
+    "ts": "2026-09-30T20:55:03.492Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
   }
 }
