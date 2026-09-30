@@ -12741,11 +12741,10 @@
     "store": "Cicero"
   },
   "2457036720": {
-    "status": "Pending Install",
-    "ts": "2026-08-28T20:00:52.327Z",
+    "status": "Closed",
+    "ts": "2026-09-30T16:03:34.273Z",
     "dm": "Juan Carrillo",
-    "store": "Tinley Park",
-    "pendingUntil": "2026-09-04"
+    "store": "Tinley Park"
   },
   "2457067346": {
     "status": "Cancelled Order",
