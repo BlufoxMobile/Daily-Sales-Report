@@ -12563,10 +12563,11 @@
     "store": "Oak Ridge"
   },
   "2453054520": {
-    "status": "Closed",
-    "ts": "2026-10-01T00:15:55.142Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:37:59.449Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2453204572": {
     "status": "Can Not Close",
@@ -12966,10 +12967,11 @@
     "store": "Evanston"
   },
   "2461158854": {
-    "status": "Closed",
-    "ts": "2026-10-01T00:20:49.219Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:37:55.745Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2461174207": {
     "status": "Closed",
@@ -13676,10 +13678,11 @@
     "pendingUntil": "2026-09-11"
   },
   "2485450039": {
-    "status": "Closed",
-    "ts": "2026-10-01T00:04:45.094Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:37:51.963Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2485521664": {
     "status": "Pending Install",
@@ -13787,6 +13790,12 @@
     "ts": "2026-09-29T22:48:15.730Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "2488673233": {
+    "status": "Can Not Close",
+    "ts": "2026-10-01T00:49:07.226Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Dekalb"
   },
   "2489657098": {
     "status": "Closed",
@@ -14016,10 +14025,11 @@
     "store": "South Skokie"
   },
   "2496045382": {
-    "status": "Closed",
-    "ts": "2026-09-30T14:14:18.972Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:38:08.318Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2496482746": {
     "status": "Closed",
@@ -14064,10 +14074,11 @@
     "store": "Tinley Park"
   },
   "2498029514": {
-    "status": "Closed",
-    "ts": "2026-09-30T14:13:43.260Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:38:05.305Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2498103875": {
     "status": "Cancelled Order",
@@ -14935,10 +14946,11 @@
     "store": "Frankfort"
   },
   "2512143656": {
-    "status": "Closed",
-    "ts": "2026-09-30T23:28:06.560Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:38:14.333Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2512151329": {
     "status": "Closed",
@@ -14986,10 +14998,11 @@
     "pendingUntil": "2026-10-06"
   },
   "2512619123": {
-    "status": "Closed",
-    "ts": "2026-09-30T23:23:45.265Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:38:11.136Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2513185994": {
     "status": "Closed",
