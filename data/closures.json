@@ -13911,10 +13911,11 @@
     "store": "Glenview"
   },
   "2493843989": {
-    "status": "Closed",
-    "ts": "2026-10-01T00:37:30.813Z",
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:37:42.107Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb"
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
   },
   "2493889008": {
     "status": "Closed",
