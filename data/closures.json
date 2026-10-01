@@ -12392,6 +12392,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston"
   },
+  "2450720360": {
+    "status": "Pending Install",
+    "ts": "2026-10-01T00:51:26.622Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Dekalb",
+    "pendingUntil": "2026-10-08"
+  },
   "2450869155": {
     "status": "Closed",
     "ts": "2026-08-14T21:47:36.337Z",
