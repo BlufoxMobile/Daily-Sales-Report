@@ -28,7 +28,7 @@
     "Machesney Park Xfinity Store": "1556 West Lane Rd, Machesney Park, IL 61115",
     "North Knoxville Xfinity Store": ""
   },
-  "updatedAt": "2026-09-28T13:15:57.471Z",
+  "updatedAt": "2026-10-02T18:08:48.974Z",
   "stores": [
     "Bourbonnais Xfinity Store",
     "Burbank Xfinity Store",
@@ -161,7 +161,7 @@
     "Greeneville Xfinity Store": "jTrentham@blufoxmobile.com",
     "Hammond Xfinity Store": "ABell@blufoxmobile.com",
     "Johnson City Xfinity Store": "vHuerto@blufoxmobile.com",
-    "Michigan City Xfinity Store": "apVasquez@blufoxmobile.com",
+    "Michigan City Xfinity Store": "ccrooks@blufoxmobile.com",
     "Oak Ridge Xfinity Store": "kKirkland@blufoxmobile.com",
     "Round Lake Beach Xfinity Store": "brPerez@blufoxmobile.com",
     "Schererville Xfinity Store": "miJackson@blufoxmobile.com",
@@ -270,7 +270,7 @@
     "Greeneville Xfinity Store": "Joshua Trentham",
     "Hammond Xfinity Store": "Alexis Bell",
     "Johnson City Xfinity Store": "Vincent Huerto",
-    "Michigan City Xfinity Store": "April Vasquez",
+    "Michigan City Xfinity Store": "Collin Crooks",
     "Oak Ridge Xfinity Store": "Kayla Kirkland",
     "Schererville Xfinity Store": "Michael Jackson",
     "Round Lake Beach Xfinity Store": "Bryan Perez",
@@ -346,11 +346,6 @@
         "email": "darwood@blufoxmobile.com"
       },
       {
-        "first": "Dalton",
-        "last": "Fox",
-        "email": "dfox@blufoxmobile.com"
-      },
-      {
         "first": "Nicholes",
         "last": "Gilland",
         "email": "ngilland@blufoxmobile.com"
@@ -374,9 +369,19 @@
         "first": "Jared",
         "last": "Reaves",
         "email": "jreaves@blufoxmobile.com"
+      },
+      {
+        "first": "Tavian",
+        "last": "Stewart",
+        "email": "tstewart@blufoxmobile.com"
       }
     ],
     "Johnson City Xfinity Store": [
+      {
+        "first": "Alexis",
+        "last": "Chan",
+        "email": "achan@blufoxmobile.com"
+      },
       {
         "first": "Jesse",
         "last": "Grawberg",
@@ -447,11 +452,6 @@
         "email": "qfurlong@blufoxmobile.com"
       },
       {
-        "first": "James",
-        "last": "Jones",
-        "email": "jajones@blufoxmobile.com"
-      },
-      {
         "first": "Connor",
         "last": "Mcllwain",
         "email": "cmcilwain@blufoxmobile.com"
@@ -465,16 +465,6 @@
         "first": "Ronald",
         "last": "Rigney",
         "email": "rrigney@blufoxmobile.com"
-      },
-      {
-        "first": "Michael",
-        "last": "Wade",
-        "email": "mwade@blufoxmobile.com"
-      },
-      {
-        "first": "Jacori",
-        "last": "Wimes",
-        "email": "jwimes@blufoxmobile.com"
       },
       {
         "first": "Shane",
@@ -494,14 +484,14 @@
         "email": "jsimon@blufoxmobile.com"
       },
       {
-        "first": "Melissa",
-        "last": "Sullivan",
-        "email": "msullivan@blufoxmobile.com"
-      },
-      {
         "first": "Masahiro",
         "last": "Taylor",
         "email": "mataylor@blufoxmobile.com"
+      },
+      {
+        "first": "Tamyrah",
+        "last": "Young",
+        "email": "tyoung@blufoxmobile.com"
       }
     ],
     "Bourbonnais Xfinity Store": [
@@ -521,14 +511,14 @@
         "email": "mkennedy@blufoxmobile.com"
       },
       {
-        "first": "Aaron",
-        "last": "Patterson",
-        "email": "apatterson@blufoxmobile.com"
-      },
-      {
         "first": "Jose",
         "last": "Quintanilla",
         "email": "joquintanilla@blufoxmobile.com"
+      },
+      {
+        "first": "Madelyn",
+        "last": "Wojciechowski",
+        "email": "mwojciechowski@blufoxmobile.com"
       }
     ],
     "Burbank Xfinity Store": [
@@ -553,11 +543,6 @@
         "email": "acarradine@blufoxmobile.com"
       },
       {
-        "first": "Erick",
-        "last": "Enriquez",
-        "email": "eenriquez@blufoxmobile.com"
-      },
-      {
         "first": "Jalen",
         "last": "Logan",
         "email": "jlogan@blufoxmobile.com"
@@ -578,6 +563,11 @@
         "first": "Ejuan",
         "last": "Miller",
         "email": "emiller@blufoxmobile.com"
+      },
+      {
+        "first": "Autumn",
+        "last": "Thomas",
+        "email": "autthomas@blufoxmobile.com"
       }
     ],
     "Uptown Xfinity Store": [
@@ -617,11 +607,6 @@
         "first": "Julia",
         "last": "Ariza",
         "email": "jariza@blufoxmobile.com"
-      },
-      {
-        "first": "Gabriel",
-        "last": "Bucio",
-        "email": "gbucio@blufoxmobile.com"
       },
       {
         "first": "Leslie",
@@ -666,9 +651,9 @@
         "email": "vavila@blufoxmobile.com"
       },
       {
-        "first": "Kyin",
-        "last": "Edwards",
-        "email": "kedwards@blufoxmobile.com"
+        "first": "Noah",
+        "last": "Faszholz",
+        "email": "nfaszholz@blufoxmobile.com"
       },
       {
         "first": "Roselyn",
@@ -684,11 +669,6 @@
         "first": "Annette",
         "last": "Hernandez",
         "email": "annhernandez@blufoxmobile.com"
-      },
-      {
-        "first": "Nevaeh",
-        "last": "Patton",
-        "email": "npatton@blufoxmobile.com"
       }
     ],
     "Elkhart Xfinity Store": [
@@ -814,6 +794,11 @@
         "email": "dajenkins@blufoxmobile.com"
       },
       {
+        "first": "Chance",
+        "last": "Lowery",
+        "email": "clowery@blufoxmobile.com"
+      },
+      {
         "first": "Deontay",
         "last": "Moore",
         "email": "dmoore@blufoxmobile.com"
@@ -849,6 +834,16 @@
         "first": "Steev",
         "last": "Qaryo",
         "email": "sqaryo@blufoxmobile.com"
+      },
+      {
+        "first": "Ahmed",
+        "last": "Quadri",
+        "email": "aquadri@blufoxmobile.com"
+      },
+      {
+        "first": "Althea",
+        "last": "Rubio",
+        "email": "arubio@blufoxmobile.com"
       }
     ],
     "Hammond Xfinity Store": [
@@ -961,14 +956,14 @@
     ],
     "Oak Lawn Xfinity Store": [
       {
+        "first": "Gabriel",
+        "last": "Bucio",
+        "email": "gbucio@blufoxmobile.com"
+      },
+      {
         "first": "Christopher",
         "last": "Coleman",
         "email": "ccoleman@blufoxmobile.com"
-      },
-      {
-        "first": "Jerold",
-        "last": "Cummingham",
-        "email": "jcunningham@blufoxmobile.com"
       },
       {
         "first": "Ramon",
@@ -1037,14 +1032,14 @@
     ],
     "South Bend Xfinity Store": [
       {
+        "first": "Ronald",
+        "last": "Como",
+        "email": "rcomo@blufoxmobile.com"
+      },
+      {
         "first": "Cora",
         "last": "Estrada",
         "email": "cestrada@blufoxmobile.com"
-      },
-      {
-        "first": "Anna",
-        "last": "Hessick",
-        "email": "ahessick@blufoxmobile.com"
       },
       {
         "first": "Raymond",
