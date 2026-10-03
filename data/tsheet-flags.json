@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-03T06:29:07.338Z","run_id":"2026-10-03T06:29:07Z#ea4d84","day":"2026-10-03","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-03T15:08:43.516Z","run_id":"2026-10-03T15:08:43Z#e9d705","day":"2026-10-03","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"Oak Ridge Xfinity Store":{"reps":{"Erika McFall":{"flagged":2,"clusters":[["2026-10-03T14:53:54.611Z","2026-10-03T14:54:53.906Z"]]}}}}}
