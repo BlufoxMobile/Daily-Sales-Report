@@ -20946,11 +20946,10 @@
     "pendingUntil": "2026-10-02"
   },
   "1002311011952055": {
-    "status": "Pending Install",
-    "ts": "2026-09-25T19:26:28.200Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-07T19:43:54.338Z",
     "dm": "Juan Carrillo",
-    "store": "Evergreen Park",
-    "pendingUntil": "2026-10-02"
+    "store": "Evergreen Park"
   },
   "1002310982402058": {
     "status": "Pending Install",
@@ -20961,7 +20960,7 @@
   },
   "1002311243132054": {
     "status": "Pending Install",
-    "ts": "2026-09-25T19:26:36.720Z",
+    "ts": "2026-10-07T19:44:01.164Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-10-02"
