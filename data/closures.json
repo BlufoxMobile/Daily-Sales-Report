@@ -21542,5 +21542,17 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville",
     "pendingUntil": "2026-10-07"
+  },
+  "1002312670882054": {
+    "status": "Can Not Close",
+    "ts": "2026-10-08T17:39:50.632Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
+  "1002313191502056": {
+    "status": "Cancelled Order",
+    "ts": "2026-10-08T17:39:55.968Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
   }
 }
