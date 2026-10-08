@@ -20319,10 +20319,11 @@
     "pendingUntil": "2026-09-04"
   },
   "1002302005182056": {
-    "status": "Closed",
-    "ts": "2026-09-30T19:19:06.993Z",
+    "status": "Pending Install",
+    "ts": "2026-10-08T17:02:21.711Z",
     "dm": "Juan Carrillo",
-    "store": "Bourbonnais"
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-10-15"
   },
   "1002302427232059": {
     "status": "Pending Install",
