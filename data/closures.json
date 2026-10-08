@@ -13831,8 +13831,8 @@
     "pendingUntil": "2026-10-02"
   },
   "2490273142": {
-    "status": "Closed",
-    "ts": "2026-09-30T19:41:47.793Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-08T17:05:54.096Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
@@ -21313,11 +21313,10 @@
     "pendingUntil": "2026-10-15"
   },
   "1002305207682054": {
-    "status": "Pending Install",
-    "ts": "2026-10-08T17:02:30.023Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-08T17:03:30.303Z",
     "dm": "Juan Carrillo",
-    "store": "Bourbonnais",
-    "pendingUntil": "2026-10-07"
+    "store": "Bourbonnais"
   },
   "1002311373362059": {
     "status": "Pending Install",
