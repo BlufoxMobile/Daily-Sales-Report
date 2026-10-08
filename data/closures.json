@@ -21544,8 +21544,8 @@
     "pendingUntil": "2026-10-07"
   },
   "1002312670882054": {
-    "status": "Can Not Close",
-    "ts": "2026-10-08T17:39:50.632Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-08T17:41:30.768Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
   },
