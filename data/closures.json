@@ -14420,11 +14420,10 @@
     "store": "Dekalb"
   },
   "2504570282": {
-    "status": "Pending Install",
-    "ts": "2026-09-26T20:17:06.363Z",
+    "status": "Closed",
+    "ts": "2026-10-09T20:22:05.585Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-10-14"
+    "store": "Hammond"
   },
   "2504597098": {
     "status": "Pending Install",
