@@ -14426,11 +14426,10 @@
     "store": "Hammond"
   },
   "2504597098": {
-    "status": "Pending Install",
-    "ts": "2026-09-26T20:13:07.564Z",
+    "status": "Closed",
+    "ts": "2026-10-09T20:24:44.353Z",
     "dm": "Jacob Cabrales",
-    "store": "Hammond",
-    "pendingUntil": "2026-10-15"
+    "store": "Hammond"
   },
   "2504616742": {
     "status": "Can Not Close",
