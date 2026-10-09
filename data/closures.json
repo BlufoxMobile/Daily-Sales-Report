@@ -15163,6 +15163,12 @@
     "store": "Calumet City",
     "pendingUntil": "2026-10-06"
   },
+  "2514985810": {
+    "status": "Closed",
+    "ts": "2026-10-09T20:32:09.849Z",
+    "dm": "Jacob Cabrales",
+    "store": "Hammond"
+  },
   "2515024638": {
     "status": "Pending Install",
     "ts": "2026-09-30T17:06:07.113Z",
