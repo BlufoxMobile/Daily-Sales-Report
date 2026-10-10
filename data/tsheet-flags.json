@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-10T14:42:04.020Z","run_id":"2026-10-10T14:42:04Z#5690e1","day":"2026-10-10","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-10T14:48:26.659Z","run_id":"2026-10-10T14:48:26Z#4ee895","day":"2026-10-10","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"South Knoxville Xfinity Store":{"reps":{"Jahsi Simon":{"flagged":2,"clusters":[["2026-10-10T14:44:03.827Z","2026-10-10T14:44:46.845Z"]]}}}}}
