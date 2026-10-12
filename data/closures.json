@@ -15367,6 +15367,13 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
+  "2527824863": {
+    "status": "Pending Install",
+    "ts": "2026-10-12T19:12:28.023Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-10-19"
+  },
   "2530052341": {
     "status": "Pending Install",
     "ts": "2026-10-09T20:34:18.879Z",
