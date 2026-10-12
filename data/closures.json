@@ -15449,8 +15449,8 @@
     "pendingUntil": "2026-10-19"
   },
   "2530846388": {
-    "status": "Closed",
-    "ts": "2026-10-12T20:27:07.255Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-12T20:28:24.751Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
