@@ -15078,11 +15078,10 @@
     "pendingUntil": "2026-10-06"
   },
   "2514416687": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T20:04:27.713Z",
+    "status": "Closed",
+    "ts": "2026-10-12T19:28:10.809Z",
     "dm": "Juan Carrillo",
-    "store": "Evergreen Park",
-    "pendingUntil": "2026-10-07"
+    "store": "Evergreen Park"
   },
   "2514500856": {
     "status": "Closed",
