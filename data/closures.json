@@ -15325,6 +15325,12 @@
     "store": "Evergreen Park",
     "pendingUntil": "2026-10-14"
   },
+  "2526876002": {
+    "status": "Closed",
+    "ts": "2026-10-12T14:25:12.477Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
+  },
   "2530052341": {
     "status": "Pending Install",
     "ts": "2026-10-09T20:34:18.879Z",
@@ -21591,5 +21597,11 @@
     "dm": "Jacob Cabrales",
     "store": "Hammond",
     "pendingUntil": "2026-10-14"
+  },
+  "1002314808892054": {
+    "status": "Closed",
+    "ts": "2026-10-12T14:25:18.099Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
   }
 }
