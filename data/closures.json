@@ -15385,6 +15385,12 @@
     "store": "Bourbonnais",
     "pendingUntil": "2026-10-19"
   },
+  "2528465913": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:42:49.696Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2530052341": {
     "status": "Pending Install",
     "ts": "2026-10-09T20:34:18.879Z",
