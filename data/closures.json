@@ -21565,11 +21565,10 @@
     "pendingUntil": "2026-10-07"
   },
   "1002312288422053": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T19:59:24.649Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-12T19:29:05.504Z",
     "dm": "Juan Carrillo",
-    "store": "Evergreen Park",
-    "pendingUntil": "2026-10-07"
+    "store": "Evergreen Park"
   },
   "1002311629042059": {
     "status": "Closed",
