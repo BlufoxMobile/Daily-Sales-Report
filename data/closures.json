@@ -15449,6 +15449,12 @@
     "store": "Bourbonnais",
     "pendingUntil": "2026-10-19"
   },
+  "2533533697": {
+    "status": "Closed",
+    "ts": "2026-10-12T20:18:25.496Z",
+    "dm": "Matthew Brooks",
+    "store": "South Knoxville"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
