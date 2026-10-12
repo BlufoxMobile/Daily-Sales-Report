@@ -21726,5 +21726,29 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-10-19"
+  },
+  "1002314080342059": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:33:47.648Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "1002314114272058": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:33:49.119Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "1002314132502056": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:33:50.360Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "1002314073002058": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:33:51.535Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   }
 }
