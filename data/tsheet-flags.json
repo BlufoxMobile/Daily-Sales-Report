@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-12T15:04:35.158Z","run_id":"2026-10-12T15:04:35Z#22fb3d","day":"2026-10-12","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-12T15:10:05.077Z","run_id":"2026-10-12T15:10:05Z#9ab63a","day":"2026-10-12","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"Tinley Park Xfinity Store":{"reps":{"Darionne Townsend":{"flagged":2,"clusters":[["2026-10-12T15:04:27.038Z","2026-10-12T15:08:34.052Z"]]}}}}}
