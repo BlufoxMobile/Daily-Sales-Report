@@ -13581,8 +13581,8 @@
     "store": "Valparaiso"
   },
   "2481865150": {
-    "status": "Closed",
-    "ts": "2026-10-07T19:43:49.379Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-12T19:18:27.152Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
@@ -21676,6 +21676,13 @@
   "1002314089152053": {
     "status": "Pending Install",
     "ts": "2026-10-12T19:12:31.479Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais",
+    "pendingUntil": "2026-10-19"
+  },
+  "1002315237592058": {
+    "status": "Pending Install",
+    "ts": "2026-10-12T19:16:19.255Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais",
     "pendingUntil": "2026-10-19"
