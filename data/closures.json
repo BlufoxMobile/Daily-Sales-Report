@@ -15391,6 +15391,18 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
+  "2529336341": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:50:25.816Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "2529344929": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:50:27.087Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2530052341": {
     "status": "Pending Install",
     "ts": "2026-10-09T20:34:18.879Z",
@@ -21772,6 +21784,13 @@
   "1002314748592053": {
     "status": "Pending Install",
     "ts": "2026-10-12T19:42:57.054Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-10-19"
+  },
+  "1002314733322052": {
+    "status": "Pending Install",
+    "ts": "2026-10-12T19:43:00.054Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-10-19"
