@@ -15374,6 +15374,12 @@
     "store": "Hammond",
     "pendingUntil": "2026-10-12"
   },
+  "2531105929": {
+    "status": "Closed",
+    "ts": "2026-10-12T19:09:49.280Z",
+    "dm": "Juan Carrillo",
+    "store": "Bourbonnais"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
