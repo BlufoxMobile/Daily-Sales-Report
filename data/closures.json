@@ -15396,11 +15396,23 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   },
+  "2527630057": {
+    "status": "Closed",
+    "ts": "2026-10-13T21:19:49.710Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2527727412": {
     "status": "Closed",
     "ts": "2026-10-12T19:36:46.816Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "2527813011": {
+    "status": "Closed",
+    "ts": "2026-10-13T21:19:51.192Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2527824863": {
     "status": "Pending Install",
@@ -15521,6 +15533,12 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2532432170": {
+    "status": "Closed",
+    "ts": "2026-10-13T21:16:36.423Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
   "2532599219": {
     "status": "Closed",
     "ts": "2026-10-12T20:56:58.198Z",
@@ -15532,6 +15550,18 @@
     "ts": "2026-10-12T20:34:28.503Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2532929688": {
+    "status": "Closed",
+    "ts": "2026-10-13T21:16:38.161Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
+  },
+  "2532955301": {
+    "status": "Closed",
+    "ts": "2026-10-13T21:16:39.595Z",
+    "dm": "Juan Carrillo",
+    "store": "Frankfort"
   },
   "2533055271": {
     "status": "Closed",
