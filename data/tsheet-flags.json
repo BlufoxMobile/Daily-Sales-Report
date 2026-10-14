@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-14T15:05:09.364Z","run_id":"2026-10-14T15:05:09Z#413bc6","day":"2026-10-14","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-14T15:10:28.342Z","run_id":"2026-10-14T15:10:28Z#fb3ca0","day":"2026-10-14","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"Glenview Xfinity Store":{"reps":{"Steev Qaryo":{"flagged":2,"clusters":[["2026-10-14T15:05:48.559Z","2026-10-14T15:08:38.805Z"]]}}}}}
