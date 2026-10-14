@@ -15622,6 +15622,13 @@
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
   },
+  "2534696963": {
+    "status": "Pending Install",
+    "ts": "2026-10-14T17:27:22.856Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-10-16"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
