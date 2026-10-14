@@ -789,9 +789,10 @@ const NPS_CONFIG = {
   LOWNPS_SENT_LOG_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/lownps-sent-log.json",
   // A rep at or above this is on track. Jeff's bar: under 72 is an underperformer.
   LOWNPS_THRESHOLD: 72,
-  // Reps under THIS are BCC'd on that email with Jeff's message (10/14): survey
-  // count, score, and how many positive surveys get them back over it.
-  LOWNPS_BCC_BELOW: 70,
+  // Reps under THIS are BCC'd on that email with Jeff's message: survey count,
+  // score, and how many positive surveys get them back to it. 10/14: Jeff set it
+  // to the same 72% line, so every rep on the list is BCC'd.
+  LOWNPS_BCC_BELOW: 72,
   LUNCH_MIN_MINUTES: 30,
   // A shift shorter than this needs no meal break, so a day with no lunch punch
   // on a short shift is not a miss. Only the 1-punch case (no clock-out at all)
@@ -4115,7 +4116,7 @@ function npsDirStoreFor(name, dir){
 // Every rep on Rep Rank, bucketed by district, with their own NPS attached.
 function npsLowNpsData(dir){
   const THRESH = Number(NPS_CONFIG.LOWNPS_THRESHOLD) || 72;
-  const FLOOR = Number(NPS_CONFIG.LOWNPS_BCC_BELOW) || 70;
+  const FLOOR = Number(NPS_CONFIG.LOWNPS_BCC_BELOW) || 72;
   const map = npsEmpNpsMap();
   const recs = npsEmpRecMap();
   const districts = NPS_DISTRICTS.map(d => ({
@@ -4192,7 +4193,7 @@ function npsLowNpsData(dir){
 
 function npsLowNpsPayload(data, dir){
   const THRESH = data.threshold;
-  const FLOOR = data.floor || 70;
+  const FLOOR = data.floor || 72;
   const fw = npsFiscalWindow();
   const tone = v => v < 30 ? { bg: "#fef2f2", bd: "#fecaca", col: "#b91c1c" }
                   : v < 50 ? { bg: "#fff7ed", bd: "#fed7aa", col: "#c2410c" }
@@ -4237,9 +4238,9 @@ function npsLowNpsPayload(data, dir){
     '<tr><td style="padding:18px 20px 4px;">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fff7ed;border:1px solid #fdba74;border-left:5px solid #f97316;border-radius:12px;"><tr>' +
     '<td style="padding:14px 16px;font-size:13px;color:#431407;line-height:1.65;">' +
-      '<div style="margin-bottom:9px;">Team, our goal is to drive NPS <b>over 80%</b>. If you received this email, it&rsquo;s because you are currently <b>under the minimum threshold of ' + FLOOR + '%</b>. We will be driving accountability around NPS, and anyone under ' + FLOOR + '% will be held accountable.</div>' +
-      '<div style="margin-bottom:9px;"><b>How can you change this?</b> It starts with greeting customers at the door and making them feel warm and welcome. Treat people with respect and courtesy. Wear your uniform and name tag. Be genuinely excited about helping your customers.</div>' +
-      '<div style="margin-bottom:9px;">Below you will find your current survey volume, your current NPS score, and how many positive surveys it will take to get you back over ' + FLOOR + '%. This needs to be a top priority &mdash; you never want to be on this list. Please help me get this turned around immediately.</div>' +
+      '<div style="margin-bottom:9px;">Team, our goal is to drive NPS <b>above 80%</b>. You are receiving this email because your month-to-date NPS is <b>below our ' + FLOOR + '% minimum</b>, and everyone under that line will be held accountable.</div>' +
+      '<div style="margin-bottom:9px;">Improving your score starts with the basics: greet every customer at the door, make them feel welcome, treat them with respect and courtesy, wear your uniform and name tag, and bring real enthusiasm to every interaction.</div>' +
+      '<div style="margin-bottom:9px;">Below are your survey count, your current NPS, and the number of positive surveys you need to reach ' + FLOOR + '%. Make this your top priority &mdash; I&rsquo;m counting on you to turn it around immediately.</div>' +
       '<div>Thank you,<br><b>Jeff</b></div>' +
     '</td></tr></table></td></tr>';
 
@@ -4744,7 +4745,7 @@ async function uploadFiles() {
 
         const N = (d && d.lowNps) || {};
         if (N.reason === 'sent') {
-          let nl = `NPS accountability email sent to all 5 DMs — ${N.under} rep${N.under === 1 ? '' : 's'} under ${N.threshold || 72}% of ${N.scored} scored, ${N.bcc || 0} under ${N.floor || 70}% BCC'd`;
+          let nl = `NPS accountability email sent to all 5 DMs — ${N.under} rep${N.under === 1 ? '' : 's'} under ${N.threshold || 72}% of ${N.scored} scored, ${N.bcc || 0} under ${N.floor || 72}% BCC'd`;
           if ((N.noEmail || []).length) nl += ` — ⚠ no email address in the Admin Panel for: ${N.noEmail.join('; ')}`;
           if (N.logSaved === false) nl += ' — ⚠ the sent-log could not be saved. Do NOT re-upload today or the DMs will get it twice.';
           parts.push(nl);
