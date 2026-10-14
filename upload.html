@@ -789,6 +789,9 @@ const NPS_CONFIG = {
   LOWNPS_SENT_LOG_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/lownps-sent-log.json",
   // A rep at or above this is on track. Jeff's bar: under 72 is an underperformer.
   LOWNPS_THRESHOLD: 72,
+  // Reps under THIS are BCC'd on that email with Jeff's message (10/14): survey
+  // count, score, and how many positive surveys get them back over it.
+  LOWNPS_BCC_BELOW: 70,
   LUNCH_MIN_MINUTES: 30,
   // A shift shorter than this needs no meal break, so a day with no lunch punch
   // on a short shift is not a miss. Only the 1-punch case (no clock-out at all)
@@ -1125,24 +1128,67 @@ let NPS_TCHARTS = { byStore: {}, byRep: {}, total: 0, loaded: false, fresh: fals
 // (employees[ntid].officialTnps) and read by the Team Scorecard's NPS column.
 // `loaded` false means no Express data this run -> the column shows a dash
 // rather than pretending every rep scored zero.
-let NPS_EMPNPS = { byNtid: {}, loaded: false, scored: 0 };
+let NPS_EMPNPS = { byNtid: {}, recByNtid: {}, express: [], loaded: false, scored: 0 };
 let NPS_EMPNPS_MEMO = null;
 // NTID -> Rep Rank name -> score. Built on first use, by which time NPS_REPS is
 // populated; npsRepName() returns "" unless the NTID resolves to exactly ONE
 // rep, so two people with similar names can never inherit each other's score.
-function npsEmpNpsMap(){
+// Memoised only once both the Express scores and the Rep Rank roster are in, so
+// an early call can never freeze an empty map.
+function npsEmpMaps(){
   if(NPS_EMPNPS_MEMO) return NPS_EMPNPS_MEMO;
-  const out = {};
-  if(NPS_EMPNPS.loaded && NPS_REPS && NPS_REPS.length){
-    Object.keys(NPS_EMPNPS.byNtid).forEach(nt => {
-      const v = NPS_EMPNPS.byNtid[nt];
-      if(typeof v !== "number") return;
-      const nm = npsRepName(nt);
-      if(nm) out[String(nm).trim().toLowerCase()] = v;
-    });
-    NPS_EMPNPS_MEMO = out;
-  }
-  return out;
+  const m = npsBuildEmpMaps();
+  if(NPS_EMPNPS.loaded && NPS_REPS && NPS_REPS.length) NPS_EMPNPS_MEMO = m;
+  return m;
+}
+function npsEmpNpsMap(){ return npsEmpMaps().score; }
+// Same resolution, for the number of surveys behind each score.
+function npsEmpRecMap(){ return npsEmpMaps().recs; }
+// Express rows whose name is on no Rep Rank roster line (still scored).
+function npsEmpUnmatched(){ return npsEmpMaps().unmatched; }
+// "Wilson Jr., Tyrone" -> "Tyrone Wilson Jr."
+function npsExpressFirstLast(name){
+  const s = String(name || "").trim();
+  if(s.indexOf(",") < 0) return s;
+  const i = s.indexOf(",");
+  return (s.slice(i + 1).trim() + " " + s.slice(0, i).trim()).trim();
+}
+// Express name -> Rep Rank name: exact (normalised) first, a close spelling only
+// when exactly one roster name fits.
+function npsRosterNameFor(expressName){
+  const target = npsNameNorm(npsExpressFirstLast(expressName));
+  if(!target) return "";
+  const exact = (NPS_REPS || []).filter(r => npsNameNorm(r.name) === target);
+  const names = list => Array.from(new Set(list.map(r => String(r.name).trim())));
+  if(exact.length) { const u = names(exact); return u.length === 1 ? u[0] : ""; }
+  const close = names((NPS_REPS || []).filter(r => npsNamesClose(npsNameNorm(r.name), target)));
+  return close.length === 1 ? close[0] : "";
+}
+function npsBuildEmpMaps(){
+  const score = {}, recs = {}, unmatched = [];
+  if(!(NPS_EMPNPS.loaded && NPS_REPS && NPS_REPS.length)) return { score: score, recs: recs, unmatched: unmatched };
+  // 1. By the Express Report's own name - the score and its survey count travel together.
+  (NPS_EMPNPS.express || []).forEach(e => {
+    if(typeof e.tnps !== "number") return;
+    const nm = npsRosterNameFor(e.name);
+    if(!nm){ unmatched.push(e); return; }
+    const k = nm.toLowerCase();
+    if(score[k] == null){ score[k] = e.tnps; if(e.records > 0) recs[k] = e.records; }
+  });
+  // 2. NTID fallback for anything the name route did not place.
+  Object.keys(NPS_EMPNPS.byNtid || {}).forEach(nt => {
+    const v = NPS_EMPNPS.byNtid[nt];
+    if(typeof v !== "number") return;
+    const nm = npsRepName(nt);
+    if(!nm) return;
+    const k = String(nm).trim().toLowerCase();
+    if(score[k] == null){
+      score[k] = v;
+      const n = (NPS_EMPNPS.recByNtid || {})[nt];
+      if(n > 0) recs[k] = n;
+    }
+  });
+  return { score: score, recs: recs, unmatched: unmatched };
 }
 let NPS_CRM     = { open: {}, aged: {}, leads: {}, loaded: false };
 
@@ -3999,10 +4045,79 @@ async function npsPostLowNpsWebhook(payload){
   if(!resp.ok) throw new Error("Low-NPS webhook HTTP " + resp.status);
 }
 
+// How many more POSITIVE surveys (a 9 or 10) a rep needs, with nothing else
+// coming in, to get from `score`% on `n` surveys back to `target`%.
+// NPS = (promoters - detractors) / surveys, so the net count is score * n.
+// Adding x promoters gives (net + x) / (n + x) >= target / 100, which solves to
+// x >= (target * n - 100 * net) / (100 - target). Returns null when unknown.
+function npsPositivesToReach(score, n, target){
+  if(typeof score !== "number" || !(n > 0)) return null;
+  if(score >= target) return 0;
+  const net = Math.round(score * n / 100);      // Express rounds the %; the net is a whole number
+  const x = Math.ceil((target * n - 100 * net) / (100 - target) - 1e-9);
+  return Math.max(0, x);
+}
+
+// A rep's email from the Admin Panel: their store's employee list, plus the
+// store's SM and AM. Exact name first; a close spelling only if it is unique.
+function npsRepEmail(name, storeShort, dir){
+  const full = String(storeShort || "").trim() + " Xfinity Store";
+  const cands = [];
+  ((dir.storeEmployees || {})[full] || []).forEach(e => {
+    if(e && typeof e === "object" && e.email) cands.push({ name: (String(e.first || "") + " " + String(e.last || "")).trim(), email: e.email });
+  });
+  const sm = (dir.storeManagerNames || {})[full], smE = (dir.storeManagers || {})[full];
+  if(sm && smE) cands.push({ name: sm, email: smE });
+  const am = (dir.storeAMNames || {})[full], amE = (dir.storeAMs || {})[full];
+  if(am && amE) cands.push({ name: am, email: amE });
+  (dir.districts || []).forEach(d => { if(d && d.dmName && d.dm) cands.push({ name: d.dmName, email: d.dm }); });
+  const target = npsNameNorm(name);
+  if(!target) return "";
+  const exact = cands.filter(c => npsNameNorm(c.name) === target);
+  const uniq = list => Array.from(new Set(list.map(c => String(c.email).trim().toLowerCase())));
+  if(exact.length) { const u = uniq(exact); return u.length === 1 ? String(exact[0].email).trim() : ""; }
+  const close = cands.filter(c => npsNamesClose(npsNameNorm(c.name), target));
+  const u = uniq(close);
+  if(u.length) return u.length === 1 ? String(close[0].email).trim() : "";
+  // Same store only from here on, so a common first name can't reach another market.
+  const local = cands.filter(c => !(dir.districts || []).some(d => d && d.dm === c.email));
+  const parts = n => { const w = String(n || "").toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);
+                       return { first: w[0] || "", last: w.slice(1).join("") }; };
+  const me = parts(name);
+  if(!me.first || me.last.length < 3) return "";
+  // "Nicholas SanMiguel" vs "Nicholas Miguel": same first name, one surname contains the other.
+  const fold = local.filter(c => { const p = parts(c.name);
+    return p.first === me.first && p.last.length >= 4 && (me.last.endsWith(p.last) || p.last.endsWith(me.last) || me.last.startsWith(p.last) || p.last.startsWith(me.last)); });
+  if(uniq(fold).length === 1) return String(fold[0].email).trim();
+  // Address built from this rep's own name (nmarquardt@ for Nancy Marquardt), even
+  // when the Admin Panel lists that address under another surname.
+  const want = me.first[0] + me.last;
+  const byAddr = local.filter(c => String(c.email).split("@")[0].toLowerCase().replace(/[^a-z]/g, "") === want);
+  return uniq(byAddr).length === 1 ? String(byAddr[0].email).trim() : "";
+}
+
+// Store for a name that is on no Rep Rank line: the Admin Panel's employee
+// lists, SMs and AMs. Unique match only.
+function npsDirStoreFor(name, dir){
+  const target = npsNameNorm(name);
+  if(!target) return "";
+  const hits = new Set();
+  (dir.stores || []).forEach(full => {
+    const names = [];
+    ((dir.storeEmployees || {})[full] || []).forEach(e => { if(e && typeof e === "object") names.push((String(e.first || "") + " " + String(e.last || "")).trim()); });
+    if((dir.storeManagerNames || {})[full]) names.push(dir.storeManagerNames[full]);
+    if((dir.storeAMNames || {})[full]) names.push(dir.storeAMNames[full]);
+    if(names.some(n => npsNameNorm(n) === target)) hits.add(full);
+  });
+  return hits.size === 1 ? String(Array.from(hits)[0]).replace(/\s+Xfinity\s+Store\s*$/i, "").trim() : "";
+}
+
 // Every rep on Rep Rank, bucketed by district, with their own NPS attached.
 function npsLowNpsData(dir){
   const THRESH = Number(NPS_CONFIG.LOWNPS_THRESHOLD) || 72;
+  const FLOOR = Number(NPS_CONFIG.LOWNPS_BCC_BELOW) || 70;
   const map = npsEmpNpsMap();
+  const recs = npsEmpRecMap();
   const districts = NPS_DISTRICTS.map(d => ({
     key: d.key, label: d.label, dm: d.dm, dmName: d.dmName,
     under: [], scored: 0, unscored: 0, sum: 0
@@ -4013,8 +4128,9 @@ function npsLowNpsData(dir){
   // Scores that exist in the Express Report but whose NTID did not resolve to
   // exactly one rep on Rep Rank. These are NOT reps without surveys, and saying
   // so in the footnote would be false - they are a matching gap on our side.
-  const resolvedNames = Object.keys(map).length;
-  const unmatchedScores = Math.max(0, Object.keys((NPS_EMPNPS.byNtid) || {}).length - resolvedNames);
+  // Scored Express rows that match no Rep Rank line. Placed below by the Admin
+  // Panel where possible; whatever is left is named in the footnote.
+  const unplaced = [];
 
   (NPS_REPS || []).forEach(r => {
     const shortName = String(r.store || "").trim();
@@ -4026,10 +4142,31 @@ function npsLowNpsData(dir){
     if(typeof v !== "number"){ d.unscored++; totalUnscored++; return; }
     d.scored++; d.sum += v; totalScored++;
     if(v < THRESH){
-      d.under.push({ name: r.name, store: shortName, score: v, title: r.title || "", rank: r.rank });
+      const n = recs[String(r.name).trim().toLowerCase()] || null;
+      d.under.push({ name: r.name, store: shortName, score: v, title: r.title || "", rank: r.rank,
+                     surveys: n, need: npsPositivesToReach(v, n, FLOOR),
+                     belowFloor: v < FLOOR, email: v < FLOOR ? npsRepEmail(r.name, shortName, dir) : "" });
       totalUnder++;
     }
   });
+
+  npsEmpUnmatched().forEach(e => {
+    const nm = npsExpressFirstLast(e.name);
+    const shortName = npsDirStoreFor(nm, dir);
+    const dist = shortName ? npsDistrictForStore(shortName + " Xfinity Store", dir) : null;
+    if(!dist || !byKey[dist.key]){ unplaced.push(e); return; }
+    const d = byKey[dist.key];
+    const v = e.tnps;
+    d.scored++; d.sum += v; totalScored++;
+    if(v < THRESH){
+      const n = e.records > 0 ? e.records : null;
+      d.under.push({ name: nm, store: shortName, score: v, title: "", rank: null,
+                     surveys: n, need: npsPositivesToReach(v, n, FLOOR),
+                     belowFloor: v < FLOOR, email: v < FLOOR ? npsRepEmail(nm, shortName, dir) : "" });
+      totalUnder++;
+    }
+  });
+  const unmatchedScores = unplaced.length;
 
   districts.forEach(d => {
     // Worst first - the list is a work queue, not a roster.
@@ -4038,30 +4175,73 @@ function npsLowNpsData(dir){
   });
   // Districts with the most reps under the bar lead the email.
   districts.sort((a, b) => b.under.length - a.under.length || String(a.label).localeCompare(String(b.label)));
+  // Everyone under the floor is BCC'd; anyone without an address is named so
+  // the Admin Panel can be fixed.
+  const bcc = [], noEmail = [];
+  districts.forEach(d => d.under.forEach(r => {
+    if(!r.belowFloor) return;
+    if(r.email){ if(!bcc.some(e => e.toLowerCase() === r.email.toLowerCase())) bcc.push(r.email); }
+    else noEmail.push(r.name + " (" + r.store + ")");
+  }));
+  // Under the floor but on no roster at all - cannot be placed or emailed.
+  unplaced.forEach(e => { if(e.tnps < FLOOR) noEmail.push(npsExpressFirstLast(e.name) + " (" + e.tnps + "%, not on the Sales Report or Admin Panel)"); });
   return { districts: districts, totalUnder: totalUnder, totalScored: totalScored,
-           totalUnscored: totalUnscored, unmatchedScores: unmatchedScores, threshold: THRESH };
+           totalUnscored: totalUnscored, unmatchedScores: unmatchedScores, threshold: THRESH,
+           floor: FLOOR, bcc: bcc, noEmail: noEmail };
 }
 
 function npsLowNpsPayload(data, dir){
   const THRESH = data.threshold;
+  const FLOOR = data.floor || 70;
   const fw = npsFiscalWindow();
   const tone = v => v < 30 ? { bg: "#fef2f2", bd: "#fecaca", col: "#b91c1c" }
                   : v < 50 ? { bg: "#fff7ed", bd: "#fed7aa", col: "#c2410c" }
                            : { bg: "#fffbeb", bd: "#fde68a", col: "#b45309" };
 
+  const cellBB = last => last ? "" : "border-bottom:1px solid #eef2f7;";
   const repRow = (r, last) => {
     const t = tone(r.score);
+    const need = r.need == null
+      ? '<div style="font-size:15px;font-weight:800;color:#94a3b8;line-height:1;">&mdash;</div>'
+      : r.need === 0
+        ? '<div style="font-size:11px;font-weight:800;color:#047857;line-height:1.2;">At ' + FLOOR + '%+</div>'
+        : '<div style="font-size:17px;font-weight:800;color:#1d4ed8;line-height:1;">' + r.need + '</div>' +
+          '<div style="font-size:9px;color:#94a3b8;font-weight:700;margin-top:2px;">to reach ' + FLOOR + '%</div>';
     return '<tr>' +
-      '<td style="padding:7px 10px;background:#ffffff;' + (last ? "" : "border-bottom:1px solid #eef2f7;") + '">' +
+      '<td style="padding:8px 10px;background:#ffffff;' + cellBB(last) + '">' +
         '<div style="font-size:12.5px;font-weight:800;color:#0f172a;">' + npsEsc(r.name) +
         (r.title ? '<span style="font-size:10px;color:#94a3b8;font-weight:700;"> &bull; ' + npsEsc(r.title) + '</span>' : '') + '</div>' +
         '<div style="font-size:10.5px;color:#64748b;margin-top:1px;">' + npsEsc(r.store) + '</div>' +
       '</td>' +
-      '<td style="padding:7px 10px;text-align:right;background:' + t.bg + ';' + (last ? "" : "border-bottom:1px solid #ffffff;") + '">' +
+      '<td style="padding:8px 6px;text-align:center;background:#ffffff;' + cellBB(last) + '">' +
+        '<div style="font-size:15px;font-weight:800;color:#0f172a;line-height:1;">' + (r.surveys == null ? '&mdash;' : r.surveys) + '</div>' +
+        '<div style="font-size:9px;color:#94a3b8;font-weight:700;margin-top:2px;">surveys</div>' +
+      '</td>' +
+      '<td style="padding:8px 8px;text-align:center;background:' + t.bg + ';' + (last ? "" : "border-bottom:1px solid #ffffff;") + '">' +
         '<div style="font-size:15px;font-weight:800;color:' + t.col + ';line-height:1;">' + r.score + '%</div>' +
-        '<div style="font-size:9px;color:#94a3b8;font-weight:700;margin-top:2px;">/ ' + THRESH + '%</div>' +
-      '</td></tr>';
+        '<div style="font-size:9px;color:#94a3b8;font-weight:700;margin-top:2px;">NPS</div>' +
+      '</td>' +
+      '<td style="padding:8px 8px;text-align:center;background:#eff6ff;' + (last ? "" : "border-bottom:1px solid #ffffff;") + '">' + need + '</td>' +
+      '</tr>';
   };
+  const headRow = '<tr>' +
+    '<td style="padding:6px 10px;background:#f1f5f9;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#64748b;">REP</td>' +
+    '<td style="padding:6px 6px;background:#f1f5f9;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#64748b;text-align:center;">SURVEYS</td>' +
+    '<td style="padding:6px 8px;background:#f1f5f9;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#64748b;text-align:center;">NPS</td>' +
+    '<td style="padding:6px 8px;background:#f1f5f9;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#64748b;text-align:center;">POSITIVE SURVEYS NEEDED</td>' +
+    '</tr>';
+
+  // Jeff's message to the reps (10/14). They are BCC'd on this email, so it
+  // speaks to them directly; the DMs read it too.
+  const messageHtml =
+    '<tr><td style="padding:18px 20px 4px;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fff7ed;border:1px solid #fdba74;border-left:5px solid #f97316;border-radius:12px;"><tr>' +
+    '<td style="padding:14px 16px;font-size:13px;color:#431407;line-height:1.65;">' +
+      '<div style="margin-bottom:9px;">Team, our goal is to drive NPS <b>over 80%</b>. If you received this email, it&rsquo;s because you are currently <b>under the minimum threshold of ' + FLOOR + '%</b>. We will be driving accountability around NPS, and anyone under ' + FLOOR + '% will be held accountable.</div>' +
+      '<div style="margin-bottom:9px;"><b>How can you change this?</b> It starts with greeting customers at the door and making them feel warm and welcome. Treat people with respect and courtesy. Wear your uniform and name tag. Be genuinely excited about helping your customers.</div>' +
+      '<div style="margin-bottom:9px;">Below you will find your current survey volume, your current NPS score, and how many positive surveys it will take to get you back over ' + FLOOR + '%. This needs to be a top priority &mdash; you never want to be on this list. Please help me get this turned around immediately.</div>' +
+      '<div>Thank you,<br><b>Jeff</b></div>' +
+    '</td></tr></table></td></tr>';
 
   const districtBlock = (d) => {
     const clear = d.under.length === 0;
@@ -4072,7 +4252,7 @@ function npsLowNpsPayload(data, dir){
       ? '<tr><td style="padding:10px 14px 14px;"><div style="font-size:12px;color:#047857;font-weight:700;">Every scored rep in this market is at or above ' + THRESH + '%. Nothing to work.</div></td></tr>'
       : '<tr><td style="padding:2px 12px 12px;">' +
           '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e6ebf3;border-radius:10px;border-collapse:separate;border-spacing:0;overflow:hidden;">' +
-          d.under.map((r, i) => repRow(r, i === d.under.length - 1)).join("") +
+          headRow + d.under.map((r, i) => repRow(r, i === d.under.length - 1)).join("") +
           '</table></td></tr>';
     return '<tr><td style="padding:8px 20px 0;">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' + (clear ? '#f8fafc' : '#fef7f7') + ';border:1px solid ' + (clear ? '#e2e8f0' : '#fecaca') + ';border-radius:14px;">' +
@@ -4101,6 +4281,7 @@ function npsLowNpsPayload(data, dir){
       '<div style="font-size:22px;font-weight:800;color:#ffffff;margin-top:5px;line-height:1.25;">' + headline + '</div>' +
       '<div style="font-size:12px;color:#aebfe0;margin-top:6px;">Month to date &bull; ' + data.totalScored + ' reps scored region-wide' + (data.totalUnscored ? ' &bull; ' + data.totalUnscored + ' without a score' : '') + '</div>' +
     '</td></tr>' +
+    (data.bcc && data.bcc.length ? messageHtml : '') +
     '<tr><td style="padding:16px 20px 2px;">' +
       '<div style="font-size:12px;color:#475569;line-height:1.6;">Every rep below is under the <b>' + THRESH + '%</b> NPS bar for the month, taken from their own score on the Express Report &mdash; the same number that appears in their store&rsquo;s morning message. Worst first, district by district.</div>' +
     '</td></tr>' +
@@ -4108,7 +4289,9 @@ function npsLowNpsPayload(data, dir){
     '<tr><td style="padding:14px 20px 4px;">' +
       '<div style="font-size:10.5px;color:#94a3b8;line-height:1.6;">' +
       (data.totalUnscored ? '<b>' + data.totalUnscored + ' rep' + (data.totalUnscored === 1 ? ' has' : 's have') + ' no score above</b> &mdash; either no surveys have come back for them yet, or their record could not be matched to the roster. Neither is a low score.<br>' : '') +
-      (data.unmatchedScores ? '<b>' + data.unmatchedScores + ' scored record' + (data.unmatchedScores === 1 ? '' : 's') + '</b> in the Express Report could not be matched to a rep on Rep Rank and ' + (data.unmatchedScores === 1 ? 'is' : 'are') + ' not represented above.<br>' : '') +
+      (data.unmatchedScores ? '<b>' + data.unmatchedScores + ' scored record' + (data.unmatchedScores === 1 ? '' : 's') + '</b> in the Express Report could not be matched to anyone on the Sales Report or in the Admin Panel and ' + (data.unmatchedScores === 1 ? 'is' : 'are') + ' not represented above.<br>' : '') +
+      '<b>Positive surveys needed</b> is how many more 9s and 10s it takes to reach ' + FLOOR + '%, assuming every new survey is positive. Reps under ' + FLOOR + '% are BCC&rsquo;d on this email.<br>' +
+      ((data.noEmail || []).length ? '<b>Not emailed &mdash; no address in the Admin Panel:</b> ' + data.noEmail.map(npsEsc).join(', ') + '.<br>' : '') +
       'Scores are month to date and move as surveys land. Goal is 80%; ' + THRESH + '% is the accountability line.' +
       '</div>' +
     '</td></tr>' +
@@ -4122,6 +4305,10 @@ function npsLowNpsPayload(data, dir){
   return {
     email_type: "district_low_nps",
     to: to.join(","), cc: cc.join(","),
+    // Map this into the Outlook "Bcc" box in the district NPS Zap.
+    bcc: (data.bcc || []).filter(e => !to.concat(cc).some(t => String(t).toLowerCase() === String(e).toLowerCase())).join(","),
+    bcc_count: (data.bcc || []).length,
+    not_emailed: (data.noEmail || []).join("; "),
     subject: "NPS Accountability — " + headline,
     body_html: bodyHtml,
     threshold: THRESH,
@@ -4206,7 +4393,8 @@ async function npsSendLowNpsRun(dir){
     } catch(e){ if(attempt === 3) console.warn('low-NPS sent log not saved:', e); }
   }
   return { ran: true, reason: 'sent', sent: 1, errors: [], under: data.totalUnder,
-           scored: data.totalScored, threshold: data.threshold, logSaved: logSaved };
+           scored: data.totalScored, threshold: data.threshold, logSaved: logSaved,
+           bcc: (data.bcc || []).length, floor: data.floor, noEmail: data.noEmail || [] };
 }
 
 async function npsSendLunchRun(dir){
@@ -4355,11 +4543,21 @@ async function uploadMtdNps(expressFile, respFile){
   // `loaded` must reflect whether an EXPRESS file was actually in this upload.
   // Setting it true unconditionally made the low-NPS run's no-express guard dead
   // code, so an Express-less upload reported a name-matching failure instead.
-  NPS_EMPNPS = { byNtid: {}, loaded: !!expressFile, scored: scored };
+  NPS_EMPNPS = { byNtid: {}, recByNtid: {}, loaded: !!expressFile, scored: scored,
+                 // Every Express row by NAME. The NTID route below only covers reps
+                 // who also appear in the Responses file AND whose NTID guesses a
+                 // unique name - on 10/14 that missed 16 of the 53 reps under 70%.
+                 express: (express.reps || []).map(e => ({ name: e.name, tnps: e.tnps, records: e.records })) };
   NPS_EMPNPS_MEMO = null;
   Object.keys(employees).forEach(nt => {
     const v = employees[nt] && employees[nt].officialTnps;
-    if(typeof v === "number") NPS_EMPNPS.byNtid[nt] = v;
+    if(typeof v === "number"){
+      NPS_EMPNPS.byNtid[nt] = v;
+      // The Express Report's own "# of records" is the count behind that score;
+      // the Responses file's count is only a stand-in when Express has none.
+      const n = Number(employees[nt].records) || Number(employees[nt].respTotal) || 0;
+      if(n > 0) NPS_EMPNPS.recByNtid[nt] = n;
+    }
   });
 
   const byStore={}; surveys.forEach(s=>{ if(s.storeKey)(byStore[s.storeKey]=byStore[s.storeKey]||[]).push(s); });
@@ -4546,7 +4744,8 @@ async function uploadFiles() {
 
         const N = (d && d.lowNps) || {};
         if (N.reason === 'sent') {
-          let nl = `NPS accountability email sent to all 5 DMs — ${N.under} rep${N.under === 1 ? '' : 's'} under ${N.threshold || 72}% of ${N.scored} scored`;
+          let nl = `NPS accountability email sent to all 5 DMs — ${N.under} rep${N.under === 1 ? '' : 's'} under ${N.threshold || 72}% of ${N.scored} scored, ${N.bcc || 0} under ${N.floor || 70}% BCC'd`;
+          if ((N.noEmail || []).length) nl += ` — ⚠ no email address in the Admin Panel for: ${N.noEmail.join('; ')}`;
           if (N.logSaved === false) nl += ' — ⚠ the sent-log could not be saved. Do NOT re-upload today or the DMs will get it twice.';
           parts.push(nl);
         } else if (N.reason === 'no-hook') {
