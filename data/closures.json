@@ -12753,11 +12753,10 @@
     "store": "Evanston"
   },
   "2456260193": {
-    "status": "Pending Install",
-    "ts": "2026-09-28T21:41:21.201Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-14T17:21:49.586Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Burbank",
-    "pendingUntil": "2026-10-01"
+    "store": "Burbank"
   },
   "2456267281": {
     "status": "Closed",
