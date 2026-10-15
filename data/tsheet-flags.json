@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-15T15:01:19.375Z","run_id":"2026-10-15T15:01:19Z#259613","day":"2026-10-15","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-15T15:06:46.012Z","run_id":"2026-10-15T15:06:46Z#e348ef","day":"2026-10-15","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"South Knoxville Xfinity Store":{"reps":{"Ashanday Hayles":{"flagged":2,"clusters":[["2026-10-15T15:05:28.635Z","2026-10-15T15:05:55.558Z"]]}}}}}
