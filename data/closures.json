@@ -15139,11 +15139,10 @@
     "store": "North Knoxville"
   },
   "2514816229": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T22:20:52.180Z",
+    "status": "Closed",
+    "ts": "2026-10-18T15:24:46.809Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Calumet City",
-    "pendingUntil": "2026-10-06"
+    "store": "Calumet City"
   },
   "2514822682": {
     "status": "Pending Install",
