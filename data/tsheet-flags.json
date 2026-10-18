@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-18T16:47:20.758Z","run_id":"2026-10-18T16:47:20Z#717d8b","day":"2026-10-18","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-18T16:52:33.478Z","run_id":"2026-10-18T16:52:33Z#3f0b9b","day":"2026-10-18","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"South Knoxville Xfinity Store":{"reps":{"Tamyrah Young":{"flagged":3,"clusters":[["2026-10-18T16:49:10.985Z","2026-10-18T16:50:43.863Z","2026-10-18T16:52:18.800Z"]]}}}}}
