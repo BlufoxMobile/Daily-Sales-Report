@@ -15139,8 +15139,8 @@
     "store": "North Knoxville"
   },
   "2514816229": {
-    "status": "Closed",
-    "ts": "2026-10-18T15:24:46.809Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-18T15:24:49.137Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
@@ -15320,6 +15320,12 @@
     "ts": "2026-10-13T21:23:17.651Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2519139336": {
+    "status": "Closed",
+    "ts": "2026-10-18T15:27:31.337Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City"
   },
   "2519436411": {
     "status": "Closed",
