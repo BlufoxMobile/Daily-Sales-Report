@@ -22089,5 +22089,11 @@
     "ts": "2026-10-14T22:06:31.778Z",
     "dm": "Jacob Cabrales",
     "store": "Michigan City"
+  },
+  "1002314579722050": {
+    "status": "Cancelled Order",
+    "ts": "2026-10-18T15:33:07.048Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Calumet City"
   }
 }
