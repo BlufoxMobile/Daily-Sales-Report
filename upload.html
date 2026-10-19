@@ -793,6 +793,17 @@ const NPS_CONFIG = {
   // score, and how many positive surveys get them back to it. 10/14: Jeff set it
   // to the same 72% line, so every rep on the list is BCC'd.
   LOWNPS_BCC_BELOW: 72,
+  // --- Weekly manager hours email (Jeff, 10/19) ---------------------------
+  // Every Monday, from the time card upload: hours each Store Manager and each
+  // DM clocked the previous Sunday-Saturday week, by district. Under the
+  // minimum is red, at or above is green. Its own catch hook, like the others.
+  HOURS_WEBHOOK_URL: "https://hooks.zapier.com/hooks/catch/20441079/41w1p5s/",
+  HOURS_SENT_LOG_PATH: "data/hours-sent-log.json",
+  HOURS_SENT_LOG_URL: "https://raw.githubusercontent.com/BlufoxMobile/Daily-Sales-Report/main/data/hours-sent-log.json",
+  HOURS_MIN_WEEKLY: 45,
+  // Reps and ASMs are capped at 40 a week; anyone over it is listed at the
+  // bottom of the same email as overtime.
+  HOURS_OT_WEEKLY: 40,
   LUNCH_MIN_MINUTES: 30,
   // A shift shorter than this needs no meal break, so a day with no lunch punch
   // on a short shift is not a miss. Only the 1-punch case (no clock-out at all)
@@ -1831,6 +1842,9 @@ function npsStreakHeroHtml(shortName){
 // punches, and SM auto clock-outs were burying them. Each store section then
 // calls its SM out by first name with the count and the ask.
 let NPS_PUNCH = { byStore: {}, total: 0, detail: {}, days: [], observed: {}, monthDays: 0, shortShiftDays: 0, maxDate: null, month: null, loaded: false };
+// The raw one-row-per-punch export, kept for the weekly manager hours email.
+// The lunch audit above only keeps the current month and only the problem days.
+let NPS_PUNCH_ROWS = null;
 const NPS_PUNCH_URL  = "https://raw.githubusercontent.com/BlufoxMobile/Auto-Punch-Report/main/data/punch-data.xlsx";
 const NPS_MGR_TITLES = ["Store Manager", "DM", "Ops Coordinator", "District Manager"];
 // The export's job-title string is not ours to control, so match it loosely.
@@ -2009,6 +2023,7 @@ async function npsFetchPunches(dir){
     const cName  = findH(/^name$/i)        || findH(/^employee$/i) || findH(/employee.?name/i) || "Name";
     const cTitle = findH(/^job\s*title$/i) || findH(/^title$/i)    || "Title";
     const cDate  = findH(/^date$/i)        || findH(/punch.*in.*date/i) || "Date";
+    NPS_PUNCH_ROWS = { rows: rows, store: cStore, name: cName, title: cTitle, date: cDate, punch: cPunchTime };
     rows.forEach(r => {
       const dstr = npsDateStr(r[cDate]) || String(r[cDate]||"").slice(0,10);
       if(!dstr) return;
@@ -2097,6 +2112,326 @@ async function npsFetchPunches(dir){
                 observed: observed, monthDays: monthDays, shortShiftDays: shortShiftDays,
                 maxDate: maxDate, month: month, loaded: true };
   return NPS_PUNCH;
+}
+
+// ===== Weekly manager hours email ===========================================
+// Hours clocked last week by every Store Manager and every DM, district by
+// district. Jeff, 10/19: the minimum is 45 a week; under is red, 45 and over is
+// green. The week is Sunday-Saturday, the most recent one fully behind us.
+function npsHoursWeek(now){
+  const t = now ? new Date(now) : new Date();
+  const today = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  let back = (today.getDay() + 1) % 7;          // days since the last Saturday
+  if(back === 0) back = 7;                       // on a Saturday, that week is not over yet
+  const end = new Date(today); end.setDate(end.getDate() - back);
+  const start = new Date(end); start.setDate(start.getDate() - 6);
+  return { start: npsLocalYMD(start), end: npsLocalYMD(end) };
+}
+function npsHoursLabel(week){
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const a = new Date(week.start + "T00:00:00"), b = new Date(week.end + "T00:00:00");
+  return "Sun " + M[a.getMonth()] + " " + a.getDate() + " \u2013 Sat " + M[b.getMonth()] + " " + b.getDate();
+}
+// 2700 -> "45h 00m". Minutes, never decimals: 44.96 hours must not print as
+// "45.0" in a red cell.
+function npsHm(min){ min = Math.max(0, Math.round(min)); return Math.floor(min / 60) + "h " + String(min % 60).padStart(2, "0") + "m"; }
+
+// Per person, for one week: worked minutes, days, stores, and the days whose
+// punches do not pair up (counted as far as they go, and called out).
+function npsWeeklyHoursPeople(week, dir){
+  const R = NPS_PUNCH_ROWS;
+  const people = {};
+  if(!R || !R.rows) return people;
+  const marketSet = new Set(((dir && dir.stores) || []).map(f => String(f).replace(/\s+Xfinity\s+Store\s*$/i, "").trim()));
+  const days = {};
+  R.rows.forEach(r => {
+    const dstr = npsDateStr(r[R.date]) || String(r[R.date] || "").slice(0, 10);
+    if(!dstr || dstr < week.start || dstr > week.end) return;
+    const name = String(r[R.name] || "").trim();
+    const key = npsNameNorm(name);
+    if(!key) return;
+    const p = people[key] || (people[key] = { name: name, titles: {}, stores: {}, marketStores: {}, minutes: 0, days: 0, badDays: [], untimed: 0 });
+    const title = String(r[R.title] || "").trim();
+    const short = npsShortFromRaw(r[R.store]) || String(r[R.store] || "").trim();
+    p.titles[title] = (p.titles[title] || 0) + 1;
+    p.stores[short] = (p.stores[short] || 0) + 1;
+    if(marketSet.has(short)) p.marketStores[short] = (p.marketStores[short] || 0) + 1;
+    const dk = key + "||" + dstr;
+    const d = days[dk] || (days[dk] = { key: key, date: dstr, secs: [], untimed: 0 });
+    const sec = npsTimeToSec(npsPunchTime(r[R.punch]));
+    if(sec == null) d.untimed++; else d.secs.push(sec);
+  });
+  Object.keys(days).forEach(dk => {
+    const d = days[dk], p = people[d.key];
+    const secs = d.secs.sort((a, b) => a - b);
+    const col = [];
+    secs.forEach(v => { if(!col.length || v - col[col.length - 1] > NPS_DUP_PUNCH_SEC) col.push(v); });
+    let worked = 0;
+    for(let i = 0; i + 1 < col.length; i += 2) worked += col[i + 1] - col[i];
+    p.minutes += worked / 60;
+    if(col.length) p.days++;
+    p.untimed += d.untimed;
+    if(col.length % 2 === 1 || d.untimed) p.badDays.push(d.date);
+  });
+  return people;
+}
+
+function npsWeeklyHoursData(dir, now){
+  const week = npsHoursWeek(now);
+  const MIN = (Number(NPS_CONFIG.HOURS_MIN_WEEKLY) || 45) * 60;
+  const people = npsWeeklyHoursPeople(week, dir);
+  const dmKeys = new Set(NPS_DISTRICTS.map(d => npsNameNorm(d.dmName)));
+  const findPerson = name => {
+    const k = npsNameNorm(name);
+    if(people[k]) return people[k];
+    const close = Object.keys(people).filter(x => npsNamesClose(x, k));
+    return close.length === 1 ? people[close[0]] : null;
+  };
+  const row = (name, role, store, p) => {
+    const minutes = p ? p.minutes : 0;
+    return { name: p ? p.name : name, role: role, store: store, minutes: minutes, days: p ? p.days : 0,
+             under: minutes < MIN, gap: MIN - minutes, badDays: p ? p.badDays.slice().sort() : [], noPunches: !p || !p.days };
+  };
+  const shortOf = full => String(full).replace(/\s+Xfinity\s+Store\s*$/i, "").trim();
+  const districts = NPS_DISTRICTS.map(dist => {
+    const stores = ((dir && dir.stores) || []).filter(f => { const d = npsDistrictForStore(f, dir); return d && d.key === dist.key; });
+    const storeShorts = new Set(stores.map(shortOf));
+    const seen = new Set();
+    const sms = [];
+    // 1. The Store Manager on file in the Admin Panel for each store.
+    stores.forEach(full => {
+      const nm = String(((dir && dir.storeManagerNames) || {})[full] || "").trim();
+      if(!nm || dmKeys.has(npsNameNorm(nm))) return;
+      const p = findPerson(nm);
+      const k = p ? npsNameNorm(p.name) : npsNameNorm(nm);
+      if(seen.has(k)) return; seen.add(k);
+      sms.push(row(nm, "Store Manager", shortOf(full), p));
+    });
+    // 2. Anyone else clocking in under the Store Manager title, placed at the
+    //    district store where they punched most.
+    Object.keys(people).forEach(k => {
+      const p = people[k];
+      if(seen.has(k) || dmKeys.has(k)) return;
+      if(!Object.keys(p.titles).some(t => /^store\s*manager$/i.test(t))) return;
+      const home = Object.keys(p.marketStores).sort((a, b) => p.marketStores[b] - p.marketStores[a])[0];
+      if(!home || !storeShorts.has(home)) return;
+      seen.add(k);
+      sms.push(row(p.name, "Store Manager", home, p));
+    });
+    sms.sort((a, b) => a.minutes - b.minutes || String(a.name).localeCompare(String(b.name)));
+    const dmP = findPerson(dist.dmName);
+    const dmRow = row(dist.dmName, "District Manager", "", dmP);
+    if(dmP) dmRow.store = Object.keys(dmP.stores).sort((a, b) => dmP.stores[b] - dmP.stores[a]).join(", ");
+    const all = [dmRow].concat(sms);
+    return { key: dist.key, label: dist.label, dmName: dist.dmName, rows: all, under: all.filter(r => r.under).length };
+  });
+  const everyone = districts.reduce((a, d) => a.concat(d.rows), []);
+
+  // Overtime: everyone else (reps and ASMs) over the weekly cap, placed at the
+  // market store where they punched most.
+  const OT = (Number(NPS_CONFIG.HOURS_OT_WEEKLY) || 40) * 60;
+  const leaderKeys = new Set(everyone.map(r => npsNameNorm(r.name)));
+  const amByStore = {};
+  Object.keys((dir && dir.storeAMNames) || {}).forEach(full => {
+    const nm = dir.storeAMNames[full]; if(nm) amByStore[npsNameNorm(nm)] = true;
+  });
+  const overtime = [];
+  Object.keys(people).forEach(k => {
+    const p = people[k];
+    if(leaderKeys.has(k) || dmKeys.has(k)) return;
+    if(Object.keys(p.titles).some(t => /^store\s*manager$/i.test(t) || npsIsDmTitle(t))) return;
+    const home = Object.keys(p.marketStores).sort((a, b) => p.marketStores[b] - p.marketStores[a])[0];
+    if(!home) return;                                   // another RSD's employee
+    if(!(p.minutes > OT)) return;
+    const dist = npsDistrictForStore(home + " Xfinity Store", dir);
+    overtime.push({ name: p.name, store: home, district: dist ? dist.label : "", minutes: p.minutes, over: p.minutes - OT,
+                    days: p.days, role: amByStore[k] ? "ASM" : "Rep", badDays: p.badDays.slice().sort() });
+  });
+  overtime.sort((a, b) => b.minutes - a.minutes || String(a.name).localeCompare(String(b.name)));
+
+  return { week: week, label: npsHoursLabel(week), min: MIN / 60, ot: OT / 60, overtime: overtime, districts: districts,
+           total: everyone.length, under: everyone.filter(r => r.under).length,
+           punched: Object.keys(people).length };
+}
+
+function npsWeeklyHoursPayload(data){
+  const MIN = data.min;
+  const RED = { bg: "#fee2e2", bd: "#fca5a5", col: "#b91c1c" };
+  const GRN = { bg: "#dcfce7", bd: "#86efac", col: "#15803d" };
+  const rowHtml = (r, last) => {
+    const t = r.under ? RED : GRN;
+    const bb = last ? "" : "border-bottom:1px solid #eef2f7;";
+    const chip = r.role === "District Manager"
+      ? '<span style="display:inline-block;background:#e0e7ff;color:#3730a3;border-radius:20px;padding:1px 8px;font-size:9.5px;font-weight:800;letter-spacing:0.4px;margin-left:6px;vertical-align:1px;">DM</span>'
+      : '';
+    const notes = [];
+    if(r.noPunches) notes.push("No punches last week");
+    else if(r.badDays.length) notes.push(r.badDays.length + " day" + (r.badDays.length === 1 ? "" : "s") + " with a missing punch (" + r.badDays.map(npsShortDate).join(", ") + ") &mdash; hours may be short");
+    const delta = r.under
+      ? npsHm(r.gap) + " short"
+      : (r.minutes - MIN * 60 >= 1 ? "+" + npsHm(r.minutes - MIN * 60) : "at minimum");
+    return '<tr>' +
+      '<td style="padding:9px 12px;background:#ffffff;' + bb + '">' +
+        '<div style="font-size:13px;font-weight:800;color:#0f172a;">' + npsEsc(r.name) + chip + '</div>' +
+        '<div style="font-size:10.5px;color:#64748b;margin-top:2px;">' + npsEsc(r.store || (r.role === "District Manager" ? "District Manager" : "")) + (r.days ? ' &bull; ' + r.days + ' day' + (r.days === 1 ? '' : 's') + ' worked' : '') + '</div>' +
+        (notes.length ? '<div style="font-size:10.5px;color:#b45309;font-weight:700;margin-top:3px;">' + notes.join(' &bull; ') + '</div>' : '') +
+      '</td>' +
+      '<td style="padding:9px 10px;text-align:center;width:118px;background:' + t.bg + ';border-left:1px solid ' + t.bd + ';' + (last ? '' : 'border-bottom:1px solid #ffffff;') + '">' +
+        '<div style="font-size:17px;font-weight:800;color:' + t.col + ';line-height:1.1;">' + npsHm(r.minutes) + '</div>' +
+        '<div style="font-size:9.5px;font-weight:800;color:' + t.col + ';margin-top:3px;letter-spacing:0.3px;">' + delta + '</div>' +
+      '</td></tr>';
+  };
+  const districtBlock = d => {
+    const pill = d.under
+      ? '<span style="display:inline-block;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;">' + d.under + ' UNDER ' + MIN + ' HRS</span>'
+      : '<span style="display:inline-block;background:#dcfce7;color:#15803d;border:1px solid #86efac;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;">ALL AT ' + MIN + '+ HRS</span>';
+    return '<tr><td style="padding:10px 20px 0;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;">' +
+      '<tr><td style="padding:12px 14px 8px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+        '<td style="vertical-align:middle;"><div style="font-size:15px;font-weight:800;color:#0f172a;">' + npsEsc(d.label) + '</div>' +
+        '<div style="font-size:11px;color:#64748b;margin-top:2px;">' + npsEsc(d.dmName) + ' &bull; ' + d.rows.length + ' leader' + (d.rows.length === 1 ? '' : 's') + '</div></td>' +
+        '<td style="vertical-align:middle;text-align:right;">' + pill + '</td>' +
+      '</tr></table></td></tr>' +
+      '<tr><td style="padding:0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e6ebf3;border-radius:10px;border-collapse:separate;border-spacing:0;overflow:hidden;">' +
+        '<tr><td style="padding:6px 12px;background:#f1f5f9;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#64748b;">LEADER</td>' +
+        '<td style="padding:6px 10px;background:#f1f5f9;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#64748b;text-align:center;">HOURS CLOCKED</td></tr>' +
+        d.rows.map((r, i) => rowHtml(r, i === d.rows.length - 1)).join("") +
+      '</table></td></tr></table></td></tr>';
+  };
+  const OTH = data.ot || 40;
+  const ot = data.overtime || [];
+  const otRow = (r, last) => {
+    const bb = last ? "" : "border-bottom:1px solid #eef2f7;";
+    const chip = '<span style="display:inline-block;background:' + (r.role === "ASM" ? '#e0e7ff;color:#3730a3' : '#f1f5f9;color:#475569') + ';border-radius:20px;padding:1px 8px;font-size:9.5px;font-weight:800;letter-spacing:0.4px;margin-left:6px;vertical-align:1px;">' + r.role + '</span>';
+    return '<tr>' +
+      '<td style="padding:8px 12px;background:#ffffff;' + bb + '">' +
+        '<div style="font-size:12.5px;font-weight:800;color:#0f172a;">' + npsEsc(r.name) + chip + '</div>' +
+        '<div style="font-size:10.5px;color:#64748b;margin-top:2px;">' + npsEsc(r.store) + (r.district ? ' &bull; ' + npsEsc(r.district) : '') + ' &bull; ' + r.days + ' day' + (r.days === 1 ? '' : 's') + ' worked</div>' +
+        (r.badDays.length ? '<div style="font-size:10.5px;color:#b45309;font-weight:700;margin-top:3px;">' + r.badDays.length + ' day' + (r.badDays.length === 1 ? '' : 's') + ' with a missing punch (' + r.badDays.map(npsShortDate).join(", ") + ')</div>' : '') +
+      '</td>' +
+      '<td style="padding:8px 10px;text-align:center;width:118px;background:#fff7ed;border-left:1px solid #fed7aa;' + (last ? '' : 'border-bottom:1px solid #ffffff;') + '">' +
+        '<div style="font-size:16px;font-weight:800;color:#c2410c;line-height:1.1;">' + npsHm(r.minutes) + '</div>' +
+        '<div style="font-size:9.5px;font-weight:800;color:#c2410c;margin-top:3px;letter-spacing:0.3px;">+' + npsHm(r.over) + ' OT</div>' +
+      '</td></tr>';
+  };
+  const otBlock = '<tr><td style="padding:18px 20px 0;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fffaf5;border:1px solid #fed7aa;border-radius:14px;">' +
+    '<tr><td style="padding:12px 14px 8px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>' +
+      '<td style="vertical-align:middle;"><div style="font-size:15px;font-weight:800;color:#0f172a;">Overtime &mdash; Reps &amp; ASMs</div>' +
+      '<div style="font-size:11px;color:#64748b;margin-top:2px;">Reps and ASMs work ' + OTH + ' hours a week or less. Everyone over ' + OTH + ' last week, most hours first.</div></td>' +
+      '<td style="vertical-align:middle;text-align:right;">' + (ot.length
+        ? '<span style="display:inline-block;background:#ffedd5;color:#c2410c;border:1px solid #fdba74;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;white-space:nowrap;">' + ot.length + ' OVER ' + OTH + ' HRS</span>'
+        : '<span style="display:inline-block;background:#dcfce7;color:#15803d;border:1px solid #86efac;border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:800;white-space:nowrap;">NO OVERTIME</span>') + '</td>' +
+    '</tr></table></td></tr>' +
+    (ot.length
+      ? '<tr><td style="padding:0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #f1e3d3;border-radius:10px;border-collapse:separate;border-spacing:0;overflow:hidden;">' +
+          '<tr><td style="padding:6px 12px;background:#fff1e6;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#9a3412;">REP / ASM</td>' +
+          '<td style="padding:6px 10px;background:#fff1e6;font-size:9px;font-weight:800;letter-spacing:0.6px;color:#9a3412;text-align:center;">HOURS CLOCKED</td></tr>' +
+          ot.map((r, i) => otRow(r, i === ot.length - 1)).join("") +
+        '</table></td></tr>'
+      : '<tr><td style="padding:0 14px 14px;"><div style="font-size:12px;color:#15803d;font-weight:700;">No rep or ASM clocked over ' + OTH + ' hours last week.</div></td></tr>') +
+    '</table></td></tr>';
+
+  const headline = data.under
+    ? data.under + " of " + data.total + " leaders under " + MIN + " hours"
+    : "Every leader at " + MIN + "+ hours";
+  const bodyHtml = '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#eef2f8;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef2f8;padding:18px 0;"><tr><td align="center">' +
+    '<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:96%;background:#ffffff;border-radius:18px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;">' +
+    '<tr><td style="background:#0f2350;padding:20px 20px 18px;">' +
+      '<div style="font-size:11px;font-weight:800;letter-spacing:1.6px;color:#8fa6d4;text-transform:uppercase;">Blufox Mobile &bull; Weekly Manager Hours</div>' +
+      '<div style="font-size:22px;font-weight:800;color:#ffffff;margin-top:5px;line-height:1.25;">' + headline + '</div>' +
+      '<div style="font-size:12px;color:#aebfe0;margin-top:6px;">' + data.label + ' &bull; minimum ' + MIN + ' hours a week</div>' +
+    '</td></tr>' +
+    '<tr><td style="padding:16px 20px 4px;"><div style="font-size:12.5px;color:#334155;line-height:1.6;">' +
+      'Hours each Store Manager and District Manager clocked last week, from the time card punches. ' +
+      '<span style="background:#fee2e2;color:#b91c1c;font-weight:800;padding:1px 6px;border-radius:5px;">Red</span> is under ' + MIN + ' hours; ' +
+      '<span style="background:#dcfce7;color:#15803d;font-weight:800;padding:1px 6px;border-radius:5px;">green</span> is ' + MIN + ' or more. Lowest first in each district, with the DM on top.' +
+    '</div></td></tr>' +
+    data.districts.map(districtBlock).join("") +
+    otBlock +
+    '<tr><td style="padding:14px 20px 4px;"><div style="font-size:10.5px;color:#94a3b8;line-height:1.6;">' +
+      'Hours are clock-in to clock-out with lunch and other breaks taken out, added up across every store the person punched at. ' +
+      'A day with a missing punch is counted only as far as its punches pair up, so those hours may be short until the punch is fixed. ' +
+      'Store Managers come from the Admin Panel plus anyone clocking in under the Store Manager title. ' +
+      'Overtime lists everyone else at these stores (reps and ASMs) over ' + OTH + ' hours; ASM is marked from the Admin Panel.' +
+    '</div></td></tr>' +
+    '<tr><td style="padding:12px 20px 20px;"><div style="font-size:10.5px;color:#b6c2d4;">Sent automatically from the Daily Sales Report upload.</div></td></tr>' +
+    '</table></td></tr></table></body></html>';
+  const to = NPS_DISTRICTS.map(d => d.dm).filter(Boolean);
+  const cc = [NPS_CONFIG.MY_EMAIL].filter(Boolean)
+    .filter(e => !to.some(t => String(t).toLowerCase() === String(e).toLowerCase()));
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const a = new Date(data.week.start + "T00:00:00"), b = new Date(data.week.end + "T00:00:00");
+  const span = M[a.getMonth()] + " " + a.getDate() + "\u2013" + (a.getMonth() === b.getMonth() ? "" : M[b.getMonth()] + " ") + b.getDate();
+  return {
+    email_type: "weekly_manager_hours",
+    to: to.join(","), cc: cc.join(","),
+    subject: "Manager Hours — Week of " + span + " — " + (data.under ? data.under + " under " + MIN + " hrs" : "all at " + MIN + "+") + (ot.length ? ", " + ot.length + " on overtime" : ""),
+    body_html: bodyHtml,
+    week_start: data.week.start, week_end: data.week.end,
+    minimum_hours: MIN, leaders: data.total, under: data.under,
+    overtime_cap: OTH, overtime_count: ot.length,
+    districts: data.districts.map(d => ({ district: d.label, dm: d.dmName, under: d.under, leaders: d.rows.length })),
+    date: npsLocalYMD(new Date())
+  };
+}
+
+function npsHoursHookReady(){
+  return /^https:\/\/hooks\.zapier\.com\//.test(NPS_CONFIG.HOURS_WEBHOOK_URL || "");
+}
+const NPS_HOURS_SESSION_KEY = 'nps-hours-sent-v1';
+// Once per week, on the first upload on or after the Monday that carries the
+// whole Sunday-Saturday week in the punch file.
+async function npsSendHoursRun(dir){
+  if(!npsHoursHookReady()) return { ran: false, reason: 'no-hook', sent: 0, errors: [] };
+  const week = npsHoursWeek();
+  try {
+    if(!NPS_PUNCH.loaded || !NPS_PUNCH_ROWS) await npsFetchPunches(dir);
+  } catch(e){
+    return { ran: false, reason: 'punch-unavailable', sent: 0, errors: [String(e.message || e)] };
+  }
+  if(!NPS_PUNCH_ROWS) return { ran: false, reason: 'punch-unavailable', sent: 0, errors: ['the time card file is not one row per punch'] };
+  if(!NPS_PUNCH.maxDate || NPS_PUNCH.maxDate < week.end){
+    return { ran: false, reason: 'punch-stale', staleDate: NPS_PUNCH.maxDate || 'unknown', week: week, sent: 0, errors: [] };
+  }
+  let log = { lastWeek: null, history: [] };
+  try {
+    const url = (await npsPinnedUrl("Daily-Sales-Report", NPS_CONFIG.HOURS_SENT_LOG_PATH)) || NPS_CONFIG.HOURS_SENT_LOG_URL;
+    const r = await fetch(url + (url.indexOf("?") === -1 ? "?t=" : "&t=") + Date.now(), { cache: 'no-store' });
+    if(r.ok) log = await r.json();
+  } catch(e){ /* first run */ }
+  let sessionWeek = null;
+  try { sessionWeek = (JSON.parse(localStorage.getItem(NPS_HOURS_SESSION_KEY) || 'null') || {}).week; } catch(e){ /* ignore */ }
+  if((log && log.lastWeek === week.start) || sessionWeek === week.start){
+    return { ran: false, reason: 'already-sent', week: week, sent: 0, errors: [] };
+  }
+  const data = npsWeeklyHoursData(dir);
+  if(!data.punched) return { ran: false, reason: 'no-week-data', week: week, sent: 0, errors: [] };
+
+  setStatus('Sending weekly manager hours email...', 'info');
+  const payload = npsWeeklyHoursPayload(data);
+  let lastErr = null;
+  for(let attempt = 1; attempt <= 3; attempt++){
+    try {
+      const resp = await fetch(NPS_CONFIG.HOURS_WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=UTF-8" }, body: JSON.stringify(payload) });
+      if(!resp.ok) throw new Error("Hours webhook HTTP " + resp.status);
+      lastErr = null; break;
+    } catch(e){ lastErr = e; if(attempt < 3) await new Promise(r => setTimeout(r, 600 * attempt)); }
+  }
+  if(lastErr) return { ran: true, reason: 'send-failed', week: week, sent: 0, errors: [String(lastErr.message || lastErr)] };
+  try { localStorage.setItem(NPS_HOURS_SESSION_KEY, JSON.stringify({ week: week.start })); } catch(e){ /* ignore */ }
+  let logSaved = false;
+  for(let attempt = 1; attempt <= 3 && !logSaved; attempt++){
+    try {
+      await pushToGitHub(REPOS.sales, NPS_CONFIG.HOURS_SENT_LOG_PATH, npsToB64(JSON.stringify({
+        lastWeek: week.start, lastWeekEnd: week.end, lastSentAt: new Date().toISOString(),
+        history: ((log && log.history) || []).slice(-52).concat([{ week: week.start, under: data.under, leaders: data.total }])
+      }, null, 2)), "Weekly manager hours sent — week of " + week.start);
+      logSaved = true;
+    } catch(e){ if(attempt === 3) console.warn('hours sent log not saved:', e); }
+  }
+  return { ran: true, reason: 'sent', sent: 1, week: week, label: data.label, under: data.under, total: data.total, min: data.min, overtime: (data.overtime || []).length, ot: data.ot, logSaved: logSaved, errors: [] };
 }
 
 // ===== District lunch-punch email ==========================================
@@ -3973,6 +4308,13 @@ async function npsDailyRun(parsed){
   catch(e){ lowNps = { ran: true, reason: 'threw', sent: 0, errors: [String(e.message || e)] };
             console.warn('low-NPS email failed:', e); }
 
+  // 8) Weekly manager hours email - Mondays (first upload of the week that has
+  //    the full Sunday-Saturday week of punches). Independent hook and log.
+  let hours = { ran: false, reason: 'not-run', sent: 0, errors: [] };
+  try { hours = await npsSendHoursRun(dir); }
+  catch(e){ hours = { ran: true, reason: 'threw', sent: 0, errors: [String(e.message || e)] };
+            console.warn('hours email failed:', e); }
+
   // The newest response day actually present in the file. On a morning when the
   // export has not caught up, "nothing new" and "something broke" look identical
   // in the banner — this lets the banner name the date so the difference is
@@ -3990,7 +4332,7 @@ async function npsDailyRun(parsed){
     sent: sent, storeCount: storeCount,
     alreadySentToday: alreadySentToday, held: held, stale: stale, tsheets: tsheets, convTs: convTs,
     unmatched: parsed.unmatched || [], hookReady: hookReady, errors: errors,
-    lunch: lunch, lowNps: lowNps
+    lunch: lunch, lowNps: lowNps, hours: hours
   };
 }
 
@@ -4763,6 +5105,20 @@ async function uploadFiles() {
           parts.push('NPS accountability email already sent today — skipped to avoid a duplicate.');
         } else if (N.reason === 'send-failed' || N.reason === 'threw') {
           parts.push(`⚠ NPS accountability email failed — ${(N.errors || []).join('; ')}. It retries on your next upload.`);
+        }
+        const Hr = (d && d.hours) || {};
+        if (Hr.reason === 'sent') {
+          let hl = `Weekly manager hours email sent (${Hr.label}) — ${Hr.under} of ${Hr.total} leaders under ${Hr.min} hours, ${Hr.overtime || 0} rep${Hr.overtime === 1 ? '' : 's'}/ASM${Hr.overtime === 1 ? '' : 's'} over ${Hr.ot || 40}`;
+          if (Hr.logSaved === false) hl += ' — ⚠ the sent-log could not be saved. Do NOT re-upload or the DMs will get it twice.';
+          parts.push(hl);
+        } else if (Hr.reason === 'punch-stale') {
+          parts.push(`Weekly manager hours email held — the time card file only runs through ${Hr.staleDate}; it needs last week through ${Hr.week ? Hr.week.end : 'Saturday'}. It sends on your next upload with the time cards.`);
+        } else if (Hr.reason === 'send-failed' || Hr.reason === 'threw') {
+          parts.push(`⚠ Weekly manager hours email failed — ${(Hr.errors || []).join('; ')}. It retries on your next upload.`);
+        } else if (Hr.reason === 'punch-unavailable') {
+          parts.push('⚠ Weekly manager hours email skipped — the time card data could not be read.');
+        } else if (Hr.reason === 'no-hook') {
+          parts.push('Weekly manager hours email OFF — paste the catch hook URL into NPS_CONFIG.HOURS_WEBHOOK_URL');
         }
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('NPS: ' + e.message); }
