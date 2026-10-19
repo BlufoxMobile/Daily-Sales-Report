@@ -2434,6 +2434,22 @@ async function npsSendHoursRun(dir){
   return { ran: true, reason: 'sent', sent: 1, week: week, label: data.label, under: data.under, total: data.total, min: data.min, overtime: (data.overtime || []).length, ot: data.ot, logSaved: logSaved, errors: [] };
 }
 
+function npsHoursBannerLine(Hr){
+  Hr = Hr || {};
+  if (Hr.reason === 'sent') {
+    let hl = `Weekly manager hours email sent (${Hr.label}) — ${Hr.under} of ${Hr.total} leaders under ${Hr.min} hours, ${Hr.overtime || 0} rep${Hr.overtime === 1 ? '' : 's'}/ASM${Hr.overtime === 1 ? '' : 's'} over ${Hr.ot || 40}`;
+    if (Hr.logSaved === false) hl += ' — ⚠ the sent-log could not be saved. Do NOT re-upload the time cards or the DMs will get it twice.';
+    return hl;
+  }
+  if (Hr.reason === 'already-sent') return `Weekly manager hours email already sent for ${npsHoursLabel(Hr.week)} — skipped.`;
+  if (Hr.reason === 'punch-stale') return `Weekly manager hours email held — the time card file only runs through ${Hr.staleDate}; it needs last week through ${Hr.week ? Hr.week.end : 'Saturday'}.`;
+  if (Hr.reason === 'no-week-data') return '⚠ Weekly manager hours email held — the time card file has no punches for last week.';
+  if (Hr.reason === 'send-failed' || Hr.reason === 'threw') return `⚠ Weekly manager hours email failed — ${(Hr.errors || []).join('; ')}. It retries on your next time card upload.`;
+  if (Hr.reason === 'punch-unavailable') return '⚠ Weekly manager hours email skipped — the time card data could not be read.';
+  if (Hr.reason === 'no-hook') return 'Weekly manager hours email OFF — paste the catch hook URL into NPS_CONFIG.HOURS_WEBHOOK_URL';
+  return '';
+}
+
 // ===== District lunch-punch email ==========================================
 // Roll the audit up per district, then per store, then per rep.
 //
@@ -4308,13 +4324,6 @@ async function npsDailyRun(parsed){
   catch(e){ lowNps = { ran: true, reason: 'threw', sent: 0, errors: [String(e.message || e)] };
             console.warn('low-NPS email failed:', e); }
 
-  // 8) Weekly manager hours email - Mondays (first upload of the week that has
-  //    the full Sunday-Saturday week of punches). Independent hook and log.
-  let hours = { ran: false, reason: 'not-run', sent: 0, errors: [] };
-  try { hours = await npsSendHoursRun(dir); }
-  catch(e){ hours = { ran: true, reason: 'threw', sent: 0, errors: [String(e.message || e)] };
-            console.warn('hours email failed:', e); }
-
   // The newest response day actually present in the file. On a morning when the
   // export has not caught up, "nothing new" and "something broke" look identical
   // in the banner — this lets the banner name the date so the difference is
@@ -4332,7 +4341,7 @@ async function npsDailyRun(parsed){
     sent: sent, storeCount: storeCount,
     alreadySentToday: alreadySentToday, held: held, stale: stale, tsheets: tsheets, convTs: convTs,
     unmatched: parsed.unmatched || [], hookReady: hookReady, errors: errors,
-    lunch: lunch, lowNps: lowNps, hours: hours
+    lunch: lunch, lowNps: lowNps
   };
 }
 
@@ -5006,6 +5015,19 @@ async function uploadFiles() {
         await pushViaBlobs(REPOS.punch, FILE_PATHS.punchExcel, b64, 'Update punch data — ' + new Date().toLocaleDateString());
         completed++;
         parts.push('Lunch Punch Audit');
+        // Weekly manager hours email rides on the time card upload itself, so it
+        // goes out whether or not the NPS files are in the same upload. Re-read
+        // the punches this upload just pushed - a page left open since an
+        // earlier upload must not report from the old file.
+        try {
+          NPS_PUNCH.loaded = false; NPS_PUNCH_ROWS = null;
+          const hDir = await npsFetchDirectory();
+          const line = npsHoursBannerLine(await npsSendHoursRun(hDir));
+          if (line) parts.push(line);
+        } catch (he) {
+          console.warn('hours email failed:', he);
+          parts.push('⚠ Weekly manager hours email failed — ' + (he.message || he) + '. It retries on your next time card upload.');
+        }
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('Lunch Punch Audit: ' + e.message); }
     });
@@ -5105,20 +5127,6 @@ async function uploadFiles() {
           parts.push('NPS accountability email already sent today — skipped to avoid a duplicate.');
         } else if (N.reason === 'send-failed' || N.reason === 'threw') {
           parts.push(`⚠ NPS accountability email failed — ${(N.errors || []).join('; ')}. It retries on your next upload.`);
-        }
-        const Hr = (d && d.hours) || {};
-        if (Hr.reason === 'sent') {
-          let hl = `Weekly manager hours email sent (${Hr.label}) — ${Hr.under} of ${Hr.total} leaders under ${Hr.min} hours, ${Hr.overtime || 0} rep${Hr.overtime === 1 ? '' : 's'}/ASM${Hr.overtime === 1 ? '' : 's'} over ${Hr.ot || 40}`;
-          if (Hr.logSaved === false) hl += ' — ⚠ the sent-log could not be saved. Do NOT re-upload or the DMs will get it twice.';
-          parts.push(hl);
-        } else if (Hr.reason === 'punch-stale') {
-          parts.push(`Weekly manager hours email held — the time card file only runs through ${Hr.staleDate}; it needs last week through ${Hr.week ? Hr.week.end : 'Saturday'}. It sends on your next upload with the time cards.`);
-        } else if (Hr.reason === 'send-failed' || Hr.reason === 'threw') {
-          parts.push(`⚠ Weekly manager hours email failed — ${(Hr.errors || []).join('; ')}. It retries on your next upload.`);
-        } else if (Hr.reason === 'punch-unavailable') {
-          parts.push('⚠ Weekly manager hours email skipped — the time card data could not be read.');
-        } else if (Hr.reason === 'no-hook') {
-          parts.push('Weekly manager hours email OFF — paste the catch hook URL into NPS_CONFIG.HOURS_WEBHOOK_URL');
         }
         setProgress(20 + (completed / totalSteps) * 70);
       } catch (e) { throw new Error('NPS: ' + e.message); }
