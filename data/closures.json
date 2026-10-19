@@ -12393,11 +12393,10 @@
     "store": "Evanston"
   },
   "2450720360": {
-    "status": "Pending Install",
-    "ts": "2026-10-01T00:51:26.622Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-19T13:46:32.656Z",
     "dm": "Tanzim Chowdhury",
-    "store": "Dekalb",
-    "pendingUntil": "2026-10-08"
+    "store": "Dekalb"
   },
   "2450869155": {
     "status": "Closed",
