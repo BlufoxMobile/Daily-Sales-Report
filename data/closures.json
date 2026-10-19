@@ -15525,6 +15525,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2529323802": {
+    "status": "Closed",
+    "ts": "2026-10-19T15:59:01.592Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart"
+  },
   "2529336341": {
     "status": "Closed",
     "ts": "2026-10-12T19:50:25.816Z",
@@ -22160,5 +22166,12 @@
     "ts": "2026-10-18T15:33:31.353Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
+  },
+  "1002316702712056": {
+    "status": "Pending Install",
+    "ts": "2026-10-19T16:03:07.640Z",
+    "dm": "Jacob Cabrales",
+    "store": "Elkhart",
+    "pendingUntil": "2026-10-24"
   }
 }
