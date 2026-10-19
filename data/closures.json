@@ -14283,6 +14283,12 @@
     "dm": "Juan Carrillo",
     "store": "Tinley Park"
   },
+  "2501544665": {
+    "status": "Cancelled Order",
+    "ts": "2026-10-19T18:59:18.584Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2501562136": {
     "status": "Closed",
     "ts": "2026-09-25T18:45:26.506Z",
