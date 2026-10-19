@@ -1,5 +1,5 @@
 {
-  "submittedAt": "2026-10-19T16:56:03.754Z",
+  "submittedAt": "2026-10-19T21:21:42.683Z",
   "store": "Dekalb Xfinity Store",
   "name": "",
   "email": "",
@@ -15,11 +15,11 @@
     "cashFloat": "Yes",
     "returnsShipped": "Yes"
   },
-  "notes": ":)",
+  "notes": "",
   "linksOpened": {
     "depositOrderForm": true,
-    "pciChecklist": false,
-    "uniformOrderForm": false,
+    "pciChecklist": true,
+    "uniformOrderForm": true,
     "cashFloatTracker": true
   },
   "photoUrls": {
