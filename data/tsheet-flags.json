@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-19T15:13:20.914Z","run_id":"2026-10-19T15:13:20Z#dfc79c","day":"2026-10-19","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-19T15:18:38.926Z","run_id":"2026-10-19T15:18:38Z#9cacb7","day":"2026-10-19","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"Oak Ridge Xfinity Store":{"reps":{"Nicholas Miguel":{"flagged":2,"clusters":[["2026-10-19T15:11:57.289Z","2026-10-19T15:14:54.342Z"]]}}}}}
