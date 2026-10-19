@@ -12630,8 +12630,8 @@
     "store": "Evergreen Park"
   },
   "2454494762": {
-    "status": "Closed",
-    "ts": "2026-09-30T21:52:34.702Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-19T22:39:42.540Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
   },
@@ -13523,6 +13523,12 @@
     "ts": "2026-09-09T16:13:01.696Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2480578152": {
+    "status": "Closed",
+    "ts": "2026-10-19T22:43:38.447Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2480584430": {
     "status": "Closed",
