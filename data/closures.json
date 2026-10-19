@@ -15781,6 +15781,12 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2536236707": {
+    "status": "Closed",
+    "ts": "2026-10-19T19:24:13.323Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
   "2536295199": {
     "status": "Closed",
     "ts": "2026-10-19T19:14:36.090Z",
@@ -15796,6 +15802,12 @@
   "2536660998": {
     "status": "Closed",
     "ts": "2026-10-19T19:24:08.880Z",
+    "dm": "Jacob Cabrales",
+    "store": "Schererville"
+  },
+  "2537795331": {
+    "status": "Can Not Close",
+    "ts": "2026-10-19T19:25:03.554Z",
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
