@@ -13681,11 +13681,10 @@
     "store": "Elkhart"
   },
   "2485420130": {
-    "status": "Pending Install",
-    "ts": "2026-09-09T17:56:29.560Z",
+    "status": "Closed",
+    "ts": "2026-10-19T19:29:13.007Z",
     "dm": "Jacob Cabrales",
-    "store": "Schererville",
-    "pendingUntil": "2026-09-11"
+    "store": "Schererville"
   },
   "2485450039": {
     "status": "Pending Install",
