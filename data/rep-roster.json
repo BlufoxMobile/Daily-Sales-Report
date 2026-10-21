@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-21T13:38:48.902094+00:00",
+  "updatedAt": "2026-10-21T14:39:19.977510+00:00",
   "source": "Sales Report.xlsx / Rep Rank",
   "byStore": {
     "Bourbonnais Xfinity Store": [
@@ -238,6 +238,7 @@
     ],
     "South Bend Xfinity Store": [
       "Cora Estrada",
+      "Emari Washington",
       "Jorge Tafoya",
       "Marissa Carrillo",
       "Raymond Reid",
