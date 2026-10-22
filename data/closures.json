@@ -14168,8 +14168,8 @@
     "store": "Frankfort"
   },
   "2498680520": {
-    "status": "Cancelled Order",
-    "ts": "2026-10-22T23:05:37.740Z",
+    "status": "Closed",
+    "ts": "2026-09-23T22:51:55.929Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown"
   },
@@ -14530,10 +14530,11 @@
     "store": "Valparaiso"
   },
   "2504831954": {
-    "status": "Closed",
-    "ts": "2026-10-22T23:00:19.364Z",
+    "status": "Pending Install",
+    "ts": "2026-09-23T23:00:56.024Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-09-30"
   },
   "2504849417": {
     "status": "Pending Install",
@@ -15917,6 +15918,12 @@
     "dm": "Matthew Brooks",
     "store": "Oak Ridge"
   },
+  "2536223829": {
+    "status": "Closed",
+    "ts": "2026-10-22T23:06:01.893Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2536232770": {
     "status": "Closed",
     "ts": "2026-10-19T19:14:39.001Z",
@@ -15946,6 +15953,12 @@
     "ts": "2026-10-19T15:31:57.684Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2536521119": {
+    "status": "Closed",
+    "ts": "2026-10-22T23:06:02.980Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2536660998": {
     "status": "Closed",
