@@ -12521,8 +12521,8 @@
     "pendingUntil": "2026-09-03"
   },
   "2452194808": {
-    "status": "Cancelled Order",
-    "ts": "2026-09-23T22:42:02.135Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T23:24:29.624Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -13326,8 +13326,8 @@
     "store": "Glenview"
   },
   "2472010139": {
-    "status": "Closed",
-    "ts": "2026-09-29T20:32:40.799Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T23:24:32.625Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
