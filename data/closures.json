@@ -22511,9 +22511,10 @@
     "store": "Kildeer"
   },
   "1002317570952055": {
-    "status": "Cancelled Order",
-    "ts": "2026-10-22T21:54:22.691Z",
+    "status": "Pending Install",
+    "ts": "2026-10-22T21:54:49.692Z",
     "dm": "Jacob Cabrales",
-    "store": "Valparaiso"
+    "store": "Valparaiso",
+    "pendingUntil": "2026-10-25"
   }
 }
