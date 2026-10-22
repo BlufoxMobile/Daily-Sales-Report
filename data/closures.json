@@ -15985,6 +15985,12 @@
     "store": "Elkhart",
     "pendingUntil": "2026-10-22"
   },
+  "2541784886": {
+    "status": "Can Not Close",
+    "ts": "2026-10-22T21:46:49.844Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2542220640": {
     "status": "Closed",
     "ts": "2026-10-19T15:16:12.917Z",
