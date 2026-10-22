@@ -14634,18 +14634,16 @@
     "store": "Cicero"
   },
   "2505928783": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:38:41.475Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:48:54.290Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "2505966830": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:38:38.467Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:48:55.905Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "2506025270": {
     "status": "Closed",
@@ -14654,11 +14652,10 @@
     "store": "Burbank"
   },
   "2506087904": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:38:32.034Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:48:52.842Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "2506106072": {
     "status": "Closed",
@@ -14880,11 +14877,10 @@
     "store": "Michigan City"
   },
   "2510635617": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:48:29.148Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:54:13.627Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "2510643325": {
     "status": "Closed",
@@ -15990,12 +15986,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2540704229": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:53:53.920Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
-  },
   "2540854359": {
     "status": "Closed",
     "ts": "2026-10-22T21:30:39.666Z",
@@ -16013,12 +16003,6 @@
     "ts": "2026-10-22T21:42:44.889Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
-  },
-  "2541369557": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:53:52.694Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "South Skokie"
   },
   "2541370956": {
     "status": "Pending Install",
