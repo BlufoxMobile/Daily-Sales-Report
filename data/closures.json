@@ -16060,6 +16060,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-10-29"
   },
+  "2548047509": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:22:44.511Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Kildeer"
+  },
   "2548438861": {
     "status": "Closed",
     "ts": "2026-10-22T21:56:48.264Z",
@@ -22541,12 +22547,5 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-10-26"
-  },
-  "1002316478802057": {
-    "status": "Pending Install",
-    "ts": "2026-10-22T22:18:54.396Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-10-27"
   }
 }
