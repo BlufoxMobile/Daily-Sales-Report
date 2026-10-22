@@ -15402,6 +15402,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2520769075": {
+    "status": "Cancelled Order",
+    "ts": "2026-10-22T21:16:42.689Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2520792433": {
     "status": "Can Not Close",
     "ts": "2026-10-19T19:31:44.122Z",
