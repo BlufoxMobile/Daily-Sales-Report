@@ -14211,8 +14211,8 @@
     "store": "Kildeer"
   },
   "2499615928": {
-    "status": "Closed",
-    "ts": "2026-10-22T21:32:40.773Z",
+    "status": "Can Not Close",
+    "ts": "2026-09-30T19:58:04.418Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
@@ -15996,6 +15996,13 @@
     "ts": "2026-10-19T14:59:26.135Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
+  },
+  "2544778301": {
+    "status": "Pending Install",
+    "ts": "2026-10-22T21:34:27.830Z",
+    "dm": "Tanzim Chowdhury",
+    "store": "Burbank",
+    "pendingUntil": "2026-10-29"
   },
   "2546556609": {
     "status": "Closed",
