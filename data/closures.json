@@ -16179,8 +16179,8 @@
     "pendingUntil": "2026-10-29"
   },
   "2547923019": {
-    "status": "Cancelled Order",
-    "ts": "2026-10-22T23:24:25.689Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T23:24:48.850Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
