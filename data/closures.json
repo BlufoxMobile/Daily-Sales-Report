@@ -15372,6 +15372,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2519023329": {
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:26:59.479Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
   "2519045830": {
     "status": "Closed",
     "ts": "2026-10-13T21:23:17.651Z",
@@ -15977,12 +15983,6 @@
     "ts": "2026-10-22T21:30:39.666Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
-  },
-  "2541109168": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:23:13.653Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
   },
   "2541277107": {
     "status": "Closed",
@@ -22553,12 +22553,5 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-10-26"
-  },
-  "1002316478802057": {
-    "status": "Pending Install",
-    "ts": "2026-10-22T22:18:54.396Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-10-27"
   }
 }
