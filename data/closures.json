@@ -10658,7 +10658,7 @@
   },
   "2437324664": {
     "status": "Closed",
-    "ts": "2026-09-29T21:52:27.581Z",
+    "ts": "2026-10-22T22:29:39.061Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -14968,11 +14968,10 @@
     "store": "Frankfort"
   },
   "2512019708": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T22:42:33.065Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:38:05.509Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-10-02"
+    "store": "Kildeer"
   },
   "2512067279": {
     "status": "Closed",
