@@ -14721,8 +14721,8 @@
     "store": "Evergreen Park"
   },
   "2507548824": {
-    "status": "Closed",
-    "ts": "2026-09-29T21:27:35.768Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T23:24:34.307Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
   },
@@ -16164,6 +16164,12 @@
     "ts": "2026-10-22T15:22:31.251Z",
     "dm": "Matthew Brooks",
     "store": "South Knoxville"
+  },
+  "2547788462": {
+    "status": "Cancelled Order",
+    "ts": "2026-10-22T23:24:44.449Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2547867316": {
     "status": "Pending Install",
