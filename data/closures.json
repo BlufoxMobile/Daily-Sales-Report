@@ -13880,10 +13880,11 @@
     "store": "Kildeer"
   },
   "2490455367": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:58:20.425Z",
+    "status": "Pending Install",
+    "ts": "2026-09-30T23:05:52.092Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
   },
   "2490560368": {
     "status": "Closed",
@@ -14529,11 +14530,10 @@
     "store": "Valparaiso"
   },
   "2504831954": {
-    "status": "Pending Install",
-    "ts": "2026-09-23T23:00:56.024Z",
+    "status": "Closed",
+    "ts": "2026-10-22T23:00:19.364Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-09-30"
+    "store": "Uptown"
   },
   "2504849417": {
     "status": "Pending Install",
