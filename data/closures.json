@@ -14634,11 +14634,10 @@
     "store": "Cicero"
   },
   "2505928783": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:38:41.475Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:48:54.290Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "2505966830": {
     "status": "Pending Install",
@@ -14654,11 +14653,10 @@
     "store": "Burbank"
   },
   "2506087904": {
-    "status": "Pending Install",
-    "ts": "2026-09-29T21:38:32.034Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:48:52.842Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston",
-    "pendingUntil": "2026-10-06"
+    "store": "Evanston"
   },
   "2506106072": {
     "status": "Closed",
