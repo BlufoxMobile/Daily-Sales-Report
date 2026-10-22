@@ -13898,11 +13898,10 @@
     "pendingUntil": "2026-10-02"
   },
   "2490587361": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T23:04:34.748Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:57:59.883Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-10-02"
+    "store": "Kildeer"
   },
   "2491260859": {
     "status": "Closed",
@@ -14634,16 +14633,18 @@
     "store": "Cicero"
   },
   "2505928783": {
-    "status": "Can Not Close",
-    "ts": "2026-10-22T22:48:54.290Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:38:41.475Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "2505966830": {
-    "status": "Can Not Close",
-    "ts": "2026-10-22T22:48:55.905Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:38:38.467Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "2506025270": {
     "status": "Closed",
@@ -14652,10 +14653,11 @@
     "store": "Burbank"
   },
   "2506087904": {
-    "status": "Can Not Close",
-    "ts": "2026-10-22T22:48:52.842Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:38:32.034Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "2506106072": {
     "status": "Closed",
@@ -14877,10 +14879,11 @@
     "store": "Michigan City"
   },
   "2510635617": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:54:13.627Z",
+    "status": "Pending Install",
+    "ts": "2026-09-29T21:48:29.148Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
+    "store": "Evanston",
+    "pendingUntil": "2026-10-06"
   },
   "2510643325": {
     "status": "Closed",
@@ -15397,12 +15400,6 @@
     "ts": "2026-10-13T21:23:14.950Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
-  },
-  "2519840874": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:57:38.954Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
   },
   "2520326177": {
     "status": "Closed",
@@ -22617,11 +22614,5 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown",
     "pendingUntil": "2026-10-27"
-  },
-  "1002317521702054": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:57:32.715Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Evanston"
   }
 }
