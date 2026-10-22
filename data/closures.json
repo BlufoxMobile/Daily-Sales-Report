@@ -16051,12 +16051,6 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
-  "2544736754": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:36:42.424Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
   "2544778301": {
     "status": "Pending Install",
     "ts": "2026-10-22T21:34:27.830Z",
@@ -16070,21 +16064,9 @@
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
   },
-  "2545149975": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:33:00.352Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
   "2545326793": {
     "status": "Can Not Close",
-    "ts": "2026-10-22T22:30:21.512Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2546415962": {
-    "status": "Can Not Close",
-    "ts": "2026-10-22T22:27:58.232Z",
+    "ts": "2026-10-22T22:37:22.425Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
