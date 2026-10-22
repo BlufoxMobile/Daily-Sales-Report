@@ -13857,11 +13857,10 @@
     "pendingUntil": "2026-10-02"
   },
   "2490191753": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T23:05:34.508Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:58:08.344Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-10-02"
+    "store": "Kildeer"
   },
   "2490273142": {
     "status": "Cancelled Order",
@@ -13870,18 +13869,16 @@
     "store": "Bourbonnais"
   },
   "2490293539": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T23:06:02.508Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:58:02.429Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-10-02"
+    "store": "Kildeer"
   },
   "2490321488": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T23:06:09.580Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:58:04.984Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-10-02"
+    "store": "Kildeer"
   },
   "2490455367": {
     "status": "Pending Install",
