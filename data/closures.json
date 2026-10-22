@@ -15996,6 +15996,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2541109168": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:23:13.653Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2541277107": {
     "status": "Closed",
     "ts": "2026-10-22T21:42:44.889Z",
@@ -16033,6 +16039,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2542605709": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:31:05.349Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown"
+  },
   "2543857968": {
     "status": "Closed",
     "ts": "2026-10-19T14:59:26.135Z",
@@ -16051,18 +16063,6 @@
     "ts": "2026-10-22T21:40:56.856Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
-  },
-  "2545326793": {
-    "status": "Can Not Close",
-    "ts": "2026-10-22T22:30:21.512Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
-  },
-  "2546415962": {
-    "status": "Can Not Close",
-    "ts": "2026-10-22T22:27:58.232Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
   },
   "2546556609": {
     "status": "Closed",
