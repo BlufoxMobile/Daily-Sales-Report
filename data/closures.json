@@ -15348,6 +15348,12 @@
     "dm": "Matthew Brooks",
     "store": "Greeneville"
   },
+  "2517834684": {
+    "status": "Can Not Close",
+    "ts": "2026-10-22T21:20:56.353Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2518876565": {
     "status": "Can Not Close",
     "ts": "2026-10-19T19:08:21.984Z",
@@ -15527,6 +15533,12 @@
     "ts": "2026-10-13T21:47:14.325Z",
     "dm": "Juan Carrillo",
     "store": "Frankfort"
+  },
+  "2525435236": {
+    "status": "Closed",
+    "ts": "2026-10-22T21:24:34.547Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   },
   "2525475725": {
     "status": "Closed",
@@ -15954,12 +15966,6 @@
     "ts": "2026-10-19T15:16:12.917Z",
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
-  },
-  "2542361749": {
-    "status": "Closed",
-    "ts": "2026-10-22T21:24:22.232Z",
-    "dm": "Juan Carrillo",
-    "store": "Frankfort"
   },
   "2543857968": {
     "status": "Closed",
