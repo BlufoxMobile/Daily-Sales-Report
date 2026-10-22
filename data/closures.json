@@ -16071,14 +16071,20 @@
     "store": "Calumet City"
   },
   "2545149975": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:37:25.583Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:37:35.752Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
   "2545326793": {
     "status": "Can Not Close",
     "ts": "2026-10-22T22:37:22.425Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "2546415962": {
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:37:31.047Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
