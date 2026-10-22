@@ -22523,10 +22523,10 @@
     "store": "Valparaiso",
     "pendingUntil": "2026-10-25"
   },
-  "1002315991222058": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:02:56.908Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Cicero"
+  "1002308286892057": {
+    "status": "Cancelled Order",
+    "ts": "2026-10-22T22:06:47.192Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
   }
 }
