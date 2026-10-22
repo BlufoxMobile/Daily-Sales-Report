@@ -16071,8 +16071,8 @@
     "store": "Calumet City"
   },
   "2545149975": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:37:41.615Z",
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:37:35.752Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
@@ -21602,10 +21602,11 @@
     "store": "Elkhart"
   },
   "1002303013302058": {
-    "status": "Closed",
-    "ts": "2026-09-29T22:58:45.692Z",
+    "status": "Pending Install",
+    "ts": "2026-10-22T22:39:50.019Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-12-04"
   },
   "1002305946552055": {
     "status": "Pending Install",
@@ -22607,5 +22608,12 @@
     "ts": "2026-10-22T22:27:03.904Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
+  },
+  "1002316478802057": {
+    "status": "Pending Install",
+    "ts": "2026-10-22T22:36:02.843Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Uptown",
+    "pendingUntil": "2026-10-27"
   }
 }
