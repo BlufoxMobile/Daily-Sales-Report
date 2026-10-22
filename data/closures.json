@@ -15990,6 +15990,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2540704229": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:53:53.920Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2540854359": {
     "status": "Closed",
     "ts": "2026-10-22T21:30:39.666Z",
@@ -16007,6 +16013,12 @@
     "ts": "2026-10-22T21:42:44.889Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "2541369557": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:53:52.694Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   },
   "2541370956": {
     "status": "Pending Install",
