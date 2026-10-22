@@ -10658,7 +10658,7 @@
   },
   "2437324664": {
     "status": "Closed",
-    "ts": "2026-10-22T22:29:39.061Z",
+    "ts": "2026-09-29T21:52:27.581Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -16051,6 +16051,18 @@
     "ts": "2026-10-22T21:40:56.856Z",
     "dm": "Tanzim Chowdhury",
     "store": "Calumet City"
+  },
+  "2545326793": {
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:30:21.512Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
+  "2546415962": {
+    "status": "Can Not Close",
+    "ts": "2026-10-22T22:27:58.232Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
   },
   "2546556609": {
     "status": "Closed",
