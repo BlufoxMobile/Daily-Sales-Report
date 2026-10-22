@@ -15084,7 +15084,7 @@
   },
   "2514265168": {
     "status": "Pending Install",
-    "ts": "2026-09-29T21:48:54.724Z",
+    "ts": "2026-09-29T21:49:04.500Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Evanston",
     "pendingUntil": "2026-10-06"
@@ -22583,12 +22583,5 @@
     "ts": "2026-10-22T22:27:03.904Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
-  },
-  "1002316478802057": {
-    "status": "Pending Install",
-    "ts": "2026-10-22T22:36:02.843Z",
-    "dm": "Imaad Dhorajiwala",
-    "store": "Uptown",
-    "pendingUntil": "2026-10-27"
   }
 }
