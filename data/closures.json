@@ -15456,6 +15456,12 @@
     "dm": "Jacob Cabrales",
     "store": "Elkhart"
   },
+  "2522114292": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:27:01.968Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
+  },
   "2522298423": {
     "status": "Closed",
     "ts": "2026-10-14T22:05:43.746Z",
@@ -15965,6 +15971,12 @@
     "ts": "2026-10-22T20:42:24.606Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
+  },
+  "2539480036": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:27:07.494Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
   },
   "2540222863": {
     "status": "Can Not Close",
@@ -22553,5 +22565,11 @@
     "dm": "Jacob Cabrales",
     "store": "Valparaiso",
     "pendingUntil": "2026-10-26"
+  },
+  "1002315991222058": {
+    "status": "Closed",
+    "ts": "2026-10-22T22:27:03.904Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Cicero"
   }
 }
