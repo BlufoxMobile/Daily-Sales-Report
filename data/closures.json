@@ -16054,6 +16054,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-10-29"
   },
+  "2548438861": {
+    "status": "Closed",
+    "ts": "2026-10-22T21:56:48.264Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "1001290369922103": {
     "status": "Pending Install",
     "ts": "2026-05-02T13:11:44.971Z"
