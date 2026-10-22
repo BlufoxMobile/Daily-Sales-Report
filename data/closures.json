@@ -10658,7 +10658,7 @@
   },
   "2437324664": {
     "status": "Closed",
-    "ts": "2026-10-22T22:29:39.061Z",
+    "ts": "2026-09-29T21:52:27.581Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -14968,10 +14968,11 @@
     "store": "Frankfort"
   },
   "2512019708": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:38:05.509Z",
+    "status": "Pending Install",
+    "ts": "2026-09-30T22:42:33.065Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer"
+    "store": "Kildeer",
+    "pendingUntil": "2026-10-02"
   },
   "2512067279": {
     "status": "Closed",
@@ -16070,8 +16071,8 @@
     "store": "Calumet City"
   },
   "2545149975": {
-    "status": "Can Not Close",
-    "ts": "2026-10-22T22:37:35.752Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:37:41.615Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
   },
