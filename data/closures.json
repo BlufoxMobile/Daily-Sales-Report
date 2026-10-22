@@ -16178,6 +16178,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-10-29"
   },
+  "2547901213": {
+    "status": "Can Not Close",
+    "ts": "2026-10-22T23:24:57.575Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2547923019": {
     "status": "Can Not Close",
     "ts": "2026-10-22T23:24:48.850Z",
@@ -22692,5 +22698,11 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Uptown",
     "pendingUntil": "2026-10-27"
+  },
+  "1002317600882058": {
+    "status": "Closed",
+    "ts": "2026-10-22T23:25:16.629Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
   }
 }
