@@ -13850,11 +13850,10 @@
     "pendingUntil": "2026-10-02"
   },
   "2490066378": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T23:05:24.724Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:58:11.011Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-10-02"
+    "store": "Kildeer"
   },
   "2490191753": {
     "status": "Closed",
@@ -13888,11 +13887,10 @@
     "pendingUntil": "2026-10-02"
   },
   "2490560368": {
-    "status": "Pending Install",
-    "ts": "2026-09-30T23:04:08.596Z",
+    "status": "Closed",
+    "ts": "2026-10-22T22:58:13.669Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Kildeer",
-    "pendingUntil": "2026-10-02"
+    "store": "Kildeer"
   },
   "2490587361": {
     "status": "Closed",
