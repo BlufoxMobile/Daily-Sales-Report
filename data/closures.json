@@ -16172,6 +16172,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-10-29"
   },
+  "2547923019": {
+    "status": "Cancelled Order",
+    "ts": "2026-10-22T23:24:25.689Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "South Skokie"
+  },
   "2547927773": {
     "status": "Pending Install",
     "ts": "2026-10-22T21:07:50.408Z",
