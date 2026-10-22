@@ -22528,5 +22528,12 @@
     "ts": "2026-10-22T22:06:47.192Z",
     "dm": "Jacob Cabrales",
     "store": "Valparaiso"
+  },
+  "1002313195662054": {
+    "status": "Pending Install",
+    "ts": "2026-10-22T22:07:22.826Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso",
+    "pendingUntil": "2026-10-26"
   }
 }
