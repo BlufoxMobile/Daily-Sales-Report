@@ -14536,10 +14536,11 @@
     "store": "Valparaiso"
   },
   "2504831954": {
-    "status": "Closed",
-    "ts": "2026-10-22T22:40:15.764Z",
+    "status": "Pending Install",
+    "ts": "2026-09-23T23:00:56.024Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-09-30"
   },
   "2504849417": {
     "status": "Pending Install",
@@ -21601,10 +21602,11 @@
     "store": "Elkhart"
   },
   "1002303013302058": {
-    "status": "Closed",
-    "ts": "2026-09-29T22:58:45.692Z",
+    "status": "Pending Install",
+    "ts": "2026-10-22T22:51:24.283Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-12-04"
   },
   "1002305946552055": {
     "status": "Pending Install",
