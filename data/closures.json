@@ -15966,6 +15966,12 @@
     "dm": "Juan Carrillo",
     "store": "Frankfort"
   },
+  "2541277107": {
+    "status": "Closed",
+    "ts": "2026-10-22T21:42:44.889Z",
+    "dm": "Jacob Cabrales",
+    "store": "Valparaiso"
+  },
   "2541370956": {
     "status": "Pending Install",
     "ts": "2026-10-19T15:23:07.112Z",
@@ -22491,11 +22497,5 @@
     "ts": "2026-10-22T19:56:23.726Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
-  },
-  "1002317621622053": {
-    "status": "Closed",
-    "ts": "2026-10-22T21:42:19.103Z",
-    "dm": "Tanzim Chowdhury",
-    "store": "Calumet City"
   }
 }
