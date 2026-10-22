@@ -10658,7 +10658,7 @@
   },
   "2437324664": {
     "status": "Closed",
-    "ts": "2026-09-29T21:52:27.581Z",
+    "ts": "2026-10-22T23:02:27.576Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
@@ -14530,10 +14530,11 @@
     "store": "Valparaiso"
   },
   "2504831954": {
-    "status": "Closed",
-    "ts": "2026-10-22T23:00:19.364Z",
+    "status": "Pending Install",
+    "ts": "2026-09-23T23:00:56.024Z",
     "dm": "Imaad Dhorajiwala",
-    "store": "Uptown"
+    "store": "Uptown",
+    "pendingUntil": "2026-09-30"
   },
   "2504849417": {
     "status": "Pending Install",
