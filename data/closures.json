@@ -22738,5 +22738,19 @@
     "ts": "2026-10-22T23:25:16.629Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "1002315188352056": {
+    "status": "Pending Install",
+    "ts": "2026-10-23T18:32:27.571Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-10-30"
+  },
+  "1002315172282053": {
+    "status": "Pending Install",
+    "ts": "2026-10-23T18:32:29.955Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-10-30"
   }
 }
