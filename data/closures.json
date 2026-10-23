@@ -16043,6 +16043,18 @@
     "dm": "Imaad Dhorajiwala",
     "store": "Kildeer"
   },
+  "2539036453": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:44:15.684Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "2539390939": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:44:13.532Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2539460744": {
     "status": "Closed",
     "ts": "2026-10-22T20:42:24.606Z",
@@ -16054,6 +16066,24 @@
     "ts": "2026-10-22T22:27:07.494Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Cicero"
+  },
+  "2539652110": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:44:12.612Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "2539657974": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:44:14.756Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
+  "2539962576": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:44:11.828Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2540222863": {
     "status": "Can Not Close",
@@ -22790,5 +22820,12 @@
     "ts": "2026-10-23T18:33:35.980Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
+  },
+  "1002316072262054": {
+    "status": "Pending Install",
+    "ts": "2026-10-23T18:35:39.083Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-10-30"
   }
 }
