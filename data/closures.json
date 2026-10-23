@@ -15766,11 +15766,23 @@
     "dm": "Matthew Brooks",
     "store": "Johnson City"
   },
+  "2531037569": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:29:26.533Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2531105929": {
     "status": "Closed",
     "ts": "2026-10-12T19:09:49.280Z",
     "dm": "Juan Carrillo",
     "store": "Bourbonnais"
+  },
+  "2531147455": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:29:25.075Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2531193678": {
     "status": "Closed",
@@ -15785,11 +15797,23 @@
     "store": "Bourbonnais",
     "pendingUntil": "2026-10-19"
   },
+  "2531518759": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:29:29.620Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2531614414": {
     "status": "Closed",
     "ts": "2026-10-12T20:31:08.878Z",
     "dm": "Matthew Brooks",
     "store": "Johnson City"
+  },
+  "2531617700": {
+    "status": "Closed",
+    "ts": "2026-10-23T18:29:28.637Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2532411774": {
     "status": "Closed",
