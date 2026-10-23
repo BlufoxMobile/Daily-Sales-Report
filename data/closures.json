@@ -16121,6 +16121,12 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
+  "2540804278": {
+    "status": "Closed",
+    "ts": "2026-10-23T19:07:30.395Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
+  },
   "2540854359": {
     "status": "Closed",
     "ts": "2026-10-22T21:30:39.666Z",
@@ -16211,6 +16217,12 @@
     "ts": "2026-10-22T23:20:40.742Z",
     "dm": "Imaad Dhorajiwala",
     "store": "South Skokie"
+  },
+  "2543078758": {
+    "status": "Can Not Close",
+    "ts": "2026-10-23T19:08:37.908Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park"
   },
   "2543857968": {
     "status": "Closed",
