@@ -22899,5 +22899,19 @@
     "ts": "2026-10-23T19:55:13.757Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
+  },
+  "1002316912942055": {
+    "status": "Pending Install",
+    "ts": "2026-10-23T19:59:52.002Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-10-30"
+  },
+  "1002317511182051": {
+    "status": "Pending Install",
+    "ts": "2026-10-23T19:59:54.457Z",
+    "dm": "Juan Carrillo",
+    "store": "Evergreen Park",
+    "pendingUntil": "2026-10-30"
   }
 }
