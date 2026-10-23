@@ -22485,11 +22485,10 @@
     "pendingUntil": "2026-10-19"
   },
   "1002312718392058": {
-    "status": "Pending Install",
-    "ts": "2026-10-12T19:29:12.895Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-23T15:14:29.439Z",
     "dm": "Juan Carrillo",
-    "store": "Evergreen Park",
-    "pendingUntil": "2026-10-19"
+    "store": "Evergreen Park"
   },
   "1002313017372056": {
     "status": "Pending Install",
@@ -22531,8 +22530,8 @@
     "store": "Evergreen Park"
   },
   "1002314132502056": {
-    "status": "Closed",
-    "ts": "2026-10-12T19:33:50.360Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-23T15:14:30.799Z",
     "dm": "Juan Carrillo",
     "store": "Evergreen Park"
   },
@@ -22549,11 +22548,10 @@
     "store": "Evergreen Park"
   },
   "1002314748592053": {
-    "status": "Pending Install",
-    "ts": "2026-10-12T19:42:57.054Z",
+    "status": "Cancelled Order",
+    "ts": "2026-10-23T15:14:32.150Z",
     "dm": "Juan Carrillo",
-    "store": "Evergreen Park",
-    "pendingUntil": "2026-10-19"
+    "store": "Evergreen Park"
   },
   "1002314733322052": {
     "status": "Pending Install",
