@@ -16255,6 +16255,12 @@
     "store": "Burbank",
     "pendingUntil": "2026-10-29"
   },
+  "2544795256": {
+    "status": "Closed",
+    "ts": "2026-10-23T19:55:01.744Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
+  },
   "2544967813": {
     "status": "Closed",
     "ts": "2026-10-22T21:40:56.856Z",
@@ -22879,6 +22885,12 @@
   "1002315193982053": {
     "status": "Closed",
     "ts": "2026-10-23T19:54:53.540Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
+  },
+  "1002317811522055": {
+    "status": "Closed",
+    "ts": "2026-10-23T19:55:13.757Z",
     "dm": "Imaad Dhorajiwala",
     "store": "Machesney Park"
   }
