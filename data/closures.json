@@ -16037,6 +16037,18 @@
     "dm": "Jacob Cabrales",
     "store": "Schererville"
   },
+  "2537818368": {
+    "status": "Closed",
+    "ts": "2026-10-23T19:54:56.834Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
+  },
+  "2537876596": {
+    "status": "Closed",
+    "ts": "2026-10-23T19:54:55.263Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
+  },
   "2537925743": {
     "status": "Closed",
     "ts": "2026-10-22T20:08:49.983Z",
@@ -22863,5 +22875,11 @@
     "dm": "Juan Carrillo",
     "store": "Evergreen Park",
     "pendingUntil": "2026-10-30"
+  },
+  "1002315193982053": {
+    "status": "Closed",
+    "ts": "2026-10-23T19:54:53.540Z",
+    "dm": "Imaad Dhorajiwala",
+    "store": "Machesney Park"
   }
 }
