@@ -1,1 +1,1 @@
-{"generated_at":"2026-10-24T15:34:20.607Z","run_id":"2026-10-24T15:34:20Z#8d4f11","day":"2026-10-24","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{}}
+{"generated_at":"2026-10-24T15:39:50.104Z","run_id":"2026-10-24T15:39:50Z#e639d4","day":"2026-10-24","timezone":"America/Chicago","window_ms":300000,"rule":"same-rep-same-store-5min-v1","stores":{"Hammond Xfinity Store":{"reps":{"Darryl Charles":{"flagged":2,"clusters":[["2026-10-24T15:34:16.805Z","2026-10-24T15:38:33.746Z"]]}}}}}
